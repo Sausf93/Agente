@@ -1,0 +1,22 @@
+{
+  "name": "agente-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Agente — app para Fuerzas y Cuerpos de Seguridad de España",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "format": "prettier --write .",
+    "content:build": "pnpm -F @agente/content-pipeline build:content"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

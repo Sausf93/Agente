@@ -1,0 +1,44 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+.expo/
+*.tsbuildinfo
+
+# Contenido generado (paquetes SQLite firmados)
+packages/content-pipeline/output/
+*.sqlite
+*.sqlite-journal
+!packages/content-pipeline/fixtures/**/*.sqlite
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+google-services.json
+GoogleService-Info.plist
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+
+# Nativo (Expo prebuild)
+apps/mobile/ios/
+apps/mobile/android/
+
+# Logs y temporales
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+coverage/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/

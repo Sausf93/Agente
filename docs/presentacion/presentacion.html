@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Agente — Presentación del proyecto</title>
+<style>
+  :root{
+    --azul:#2E5AAC; --azul-osc:#1E3E7A; --azul-mas:#16305f; --azul-luz:#EEF3FB; --azul-borde:#C9D8F0;
+    --tinta:#0E1420; --gris:#5A6472; --gris-cl:#8A93A0;
+    --linea:#E2E6EC; --hairline:#E4E7EC; --fondo:#F6F7F9; --blanco:#fff;
+    --signal:#2F6F76; --signal-bg:#E1EEF0; --signal-bd:#B9D6D9;
+    --leve-bg:#FFF4D6; --leve-tx:#6B4E00; --leve-bd:#EAD48C;
+    --grave-bg:#FFE7D1; --grave-tx:#7A3B00; --grave-bd:#EEC29A;
+    --muygrave-bg:#FCE0E1; --muygrave-tx:#7A1418; --muygrave-bd:#F0B9BC;
+    --exito:#1E7F4F; --exito-bg:#E6F2EC; --exito-bd:#BFE0CF;
+    --auto-tx:#5B3D9E; --auto-bg:#EFE9FB; --auto-bd:#D6C8F2;
+    --muni-tx:#7A3D86; --muni-bg:#F3E9F7; --muni-bd:#E5CBEC;
+    --sombra:0 1px 2px rgba(14,20,32,.05), 0 4px 14px rgba(14,20,32,.06);
+    --sombra-fuerte:0 6px 26px rgba(30,62,122,.16);
+    --sombra-mock:0 10px 26px rgba(14,20,32,.17), 0 2px 6px rgba(14,20,32,.10);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--tinta); margin:0; font-size:10.5pt; line-height:1.55;
+    background:var(--blanco); -webkit-font-smoothing:antialiased;
+  }
+  @page{ size:A4; margin:15mm 15mm 16mm; }
+  h1,h2,h3{ line-height:1.16; margin:0 0 .4em; }
+  p{ margin:.5em 0; }
+  strong{ color:var(--azul-osc); font-weight:650; }
+  em{ font-style:italic; }
+  .muted{ color:var(--gris); }
+  .lead{ font-size:12pt; color:var(--gris); line-height:1.55; }
+  ul{ margin:.4em 0; padding-left:1.05em; }
+  li{ margin:.3em 0; }
+  li::marker{ color:var(--azul); }
+  .num{ font-variant-numeric:tabular-nums; }
+
+  /* ---------- Secciones ---------- */
+  .section{ page-break-before:always; padding-top:1mm; }
+  .sec-head{ display:flex; align-items:center; gap:14px; margin:0 0 4px; }
+  .sec-badge{
+    flex:0 0 40px; width:40px; height:40px; border-radius:12px;
+    background:linear-gradient(150deg,var(--azul) 0%,var(--azul-osc) 100%);
+    color:#fff; font-size:16pt; font-weight:800; display:flex;
+    align-items:center; justify-content:center; box-shadow:var(--sombra-fuerte);
+    letter-spacing:-.5px; font-variant-numeric:tabular-nums;
+  }
+  .sec-head h2{ font-size:19pt; color:var(--azul-osc); margin:0; letter-spacing:-.4px; }
+  .sec-rule{ height:3px; background:linear-gradient(90deg,var(--azul) 0%,var(--azul) 54px,var(--linea) 54px,var(--linea) 100%); border-radius:2px; margin:6px 0 16px; }
+  h3{ font-size:12.5pt; color:var(--azul-osc); margin:0 0 .35em; letter-spacing:-.2px; }
+  .eyebrow{ font-size:8.5pt; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--azul); margin:0 0 2px; }
+
+  /* ---------- Componentes ---------- */
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .card{
+    border:1px solid var(--hairline); border-radius:14px; padding:15px 17px;
+    background:var(--blanco); box-shadow:var(--sombra);
+  }
+  .card h3{ margin-top:0; }
+  .card p:last-child, .card ul:last-child{ margin-bottom:0; }
+
+  .pill{ display:inline-block; padding:2.5px 11px; border-radius:999px; font-size:9pt; font-weight:700; border:1px solid transparent; letter-spacing:.2px; }
+  .pill-leve{ background:var(--leve-bg); color:var(--leve-tx); border-color:var(--leve-bd);}
+  .pill-grave{ background:var(--grave-bg); color:var(--grave-tx); border-color:var(--grave-bd);}
+  .pill-muygrave{ background:var(--muygrave-bg); color:var(--muygrave-tx); border-color:var(--muygrave-bd);}
+  .pill-signal{ background:var(--signal-bg); color:var(--signal); border-color:var(--signal-bd);}
+
+  .callout{ background:var(--azul-luz); border-left:4px solid var(--azul); border-radius:0 10px 10px 0; padding:13px 17px; margin:14px 0; }
+  .callout.warn{ background:#FFF6EC; border-left-color:#C67A1E; }
+  .callout.legal{ background:var(--fondo); border-left-color:var(--gris); }
+  .callout.signal{ background:var(--signal-bg); border-left-color:var(--signal); }
+  .callout .ico{ font-weight:800; }
+  .callout p:last-child{ margin-bottom:0; }
+  .callout p:first-child{ margin-top:0; }
+
+  /* ---------- Tablas ---------- */
+  table{ border-collapse:separate; border-spacing:0; width:100%; font-size:9.7pt; margin:.6em 0; border:1px solid var(--linea); border-radius:12px; overflow:hidden; box-shadow:var(--sombra); }
+  th,td{ padding:8px 11px; text-align:left; vertical-align:middle; border-bottom:1px solid var(--linea); }
+  tr:last-child td{ border-bottom:none; }
+  thead th{ background:var(--azul-osc); color:#fff; font-weight:650; font-size:9.5pt; letter-spacing:.2px; border-bottom:none; }
+  tbody tr:nth-child(even){ background:#FBFCFD; }
+  .vs-si{ color:var(--exito); font-weight:750; white-space:nowrap; }
+  .vs-no{ color:#B33; font-weight:750; white-space:nowrap; }
+  .ck{ display:inline-block; width:15px; text-align:center; }
+
+  /* ---------- Pasos ---------- */
+  .steps{ display:grid; grid-template-columns:1fr 1fr; gap:10px 20px; margin-top:8px; }
+  .step{ display:flex; gap:11px; align-items:flex-start; }
+  .step .n{ flex:0 0 27px; height:27px; border-radius:9px; background:var(--azul-luz); color:var(--azul-osc); border:1px solid var(--azul-borde); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:11pt; font-variant-numeric:tabular-nums; }
+  .step .tx{ font-size:10pt; line-height:1.4; }
+
+  /* ---------- Cifras grandes ---------- */
+  .figure{ font-size:34pt; font-weight:800; color:var(--azul-osc); letter-spacing:-1.5px; line-height:1; font-variant-numeric:tabular-nums; }
+  .figure .u{ font-size:15pt; font-weight:700; color:var(--azul); letter-spacing:0; }
+  .fig-label{ font-size:9pt; color:var(--gris); margin-top:6px; }
+
+  /* ---------- Mockups ---------- */
+  .mockups{ display:flex; gap:14px; justify-content:center; align-items:flex-start; margin:10px 0 0; }
+  .mock{ width:200px; }
+  .mock-cap{ text-align:center; font-size:9pt; color:var(--gris); margin-top:9px; line-height:1.4; }
+  .mock-cap strong{ display:block; color:var(--azul-osc); font-size:9.5pt; margin-bottom:1px; }
+  .mock svg{ display:block; }
+
+  .footer-note{ font-size:8.7pt; color:var(--gris); margin-top:8px; line-height:1.45; }
+
+  /* ---------- Capas de territorio ---------- */
+  .pill-estatal{ background:var(--azul-luz); color:var(--azul-osc); border-color:var(--azul-borde); }
+  .pill-auto{ background:var(--auto-bg); color:var(--auto-tx); border-color:var(--auto-bd); }
+  .pill-muni{ background:var(--muni-bg); color:var(--muni-tx); border-color:var(--muni-bd); }
+  .layer-legend{ display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 4px; }
+  .layer-legend .pill{ display:inline-flex; align-items:center; gap:6px; }
+  .lyr{ display:flex; align-items:center; gap:8px; border-radius:9px; padding:5px 10px; margin:4px 0; font-size:9pt; font-weight:650; border:1px solid; }
+  .lyr .ic{ flex:0 0 16px; display:inline-flex; }
+  .lyr.on-e{ background:var(--azul-luz); color:var(--azul-osc); border-color:var(--azul-borde); }
+  .lyr.on-a{ background:var(--auto-bg); color:var(--auto-tx); border-color:var(--auto-bd); }
+  .lyr.on-m{ background:var(--muni-bg); color:var(--muni-tx); border-color:var(--muni-bd); }
+  .lyr.off{ background:#F7F8FA; color:var(--gris-cl); border-color:#EDEFF2; border-style:dashed; }
+  .lyr .chk{ margin-left:auto; font-weight:800; font-size:10pt; }
+  .ex-head{ font-size:10.5pt; font-weight:750; color:var(--tinta); margin:0 0 1px; letter-spacing:-.2px; }
+  .ex-sub{ font-size:8.4pt; color:var(--gris); margin:0 0 6px; }
+
+  /* ---------- Economía ---------- */
+  .flow{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:4px 0 2px; }
+  .flow .fstep{ border:1px solid var(--hairline); border-radius:11px; padding:9px 11px; background:#fff; text-align:center; }
+  .flow .fstep.res{ background:var(--exito-bg); border-color:var(--exito-bd); }
+  .flow .fbig{ font-size:16pt; font-weight:800; color:var(--azul-osc); letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+  .flow .fstep.res .fbig{ color:var(--exito); }
+  .flow .fsm{ font-size:8pt; color:var(--gris); margin-top:2px; line-height:1.35; }
+  .money-hero{ background:linear-gradient(150deg,var(--azul-osc) 0%,var(--azul-mas) 100%); color:#fff; border-radius:16px; padding:18px 22px; box-shadow:var(--sombra-fuerte); display:flex; align-items:center; gap:22px; }
+  .money-hero .mh-num{ font-size:40pt; font-weight:800; letter-spacing:-2px; line-height:.95; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .money-hero .mh-num .u{ font-size:16pt; font-weight:700; color:#BFD3F2; letter-spacing:0; }
+  .money-hero .mh-tx{ font-size:11pt; line-height:1.45; color:#DDE6F5; }
+  .money-hero .mh-tx strong{ color:#fff; }
+  .cost-badge{ display:inline-block; background:var(--exito-bg); color:var(--exito); border:1px solid var(--exito-bd); border-radius:8px; padding:5px 11px; font-size:9pt; font-weight:750; margin-top:2px; }
+  tr.hot td{ background:var(--exito-bg) !important; }
+  tr.hot td strong{ color:var(--exito); }
+
+  /* ---------- Portada ---------- */
+  .cover{ height:262mm; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .cover-top{ flex:0 0 auto; }
+  .cover-mid{ flex:1 1 auto; display:flex; flex-direction:column; justify-content:center; }
+  .tag{ display:inline-block; background:var(--tinta); color:#fff; font-size:8pt; font-weight:700; padding:4px 12px; border-radius:6px; letter-spacing:1.4px; }
+  .logo{ display:flex; align-items:center; gap:13px; }
+  .logo-mark{ width:52px; height:52px; filter:drop-shadow(0 4px 12px rgba(46,90,172,.28)); }
+  .logo-word{ font-size:30pt; font-weight:800; letter-spacing:-1px; color:var(--azul-osc); }
+  .cover h1{ font-size:33pt; margin:14px 0 14px; letter-spacing:-1.2px; line-height:1.08; color:var(--tinta); }
+  .cover h1 .hl{ color:var(--azul); }
+  .cover .lead{ font-size:13pt; max-width:82%; }
+  .cover-chips{ display:flex; gap:8px; margin-top:22px; flex-wrap:wrap; }
+  .chip{ font-size:9pt; font-weight:600; color:var(--azul-osc); background:var(--azul-luz); border:1px solid var(--azul-borde); border-radius:999px; padding:5px 13px; }
+  .cover-band{ margin-top:26px; border-top:1px solid var(--linea); padding-top:16px; display:flex; justify-content:space-between; align-items:flex-end; gap:16px; }
+  .cover-meta{ font-size:9.5pt; color:var(--gris); max-width:64%; }
+  .cover-meta strong{ color:var(--azul-osc); }
+  .cover-deco{ position:absolute; right:-60px; top:-40px; width:340px; height:340px; opacity:.5; z-index:-1; }
+
+  /* ---------- Battle card ---------- */
+  .battle{ position:relative; border-radius:18px; padding:24px 26px; color:#fff;
+    background:linear-gradient(155deg,var(--azul-osc) 0%,var(--azul-mas) 100%);
+    box-shadow:var(--sombra-fuerte); overflow:hidden; }
+  .battle:before{ content:""; position:absolute; right:-40px; top:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.05); }
+  .battle .kick{ font-size:8.5pt; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#9FC0F0; }
+  .battle blockquote{ margin:8px 0 0; font-size:14.5pt; line-height:1.5; font-weight:600; letter-spacing:-.2px; }
+  .battle blockquote .y{ color:#FFE7D1; }
+  .battle-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .btag{ font-size:9pt; font-weight:700; color:#DDE6F5; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:5px 13px; }
+
+  /* ---------- Antes / Después ---------- */
+  .ba{ display:grid; grid-template-columns:1fr 34px 1fr; align-items:stretch; gap:0; }
+  .ba-col{ border:1px solid var(--hairline); border-radius:14px; padding:16px 17px; background:var(--blanco); box-shadow:var(--sombra); }
+  .ba-col.before{ background:#FBFAF9; border-color:#E9E3DC; }
+  .ba-col.after{ background:#FAFDFB; border-color:var(--exito-bd); }
+  .ba-arrow{ display:flex; align-items:center; justify-content:center; color:var(--azul); }
+  .ba-tag{ font-size:8pt; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; }
+  .ba-tag.b{ color:#9a7a52; } .ba-tag.a{ color:var(--exito); }
+  .ba-screen{ border-radius:10px; padding:12px 13px; margin-top:9px; font-size:9.4pt; line-height:1.5; }
+  .ba-screen.b{ background:#fff; border:1px solid #EAE3DB; color:var(--gris); }
+  .ba-screen.a{ background:#fff; border:1px solid var(--exito-bd); }
+  .ba-line{ display:flex; justify-content:space-between; gap:8px; padding:4px 0; border-bottom:1px solid #F0F1F4; }
+  .ba-line:last-child{ border-bottom:none; }
+  .ba-line .k{ color:var(--gris); } .ba-line .v{ font-weight:700; color:var(--tinta); font-variant-numeric:tabular-nums; }
+
+  /* ---------- Quote ---------- */
+  .quote{ border-left:4px solid var(--muygrave-bd); background:#FEFAFA; border-radius:0 10px 10px 0; padding:12px 16px; margin:12px 0; }
+  .quote p{ margin:0; font-size:10.5pt; font-style:italic; color:#5c4b4b; }
+  .quote cite{ display:block; margin-top:5px; font-size:8.5pt; font-style:normal; color:var(--gris); }
+
+  /* ---------- Cierre ---------- */
+  .close-hero{ background:linear-gradient(150deg,var(--azul-osc) 0%,var(--azul-mas) 100%); color:#fff; border-radius:18px; padding:26px 28px; box-shadow:var(--sombra-fuerte); }
+  .close-hero .lead{ color:#DDE6F5; font-size:12.5pt; }
+  .close-hero strong{ color:#fff; }
+  .close-hero h3{ color:#fff; }
+  .cta{ display:inline-block; margin-top:8px; background:#fff; color:var(--azul-osc); font-weight:800; font-size:13pt; padding:9px 22px; border-radius:10px; letter-spacing:-.2px; }
+
+  /* ---------- Pie ---------- */
+  .pagefoot{ margin-top:20px; padding-top:10px; border-top:1px solid var(--hairline); display:flex; justify-content:space-between; align-items:center; font-size:8pt; color:var(--gris-cl); }
+  .pagefoot .wm{ display:flex; align-items:center; gap:6px; font-weight:700; color:var(--gris); letter-spacing:-.2px; }
+</style>
+</head>
+<body>
+
+<!-- ============ PORTADA ============ -->
+<section class="cover">
+  <svg class="cover-deco" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M40 300 L170 60 L300 300" fill="none" stroke="#2E5AAC" stroke-width="2" opacity=".16"/>
+    <path d="M75 300 L170 125 L265 300" fill="none" stroke="#2E5AAC" stroke-width="2" opacity=".26"/>
+    <path d="M110 300 L170 190 L230 300" fill="none" stroke="#2E5AAC" stroke-width="2" opacity=".38"/>
+    <circle cx="170" cy="300" r="5" fill="#2E5AAC" opacity=".4"/>
+    <circle cx="170" cy="60" r="4" fill="#2F6F76" opacity=".5"/>
+  </svg>
+
+  <div class="cover-top">
+    <span class="tag">DOCUMENTO INTERNO · BORRADOR</span>
+    <div class="logo" style="margin-top:26px">
+      <svg class="logo-mark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="2" width="52" height="52" rx="15" fill="#2E5AAC"/>
+        <rect x="2" y="2" width="52" height="52" rx="15" fill="none" stroke="#1E3E7A" stroke-width="1" opacity=".5"/>
+        <circle cx="28" cy="17" r="5" fill="#fff"/>
+        <path d="M28 24 V41" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M19 41 H37" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-word">Agente</span>
+    </div>
+  </div>
+
+  <div class="cover-mid">
+    <h1>La normativa, masticada.<br><span class="hl">En 3 segundos</span> y sin cobertura.</h1>
+    <p class="lead">Una app para las Fuerzas y Cuerpos de Seguridad de España que te dice, en la
+    calle, qué artículo aplica, cuánto es y qué haces con el vehículo o la persona. Después te
+    deja la denuncia lista, el punto kilométrico marcado y te lleva el cuadrante.</p>
+    <div class="cover-chips">
+      <span class="chip">Qué ley aplicas</span>
+      <span class="chip">Importe y puntos</span>
+      <span class="chip">¿Grúa o detención?</span>
+      <span class="chip">Boletín listo</span>
+      <span class="chip">Punto kilométrico</span>
+      <span class="chip">Funciona offline</span>
+      <span class="chip">Adaptado a tu territorio</span>
+      <span class="chip">Cuentas claras</span>
+    </div>
+  </div>
+
+  <div class="cover-band">
+    <div class="cover-meta">
+      <p style="margin:0 0 4px"><strong>Un proyecto de dos.</strong> La idea es del compañero de la
+      Guardia Civil, que la conoce desde dentro y la venderá. El desarrollo lo pone el socio técnico.</p>
+      <p style="margin:0">Nombre provisional <strong>Agente</strong> · candidatos: <strong>Baliza · Hito · Cotejo</strong>.</p>
+    </div>
+    <div style="text-align:right; font-size:9.5pt; color:var(--gris)">
+      <div style="font-weight:800; color:var(--azul-osc); font-size:11pt" class="num">3 sep 2026</div>
+      <div>Borrador v4</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1. LA IDEA ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">1</div><h2>La idea, en una frase</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">Coges una situación de calle y la app te da, al instante y sin conexión, la
+  respuesta operativa: <strong>qué ley aplicas, el importe y los puntos, si te llevas el coche
+  con la grúa o sigue circulando, en qué punto kilométrico fue, y el texto de la denuncia listo
+  para copiar</strong>. Todo adaptado a tu cuerpo y tu territorio.</p>
+
+  <h3 style="margin-top:18px">Por qué existe</h3>
+  <p>Hoy muchos compañeros usan una app gratuita (SPPLB) que se quedó anticuada: interfaz de
+  hace años, el cuadrante falla y pierde datos, la versión de iPhone lleva sin actualizarse
+  desde 2023, y sobre todo <strong>solo te da el artículo</strong>: ni el importe, ni los puntos,
+  ni si procede grúa o detención, ni el texto para el boletín. El que la usa tiene que
+  saberse el resto de memoria.</p>
+
+  <div class="callout">
+    <p><span class="ico">El problema real que resolvemos.</span> En la calle, según la situación,
+    muchas veces no sabes de memoria con qué multar, si puedes detener o solo identificar, y con
+    qué ley — porque depende de la gravedad, y hay muchísima información entre tráfico, seguridad
+    ciudadana, penal y administrativo. <strong>Agente te lo deja mascado:</strong> te dice qué
+    puedes hacer y con qué artículo lo sostienes, para que decidas con seguridad.</p>
+  </div>
+
+  <div class="callout warn">
+    <p><span class="ico">Importante.</span> La app <em>orienta</em>, no <em>ordena</em>. Cada dato
+    lleva su artículo y su fecha de actualización. La decisión final siempre es del agente (y,
+    cuando toca, del juez). Esto nos protege y es justo lo que da confianza.</p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 2. POR QUÉ ES EL MOMENTO ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">2</div><h2>Por qué es el momento</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">No es una intuición: el líder actual lleva tiempo dando señales de abandono en
+  iPhone y arrastra un fallo conocido en su función más usada. Los datos están verificados en la
+  propia tienda de Apple.</p>
+
+  <div class="grid3" style="margin-top:14px">
+    <div class="card" style="text-align:center">
+      <div class="figure num">2023</div>
+      <div class="fig-label"><strong>iOS parado desde el 2 de noviembre de 2023</strong> (versión 2.5.5). Casi dos años sin tocarse la app de iPhone.</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="figure num">3,29<span class="u">★</span></div>
+      <div class="fig-label"><strong>de valoración media</strong> sobre 121 reseñas en la App Store. Hay margen de sobra para hacerlo mejor.</div>
+    </div>
+    <div class="card" style="text-align:center; background:var(--signal-bg); border-color:var(--signal-bd)">
+      <div class="figure num" style="color:var(--signal)">1</div>
+      <div class="fig-label"><strong>persona lo mantiene</strong>, con varias apps a la vez. Reacción lenta y mantenimiento a golpes.</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">El fallo que reconocen ellos mismos</h3>
+  <div class="quote">
+    <p>“La parte del cuadrante no funciona correctamente: al modificar un servicio solo te deja
+    cambiar el nombre o la abreviatura, pero <strong style="color:#7A1418">no guarda el color del
+    texto ni el color de fondo</strong>.”</p>
+    <cite>Reseña 1★ en la App Store · 31/05/2022. Tres de sus últimas cuatro notas de versión hablan de “corregir el cuadrante”.</cite>
+  </div>
+
+  <div class="callout legal">
+    <p><span class="ico">Matiz honesto.</span> En <strong>Android sí se actualiza</strong> (versión
+    de 2025-2026), así que nuestro argumento no es “la otra está muerta”. Es más fuerte y más
+    justo: aunque se actualice, <strong>mantiene la misma interfaz de 2017 y los mismos fallos de
+    fondo</strong> — cuadrante que pierde datos y consultas que solo dan el artículo. Nosotros no
+    parcheamos: resolvemos.</p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Datos iOS verificados vía iTunes Lookup API · sept 2026</span>
+  </div>
+</section>
+
+<!-- ============ 3. EL BUCLE ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">3</div><h2>Cómo se usa: la luna rota</h2></div>
+  <div class="sec-rule"></div>
+
+  <p>Este es el recorrido típico, el que hará el compañero veinte veces por turno:</p>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="tx"><strong>Ve la infracción.</strong> Un coche con una luna o un faro roto.</div></div>
+    <div class="step"><div class="n">2</div><div class="tx"><strong>Busca como habla.</strong> Escribe o dicta “luna rota”. No hace falta saber el artículo.</div></div>
+    <div class="step"><div class="n">3</div><div class="tx"><strong>La ficha responde.</strong> Artículo, importe (con pronto pago) y puntos. Y lo clave: <strong>¿grúa o puede seguir circulando?</strong></div></div>
+    <div class="step"><div class="n">4</div><div class="tx"><strong>Marca dónde fue.</strong> El mapa da el punto kilométrico: “A-7, PK 623+450, sentido Murcia”.</div></div>
+    <div class="step"><div class="n">5</div><div class="tx"><strong>Copia el boletín.</strong> El texto de la denuncia, redactado y listo, con un toque.</div></div>
+    <div class="step"><div class="n">6</div><div class="tx"><strong>Lo lleva a la oficina.</strong> Genera una plantilla PDF y la envía a su correo para registrarla luego.</div></div>
+  </div>
+
+  <div class="callout" style="margin-top:16px">
+    <p>Y aparte de las consultas, la app le lleva el <strong>cuadrante</strong>: turnos, festivos,
+    horas nocturnas y demás — sin perder datos, que es justo donde falla la de ahora.</p>
+  </div>
+  <p class="footer-note">Todo esto funciona <strong>sin cobertura</strong>: el contenido está
+  descargado en el móvil. En una carretera o un sótano, sigue funcionando.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 4. ANTES / DESPUÉS ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">4</div><h2>Antes y después: consultar vs. resolver</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">La misma infracción, en la app de ahora y en Agente. La de ahora te deja a
+  medias; la nuestra cierra la intervención.</p>
+
+  <div class="ba" style="margin-top:14px">
+    <div class="ba-col before">
+      <span class="ba-tag b">Antes · SPPLB</span>
+      <h3 style="color:#7a6449; margin:4px 0 2px">Consultar</h3>
+      <p class="muted" style="margin:0; font-size:9.4pt">Te da el texto del artículo y te deja solo.</p>
+      <div class="ba-screen b">
+        <div style="font-weight:700; color:#6b5c48">RGV art. 11 · Alumbrado</div>
+        <p style="margin:6px 0 0; font-size:9pt">“Los vehículos deberán llevar en perfecto estado
+        de funcionamiento los dispositivos de alumbrado y señalización…”</p>
+        <p style="margin:8px 0 0; font-size:8.6pt; color:#9a8b76">¿Cuánto es? ¿Puntos? ¿Se lo lleva la grúa? ¿Qué escribo en el boletín? — <em>de memoria.</em></p>
+      </div>
+    </div>
+    <div class="ba-arrow">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 13 H20 M14 7 L20 13 L14 19" fill="none" stroke="#2E5AAC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="ba-col after">
+      <span class="ba-tag a">Después · Agente</span>
+      <h3 style="color:var(--exito); margin:4px 0 2px">Resolver</h3>
+      <p class="muted" style="margin:0; font-size:9.4pt">Te dice qué hacer, con su fuente y fecha.</p>
+      <div class="ba-screen a">
+        <div style="font-weight:800; color:var(--tinta)">Alumbrado deficiente</div>
+        <div class="ba-line"><span class="k">Importe</span><span class="v">80 € · 40 € pronto pago</span></div>
+        <div class="ba-line"><span class="k">Puntos</span><span class="v">0</span></div>
+        <div class="ba-line"><span class="k">Consecuencia</span><span class="v" style="color:var(--grave-tx)">Sigue circulando</span></div>
+        <div class="ba-line"><span class="k">Boletín</span><span class="v" style="color:var(--azul)">Listo para copiar</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout signal">
+    <p><span class="ico">La diferencia en una línea.</span> El BOE es gratis. <strong>Tenerlo
+    resuelto en 3 segundos, sin errores y sin cobertura, no.</strong> Pagas la herramienta, no la ley.</p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 5. DETENCION ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">5</div><h2>El caso que más pesa: ¿puedo detener?</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">Es donde la app aporta más valor. La regla de cuándo se puede detener
+  <strong>está escrita en la ley</strong> (arts. 490–495 LECrim), no es opinión. Lo único que es
+  criterio del agente es aplicarla al caso concreto. Por eso se puede construir como una
+  <strong>regla con su artículo al lado</strong>, sin que nadie escriba “hay que detener” de su
+  cabeza.</p>
+
+  <p>Todo sale del cruce de dos datos que ya tenemos: la <strong>pena del artículo del Código
+  Penal</strong> (que dice si el delito es leve, menos grave o grave, por el art. 33 CP) y las
+  <strong>cuatro reglas de la LECrim</strong>. Con eso, la app monta un pequeño árbol de decisión.</p>
+
+  <div class="card" style="margin-top:14px; padding:0; overflow:hidden">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 18px; background:var(--azul-luz); border-bottom:1px solid var(--azul-borde)">
+      <div>
+        <div class="eyebrow" style="margin:0">Ejemplo</div>
+        <h3 style="margin:0">Robo con violencia <span class="muted" style="font-weight:400; font-size:10pt">(“un tirón”)</span></h3>
+      </div>
+      <span class="pill pill-grave">MENOS GRAVE</span>
+    </div>
+    <table style="margin:0; border:none; border-radius:0; box-shadow:none">
+      <tbody>
+        <tr><td style="width:32%; background:#FBFCFD"><strong>Qué es</strong></td><td>Robo con violencia · <strong>art. 242 CP</strong> · pena 2–5 años → delito <strong>menos grave</strong></td></tr>
+        <tr><td style="background:#FBFCFD"><strong>¿Procede detención?</strong></td><td><span class="vs-si">Sí</span> si hay flagrancia (<strong>art. 490</strong>), o indicios racionales + riesgo de que no comparezca (<strong>art. 492.4</strong>)</td></tr>
+        <tr><td style="background:#FBFCFD"><strong>Si no se detiene</strong></td><td>Identificar y comunicar al juzgado (<strong>art. 493</strong>)</td></tr>
+        <tr><td style="background:#FBFCFD"><strong>Si fuera delito leve</strong></td><td>No cabe detención, salvo sin domicilio conocido o sin fianza (<strong>art. 495</strong>)</td></tr>
+      </tbody>
+    </table>
+    <p class="footer-note" style="padding:10px 18px 14px; margin:0">La app muestra el resultado con un
+    semáforo y <strong>texto</strong> (“procede / puede proceder / no procede salvo excepción”), cada línea con
+    su artículo, y un aviso fijo al pie: <em>“Orienta, no ordena. La valoración de los indicios
+    corresponde al agente.”</em> Lo verás en el boceto de la página siguiente.</p>
+  </div>
+
+  <div class="callout warn">
+    <p><span class="ico">Lo que le pedimos al compañero.</span> Que valide este esquema con dos o
+    tres casos que le den guerra en la calle — y sobre todo el de <strong>drogas</strong>, donde la
+    frontera entre consumo y tráfico depende de la cantidad, las dosis y las circunstancias, y ahí
+    habrá que citar también jurisprudencia además de la ley.</p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 6. BOCETOS A (Buscar / Ficha / Cuadrante) ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">6</div><h2>Bocetos de la app · I</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="muted" style="margin-bottom:2px">Bocetos orientativos para hacernos una idea; el diseño
+  final se pulirá. Los colores de gravedad (amarillo = leve, naranja = grave, rojo = muy grave)
+  <strong style="color:var(--gris)">siempre van acompañados de texto, nunca solo color</strong>.</p>
+
+  <div class="mockups">
+
+    <!-- ===== MOCKUP 1: BUSCAR ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <text x="18" y="52" font-family="Segoe UI, sans-serif" font-size="15" font-weight="800" fill="#0E1420">Hola, agente</text>
+      <text x="18" y="68" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">Guardia Civil · Murcia</text>
+      <rect x="14" y="80" width="172" height="40" rx="12" fill="#fff" stroke="#2E5AAC" stroke-width="1.6"/>
+      <circle cx="32" cy="100" r="5.5" fill="none" stroke="#2E5AAC" stroke-width="1.8"/>
+      <line x1="36" y1="104" x2="41" y2="109" stroke="#2E5AAC" stroke-width="1.8" stroke-linecap="round"/>
+      <text x="48" y="104" font-family="Segoe UI, sans-serif" font-size="9.5" fill="#8A93A0">faro roto, sin seguro…</text>
+      <rect x="163" y="88" width="16" height="24" rx="6" fill="#EEF3FB"/>
+      <path d="M171 94 v7 M167.5 99 a3.5 3.5 0 0 0 7 0 M171 104 v3 M168 108 h6" stroke="#2E5AAC" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <rect x="14" y="130" width="172" height="50" rx="13" fill="#1E3E7A"/>
+      <rect x="14" y="130" width="4" height="50" rx="2" fill="#4C79C9"/>
+      <text x="26" y="150" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#93B0E0">HOY</text>
+      <text x="26" y="167" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#fff">Noche · 22:00–06:00</text>
+      <text x="138" y="150" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#93B0E0">MES</text>
+      <text x="138" y="167" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="800" fill="#fff">148 h</text>
+      <text x="18" y="203" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#8A93A0">ACCESOS RÁPIDOS</text>
+      <g font-family="Segoe UI, sans-serif" font-size="9.5" fill="#0E1420">
+        <rect x="14" y="210" width="84" height="36" rx="10" fill="#fff" stroke="#E2E6EC"/>
+        <circle cx="30" cy="228" r="7" fill="#EEF3FB"/><text x="27.2" y="231.5" font-size="8" fill="#2E5AAC" font-weight="700">A</text>
+        <text x="43" y="231" font-size="9">Alcoholemia</text>
+        <rect x="102" y="210" width="84" height="36" rx="10" fill="#fff" stroke="#E2E6EC"/>
+        <circle cx="118" cy="228" r="7" fill="#EEF3FB"/><text x="115.5" y="231.5" font-size="8" fill="#2E5AAC" font-weight="700">S</text>
+        <text x="131" y="231" font-size="9">Sin seguro</text>
+        <rect x="14" y="250" width="84" height="36" rx="10" fill="#fff" stroke="#E2E6EC"/>
+        <circle cx="30" cy="268" r="7" fill="#EEF3FB"/><text x="27.5" y="271.5" font-size="8" fill="#2E5AAC" font-weight="700">D</text>
+        <text x="43" y="271" font-size="9">Documentos</text>
+        <rect x="102" y="250" width="84" height="36" rx="10" fill="#fff" stroke="#E2E6EC"/>
+        <circle cx="118" cy="268" r="7" fill="#EEF3FB"/><text x="115.5" y="271.5" font-size="8" fill="#2E5AAC" font-weight="700">S</text>
+        <text x="131" y="271" font-size="9">Sustancias</text>
+      </g>
+      <text x="18" y="308" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#8A93A0">MÁS USADAS EN TU CUERPO</text>
+      <g font-family="Segoe UI, sans-serif" font-size="9.5" fill="#0E1420">
+        <text x="18" y="326"><tspan fill="#2E5AAC" font-weight="700">1</tspan>  Alumbrado deficiente</text>
+        <text x="18" y="344"><tspan fill="#2E5AAC" font-weight="700">2</tspan>  Tasa de alcohol</text>
+        <text x="18" y="362"><tspan fill="#2E5AAC" font-weight="700">3</tspan>  Uso del móvil al volante</text>
+      </g>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="6" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#2E5AAC" font-weight="700">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#8A93A0">Docs</text>
+        <text x="139" y="396" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="396" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Buscar</strong>La pantalla de inicio. El buscador es el corazón: escribe o dicta como hablas en la calle.</p>
+    </div>
+
+    <!-- ===== MOCKUP 2: FICHA ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <path d="M22 44 l-6 5 l6 5" fill="none" stroke="#2E5AAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="16" y="72" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420">Alumbrado deficiente</text>
+      <text x="16" y="88" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">RGV art. 11 · Anexo I</text>
+      <rect x="16" y="97" width="52" height="19" rx="9.5" fill="#FFF4D6" stroke="#EAD48C"/>
+      <text x="42" y="110" font-family="Segoe UI, sans-serif" font-size="9" font-weight="800" fill="#6B4E00" text-anchor="middle">LEVE</text>
+      <rect x="73" y="97" width="82" height="19" rx="9.5" fill="#EEF1F6" stroke="#DCE2EA"/>
+      <text x="114" y="110" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#5A6472" text-anchor="middle">Administrativa</text>
+      <rect x="14" y="126" width="84" height="52" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <text x="26" y="144" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing=".5" fill="#8A93A0">IMPORTE</text>
+      <text x="26" y="163" font-family="Segoe UI, sans-serif" font-size="16" font-weight="800" fill="#0E1420">80 €</text>
+      <text x="26" y="174" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#1E7F4F">40 € pronto pago</text>
+      <rect x="102" y="126" width="84" height="52" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <text x="114" y="144" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing=".5" fill="#8A93A0">PUNTOS</text>
+      <text x="114" y="166" font-family="Segoe UI, sans-serif" font-size="18" font-weight="800" fill="#0E1420">0</text>
+      <rect x="14" y="184" width="172" height="50" rx="12" fill="#FFF6EC" stroke="#C67A1E"/>
+      <rect x="14" y="184" width="4" height="50" rx="2" fill="#C67A1E"/>
+      <text x="26" y="201" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" letter-spacing=".5" fill="#7A3B00">CONSECUENCIA</text>
+      <text x="26" y="216" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#0E1420">Puede seguir circulando</text>
+      <text x="26" y="228" font-family="Segoe UI, sans-serif" font-size="8" fill="#7A3B00">No procede grúa ni inmovilización</text>
+      <rect x="14" y="242" width="172" height="40" rx="12" fill="#2E5AAC"/>
+      <path d="M62 258 h-6 v10 h10 v-3 M66 255 h9 v10 h-9 z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/>
+      <text x="80" y="266" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#fff" text-anchor="start">Copiar boletín</text>
+      <rect x="14" y="292" width="172" height="66" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <text x="24" y="309" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" letter-spacing=".5" fill="#8A93A0">TEXTO PARA EL BOLETÍN</text>
+      <text x="24" y="323" font-family="Segoe UI, sans-serif" font-size="8.3" fill="#0E1420">Circular con el alumbrado en</text>
+      <text x="24" y="335" font-family="Segoe UI, sans-serif" font-size="8.3" fill="#0E1420">deficientes condiciones, presentando</text>
+      <text x="24" y="347" font-family="Segoe UI, sans-serif" font-size="8.3" fill="#0E1420">rotura en el faro delantero derecho…</text>
+      <text x="16" y="368" font-family="Segoe UI, sans-serif" font-size="7.8" fill="#8A93A0">Actualizado 21/07/2026 · Fuente: BOE consolidado</text>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="6" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#2E5AAC" font-weight="700">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#8A93A0">Docs</text>
+        <text x="139" y="396" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="396" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Ficha</strong>Importe, puntos, la consecuencia (¿grúa o circula?) y el botón de copiar. Con fuente y fecha.</p>
+    </div>
+
+    <!-- ===== MOCKUP 3: CUADRANTE ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <text x="16" y="52" font-family="Segoe UI, sans-serif" font-size="15" font-weight="800" fill="#0E1420">Cuadrante</text>
+      <text x="16" y="68" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">Septiembre 2026</text>
+      <g font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0" text-anchor="middle" font-weight="700">
+        <text x="30" y="86">L</text><text x="55" y="86">M</text><text x="80" y="86">X</text>
+        <text x="105" y="86">J</text><text x="130" y="86">V</text><text x="155" y="86">S</text><text x="180" y="86">D</text>
+      </g>
+      <g font-family="Segoe UI, sans-serif" font-size="8.5" text-anchor="middle">
+        <rect x="19" y="92" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="30" y="107" fill="#6B4E00">1</text>
+        <rect x="44" y="92" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="55" y="107" fill="#6B4E00">2</text>
+        <rect x="69" y="92" width="22" height="22" rx="6" fill="#D9E4F5"/><text x="80" y="107" fill="#1E3E7A">3</text>
+        <rect x="94" y="92" width="22" height="22" rx="6" fill="#D9E4F5"/><text x="105" y="107" fill="#1E3E7A">4</text>
+        <rect x="119" y="92" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="130" y="107" fill="#5A6472">5</text>
+        <rect x="144" y="92" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="155" y="107" fill="#5A6472">6</text>
+        <rect x="169" y="92" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="180" y="107" fill="#5A6472">7</text>
+        <rect x="19" y="117" width="22" height="22" rx="6" fill="#1E3E7A"/><text x="30" y="132" fill="#fff">8</text>
+        <rect x="44" y="117" width="22" height="22" rx="6" fill="#1E3E7A"/><text x="55" y="132" fill="#fff">9</text>
+        <rect x="69" y="117" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="80" y="132" fill="#6B4E00">10</text>
+        <rect x="94" y="117" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="105" y="132" fill="#6B4E00">11</text>
+        <rect x="119" y="117" width="22" height="22" rx="6" fill="#D9E4F5"/><text x="130" y="132" fill="#1E3E7A">12</text>
+        <rect x="144" y="117" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="155" y="132" fill="#5A6472">13</text>
+        <rect x="169" y="117" width="22" height="22" rx="6" fill="#FCE0E1"/><text x="180" y="132" fill="#7A1418">14</text>
+        <rect x="19" y="142" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="30" y="157" fill="#5A6472">15</text>
+        <rect x="44" y="142" width="22" height="22" rx="6" fill="#1E3E7A"/><text x="55" y="157" fill="#fff">16</text>
+        <rect x="69" y="142" width="22" height="22" rx="6" fill="#1E3E7A"/><text x="80" y="157" fill="#fff">17</text>
+        <rect x="94" y="142" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="105" y="157" fill="#6B4E00">18</text>
+        <rect x="119" y="142" width="22" height="22" rx="6" fill="#FFF4D6"/><text x="130" y="157" fill="#6B4E00">19</text>
+        <rect x="144" y="142" width="22" height="22" rx="6" fill="#D9E4F5"/><text x="155" y="157" fill="#1E3E7A">20</text>
+        <rect x="169" y="142" width="22" height="22" rx="6" fill="#E9EDF2"/><text x="180" y="157" fill="#5A6472">21</text>
+      </g>
+      <g font-family="Segoe UI, sans-serif" font-size="8" fill="#0E1420">
+        <rect x="16" y="176" width="11" height="11" rx="3" fill="#FFF4D6"/><text x="31" y="185">Mañana</text>
+        <rect x="82" y="176" width="11" height="11" rx="3" fill="#1E3E7A"/><text x="97" y="185">Noche</text>
+        <rect x="136" y="176" width="11" height="11" rx="3" fill="#D9E4F5"/><text x="151" y="185">Saliente</text>
+        <rect x="16" y="192" width="11" height="11" rx="3" fill="#E9EDF2"/><text x="31" y="201">Libre</text>
+        <rect x="82" y="192" width="11" height="11" rx="3" fill="#FCE0E1"/><text x="97" y="201">Festivo</text>
+      </g>
+      <rect x="14" y="216" width="172" height="146" rx="13" fill="#fff" stroke="#E2E6EC"/>
+      <text x="26" y="236" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing=".8" fill="#8A93A0">RESUMEN DEL MES</text>
+      <g font-family="Segoe UI, sans-serif" font-size="10" fill="#0E1420">
+        <text x="26" y="260">Horas totales</text><text x="174" y="260" text-anchor="end" font-weight="800" font-size="11">148 h</text>
+        <line x1="26" y1="270" x2="174" y2="270" stroke="#EEF1F6"/>
+        <text x="26" y="286">Nocturnas</text><text x="174" y="286" text-anchor="end" font-weight="700">56 h</text>
+        <line x1="26" y1="296" x2="174" y2="296" stroke="#EEF1F6"/>
+        <text x="26" y="312">Festivas</text><text x="174" y="312" text-anchor="end" font-weight="700">16 h</text>
+        <line x1="26" y1="322" x2="174" y2="322" stroke="#EEF1F6"/>
+        <text x="26" y="338">Fines de semana</text><text x="174" y="338" text-anchor="end" font-weight="700">4</text>
+      </g>
+      <rect x="14" y="346" width="172" height="16" fill="#FFF6EC"/>
+      <text x="26" y="357" font-family="Segoe UI, sans-serif" font-size="9" fill="#7A3B00">Exceso s/ jornada</text>
+      <text x="174" y="357" font-family="Segoe UI, sans-serif" font-size="9" text-anchor="end" font-weight="800" fill="#7A3B00">+3,5 h</text>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="118.8" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#8A93A0">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#8A93A0">Docs</text>
+        <text x="139" y="396" fill="#2E5AAC" font-weight="700">Cuadrante</text>
+        <text x="176" y="396" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Cuadrante</strong>Turnos, festivos y contador de horas (nocturnas, festivas, exceso). Fiable: no pierde datos.</p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 7. BOCETOS B (Semáforo / Mapa-PK / Plantilla) ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">7</div><h2>Bocetos de la app · II</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="muted" style="margin-bottom:2px">Las tres pantallas que rematan la intervención: la
+  decisión sensible (detención), el <strong style="color:var(--signal)">punto kilométrico</strong>
+  en carretera y la plantilla en PDF para la oficina.</p>
+
+  <div class="mockups">
+
+    <!-- ===== MOCKUP 4: SEMÁFORO DE DETENCIÓN ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <path d="M22 44 l-6 5 l6 5" fill="none" stroke="#2E5AAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="16" y="72" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420">¿Procede detención?</text>
+      <text x="16" y="88" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">Robo con violencia · art. 242 CP</text>
+      <rect x="16" y="96" width="92" height="19" rx="9.5" fill="#FFE7D1" stroke="#EEC29A"/>
+      <text x="62" y="109" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="800" fill="#7A3B00" text-anchor="middle">MENOS GRAVE</text>
+      <!-- tira de 3 segmentos -->
+      <text x="16" y="132" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" letter-spacing=".6" fill="#8A93A0">RESULTADO ORIENTATIVO</text>
+      <!-- seg 1 procede (activo) -->
+      <rect x="14" y="138" width="56" height="46" rx="10" fill="#E6F2EC" stroke="#1E7F4F" stroke-width="1.6"/>
+      <circle cx="42" cy="153" r="7" fill="none" stroke="#1E7F4F" stroke-width="1.6"/>
+      <path d="M39 153 l2 2 l4 -4" fill="none" stroke="#1E7F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="42" y="174" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="800" fill="#1E7F4F" text-anchor="middle">Procede</text>
+      <!-- seg 2 puede -->
+      <rect x="72" y="138" width="56" height="46" rx="10" fill="#fff" stroke="#E2E6EC"/>
+      <circle cx="100" cy="153" r="7" fill="none" stroke="#B9A06A" stroke-width="1.5"/>
+      <path d="M100 150 v3.5 M100 157 v.3" stroke="#B9A06A" stroke-width="1.6" stroke-linecap="round"/>
+      <text x="100" y="174" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#8A93A0" text-anchor="middle">Puede</text>
+      <!-- seg 3 no procede -->
+      <rect x="130" y="138" width="56" height="46" rx="10" fill="#fff" stroke="#E2E6EC"/>
+      <circle cx="158" cy="153" r="7" fill="none" stroke="#C79196" stroke-width="1.5"/>
+      <line x1="154.5" y1="153" x2="161.5" y2="153" stroke="#C79196" stroke-width="1.6" stroke-linecap="round"/>
+      <text x="158" y="174" font-family="Segoe UI, sans-serif" font-size="8.3" font-weight="700" fill="#8A93A0" text-anchor="middle">No procede</text>
+      <!-- detalle activo -->
+      <rect x="14" y="192" width="172" height="52" rx="12" fill="#E6F2EC" stroke="#BFE0CF"/>
+      <rect x="14" y="192" width="4" height="52" rx="2" fill="#1E7F4F"/>
+      <text x="26" y="209" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="800" fill="#155F3B">Procede la detención</text>
+      <text x="26" y="223" font-family="Segoe UI, sans-serif" font-size="8.3" fill="#2f5e48">Si hay flagrancia (art. 490) o indicios</text>
+      <text x="26" y="234" font-family="Segoe UI, sans-serif" font-size="8.3" fill="#2f5e48">racionales + riesgo de fuga (art. 492.4).</text>
+      <!-- chips articulos -->
+      <text x="16" y="262" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" letter-spacing=".6" fill="#8A93A0">FUNDAMENTO · LECRIM</text>
+      <g font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">
+        <rect x="14" y="268" width="40" height="20" rx="10" fill="#EEF3FB" stroke="#C9D8F0"/><text x="34" y="281" fill="#1E3E7A">490</text>
+        <rect x="58" y="268" width="46" height="20" rx="10" fill="#EEF3FB" stroke="#C9D8F0"/><text x="81" y="281" fill="#1E3E7A">492.4</text>
+        <rect x="108" y="268" width="40" height="20" rx="10" fill="#EEF3FB" stroke="#C9D8F0"/><text x="128" y="281" fill="#1E3E7A">493</text>
+        <rect x="152" y="268" width="34" height="20" rx="10" fill="#F4F6F9" stroke="#E2E6EC"/><text x="169" y="281" fill="#5A6472">495</text>
+      </g>
+      <!-- aviso fijo -->
+      <rect x="14" y="300" width="172" height="60" rx="12" fill="#FFF6EC" stroke="#EAD9BE"/>
+      <rect x="14" y="300" width="4" height="60" rx="2" fill="#C67A1E"/>
+      <text x="26" y="317" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="800" fill="#7A3B00">Orienta, no ordena</text>
+      <text x="26" y="331" font-family="Segoe UI, sans-serif" font-size="8" fill="#7A5a30">La valoración de los indicios y del</text>
+      <text x="26" y="342" font-family="Segoe UI, sans-serif" font-size="8" fill="#7A5a30">riesgo corresponde al agente. Cada</text>
+      <text x="26" y="353" font-family="Segoe UI, sans-serif" font-size="8" fill="#7A5a30">línea cita su artículo y su fecha.</text>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="6" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#2E5AAC" font-weight="700">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#8A93A0">Docs</text>
+        <text x="139" y="396" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="396" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Semáforo de detención</strong>Procede / puede / no procede, con color + icono + texto y su artículo. Aviso fijo al pie.</p>
+    </div>
+
+    <!-- ===== MOCKUP 5: MAPA / PK ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <text x="16" y="52" font-family="Segoe UI, sans-serif" font-size="15" font-weight="800" fill="#0E1420">Punto kilométrico</text>
+      <text x="16" y="68" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">Tu posición en la vía · offline</text>
+      <!-- mini mapa -->
+      <clipPath id="mapclip"><rect x="14" y="80" width="172" height="150" rx="14"/></clipPath>
+      <g clip-path="url(#mapclip)">
+        <rect x="14" y="80" width="172" height="150" fill="#EAF0EC"/>
+        <path d="M14 210 Q70 200 110 150 Q150 100 186 96" fill="none" stroke="#DDE6E0" stroke-width="14"/>
+        <path d="M14 210 Q70 200 110 150 Q150 100 186 96" fill="none" stroke="#fff" stroke-width="9"/>
+        <path d="M14 210 Q70 200 110 150 Q150 100 186 96" fill="none" stroke="#C9D4CD" stroke-width="1" stroke-dasharray="4 4"/>
+        <path d="M30 80 L70 230" fill="none" stroke="#E1E7E2" stroke-width="6"/>
+        <path d="M150 80 L120 230" fill="none" stroke="#E1E7E2" stroke-width="6"/>
+        <rect x="40" y="120" width="20" height="16" rx="2" fill="#DFE6E0"/>
+        <rect x="150" y="150" width="22" height="18" rx="2" fill="#DFE6E0"/>
+        <text x="120" y="140" font-family="Segoe UI, sans-serif" font-size="8" fill="#9aa89f" transform="rotate(-38 120 140)">A-7</text>
+      </g>
+      <!-- pin signal -->
+      <path d="M110 150 c-8 0 -13 6 -13 13 c0 9 13 20 13 20 c0 0 13 -11 13 -20 c0 -7 -5 -13 -13 -13 z" fill="#2F6F76"/>
+      <circle cx="110" cy="163" r="5" fill="#fff"/>
+      <circle cx="110" cy="163" r="2.4" fill="#2F6F76"/>
+      <!-- tarjeta PK -->
+      <rect x="14" y="242" width="172" height="72" rx="14" fill="#fff" stroke="#E2E6EC"/>
+      <text x="26" y="260" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" letter-spacing=".6" fill="#8A93A0">POSICIÓN</text>
+      <text x="26" y="279" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420" font-variant-numeric="tabular-nums">A-7 · PK 623+450</text>
+      <path d="M27 291 l6 -3 l0 6 z" fill="#2F6F76"/>
+      <text x="38" y="296" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">sentido Murcia</text>
+      <rect x="120" y="286" width="60" height="17" rx="8.5" fill="#E1EEF0" stroke="#B9D6D9"/>
+      <text x="150" y="298" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#2F6F76" text-anchor="middle">GPS ±15 m</text>
+      <!-- botones -->
+      <rect x="14" y="322" width="80" height="38" rx="11" fill="#fff" stroke="#C9D8F0"/>
+      <path d="M30 336 h-5 v9 h9 v-2 M34 333 h8 v9 h-8 z" fill="none" stroke="#2E5AAC" stroke-width="1.3" stroke-linejoin="round"/>
+      <text x="47" y="345" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="700" fill="#2E5AAC" text-anchor="start">Copiar</text>
+      <rect x="100" y="322" width="86" height="38" rx="11" fill="#2E5AAC"/>
+      <text x="143" y="345" font-family="Segoe UI, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Usar en doc.</text>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="156.4" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#8A93A0">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#8A93A0">Docs</text>
+        <text x="139" y="396" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="396" fill="#2E5AAC" font-weight="700">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Mapa · PK</strong>El punto kilométrico exacto en carretera, con precisión, para copiar o llevar al documento.</p>
+    </div>
+
+    <!-- ===== MOCKUP 6: PLANTILLA / PDF ===== -->
+    <div class="mock">
+    <svg width="200" height="410" viewBox="0 0 200 410" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="408" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="398" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <path d="M22 44 l-6 5 l6 5" fill="none" stroke="#2E5AAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="16" y="72" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420">Boletín de denuncia</text>
+      <text x="16" y="88" font-family="Segoe UI, sans-serif" font-size="9" fill="#5A6472">Plantilla · vista previa PDF</text>
+      <!-- hoja documento -->
+      <rect x="14" y="98" width="172" height="216" rx="8" fill="#fff" stroke="#E2E6EC"/>
+      <!-- watermark monograma -->
+      <g opacity="0.06"><circle cx="100" cy="205" r="10" fill="#1E3E7A"/><path d="M100 217 V255 M82 255 H118" stroke="#1E3E7A" stroke-width="9" stroke-linecap="round"/></g>
+      <line x1="26" y1="114" x2="174" y2="114" stroke="#EEF1F6"/>
+      <text x="26" y="110" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" letter-spacing=".5" fill="#2E5AAC">RELLENADO POR LA APP</text>
+      <g font-family="Segoe UI, sans-serif" font-size="8.3" fill="#0E1420">
+        <text x="26" y="128" fill="#8A93A0">Norma</text><text x="90" y="128" font-weight="700">RGV art. 11 · Anexo I</text>
+        <text x="26" y="143" fill="#8A93A0">Infracción</text><text x="90" y="143" font-weight="700">Alumbrado deficiente</text>
+        <text x="26" y="158" fill="#8A93A0">Importe</text><text x="90" y="158" font-weight="700">80 € (40 € pronto pago)</text>
+      </g>
+      <rect x="26" y="166" width="148" height="24" rx="5" fill="#F6F8FB" stroke="#E7ECF3"/>
+      <text x="32" y="177" font-family="Segoe UI, sans-serif" font-size="7.4" fill="#5A6472">“Circular con el alumbrado en deficientes</text>
+      <text x="32" y="186" font-family="Segoe UI, sans-serif" font-size="7.4" fill="#5A6472">condiciones, rotura en faro delantero…”</text>
+      <line x1="26" y1="202" x2="174" y2="202" stroke="#EEF1F6"/>
+      <text x="26" y="211" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" letter-spacing=".5" fill="#7A3B00">COMPLETA EL AGENTE</text>
+      <g font-family="Segoe UI, sans-serif" font-size="8.3" fill="#0E1420">
+        <text x="26" y="226" fill="#8A93A0">Fecha</text><text x="90" y="226" font-weight="700">03/09/2026 · 23:40</text>
+        <text x="26" y="241" fill="#8A93A0">Lugar / PK</text><text x="90" y="241" font-weight="700" fill="#2F6F76">A-7 · PK 623+450</text>
+        <text x="26" y="256" fill="#8A93A0">Observac.</text>
+      </g>
+      <rect x="90" y="248" width="84" height="20" rx="4" fill="#fff" stroke="#E2E6EC"/>
+      <line x1="95" y1="258" x2="150" y2="258" stroke="#E7ECF3"/>
+      <!-- nota privacidad dentro hoja -->
+      <rect x="26" y="278" width="148" height="26" rx="5" fill="#EEF3FB"/>
+      <text x="33" y="290" font-family="Segoe UI, sans-serif" font-size="7.3" fill="#1E3E7A">Los datos de personas y vehículos</text>
+      <text x="33" y="299" font-family="Segoe UI, sans-serif" font-size="7.3" fill="#1E3E7A">solo se guardan en este móvil.</text>
+      <!-- botones -->
+      <rect x="14" y="322" width="80" height="38" rx="11" fill="#fff" stroke="#C9D8F0"/>
+      <text x="54" y="345" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="700" fill="#2E5AAC" text-anchor="middle">Guardar</text>
+      <rect x="100" y="322" width="86" height="38" rx="11" fill="#2E5AAC"/>
+      <path d="M114 337 h13 v8 h-13 z M114 337 l6.5 5 l6.5 -5" fill="none" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+      <text x="131" y="345" font-family="Segoe UI, sans-serif" font-size="8.4" font-weight="700" fill="#fff" text-anchor="start">Mi correo</text>
+      <rect x="6" y="372" width="188" height="32" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="81.2" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="396" fill="#8A93A0">Buscar</text>
+        <text x="63" y="396" fill="#8A93A0">Normas</text>
+        <text x="100" y="396" fill="#2E5AAC" font-weight="700">Docs</text>
+        <text x="139" y="396" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="396" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Plantilla · PDF</strong>Campos que rellena la app y campos que pones tú. Guardar o enviar a tu correo, sin datos sensibles fuera.</p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 8. ADAPTADO A TI (TERRITORIO) ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">8</div><h2>Adaptado a ti: cada cuerpo, cada territorio</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead" style="margin-top:2px">Agente no sirve solo el BOE: se adapta por <strong>capas</strong>
+  (Estado → Comunidad → Municipio). Tu perfil decide qué ves y cada ficha lleva su <strong>ámbito</strong>,
+  su fuente y su fecha.</p>
+
+  <div class="layer-legend">
+    <span class="pill pill-estatal"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.7" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.3 7h11.4 M7 1.3c2.9 3 2.9 8.4 0 11.4 M7 1.3c-2.9 3-2.9 8.4 0 11.4" fill="none" stroke="currentColor" stroke-width="1.05"/></svg>Estatal</span>
+    <span class="pill pill-auto"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.6" fill="currentColor"/></svg>Autonómico</span>
+    <span class="pill pill-muni"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12V5.5l5-3 5 3V12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 12V8h4v4" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M1 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Municipal · ordenanzas</span>
+  </div>
+
+  <div class="grid3" style="margin-top:6px">
+    <div class="card" style="padding:10px 13px">
+      <p class="ex-head">Guardia Civil</p>
+      <p class="ex-sub">Un solo ámbito: estatal</p>
+      <div class="lyr on-e"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.7" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.3 7h11.4 M7 1.3c2.9 3 2.9 8.4 0 11.4 M7 1.3c-2.9 3-2.9 8.4 0 11.4" fill="none" stroke="currentColor" stroke-width="1.05"/></svg></span>Estatal<span class="chk">✓</span></div>
+      <div class="lyr off"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.6" fill="currentColor"/></svg></span>Autonómico</div>
+      <div class="lyr off"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12V5.5l5-3 5 3V12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M1 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>Municipal</div>
+    </div>
+    <div class="card" style="padding:10px 13px">
+      <p class="ex-head">Mosso d'Esquadra</p>
+      <p class="ex-sub">Estatal + Cataluña</p>
+      <div class="lyr on-e"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.7" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.3 7h11.4 M7 1.3c2.9 3 2.9 8.4 0 11.4 M7 1.3c-2.9 3-2.9 8.4 0 11.4" fill="none" stroke="currentColor" stroke-width="1.05"/></svg></span>Estatal<span class="chk">✓</span></div>
+      <div class="lyr on-a"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.6" fill="currentColor"/></svg></span>Cataluña<span class="chk">✓</span></div>
+      <div class="lyr off"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12V5.5l5-3 5 3V12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M1 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>Municipal</div>
+    </div>
+    <div class="card" style="padding:10px 13px">
+      <p class="ex-head">P. Municipal de Bilbao</p>
+      <p class="ex-sub">Estatal + País Vasco + ciudad</p>
+      <div class="lyr on-e"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.7" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.3 7h11.4 M7 1.3c2.9 3 2.9 8.4 0 11.4 M7 1.3c-2.9 3-2.9 8.4 0 11.4" fill="none" stroke="currentColor" stroke-width="1.05"/></svg></span>Estatal<span class="chk">✓</span></div>
+      <div class="lyr on-a"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.6" fill="currentColor"/></svg></span>País Vasco<span class="chk">✓</span></div>
+      <div class="lyr on-m"><span class="ic"><svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12V5.5l5-3 5 3V12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 12V8h4v4" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M1 12h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>Ordenanzas Bilbao<span class="chk">✓</span></div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:9px">
+    <p style="margin:0"><span class="ico">Cómo entra cada capa.</span> Las <strong>leyes autonómicas
+    también se publican en el BOE</strong> (con su código <span class="num">BOE-A-…</span>), así que
+    entran por el mismo canal que las estatales, solo etiquetadas por comunidad. Las <strong>ordenanzas
+    municipales</strong> se curan municipio a municipio, con un puente <em>“mi ordenanza personal”</em>
+    para el Local mientras su pueblo se incorpora. Todo con fuente y fecha. Y nunca oculta lo de otra
+    competencia: lo marca con un <strong>aviso orientativo</strong>.</p>
+  </div>
+
+  <div class="mockups" style="page-break-inside:avoid; margin-top:2px">
+
+    <!-- ===== MOCKUP ONBOARDING ===== -->
+    <div class="mock" style="width:190px">
+    <svg width="190" height="388" viewBox="0 0 200 408" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="406" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="396" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <text x="16" y="50" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420">¿A qué cuerpo</text>
+      <text x="16" y="67" font-family="Segoe UI, sans-serif" font-size="14.5" font-weight="800" fill="#0E1420">perteneces?</text>
+      <text x="16" y="82" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#5A6472">Paso 1 de 2 · sin registro</text>
+      <!-- card 1 seleccionada -->
+      <rect x="14" y="90" width="172" height="40" rx="12" fill="#fff" stroke="#2E5AAC" stroke-width="1.8"/>
+      <circle cx="33" cy="110" r="11" fill="#EEF3FB"/><text x="33" y="113.5" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" fill="#2E5AAC" text-anchor="middle">GC</text>
+      <text x="52" y="106" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#0E1420">Guardia Civil</text>
+      <text x="52" y="119" font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0">Estatal — todo el país</text>
+      <circle cx="171" cy="110" r="8" fill="#2E5AAC"/><path d="M167.5 110 l2.5 2.5 l4.5 -4.5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- card 2 -->
+      <rect x="14" y="135" width="172" height="40" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <circle cx="33" cy="155" r="11" fill="#F1F3F6"/><text x="33" y="158.5" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" fill="#5A6472" text-anchor="middle">PN</text>
+      <text x="52" y="151" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#0E1420">Policía Nacional</text>
+      <text x="52" y="164" font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0">Estatal</text>
+      <!-- card 3 -->
+      <rect x="14" y="180" width="172" height="40" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <circle cx="33" cy="200" r="11" fill="#EFE9FB"/><text x="33" y="203.5" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" fill="#5B3D9E" text-anchor="middle">AU</text>
+      <text x="52" y="196" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#0E1420">Policía Autonómica</text>
+      <text x="52" y="209" font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0">Mossos · Ertzaintza · Foral…</text>
+      <!-- card 4 -->
+      <rect x="14" y="225" width="172" height="40" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <circle cx="33" cy="245" r="11" fill="#F3E9F7"/><text x="33" y="248.5" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" fill="#7A3D86" text-anchor="middle">PL</text>
+      <text x="52" y="241" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#0E1420">Policía Local</text>
+      <text x="52" y="254" font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0">Estatal + CCAA + ordenanzas</text>
+      <!-- territorio -->
+      <rect x="14" y="276" width="172" height="86" rx="13" fill="#EEF3FB" stroke="#C9D8F0"/>
+      <text x="26" y="294" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" letter-spacing=".5" fill="#1E3E7A">PASO 2 · TERRITORIO</text>
+      <rect x="122" y="283" width="56" height="16" rx="8" fill="#E1EEF0" stroke="#B9D6D9"/>
+      <circle cx="132" cy="291" r="2.2" fill="#2F6F76"/><text x="138" y="294" font-family="Segoe UI, sans-serif" font-size="7.3" font-weight="700" fill="#2F6F76">por GPS</text>
+      <text x="26" y="313" font-family="Segoe UI, sans-serif" font-size="8.7" fill="#5A6472">Comunidad</text><text x="178" y="313" font-family="Segoe UI, sans-serif" font-size="8.7" font-weight="700" fill="#0E1420" text-anchor="end">Región de Murcia</text>
+      <line x1="26" y1="320" x2="174" y2="320" stroke="#D9E2F1"/>
+      <text x="26" y="335" font-family="Segoe UI, sans-serif" font-size="8.7" fill="#5A6472">Provincia</text><text x="178" y="335" font-family="Segoe UI, sans-serif" font-size="8.7" font-weight="700" fill="#0E1420" text-anchor="end">Murcia</text>
+      <line x1="26" y1="342" x2="174" y2="342" stroke="#D9E2F1"/>
+      <text x="26" y="357" font-family="Segoe UI, sans-serif" font-size="8.7" fill="#5A6472">Municipio</text><text x="178" y="357" font-family="Segoe UI, sans-serif" font-size="8" fill="#8A93A0" text-anchor="end">solo si eres Local</text>
+      <!-- tab bar -->
+      <rect x="6" y="372" width="188" height="30" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle" fill="#B7BDC7">
+        <text x="25" y="392">Buscar</text>
+        <text x="63" y="392">Normas</text>
+        <text x="100" y="392">Docs</text>
+        <text x="139" y="392">Cuadrante</text>
+        <text x="176" y="392">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Onboarding · &lt;60 s</strong>Eliges cuerpo y territorio (GPS lo detecta). La app se configura sola: sin registro.</p>
+    </div>
+
+    <!-- ===== MOCKUP FICHA MUNICIPAL (chip de ámbito) ===== -->
+    <div class="mock" style="width:190px">
+    <svg width="190" height="388" viewBox="0 0 200 408" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 10px 24px rgba(14,20,32,.16))">
+      <rect x="1" y="1" width="198" height="406" rx="26" fill="#0E1420"/>
+      <rect x="6" y="6" width="188" height="396" rx="21" fill="#F6F7F9"/>
+      <text x="18" y="24" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#0E1420">9:41</text>
+      <g fill="#0E1420"><rect x="150" y="17" width="14" height="8" rx="1.5" fill="none" stroke="#0E1420" stroke-width="1"/><rect x="151.5" y="18.5" width="9" height="5" rx="1"/><rect x="165" y="19" width="2" height="4" rx="1"/><circle cx="140" cy="21" r="2.2"/><circle cx="133" cy="21" r="2.2" fill="#8A93A0"/></g>
+      <path d="M22 44 l-6 5 l6 5" fill="none" stroke="#2E5AAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="16" y="72" font-family="Segoe UI, sans-serif" font-size="13.5" font-weight="800" fill="#0E1420">Alcohol en vía pública</text>
+      <text x="16" y="88" font-family="Segoe UI, sans-serif" font-size="8.7" fill="#5A6472">Ordenanza de convivencia · Bilbao</text>
+      <!-- chip ámbito municipal -->
+      <rect x="16" y="97" width="112" height="20" rx="10" fill="#F3E9F7" stroke="#E5CBEC"/>
+      <path d="M26 112V106l5-3 5 3v6 M28.5 112v-3h3v3 M23.5 112h13" fill="none" stroke="#7A3D86" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="43" y="111" font-family="Segoe UI, sans-serif" font-size="8.7" font-weight="800" fill="#7A3D86">Municipal · Bilbao</text>
+      <rect x="133" y="97" width="53" height="20" rx="10" fill="#EEF1F6" stroke="#DCE2EA"/>
+      <text x="159.5" y="111" font-family="Segoe UI, sans-serif" font-size="8" fill="#5A6472" text-anchor="middle">Ordenanza</text>
+      <!-- importe / ambito -->
+      <rect x="14" y="126" width="84" height="52" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <text x="26" y="144" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing=".5" fill="#8A93A0">IMPORTE</text>
+      <text x="26" y="163" font-family="Segoe UI, sans-serif" font-size="16" font-weight="800" fill="#0E1420">300 €</text>
+      <text x="26" y="174" font-family="Segoe UI, sans-serif" font-size="8" fill="#5A6472">Sanción leve</text>
+      <rect x="102" y="126" width="84" height="52" rx="12" fill="#fff" stroke="#E2E6EC"/>
+      <text x="114" y="144" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" letter-spacing=".5" fill="#8A93A0">ÁMBITO</text>
+      <text x="114" y="161" font-family="Segoe UI, sans-serif" font-size="11" font-weight="800" fill="#7A3D86">Municipal</text>
+      <text x="114" y="173" font-family="Segoe UI, sans-serif" font-size="8" fill="#5A6472">Solo Bilbao</text>
+      <!-- aviso competencia -->
+      <rect x="14" y="186" width="172" height="62" rx="12" fill="#F3E9F7" stroke="#E5CBEC"/>
+      <rect x="14" y="186" width="4" height="62" rx="2" fill="#7A3D86"/>
+      <text x="26" y="204" font-family="Segoe UI, sans-serif" font-size="8.7" font-weight="800" fill="#7A3D86">Aviso de competencia</text>
+      <text x="26" y="218" font-family="Segoe UI, sans-serif" font-size="8" fill="#6a4d72">Norma de ámbito municipal (Bilbao).</text>
+      <text x="26" y="229" font-family="Segoe UI, sans-serif" font-size="8" fill="#6a4d72">Fuera de tu municipio no aplica; la app</text>
+      <text x="26" y="240" font-family="Segoe UI, sans-serif" font-size="8" fill="#6a4d72">te lo avisa, nunca lo oculta.</text>
+      <!-- copiar boletin -->
+      <rect x="14" y="258" width="172" height="40" rx="12" fill="#2E5AAC"/>
+      <path d="M62 274 h-6 v10 h10 v-3 M66 271 h9 v10 h-9 z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/>
+      <text x="80" y="282" font-family="Segoe UI, sans-serif" font-size="10.5" font-weight="700" fill="#fff">Copiar boletín</text>
+      <!-- puente ordenanza personal -->
+      <rect x="14" y="306" width="172" height="46" rx="12" fill="#fff" stroke="#E5CBEC"/>
+      <text x="26" y="323" font-family="Segoe UI, sans-serif" font-size="8" font-weight="800" letter-spacing=".4" fill="#7A3D86">¿TU MUNICIPIO SIN CURAR?</text>
+      <text x="26" y="336" font-family="Segoe UI, sans-serif" font-size="8.2" fill="#5A6472">Carga “mi ordenanza personal” en el</text>
+      <text x="26" y="347" font-family="Segoe UI, sans-serif" font-size="8.2" fill="#5A6472">móvil hasta que Bilbao esté al día.</text>
+      <text x="16" y="366" font-family="Segoe UI, sans-serif" font-size="7.6" fill="#8A93A0">Actualizado 12/06/2026 · Ordenanza de Bilbao</text>
+      <!-- tab bar -->
+      <rect x="6" y="372" width="188" height="30" fill="#fff"/>
+      <line x1="6" y1="372" x2="194" y2="372" stroke="#E2E6EC"/>
+      <rect x="6" y="372" width="37.6" height="2.5" fill="#2E5AAC"/>
+      <g font-family="Segoe UI, sans-serif" font-size="7" text-anchor="middle">
+        <text x="25" y="392" fill="#2E5AAC" font-weight="700">Buscar</text>
+        <text x="63" y="392" fill="#8A93A0">Normas</text>
+        <text x="100" y="392" fill="#8A93A0">Docs</text>
+        <text x="139" y="392" fill="#8A93A0">Cuadrante</text>
+        <text x="176" y="392" fill="#8A93A0">Más</text>
+      </g>
+    </svg>
+    <p class="mock-cap"><strong>Chip de ámbito · Local</strong>La ficha marca “Municipal · Bilbao”, avisa de competencia y ofrece “mi ordenanza personal”.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ 9. BATTLE CARD ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">9</div><h2>El guion de 30 segundos</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">Cómo se lo cuenta el compañero a otro en el vestuario. Sin folletos: una frase, cuatro golpes.</p>
+
+  <div class="battle" style="margin-top:14px">
+    <div class="kick">Battle card · vestuario</div>
+    <blockquote>“La del sindicato te da el artículo y ya. Esta te da <span class="y">artículo +
+    importe + puntos + si hay grúa o detención + boletín listo para copiar</span>, en 3 segundos y
+    <span class="y">sin cobertura</span>. Y está al día: la de iPhone lleva sin tocarse desde 2023.
+    Son 3 cafés al mes; 14 días gratis, si no la usas la quitas.”</blockquote>
+    <div class="battle-tags">
+      <span class="btag">Importe + puntos</span>
+      <span class="btag">Consecuencia</span>
+      <span class="btag">Boletín copiable</span>
+      <span class="btag">Al día, con fecha</span>
+    </div>
+  </div>
+
+  <div class="callout signal" style="margin-top:16px">
+    <p><span class="ico">Posicionamiento de una línea.</span> “El BOE es gratis; tenerlo resuelto en
+    3 segundos y sin errores, no. <strong>Pagas la herramienta, no la ley.</strong>”</p>
+  </div>
+
+  <p class="footer-note">Los cuatro diferenciadores que se nombran <strong>siempre</strong>, en este
+  orden, son el ancla de todo el discurso comercial: importe+puntos · consecuencia · boletín
+  copiable · al día con fecha.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 9. COMPARATIVA ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">10</div><h2>Qué tiene Agente que la de ahora no</h2></div>
+  <div class="sec-rule"></div>
+
+  <table>
+    <thead>
+      <tr><th style="width:46%">&nbsp;</th><th style="width:27%">App actual (SPPLB)</th><th style="width:27%">Agente</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Te da el artículo</strong></td><td class="vs-si"><span class="ck">✓</span>Sí</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>Importe, pronto pago y puntos</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>¿Grúa / inmovilización / detención?</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí, con su artículo</td></tr>
+      <tr><td><strong>Texto de la denuncia listo para copiar</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí, con variantes</td></tr>
+      <tr><td><strong>Busca como hablas en la calle</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>Adaptada a tu cuerpo y territorio</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>Cuadrante que no pierde datos</strong></td><td class="vs-no"><span class="ck">✕</span>Falla</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>Punto kilométrico en carretera</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí, offline</td></tr>
+      <tr><td><strong>Plantilla en PDF al correo</strong></td><td class="vs-no"><span class="ck">~</span>Básico</td><td class="vs-si"><span class="ck">✓</span>Sí, rellenada</td></tr>
+      <tr><td><strong>Fecha y fuente visibles de cada norma</strong></td><td class="vs-no"><span class="ck">✕</span>No</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+      <tr><td><strong>Funciona sin cobertura</strong></td><td class="vs-si"><span class="ck">✓</span>Sí</td><td class="vs-si"><span class="ck">✓</span>Sí</td></tr>
+    </tbody>
+  </table>
+  <p class="footer-note">Nota honesta: la app actual solo está abandonada en iPhone; en Android sí
+  recibe actualizaciones. Nuestra ventaja no es “que la otra no se actualiza”, es que <strong>la
+  nuestra resuelve</strong> (te dice qué hacer) y la suya solo consulta.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 10. MERCADO ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">11</div><h2>A quién va y cómo se vende</h2></div>
+  <div class="sec-rule"></div>
+
+  <div class="grid3">
+    <div class="card" style="text-align:center">
+      <div class="figure num">233<span class="u">k</span></div>
+      <div class="fig-label"><strong>agentes en España.</strong> Policía Nacional ~75k, Guardia Civil ~74k, locales ~65k, más autonómicas (~250k con todas).</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="figure num">1<span class="u">%</span></div>
+      <div class="fig-label"><strong>2.500 agentes</strong> a 2,99 €/mes bastan. No hace falta convencer a todos.</div>
+    </div>
+    <div class="card" style="text-align:center; background:var(--exito-bg); border-color:var(--exito-bd)">
+      <div class="figure num" style="color:var(--exito)">6–7<span class="u" style="color:var(--exito)">k€</span></div>
+      <div class="fig-label"><strong>al mes</strong>, tras la comisión de las tiendas. El terreno está casi virgen.</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">Cómo se vende (aquí es clave el compañero)</h3>
+  <ul>
+    <li><strong>Boca a boca entre compañeros.</strong> Es el canal que funciona en este colectivo:
+    se fían de otro agente, no de un anuncio. El socio de la Guardia Civil es el vendedor cero:
+    la enseña en su unidad y se va extendiendo.</li>
+    <li><strong>Grupos de WhatsApp/Telegram</strong> de compañeros, cuando la recomienda alguien de dentro.</li>
+    <li><strong>Programa de “trae a un compañero”</strong> (referidos).</li>
+    <li><strong>Empezar concentrado</strong>: una unidad y un territorio (p. ej. Guardia Civil de
+    Tráfico en Murcia), para que el boca a boca prenda, y de ahí crecer.</li>
+  </ul>
+  <div class="callout warn">
+    <p><span class="ico">Cuidado con los sindicatos.</span> La app actual es de un sindicato de
+    policía local. Podemos hablar con sindicatos, pero con neutralidad y sin casarnos con ninguno,
+    para no cerrarnos puertas con el resto.</p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 11. PRECIO Y PLAN ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">12</div><h2>Precio y plan de trabajo</h2></div>
+  <div class="sec-rule"></div>
+
+  <div class="grid2">
+    <div class="card" style="border-color:var(--azul-borde)">
+      <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px">
+        <span class="figure num" style="font-size:30pt">2,99<span class="u">€/mes</span></span>
+      </div>
+      <p style="margin-top:2px"><strong>Tres cafés al mes.</strong> Se paga sin darse cuenta y baja
+      la barrera para que la tenga el máximo de gente. El cobro va <strong>por App Store y Google
+      Play</strong> (ellos se llevan su comisión, pero da confianza y cero gestión de cobros para
+      nosotros).</p>
+      <p class="footer-note">Prueba gratis de 14 días. Habrá un modo gratuito limitado (unas
+      consultas al día) para que la prueben y se enganchen.</p>
+    </div>
+    <div class="card">
+      <h3>Sin registro</h3>
+      <p>La idea es que <strong>no haga falta crearse cuenta</strong>: te la instalas y funciona,
+      como la de ahora. Menos fricción = más gente la prueba.</p>
+      <p>Los datos sensibles (matrículas, personas) <strong>nunca salen del móvil</strong>.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">Por dónde empezamos (fases)</h3>
+  <div class="grid2" style="gap:8px 18px">
+    <div class="step"><div class="n" style="border-radius:9px">1</div><div class="tx"><strong>Tráfico.</strong> Lo más usado: multas con importe, puntos, consecuencia y texto de boletín. Primera versión para probar en la unidad del socio.</div></div>
+    <div class="step"><div class="n" style="border-radius:9px">2</div><div class="tx"><strong>Seguridad ciudadana y penal.</strong> Detención sí/no con su artículo, extranjería, sustancias, lectura de derechos en varios idiomas.</div></div>
+    <div class="step"><div class="n" style="border-radius:9px">3</div><div class="tx"><strong>Cuadrante</strong> completo con horas y festivos.</div></div>
+    <div class="step"><div class="n" style="border-radius:9px">4</div><div class="tx"><strong>Plantillas PDF y mapa</strong> con punto kilométrico.</div></div>
+    <div class="step"><div class="n" style="border-radius:9px">5</div><div class="tx"><strong>Lanzamiento</strong> en las tiendas, con suscripción.</div></div>
+  </div>
+  <p class="footer-note">Cada fase entrega algo que ya se puede usar, para ir recogiendo la
+  opinión de los compañeros mientras se construye el resto. El MVP se acota a <strong>tráfico
+  impecable + cuadrante fiable</strong>: profundidad antes que amplitud.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 13. ECONOMÍA ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">13</div><h2>Cuánto ganamos y qué cuesta</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead" style="margin-top:2px">Cuentas claras y conservadoras. La clave: <strong>el coste
+  real de mantenerla es ridículo</strong> (es local-first, sin servidores caros) y casi todo lo que
+  entra es beneficio a repartir entre los dos.</p>
+
+  <div class="grid2" style="margin-top:12px; align-items:stretch">
+    <div class="card">
+      <div class="eyebrow">De cada 2,99 € · qué nos llega</div>
+      <div class="flow">
+        <div class="fstep"><div class="fbig">2,99<span style="font-size:9pt">€</span></div><div class="fsm">Paga el agente</div></div>
+        <div class="fstep"><div class="fbig" style="color:var(--gris)">−36<span style="font-size:9pt">%</span></div><div class="fsm">IVA 21 % + tienda 15 %</div></div>
+        <div class="fstep res"><div class="fbig">2,10<span style="font-size:9pt">€</span></div><div class="fsm">Nos llega, por sub/mes</div></div>
+      </div>
+      <p class="footer-note" style="margin-top:8px">Tras el IVA (21 %) y la comisión de la tienda
+      (15 % pequeña empresa), <strong>nos quedan ~2,10 €</strong> por suscriptor y mes. Escenario
+      conservador (en el mejor caso se acerca a 2,54 €).</p>
+    </div>
+    <div class="card" style="border-color:var(--exito-bd); background:#FAFDFB">
+      <div class="eyebrow" style="color:var(--exito)">Qué cuesta de verdad</div>
+      <div style="display:flex; align-items:baseline; gap:10px">
+        <span class="figure num" style="font-size:30pt; color:var(--exito)">≈8<span class="u" style="color:var(--exito)">€/mes</span></span>
+      </div>
+      <ul style="margin:6px 0 0">
+        <li>Cuenta <strong>Apple</strong> 99 €/año (~8 €/mes)</li>
+        <li>Cuenta <strong>Google Play</strong> 25 € (una sola vez)</li>
+        <li><strong>Política de privacidad</strong> 0 € (GitHub Pages)</li>
+      </ul>
+      <p style="margin:7px 0 0; font-size:9.2pt">Todo lo demás —backend, RevenueCat, Sentry, CDN—
+      tiene <strong>plan gratuito</strong> y solo se paga poco si crece.</p>
+      <span class="cost-badge">Para empezar, es prácticamente solo Apple</span>
+    </div>
+  </div>
+
+  <div class="money-hero" style="margin-top:14px">
+    <div class="mh-num">500<span class="u"> €/mes</span></div>
+    <div class="mh-tx"><strong>500 suscriptores —el 0,2 % de los agentes— ≈ 500 € al mes para cada
+    uno.</strong> Y eso es un escenario pequeño: 5 de cada 1.000 agentes. Punto de equilibrio en
+    <strong>~15-20 suscriptores</strong>; inversión inicial <strong>~124 €</strong>.</div>
+  </div>
+
+  <table style="margin-top:14px">
+    <thead>
+      <tr><th style="width:26%">Suscriptores</th><th style="width:22%">% de ~250.000</th><th style="width:26%">Beneficio/mes</th><th style="width:26%">Para cada socio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num"><strong>250</strong></td><td class="num">0,1 %</td><td class="num">495 €</td><td class="num"><strong>~248 €</strong></td></tr>
+      <tr class="hot"><td class="num"><strong>500</strong></td><td class="num">0,2 %</td><td class="num">1.000 €</td><td class="num"><strong>~500 €</strong></td></tr>
+      <tr><td class="num"><strong>1.000</strong></td><td class="num">0,4 %</td><td class="num">2.010 €</td><td class="num"><strong>~1.005 €</strong></td></tr>
+      <tr><td class="num"><strong>2.500</strong></td><td class="num">1,0 %</td><td class="num">5.070 €</td><td class="num"><strong>~2.535 €</strong></td></tr>
+      <tr><td class="num"><strong>5.000</strong></td><td class="num">2,0 %</td><td class="num">10.200 €</td><td class="num"><strong>~5.100 €</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p class="footer-note">Estimaciones conservadoras para decidir, no contabilidad. No incluye
+  impuestos propios (IRPF/IS, según la forma jurídica). Las comisiones de tienda son a fecha 2026:
+  conviene revisarlas antes de lanzar.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Economía · estimaciones conservadoras</span>
+  </div>
+</section>
+
+<!-- ============ 14. SOCIOS Y MARCA ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">14</div><h2>Somos dos: quién hace qué</h2></div>
+  <div class="sec-rule"></div>
+
+  <div class="grid2">
+    <div class="card">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+        <div style="width:34px; height:34px; border-radius:10px; background:var(--azul-luz); border:1px solid var(--azul-borde); display:flex; align-items:center; justify-content:center; color:var(--azul-osc); font-weight:800; font-size:13pt">GC</div>
+        <h3 style="margin:0">El compañero (Guardia Civil)</h3>
+      </div>
+      <ul>
+        <li>La <strong>idea</strong> es suya: conoce el trabajo desde dentro.</li>
+        <li>Aporta el <strong>conocimiento de calle</strong>: qué se consulta, qué palabras se usan, qué falla en la app de ahora.</li>
+        <li>Revisa que el <strong>contenido sea correcto</strong> (importes, consecuencias).</li>
+        <li>Es el <strong>vendedor</strong>: boca a boca entre compañeros.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+        <div style="width:34px; height:34px; border-radius:10px; background:var(--azul-luz); border:1px solid var(--azul-borde); display:flex; align-items:center; justify-content:center; color:var(--azul-osc); font-weight:800; font-size:12pt">&lt;/&gt;</div>
+        <h3 style="margin:0">El socio técnico</h3>
+      </div>
+      <ul>
+        <li><strong>Construye</strong> toda la app y el sistema que mantiene la normativa al día.</li>
+        <li>Publica en <strong>App Store y Google Play</strong> y mantiene todo funcionando.</li>
+        <li>Se encarga de la <strong>infraestructura, actualizaciones y seguridad</strong> del contenido.</li>
+      </ul>
+    </div>
+  </div>
+  <h3 style="margin-top:16px">Cómo nos organizamos (plan de arranque)</h3>
+  <div class="steps3" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:8px 0">
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--azul); font-weight:800; letter-spacing:.5px">AL PRINCIPIO</div>
+      <p style="margin:.3em 0 0"><strong>Factura el socio técnico</strong> como autónomo (ya con el
+      alta censal 036/400 en Canarias). Estructura mínima, coste casi nulo.</p>
+    </div>
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--azul); font-weight:800; letter-spacing:.5px">EL REPARTO</div>
+      <p style="margin:.3em 0 0">Repartimos el beneficio <strong>a partes iguales, ya con los
+      impuestos descontados</strong>: de los ~2,10 €/sub, tras IRPF quedan <strong>~0,85–1 € por sub
+      para cada uno</strong>, de forma declarada.</p>
+    </div>
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--exito); font-weight:800; letter-spacing:.5px">CUANDO CREZCA</div>
+      <p style="margin:.3em 0 0">A partir de <strong>~1.500 €/cabeza</strong>, montamos una
+      <strong>S.L.</strong> con un acuerdo de socios (reparto, roles y propiedad del código y el
+      contenido).</p>
+    </div>
+  </div>
+  <p class="footer-note">Importes orientativos; lo cerramos con una <strong>gestoría</strong> antes
+  de facturar de verdad (alta de autónomo, forma jurídica y reparto).</p>
+
+  <h3 style="margin-top:16px">La marca: instrumento, no institución</h3>
+  <p>Marca <strong>neutra y sobria</strong>, sin escudos ni emblemas oficiales (por diseño y por
+  ley). La autoridad la da el rigor visible — artículo, fecha y fuente en cada ficha —, no la
+  heráldica. Un solo azul de marca y un único acento <span style="color:var(--signal); font-weight:700">teal</span>
+  reservado al punto kilométrico.</p>
+  <p class="footer-note"><strong>Nombres candidatos:</strong> Baliza · Hito · Cotejo. Neutros, con
+  connotación de precisión y referencia viaria. A despejar en registro antes de fijar el icono.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 13. LEGAL ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">15</div><h2>¿Es legal? ¿Nos pueden acusar de plagio?</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">Respuesta corta: <strong>no es plagio, es competencia legítima</strong> — hacer
+  algo mejor que lo que hay está permitido. La clave es de dónde sacamos la información.</p>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="card" style="border-color:var(--exito-bd); background:#FAFDFB">
+      <h3 style="color:var(--exito)">Lo que sí podemos usar</h3>
+      <ul>
+        <li><strong>Las leyes y el BOE</strong>: son públicas, no tienen dueño (la propia ley lo dice).</li>
+        <li>El <strong>codificado de infracciones de la DGT</strong>: documento público.</li>
+        <li>Lo cogemos <strong>de la fuente oficial</strong>, nunca copiando de la otra app.</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--muygrave-bd); background:#FEFAFA">
+      <h3 style="color:var(--muygrave-tx)">Lo que no vamos a copiar</h3>
+      <ul>
+        <li>Su <strong>programa, sus pantallas, sus iconos y su nombre</strong>.</li>
+        <li>Sus <strong>textos redactados por ellos</strong>: los nuestros los escribimos de cero.</li>
+        <li><strong>Escudos o nombres oficiales</strong> de los cuerpos: prohibido, la marca es neutra.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout legal">
+    <p><span class="ico">Regla de oro.</span> Mismo objetivo (ayudar al agente) y mismas fuentes
+    públicas, pero <strong>todo el producto es nuestro</strong> — nuestros textos, nuestro diseño,
+    nuestro programa, nuestra base de datos hecha desde el origen. Cuanto más trabajado y propio es
+    el contenido, más lejos estamos del plagio y más difícil es que nos copien.</p>
+  </div>
+
+  <h3 style="margin-top:16px">Lo que de verdad hay que cuidar: la responsabilidad</h3>
+  <p>Más que el plagio, lo importante es que la app <strong>oriente y no ordene</strong>: cada
+  dato con su artículo y su fecha, lenguaje de “procede según el art. X” (nunca “detén”), un
+  aviso fijo de que la decisión es del agente, y revisión a dos ojos del contenido delicado. Eso
+  nos protege y, a la vez, es lo que da confianza al que la usa.</p>
+
+  <div class="callout warn">
+    <p><span class="ico">Antes de cobrar</span> conviene una revisión rápida de un abogado de
+    propiedad intelectual y una política de privacidad publicada. Es un trámite sencillo, pero
+    mejor tenerlo hecho. <em>(Esto no es asesoramiento jurídico, es el resumen de lo que hemos
+    mirado.)</em></p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ 16. VIABILIDAD ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge">16</div><h2>¿Es viable? Sí, y con poco riesgo</h2></div>
+  <div class="sec-rule"></div>
+
+  <p class="lead">Con honestidad: es de los proyectos con <strong>mejor relación riesgo/recompensa</strong>
+  que se pueden montar. El matiz importante: el negocio <strong>no es quitarle los usuarios a la app
+  de ahora</strong> (tiene pocos); es la <strong>mayoría de agentes que hoy no usa nada</strong>.</p>
+
+  <div class="callout">
+    <p>De ~250.000 agentes en España, la inmensa mayoría <strong>no tiene ninguna app</strong>. La de
+    ahora solo demuestra dos cosas: que <strong>hay demanda</strong> (ya usan algo malo y gratis) y que
+    <strong>se supera fácil</strong>. Nuestro mercado es el charco grande: los que no usan nada.</p>
+  </div>
+
+  <div class="steps3" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:12px 0">
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--exito); font-weight:800; letter-spacing:.5px">RIESGO BAJÍSIMO</div>
+      <p style="margin:.3em 0 0">Lanzar cuesta <strong>~124 €</strong> y <strong>~8 €/mes</strong>.
+      Punto de equilibrio en <strong>15-20 suscriptores</strong>. Si sale mal, pierdes calderilla.</p>
+    </div>
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--azul); font-weight:800; letter-spacing:.5px">UMBRAL MODESTO</div>
+      <p style="margin:.3em 0 0"><strong>500 suscriptores (0,2 %)</strong> ya son ~500 € al mes para
+      cada uno. No hace falta convencer a todos: bastan 5 de cada 1.000 agentes.</p>
+    </div>
+    <div class="card" style="padding:12px 14px">
+      <div class="footer-note" style="color:var(--azul); font-weight:800; letter-spacing:.5px">VENTAJA REAL</div>
+      <p style="margin:.3em 0 0">Un <strong>compañero de dentro</strong> que la vende por el vestuario.
+      Esa distribución de confianza no la tiene casi nadie.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:8px">De qué depende (aquí está el trabajo)</h3>
+  <ul>
+    <li><strong>Que la app resuelva, no solo consulte.</strong> El día 1 debe verse en 30 segundos que
+    es otra liga: importe + consecuencia + boletín + al día.</li>
+    <li><strong>Que el contenido sea fiable y esté al día — siempre.</strong> Es el motor y el foso;
+    un importe mal destruye la confianza. Requiere la curación continua del compañero.</li>
+    <li><strong>Empezar por tráfico y crecer.</strong> Disciplina de alcance: no intentarlo todo a la
+    vez es lo que evita ahogarse.</li>
+  </ul>
+
+  <div class="callout" style="background:var(--azul-osc); border:0">
+    <p style="color:#fff; margin:0"><strong style="color:#fff">Veredicto:</strong> riesgo bajo, techo
+    real. Por ~124 € y unos meses de trabajo, la relación riesgo/recompensa es de las mejores que se
+    ven. <strong style="color:#fff">Vale la pena intentarlo.</strong></p>
+  </div>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador</span>
+  </div>
+</section>
+
+<!-- ============ CIERRE ============ -->
+<section class="section">
+  <div class="sec-head"><div class="sec-badge" style="background:var(--tinta)">✓</div><h2>En una frase</h2></div>
+  <div class="sec-rule"></div>
+
+  <div class="close-hero">
+    <div class="logo" style="margin-bottom:14px">
+      <svg class="logo-mark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:44px; height:44px">
+        <rect x="2" y="2" width="52" height="52" rx="15" fill="#fff"/>
+        <circle cx="28" cy="17" r="5" fill="#1E3E7A"/>
+        <path d="M28 24 V41 M19 41 H37" stroke="#1E3E7A" stroke-width="4.5" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-word" style="color:#fff; font-size:26pt">Agente</span>
+    </div>
+    <p class="lead">Cogemos la app que ya usan los compañeros, que se quedó anticuada y solo da el
+    artículo, y hacemos la versión que <strong>de verdad resuelve</strong>: qué ley, cuánto, qué
+    haces con el coche o la persona, dónde fue y la denuncia lista — en 3 segundos, sin cobertura y
+    por el precio de tres cafés al mes. Un mercado de más de 233.000 agentes casi sin tocar, y un
+    compañero de dentro que la vende.</p>
+    <span class="cta">Vamos a por ello.</span>
+  </div>
+
+  <p class="footer-note" style="margin-top:16px">Documento interno de trabajo · borrador para
+  alinear a los dos socios · nombre provisional <strong>Agente</strong> (candidatos: Baliza · Hito ·
+  Cotejo) · el icono y los detalles finales están por decidir.</p>
+
+  <div class="pagefoot">
+    <span class="wm"><svg width="12" height="12" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="17" r="6" fill="#5A6472"/><path d="M28 24 V41 M19 41 H37" stroke="#5A6472" stroke-width="5" stroke-linecap="round"/></svg>Agente</span>
+    <span>Documento interno · borrador · 3 sep 2026</span>
+  </div>
+</section>
+
+</body>
+</html>
