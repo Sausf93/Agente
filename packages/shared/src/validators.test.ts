@@ -71,6 +71,33 @@ describe('validarImporte (seguridad ciudadana, LO 4/2015 art. 39)', () => {
   });
 });
 
+describe('validarImporte (seguro obligatorio, LRCSCVM art. 3)', () => {
+  it('acepta un importe dentro del rango 601–3.005 €', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'muy_grave', importeEur: 601, importeReducidoEur: null }),
+      'seguro_obligatorio',
+    );
+    expect(problemas).toEqual([]);
+  });
+
+  it('rechaza un importe por debajo de 601 €', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'muy_grave', importeEur: 500, importeReducidoEur: null }),
+      'seguro_obligatorio',
+    );
+    expect(problemas).toHaveLength(1);
+    expect(problemas[0]?.campo).toBe('importeEur');
+  });
+
+  it('rechaza un importe por encima de 3.005 €', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'muy_grave', importeEur: 4000, importeReducidoEur: null }),
+      'seguro_obligatorio',
+    );
+    expect(problemas).toHaveLength(1);
+  });
+});
+
 describe('validarMinimosPublicacion (sección 8.3)', () => {
   it('exige al menos 2 sinónimos', () => {
     const problemas = validarMinimosPublicacion(infraccion(), 1);

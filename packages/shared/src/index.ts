@@ -7,6 +7,7 @@
 
 export * from './enums.js';
 export * from './content.js';
+export * from './contentPackage.js';
 export * from './user.js';
 export * from './feedback.js';
 export * from './territorio.js';

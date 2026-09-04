@@ -29,9 +29,18 @@ Carreteras/PK (PostGIS)┘
 
 ## Estado
 
-Fase 1 en curso. **Hecho**: cliente del BOE + parser del XML consolidado → `Articulo`
-de `@agente/shared`, con detección de cambios por hash. Primera norma validada de extremo
-a extremo: **RGC (RD 1428/2003, BOE-A-2003-23514)**.
+Fase 1 en curso. **Hecho**:
+- Cliente del BOE + parser del XML consolidado → `Articulo` de `@agente/shared`, con detección
+  de cambios por hash. Primera norma validada de extremo a extremo: **RGC (RD 1428/2003,
+  BOE-A-2003-23514)**.
+- **Paquete de contenido SQLite + FTS5** (`build:content`): toma un seed de infracciones de
+  tráfico "de calle" (+ artículos del RGC parseados) y genera `output/contenido-<v>.sqlite` +
+  su manifiesto (`ContentVersion` con hash; firma Ed25519 como stub). El **contrato del
+  esquema** para `apps/mobile` está en [`CONTENT-PACKAGE.md`](./CONTENT-PACKAGE.md).
+- **Seed de 7 infracciones reales** (`src/seed/traficoSeed.ts`): alumbrado deficiente,
+  conducir sin seguro (con inmovilización + depósito/grúa), uso del móvil, ITV caducada, sin
+  cinturón, sin casco, semáforo en rojo. Todo `pendiente_revision` (nada se autopublica; §8.2)
+  y con `notaRevision` en los datos aún "a verificar".
 
 ### Fuente y endpoints del BOE (datos abiertos, verificados en septiembre de 2026)
 
@@ -80,10 +89,14 @@ corepack pnpm -F @agente/content-pipeline typecheck
 
 - [ ] **LSV** (RDL 6/2015, BOE-A-2015-11722) y **RGV** (RD 2822/1998) — declaradas en
       `src/catalogo.ts` (`implementada: false`); verificar el ID BOE del RGV antes de activarlo.
-- [ ] **Codificado DGT** (`parsers/dgt`): PDF/Excel → `Infraccion` enlazadas a artículos.
-- [ ] **Empaquetado SQLite + FTS5** + tabla de sinónimos, firma Ed25519 y `ContentVersion`.
-- [ ] **`Novedad`** a partir del `diff` y marca "requiere revisión" en el panel (el contenido
-      legal NO se publica directo: pasa por revisión a dos ojos, §8.3 y nota legal).
+- [ ] **Codificado DGT** (`parsers/dgt`): PDF/Excel → `Infraccion` enlazadas a artículos, que
+      sustituirá al seed provisional cuando esté parseado.
+- [x] **Empaquetado SQLite + FTS5** + tabla de sinónimos y `ContentVersion` (manifiesto con
+      hash). **Firma Ed25519 pendiente**: hueco documentado (`firmarPaquete`), `firma: null`.
+- [ ] **Texto consolidado real de LSV/RGV/LRCSCVM**: hoy sus artículos citados por el seed son
+      resúmenes propios provisionales; el texto literal llegará al parsear esas normas del BOE.
+- [ ] **`Novedad`** a partir del `diff` (hoy solo se emite la de carga inicial) y cola "requiere
+      revisión" en el panel (el contenido legal NO se publica directo: revisión a dos ojos, §8.3).
 - [ ] Persistencia de la consolidación anterior para el diff incremental (hoy el diff es una
       función pura entre dos parseos; falta el almacén de la versión previa).
 - [ ] Render fino de tablas/imágenes de anexos (señales) si el buscador/ficha lo requieren.
