@@ -41,6 +41,20 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
       PRAGMA user_version = 1;
     `);
   }
+
+  if (version < 2) {
+    // Búsquedas SIN RESULTADO: base para ampliar el diccionario de sinónimos (§4.3). Es una
+    // señal AGREGADA por término normalizado (sin datos personales) que vive SOLO en el
+    // dispositivo; nunca viaja a un servidor (ADR-001). `veces` cuenta las repeticiones.
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS busqueda_sin_resultado (
+        termino_normalizado TEXT PRIMARY KEY NOT NULL,
+        veces INTEGER NOT NULL DEFAULT 1,
+        ultima_fecha TEXT NOT NULL
+      );
+      PRAGMA user_version = 2;
+    `);
+  }
 }
 
 /** Abre (una sola vez) la base local del usuario y aplica migraciones. */
@@ -104,4 +118,44 @@ export async function markFeedbackSent(ids: string[]): Promise<void> {
 export async function deleteFeedback(id: string): Promise<void> {
   const db = await openUserDb();
   await db.runAsync('DELETE FROM feedback WHERE id = ?', [id]);
+}
+
+/**
+ * Registra (o incrementa) una búsqueda SIN RESULTADO por término normalizado. Solo local: es la
+ * materia prima para que el cofundador agente amplíe el diccionario de sinónimos (§4.3). El
+ * término ya viene normalizado (`normalizarBusqueda`), sin datos personales.
+ */
+export async function recordSearchMiss(terminoNormalizado: string): Promise<void> {
+  const termino = terminoNormalizado.trim();
+  if (termino.length === 0) return;
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO busqueda_sin_resultado (termino_normalizado, veces, ultima_fecha)
+       VALUES (?, 1, ?)
+     ON CONFLICT(termino_normalizado)
+       DO UPDATE SET veces = veces + 1, ultima_fecha = excluded.ultima_fecha`,
+    [termino, new Date().toISOString()],
+  );
+}
+
+/** Término sin resultado con su recuento, para depurar el diccionario. */
+export interface SearchMiss {
+  termino: string;
+  veces: number;
+  ultimaFecha: string;
+}
+
+/** Lista las búsquedas sin resultado, las más repetidas primero. */
+export async function listSearchMisses(): Promise<SearchMiss[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{
+    termino_normalizado: string;
+    veces: number;
+    ultima_fecha: string;
+  }>('SELECT * FROM busqueda_sin_resultado ORDER BY veces DESC, ultima_fecha DESC');
+  return rows.map((r) => ({
+    termino: r.termino_normalizado,
+    veces: r.veces,
+    ultimaFecha: r.ultima_fecha,
+  }));
 }
