@@ -20,10 +20,8 @@ function main(): void {
   );
 
   if (problemas.length === 0) {
-    // eslint-disable-next-line no-console
     console.log('[content-pipeline] OK — @agente/shared enlazado. Pipeline pendiente (Fase 1).');
   } else {
-    // eslint-disable-next-line no-console
     console.error('[content-pipeline] Validación inesperada:', problemas);
     process.exitCode = 1;
   }

@@ -106,7 +106,9 @@ mientras se construye el resto. Cambios respecto a la spec marcados con ⚑.
 - ✅ App Expo vacía con navegación de 5 pestañas y tema (claro/oscuro) del sistema visual.
   (Expo SDK 57 + Expo Router + Zustand + tema de `perspectivas/02-ui.md`; ver ADR-010.)
 - ⬜ Panel admin Next.js mínimo (CRUD de infracciones y sinónimos).
-- ⬜ CI (lint, typecheck, test) en GitHub Actions. Sentry.
+- ✅ CI (lint, typecheck, test) en GitHub Actions (`.github/workflows/ci.yml`) + ESLint 9
+  (flat config único) + Prettier homogéneos en todo el workspace (ADR-012).
+- ⬜ Sentry (queda pendiente; llega con la primera feature que lo justifique).
 - ⚑ **Sin auth** en Fase 0 (antes E-02). Onboarding = perfil local (cuerpo/territorio).
 
 ### Fase 1 · Consulta de tráfico *(la que engancha)*

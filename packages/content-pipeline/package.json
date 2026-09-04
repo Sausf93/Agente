@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "build:content": "tsx src/cli/build-content.ts",
     "extract:rgc": "tsx src/cli/extract-rgc.ts",
     "extract:rgc:offline": "tsx src/cli/extract-rgc.ts --offline"

@@ -75,12 +75,10 @@ async function main(): Promise<void> {
   }
   lineas.push('══════════════════════════════════════════════════════════════');
 
-  // eslint-disable-next-line no-console
   console.log(lineas.join('\n'));
 }
 
 main().catch((error: unknown) => {
-  // eslint-disable-next-line no-console
   console.error('[extract-rgc] Error:', error instanceof Error ? error.message : error);
   process.exitCode = 1;
 });
