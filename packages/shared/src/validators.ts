@@ -34,12 +34,26 @@ export const RANGOS_IMPORTE_SEGURIDAD_CIUDADANA = {
 } as const;
 
 /**
+ * Rango de importe del SEGURO OBLIGATORIO de circulación (LRCSCVM art. 3.1, RDL 8/2004).
+ * Conducir sin seguro no se sanciona por la LSV art. 80, sino por su ley propia, con un
+ * rango único (601–3.005 €) graduable. Se modela aparte para no forzarlo a los tramos de
+ * tráfico. Fuente: RDL 8/2004 (BOE-A-2004-18911) art. 3. Marcar "a verificar" ante cambios.
+ */
+export const RANGO_IMPORTE_SEGURO_OBLIGATORIO = { min: 601, max: 3_005 } as const;
+
+/**
  * Marco normativo con el que interpretar los rangos de importe.
  * `trafico` y `seguridad_ciudadana` tienen rangos legales fijos que se validan.
+ * `seguro_obligatorio` tiene un rango único legal (LRCSCVM art. 3), sin tramos por gravedad.
  * `municipal` y `autonomico` no tienen un rango único (varía por ordenanza/comunidad):
  * solo se valida coherencia (presencia y reducido ≤ base) y queda para revisión a dos ojos.
  */
-export type MarcoImporte = 'trafico' | 'seguridad_ciudadana' | 'municipal' | 'autonomico';
+export type MarcoImporte =
+  | 'trafico'
+  | 'seguridad_ciudadana'
+  | 'seguro_obligatorio'
+  | 'municipal'
+  | 'autonomico';
 
 function validarCoherenciaImporte(
   infraccion: Pick<Infraccion, 'importeEur' | 'importeReducidoEur'>,
@@ -80,6 +94,18 @@ export function validarImporte(
 
   const problemas = validarCoherenciaImporte(infraccion);
   if (infraccion.importeEur === null) return problemas;
+
+  // Seguro obligatorio: rango único (LRCSCVM art. 3), sin tramos por gravedad.
+  if (marco === 'seguro_obligatorio') {
+    const { min, max } = RANGO_IMPORTE_SEGURO_OBLIGATORIO;
+    if (infraccion.importeEur < min || infraccion.importeEur > max) {
+      problemas.push({
+        campo: 'importeEur',
+        mensaje: `Importe ${infraccion.importeEur} € fuera del rango legal [${min}-${max}] del seguro obligatorio (LRCSCVM art. 3)`,
+      });
+    }
+    return problemas;
+  }
 
   const tabla =
     marco === 'trafico' ? RANGOS_IMPORTE_TRAFICO : RANGOS_IMPORTE_SEGURIDAD_CIUDADANA;
