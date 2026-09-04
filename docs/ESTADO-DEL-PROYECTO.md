@@ -16,12 +16,16 @@ del producto: [`ESPECIFICACION.md`](ESPECIFICACION.md).
 - **Socio agente**: Guardia Civil. Aportó la idea, cura el contenido y vende (boca a boca).
 
 ## Estado actual: Fase 0 (cimientos) — hecho
-- Monorepo pnpm: `apps/` (vacío aún), `packages/shared`, `packages/content-pipeline`.
+- Monorepo pnpm: `apps/mobile` (cimientos), `packages/shared`, `packages/content-pipeline`.
 - **`packages/shared`**: modelo de datos completo en Zod (contenido, usuario, cuadrante de dos
   capas, multi-territorio) + validadores de calidad. **24 tests en verde.**
+- **`apps/mobile`**: app Expo (SDK 57) con Expo Router, navegación de 5 pestañas
+  (Buscar · Normas · Documentos · Cuadrante · Más), tema claro/oscuro del sistema visual
+  (`src/ui/theme.ts`), estado con Zustand y stubs de la capa de datos (`src/db`). Typecheck
+  y tests en verde. Sin features aún (las construye `mobile-dev`). Arquitectura en **ADR-010**.
 - Documentación completa en `docs/` (ver índice abajo).
 - Equipo del proyecto en `.claude/`: **8 agentes + 3 skills**.
-- **Aún no empezado:** la app Expo (`apps/mobile`), el panel (`apps/admin`), el pipeline real de
+- **Aún no empezado:** las features de la app, el panel (`apps/admin`), el pipeline real de
   contenido, y la infraestructura/CI.
 
 ## Decisiones clave (detalle en [`DECISIONES.md`](DECISIONES.md))
