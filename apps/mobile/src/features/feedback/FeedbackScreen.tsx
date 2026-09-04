@@ -13,6 +13,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ContextoFeedback, Feedback, TipoFeedback } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
+import { Badge } from '@/ui/components/Badge';
+import { Banner } from '@/ui/components/Banner';
+import { Button } from '@/ui/components/Button';
+import { Card } from '@/ui/components/Card';
 import { TIPO_FEEDBACK_LABEL } from './serialize';
 import { useFeedbackStore } from './store';
 
@@ -31,6 +35,17 @@ export interface FeedbackScreenProps {
 }
 
 const ORDEN_TIPOS: TipoFeedback[] = ['sugerencia', 'error_contenido', 'error_tecnico'];
+
+/**
+ * Etiqueta corta para el selector segmentado (3 columnas): la larga
+ * ("Error de contenido") se parte en varias líneas y descuadra. La larga
+ * se conserva como `accessibilityLabel` para el lector de pantalla.
+ */
+const TIPO_FEEDBACK_CORTO: Record<TipoFeedback, string> = {
+  sugerencia: 'Sugerencia',
+  error_contenido: 'Contenido',
+  error_tecnico: 'Técnico',
+};
 
 export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenProps) {
   const t = useAppTheme();
@@ -100,7 +115,10 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
         keyboardShouldPersistTaps="handled"
       >
         <View>
-          <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleXL }}>
+          <Text
+            accessibilityRole="header"
+            style={{ color: t.color.textPrimary, ...t.typography.scale.titleXL }}
+          >
             Sugerencias y reportes
           </Text>
           <Text
@@ -115,7 +133,10 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
           </Text>
         </View>
 
-        <AvisoPrivacidad t={t} />
+        <Banner tone="info" title="Privacidad">
+          No incluyas matrículas, nombres, DNI ni datos de intervenciones. Es anónimo y no se hacen
+          capturas.
+        </Banner>
 
         <View style={{ gap: t.spacing.sm }}>
           <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>Tipo</Text>
@@ -126,6 +147,7 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
                 <Pressable
                   key={op}
                   accessibilityRole="button"
+                  accessibilityLabel={TIPO_FEEDBACK_LABEL[op]}
                   accessibilityState={{ selected: activo }}
                   onPress={() => setTipo(op)}
                   style={{
@@ -142,14 +164,15 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
                   }}
                 >
                   <Text
+                    numberOfLines={1}
                     style={{
                       color: activo ? t.color.brand : t.color.textSecondary,
                       textAlign: 'center',
-                      ...t.typography.scale.caption,
+                      ...t.typography.scale.label,
                       fontWeight: activo ? '700' : '600',
                     }}
                   >
-                    {TIPO_FEEDBACK_LABEL[op]}
+                    {TIPO_FEEDBACK_CORTO[op]}
                   </Text>
                 </Pressable>
               );
@@ -162,6 +185,7 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
             Tu mensaje
           </Text>
           <TextInput
+            accessibilityLabel="Tu mensaje"
             value={texto}
             onChangeText={setTexto}
             multiline
@@ -182,30 +206,18 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
           />
         </View>
 
-        <Pressable
-          accessibilityRole="button"
-          disabled={!puedeGuardar}
+        <Button
+          title="Guardar"
           onPress={onGuardar}
-          style={{
-            minHeight: t.touch.primaryHeight,
-            borderRadius: t.radius.md,
-            backgroundColor: puedeGuardar ? t.color.brand : t.color.surfaceAlt,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text
-            style={{
-              color: puedeGuardar ? t.color.textOnBrand : t.color.textTertiary,
-              ...t.typography.scale.bodyStrong,
-            }}
-          >
-            Guardar
-          </Text>
-        </Pressable>
+          disabled={!puedeGuardar}
+          accessibilityHint="Guarda la aportación en este dispositivo"
+        />
 
         <View style={{ gap: t.spacing.sm, marginTop: t.spacing.sm }}>
-          <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
+          <Text
+            accessibilityRole="header"
+            style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}
+          >
             Mis aportaciones
           </Text>
 
@@ -219,51 +231,15 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
         </View>
 
         {pendientes.length > 0 && (
-          <Pressable
-            accessibilityRole="button"
+          <Button
+            title={`Enviar a los fundadores (${pendientes.length})`}
+            variant="secondary"
             onPress={onEnviar}
-            style={{
-              minHeight: t.touch.primaryHeight,
-              borderRadius: t.radius.md,
-              borderWidth: 1,
-              borderColor: t.color.brand,
-              backgroundColor: t.color.surface,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ color: t.color.brand, ...t.typography.scale.bodyStrong }}>
-              Enviar a los fundadores ({pendientes.length})
-            </Text>
-          </Pressable>
+            accessibilityHint="Abre el correo o la hoja de compartir para mandar lo pendiente"
+          />
         )}
       </ScrollView>
     </KeyboardAvoidingView>
-  );
-}
-
-/** Aviso FIJO de privacidad (regla CLAUDE.md): nada de datos de terceros. */
-function AvisoPrivacidad({ t }: { t: Theme }) {
-  return (
-    <View
-      style={{
-        borderRadius: t.radius.md,
-        backgroundColor: t.color.warningBg,
-        borderWidth: 1,
-        borderColor: t.color.warning,
-        padding: t.spacing.md,
-      }}
-    >
-      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}>
-        Privacidad
-      </Text>
-      <Text
-        style={{ color: t.color.textPrimary, marginTop: t.spacing.xs, ...t.typography.scale.body }}
-      >
-        No incluyas matrículas, nombres, DNI ni datos de intervenciones. El feedback es anónimo y
-        no se hacen capturas automáticas.
-      </Text>
-    </View>
   );
 }
 
@@ -277,51 +253,23 @@ function TarjetaFeedback({
   onBorrar: (fb: Feedback) => void;
 }) {
   return (
-    <View
-      style={{
-        borderRadius: t.radius.md,
-        borderWidth: 1,
-        borderColor: t.color.border,
-        backgroundColor: t.color.surface,
-        padding: t.spacing.md,
-        gap: t.spacing.xs,
-      }}
-    >
+    <Card>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
           {TIPO_FEEDBACK_LABEL[fb.tipo]}
         </Text>
-        <EstadoBadge t={t} enviado={fb.enviado} />
+        <Badge label={fb.enviado ? 'Enviado' : 'Pendiente'} tone={fb.enviado ? 'success' : 'info'} />
       </View>
       <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>{fb.texto}</Text>
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel="Borrar esta aportación"
         onPress={() => onBorrar(fb)}
         hitSlop={8}
         style={{ minHeight: t.touch.min, justifyContent: 'center' }}
       >
         <Text style={{ color: t.color.danger, ...t.typography.scale.caption }}>Borrar</Text>
       </Pressable>
-    </View>
-  );
-}
-
-/** Estado con texto + color (nunca solo color, regla UI 2.4). */
-function EstadoBadge({ t, enviado }: { t: Theme; enviado: boolean }) {
-  const bg = enviado ? t.color.successBg : t.color.infoBg;
-  const fg = enviado ? t.color.success : t.color.info;
-  return (
-    <View
-      style={{
-        borderRadius: t.radius.pill,
-        backgroundColor: bg,
-        paddingHorizontal: t.spacing.sm,
-        paddingVertical: t.spacing.xxs,
-      }}
-    >
-      <Text style={{ color: fg, ...t.typography.scale.caption, fontWeight: '700' }}>
-        {enviado ? 'Enviado' : 'Pendiente'}
-      </Text>
-    </View>
+    </Card>
   );
 }
