@@ -84,6 +84,9 @@ importers:
       '@agente/shared':
         specifier: workspace:*
         version: link:../shared
+      '@xmldom/xmldom':
+        specifier: ^0.9.8
+        version: 0.9.12
       zod:
         specifier: ^3.23.8
         version: 3.25.76

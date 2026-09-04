@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+  <status>
+    <code>200</code>
+    <text>ok</text>
+  </status>
+  <data>
+    <texto>
+      <bloque id="no" tipo="nota_inicial">
+        <version id_norma="BOE-A-2018-18002" fecha_publicacion="20181229" fecha_vigencia="20190129">
+          <p class="siempreSeVe">Téngase en cuenta que las referencias normativas efectuadas al texto articulado de la Ley sobre Tráfico, Circulación de Vehículos a Motor y Seguridad Vial, aprobado por el Real Decreto Legislativo 339/1990, de 2 de marzo, se entenderán efectuadas a los preceptos correspondientes del texto refundido aprobado por Real Decreto Legislativo 6/2015, de 30 de octubre, según establece su disposición adicional primera. <a class="refPost">Ref. BOE-A-2015-11722#daprimera</a></p>
+        </version>
+      </bloque>
+      <bloque id="preambulo" tipo="preambulo">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="parrafo">La disposición final segunda de la Ley 19/2001, de 19 de diciembre, de reforma del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial, aprobado por el Real Decreto Legislativo 339/1990, de 2 de marzo, establece que el Gobierno, en el plazo máximo de seis meses desde la entrada en vigor de dicha reforma, procederá a modificar el Reglamento General de Circulación, aprobado por el Real Decreto 13/1992, de 17 de enero, para adecuarlo a las modificaciones contenidas en dicha reforma. Este real decreto trasciende dicho mandato legislativo, pues aparte de su cumplimiento, la magnitud de las reformas que precisa el Reglamento General de Circulación, aprobado por el Real Decreto 13/1992, de 17 de enero, aconseja la promulgación de uno nuevo, en el que además se refundan las modificaciones anteriores efectuadas por el Real Decreto 116/1998, de 30 de enero, que adaptó el Reglamento General de Circulación a la Ley 5/1997, de 24 de marzo, también de reforma del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial, como, asimismo, el Real Decreto 1333/1994, de 20 de junio, y el Real Decreto 2282/98, de 23 de octubre, que modificó el Reglamento General de Circulación en materia de alcoholemia.</p>
+          <p class="parrafo">Al hilo de la adaptación del nuevo texto a la Ley 19/2001, no sólo se introducen normas en materia de ciclismo y se contemplan nuevas infracciones o se varía la calificación de otras, como es el caso del uso de dispositivos de telefonía móvil o la circulación en sentido contrario, respectivamente, sino que también se modernizan otros preceptos en armonía con una nueva concepción de la gestión del tráfico que dispone de medios técnicos de regulación de la circulación que la norma ha de hacer plenamente operativos.</p>
+        </version>
+      </bloque>
+      <bloque id="aunico" tipo="precepto" titulo="Artículo único">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="articulo">Artículo único. Aprobación del Reglamento General de Circulación.</p>
+          <p class="parrafo">Se aprueba el Reglamento General de Circulación para la aplicación y desarrollo del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial, aprobado por el Real Decreto Legislativo 339/1990, de 2 de marzo, cuyo texto se inserta a continuación.</p>
+        </version>
+      </bloque>
+      <bloque id="reglamentogeneraldecirculacion" tipo="encabezado" titulo="REGLAMENTO GENERAL DE CIRCULACIÓN">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="libro">REGLAMENTO GENERAL DE CIRCULACIÓN</p>
+        </version>
+      </bloque>
+      <bloque id="a1" tipo="precepto" titulo="Artículo 1">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="articulo">Artículo 1. Ámbito de aplicación.</p>
+          <p class="parrafo">1. Los preceptos de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial, los de este reglamento y los de las demás disposiciones que la desarrollen serán aplicables en todo el territorio nacional y obligarán a los titulares y usuarios de las vías y terrenos públicos aptos para la circulación, tanto urbanos como interurbanos, a los de las vías y terrenos que, sin tener tal aptitud, sean de uso común y, en defecto de otras normas, a los de las vías y terrenos privados que sean utilizados por una colectividad indeterminada de usuarios.</p>
+          <p class="parrafo">2. En concreto, tales preceptos serán aplicables:</p>
+          <p class="parrafo_2">a) A los titulares de las vías públicas o privadas, comprendidas en el párrafo c), y a sus usuarios, ya lo sean en concepto de titulares, propietarios, conductores u ocupantes de vehículos o en concepto de peatones, y tanto si circulan individualmente como en grupo.</p>
+          <p class="parrafo">Asimismo, son aplicables a todas aquellas personas físicas o jurídicas que, sin estar comprendidas en el inciso anterior, resulten afectadas por dichos preceptos.</p>
+          <p class="parrafo">b) A los animales sueltos o en rebaño y a los vehículos de cualquier clase que, estáticos o en movimiento, se encuentren incorporados al tráfico en las vías comprendidas en el primer inciso del párrafo c).</p>
+          <p class="parrafo">c) A las autopistas, autovías, carreteras convencionales, a las áreas y zonas de descanso y de servicio, sitas y afectas a dichas vías, calzadas de servicio y a las zonas de parada o estacionamiento de cualquier clase de vehículos; a las travesías, a las plazas, calles o vías urbanas; a los caminos de dominio público; a las pistas y terrenos públicos aptos para la circulación; a los caminos de servicio construidos como elementos auxiliares o complementarios de las actividades de sus titulares y a los construidos con finalidades análogas, siempre que estén abiertos al uso público, y, en general, a todas las vías de uso común públicas o privadas.</p>
+          <p class="parrafo">No serán aplicables los preceptos mencionados a los caminos, terrenos, garajes, cocheras u otros locales de similar naturaleza, construidos dentro de fincas privadas, sustraídos al uso público y destinados al uso exclusivo de los propietarios y sus dependientes.</p>
+          <p class="parrafo">3. El desplazamiento ocasional de vehículos por terrenos o zonas de uso común no aptos para la circulación, por tratarse de lugares no destinados al tráfico, quedará sometido a las normas contenidas en el título I y en el capítulo X del título II de este reglamento, en cuanto sean aplicables, y a lo dispuesto en la regulación vigente sobre conductores y vehículos, respecto del régimen de autorización administrativa previa, previsto en el título IV del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial, con objeto de garantizar la aptitud de los conductores para manejar los vehículos y la idoneidad de éstos para circular con el mínimo riesgo posible.</p>
+          <p class="parrafo">4. En defecto de otras normas, los titulares de vías o terrenos privados no abiertos al uso público, situados en urbanizaciones, hoteles, clubes y otros lugares de recreo, podrán regular, dentro de sus respectivas vías o recintos, la circulación exclusiva de los propios titulares o sus clientes cuando constituyan una colectividad indeterminada de personas, siempre que lo hagan de manera que no desvirtúen las normas de este reglamento, ni induzcan a confusión con ellas.</p>
+        </version>
+      </bloque>
+      <bloque id="a5" tipo="precepto" titulo="Artículo 5">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="articulo">Artículo 5. Señalización de obstáculos y peligros.</p>
+          <p class="parrafo">1. Quienes hubieran creado sobre la vía algún obstáculo o peligro deberán hacerlo desaparecer lo antes posible, y adoptarán entre tanto las medidas necesarias para que pueda ser advertido por los demás usuarios y para que no se dificulte la circulación (artículo 10.3 del texto articulado).</p>
+          <p class="parrafo">2. No se considerarán obstáculos en la calzada los resaltos en los pasos para peatones y bandas transversales, siempre que cumplan la regulación básica establecida al efecto por el Ministerio de Fomento y se garantice la seguridad vial de los usuarios y, en particular, de los ciclistas.</p>
+          <p class="parrafo">3. Para advertir la presencia en la vía de cualquier obstáculo o peligro creado, el causante de éste deberá señalizarlo de forma eficaz, tanto de día como de noche, de conformidad con lo dispuesto en los artículos 130.3, 140 y 173.</p>
+          <p class="parrafo">4. Todas las actuaciones que deban desarrollar los servicios de asistencia mecánica, sanitaria o cualquier otro tipo de intervención deberán regirse por los principios de utilización de los recursos idóneos y estrictamente necesarios en cada caso. El organismo autónomo Jefatura Central de Tráfico o, en su caso, la autoridad autonómica o local responsable de la regulación del tráfico, o sus agentes, acordarán la presencia y permanencia en la zona de intervención de todo el personal y equipo que sea imprescindible y garantizará la ausencia de personas ajenas a las labores propias de la asistencia; además, será la encargada de señalar en cada caso concreto los lugares donde deben situarse los vehículos de servicios de urgencia o de otros servicios especiales, atendiendo a la prestación de la mejor asistencia y velando por el mejor auxilio de las personas.</p>
+          <p class="parrafo">5. La actuación de los equipos de los servicios de urgencia, así como la de los de asistencia mecánica y de conservación de carreteras, deberá procurar en todo momento la menor afectación posible sobre el resto de la circulación, ocupando el mínimo posible de la calzada y siguiendo en todo momento las instrucciones que imparta el organismo autónomo Jefatura Central de Tráfico o, en su caso, la autoridad autonómica o local responsable de la regulación del tráfico, o sus agentes. El comportamiento de los conductores y usuarios en caso de emergencia se ajustará a lo establecido en los artículos 69, 129 y 130 y, en particular, el de los conductores de los vehículos de servicio de urgencia, a lo dispuesto en los artículos 67, 68, 111 y 112.</p>
+          <p class="parrafo">6. La detención, parada o estacionamiento de los vehículos destinados a los servicios citados deberá efectuarse de forma que no cree un nuevo peligro, y donde cause menor obstáculo a la circulación.</p>
+          <p class="parrafo">7. Los supuestos de parada o estacionamiento en lugares distintos de los fijados por los agentes de la autoridad responsable del tráfico tendrán la consideración de infracción grave de acuerdo con lo dispuesto en el artículo 65.4.d) del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial.</p>
+        </version>
+        <version id_norma="BOE-A-2025-12199" fecha_publicacion="20250617" fecha_vigencia="20250701">
+          <p class="articulo">Artículo 5. Señalización de obstáculos y peligros.</p>
+          <p class="parrafo">1. Quienes hubieran creado sobre la vía algún obstáculo o peligro deberán hacerlo desaparecer lo antes posible, y adoptarán entre tanto las medidas necesarias para que pueda ser advertido por los demás usuarios y para que no se dificulte la circulación (artículo 10.3 del texto articulado).</p>
+          <p class="parrafo">2. No se considerarán obstáculos en la calzada los resaltos en los pasos para peatones y bandas transversales, siempre que cumplan la regulación básica establecida al efecto por el Ministerio de Fomento y se garantice la seguridad vial de los usuarios y, en particular, de los ciclistas.</p>
+          <p class="parrafo">3. Para advertir la presencia en la vía de cualquier obstáculo o peligro creado, el causante de este deberá señalizarlo de forma eficaz, tanto de día como de noche, de conformidad con lo dispuesto en los artículos 130 y 148 de este reglamento y en el anexo XI del Reglamento General de Vehículos, aprobado por Real Decreto 2822/1998, de 23 de diciembre.</p>
+          <p class="parrafo">4. Todas las actuaciones que deban desarrollar los servicios de asistencia mecánica, sanitaria o cualquier otro tipo de intervención deberán regirse por los principios de utilización de los recursos idóneos y estrictamente necesarios en cada caso. El organismo autónomo Jefatura Central de Tráfico o, en su caso, la autoridad autonómica o local responsable de la regulación del tráfico, o sus agentes, acordarán la presencia y permanencia en la zona de intervención de todo el personal y equipo que sea imprescindible y garantizará la ausencia de personas ajenas a las labores propias de la asistencia; además, será la encargada de señalar en cada caso concreto los lugares donde deben situarse los vehículos de servicios de urgencia o de otros servicios especiales, atendiendo a la prestación de la mejor asistencia y velando por el mejor auxilio de las personas.</p>
+          <p class="parrafo">5. La actuación de los equipos de los servicios de urgencia, así como la de los de asistencia mecánica y de conservación de carreteras, deberá procurar en todo momento la menor afectación posible sobre el resto de la circulación, ocupando el mínimo posible de la calzada y siguiendo en todo momento las instrucciones que imparta el organismo autónomo Jefatura Central de Tráfico o, en su caso, la autoridad autonómica o local responsable de la regulación del tráfico, o sus agentes. El comportamiento de los conductores y usuarios en caso de emergencia se ajustará a lo establecido en los artículos 69, 129 y 130 y, en particular, el de los conductores de los vehículos de servicio de urgencia, a lo dispuesto en los artículos 67, 68, 111 y 112.</p>
+          <p class="parrafo">6. La detención, parada o estacionamiento de los vehículos destinados a los servicios citados deberá efectuarse de forma que no cree un nuevo peligro, y donde cause menor obstáculo a la circulación.</p>
+          <p class="parrafo">7. Los supuestos de parada o estacionamiento en lugares distintos de los fijados por los agentes de la autoridad responsable del tráfico tendrán la consideración de infracción grave de acuerdo con lo dispuesto en el artículo 65.4.d) del texto articulado de la Ley sobre tráfico, circulación de vehículos a motor y seguridad vial.</p>
+          <blockquote>
+            <p class="nota_pie">Se modifica el apartado 3 por el art. único.1 del Real Decreto 465/2025, de 10 de junio. <a class="refPost">Ref. BOE-A-2025-12199</a></p>
+          </blockquote>
+        </version>
+      </bloque>
+      <bloque id="a48" tipo="precepto" titulo="Artículo 48">
+        <version id_norma="BOE-A-2003-23514" fecha_publicacion="20031223" fecha_vigencia="20040123">
+          <p class="articulo">Artículo 48. Velocidades máximas en vías fuera de poblado.</p>
+          <p class="parrafo">1. Las velocidades máximas que no deberán ser rebasadas son las siguientes (artículo 19 del texto articulado):</p>
+          <table class="tabla_b_sica" summary="Tabla de datos">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <td> </td>
+                <th>
+                  <p class="cabeza_tabla">Turismos, motocicletas, autocaravanas de masa máxima autorizada igual o inferior a 3.500 kg, Pick-up</p>
+                </th>
+                <th>
+                  <p class="cabeza_tabla">Camiones, tractocamiones, furgonetas, autocaravanas de masa máxima autorizada superior a 3.500 kg, vehículos articulados, automóviles con remolque y resto de vehículos</p>
+                </th>
+                <th>
+                  <p class="cabeza_tabla">Autobuses, vehículos derivados de turismo y vehículos mixtos adaptables</p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+<tr>
+                <td>
+                  <p class="cuerpo_tabla_izq">Autopista y autovía</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">120</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">90</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">100</p>
+                </td>
+              </tr><tr>
+                <td>
+                  <p class="cuerpo_tabla_izq">Convencional</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">90</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">80</p>
+                </td>
+                <td>
+                  <p class="cuerpo_tabla_centro">90</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </version>
+      </bloque>
+    </texto>
+  </data>
+</response>
