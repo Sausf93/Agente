@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "expo lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@agente/shared": "workspace:*",

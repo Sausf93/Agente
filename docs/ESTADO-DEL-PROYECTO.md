@@ -18,7 +18,7 @@ del producto: [`ESPECIFICACION.md`](ESPECIFICACION.md).
 ## Estado actual: Fase 0 (cimientos) — hecho
 - Monorepo pnpm: `apps/mobile` (cimientos), `packages/shared`, `packages/content-pipeline`.
 - **`packages/shared`**: modelo de datos completo en Zod (contenido, usuario, cuadrante de dos
-  capas, multi-territorio) + validadores de calidad. **24 tests en verde.**
+  capas, multi-territorio) + validadores de calidad. **36 tests en verde.**
 - **`apps/mobile`**: app Expo (SDK 57) con Expo Router, navegación de 5 pestañas
   (Buscar · Normas · Documentos · Cuadrante · Más), tema claro/oscuro del sistema visual
   (`src/ui/theme.ts`), estado con Zustand y stubs de la capa de datos (`src/db`). Typecheck
@@ -28,10 +28,14 @@ del producto: [`ESPECIFICACION.md`](ESPECIFICACION.md).
   "Enviar a los fundadores"). Local-first, offline y anónimo, con persistencia en `expo-sqlite`
   (base local del usuario) y envío por correo/Share desde el dispositivo. Compatible con Expo Go,
   sin dependencias nuevas. Arquitectura en **ADR-011**. Sync con Supabase, pendiente.
+- **Calidad automatizada (ADR-012):** ESLint 9 (flat config único en `eslint.config.mjs`) +
+  Prettier homogéneos en todo el workspace, y **CI en GitHub Actions**
+  (`.github/workflows/ci.yml`) que corre `lint → typecheck → test` en cada push/PR a `main`.
+  `pnpm lint`, `pnpm typecheck` y `pnpm test` en verde (75 tests).
 - Documentación completa en `docs/` (ver índice abajo).
 - Equipo del proyecto en `.claude/`: **8 agentes + 3 skills**.
 - **Aún no empezado:** las features de la app, el panel (`apps/admin`), el pipeline real de
-  contenido, y la infraestructura/CI.
+  contenido, **Sentry** y el build de contenido/EAS en CI (llegan con su fase).
 
 ## Decisiones clave (detalle en [`DECISIONES.md`](DECISIONES.md))
 - **ADR-001 · Sin login (local-first):** perfil, favoritos y cuadrante en el dispositivo; pagos por
@@ -66,7 +70,9 @@ el artículo, cuadrante roto, contenido incoherente, UI 2017. Detalle en `analis
 ## Cómo retomar (siguiente sesión)
 ```bash
 pnpm install
-pnpm -F @agente/shared test   # deben salir 24 tests en verde
+pnpm lint        # ESLint en todo el workspace (0 problemas)
+pnpm typecheck   # TS estricto en los 3 paquetes
+pnpm test        # 75 tests en verde (shared 36 · mobile 13 · pipeline 26)
 ```
 Luego, por orden:
 1. Invocar el agente **`arquitecto-software`** para marcar los cimientos de `apps/mobile` (Expo +

@@ -227,6 +227,45 @@ Registro de decisiones que se apartan o concretan la especificación. Cada una l
   y vista de triaje en `apps/admin`. La lógica no-trivial (mapeo SQLite, texto del correo, id) es
   pura y está testeada; el esquema tiene tests de validación/rechazo en `shared`.
 
+## ADR-012 · Calidad automatizada: ESLint 9 (flat), Prettier y CI mínima
+
+- **Estado:** aceptada (implementada; cierra el hueco de CI/lint de Fase 0).
+- **Fecha:** 2026-09-04.
+- **Contexto:** Fase 0 dejó `packages/shared`, `packages/content-pipeline` y `apps/mobile`
+  con typecheck y tests en verde, pero **sin ESLint instalado** (los scripts `lint`
+  apuntaban a un binario ausente; `apps/mobile` usaba `expo lint`, que tampoco resolvía) y
+  **sin CI**. Un equipo de una persona necesita una red de seguridad automática y barata.
+
+### Decisiones
+
+1. **Una sola configuración ESLint** en la raíz (`eslint.config.mjs`, flat config de
+   ESLint 9), no una por paquete. Menos superficie que mantener. Se ejecuta con
+   `pnpm lint` (`eslint .`, una pasada sobre todo el monorepo).
+2. **Reparto de responsabilidades claro:** TypeScript estricto cubre los tipos
+   (`typecheck`); ESLint cubre **corrección** (`typescript-eslint` recomendado, sin
+   type-checking para que sea rápido); **Prettier** cubre el **formato**
+   (`eslint-config-prettier` desactiva toda regla de estilo para que no se peleen).
+3. **Bloques acotados por `files`:** reglas de hooks de React
+   (`eslint-plugin-react-hooks`) solo en `apps/mobile`; `no-console` permitido en
+   CLIs/scripts. Sin `eslint-plugin-react` ni `eslint-config-expo`: evitan duplicar el
+   plugin de TS en flat config y aportan poco frente a su coste para una sola persona.
+4. **CI en GitHub Actions** (`.github/workflows/ci.yml`): un único job
+   `lint → typecheck → test` en cada push y PR a `main`, con `pnpm/action-setup` +
+   caché de pnpm e `install --frozen-lockfile`. El **build de contenido** (SQLite
+   firmado) y **EAS** se añadirán como flujos propios cuando existan (Fase 1 y
+   lanzamiento), no antes (evitar oro-plating).
+5. **Prettier con `endOfLine: "auto"`** (el desarrollo es en Windows, ficheros CRLF) y
+   **CI no lo bloquea todavía**: el repo aún no está formateado al 100 % y un
+   `prettier --write` masivo ahora generaría un diff ruidoso y chocaría con ramas en
+   curso. Queda disponible como `pnpm format` y se normalizará en una pasada dedicada.
+
+### Consecuencias
+
+- `pnpm lint`, `pnpm typecheck` y `pnpm test` en verde localmente y en CI (75 tests).
+- **Reconsiderar:** activar `typescript-eslint` con type-checking (reglas más potentes)
+  cuando el proyecto crezca; añadir `format:check` como gate tras una normalización única;
+  incorporar Sentry y el build de contenido a CI en Fase 1.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
