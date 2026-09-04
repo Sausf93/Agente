@@ -20,4 +20,12 @@ config.resolver.nodeModulesPaths = [
 // 3. pnpm no aplana el árbol: desactivar la búsqueda jerárquica evita sorpresas.
 config.resolver.disableHierarchicalLookup = true;
 
+// 4. El paquete de contenido viaja como asset binario (Fase 1, sin CDN). Metro ya trata `db`
+//    como asset; añadimos `sqlite` para poder empaquetar también ficheros con esa extensión.
+for (const ext of ['db', 'sqlite']) {
+  if (!config.resolver.assetExts.includes(ext)) {
+    config.resolver.assetExts.push(ext);
+  }
+}
+
 module.exports = config;

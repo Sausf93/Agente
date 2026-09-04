@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "fecha": "2026-09-04T15:41:34.891Z",
+  "schemaVersion": 1,
+  "hash": "c89c84e2cc4b043c969cc093ed6b5c3facda8bb2eebdee115e1fadbc0628caf9",
+  "tamanoBytes": 126976,
+  "algoritmoFirma": "ed25519",
+  "firma": null,
+  "changelog": {
+    "resumen": "Carga inicial de tráfico: seed de infracciones de calle + RGC."
+  }
+}
