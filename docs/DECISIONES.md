@@ -127,6 +127,81 @@ Registro de decisiones que se apartan o concretan la especificación. Cada una l
   sube al servidor salvo donación opt-in. Al curarse, se publica como `origen='oficial'` para ese
   territorio y beneficia a todo el municipio. Encaja con local-first (ADR-001/002), sin backend nuevo.
 
+## ADR-010 · Arquitectura de la app móvil (`apps/mobile`)
+
+- **Estado:** aceptada (implementada como scaffold de Fase 0).
+- **Fecha:** 2026-09-04.
+- **Contexto:** hay que fijar los cimientos de la app Expo sin caer en
+  sobre-ingeniería y de forma sostenible por una persona. La spec §7.1 deja abiertas
+  varias opciones (estado, versión de SDK); este ADR las concreta.
+
+### Decisiones
+
+1. **Expo SDK 57 (estable)** + React Native 0.86.3 + React 19.2 + TypeScript estricto.
+   Se elige la **última estable madura** (57.0.x, ~20 parches publicados) porque un
+   proyecto que nace hoy debe partir de la base con más vida por delante y menos
+   deuda de actualización; New Architecture activada (por defecto en SDK 57).
+   Versiones de librerías fijadas a las que empareja el SDK (`bundledNativeModules`).
+2. **Expo Router** (rutas por ficheros en `app/`). Grupo `(tabs)` con las 5 pestañas
+   de ADR-003: **Buscar · Normas · Documentos · Cuadrante · Más**. El Mapa/PK no es
+   pestaña: es apoyo contextual. Arranque instantáneo, sin splash bloqueante (UX F1).
+3. **Estado: Zustand, y NADA de React Query en v1.** La app es offline-first
+   (ADR-001/002): en el camino crítico no hay estado de servidor que cachear/refetch.
+   Lo remoto se limita a descarga de contenido en segundo plano y a RevenueCat, que
+   no encajan en el modelo de React Query. Añadir React Query ahora sería coste sin
+   beneficio. **Reconsiderar** si aparece una capa de datos remota real (p. ej. sync
+   del cuadrante entre dispositivos). Zustand guarda ajustes, perfil, favoritos y el
+   borrador del cuadrante, todo en el dispositivo.
+4. **Capa de datos sobre expo-sqlite = dos bases separadas:**
+   - **Contenido (solo lectura):** el paquete SQLite firmado. Módulo `src/db` que lo
+     abre y expone consultas tipadas que devuelven tipos de `@agente/shared`.
+   - **Datos locales del usuario (lectura/escritura):** cuadrante, favoritos, "mi
+     ordenanza personal" (ADR-009). Separada del paquete para poder sustituir el
+     contenido sin tocar los datos del usuario.
+5. **Estrategia offline (paquete de contenido):**
+   - Distribución como fichero SQLite **firmado Ed25519** por `ContentVersion`.
+   - **Verificación de firma sobre los bytes ANTES de instalar**; si falla, se descarta.
+   - **Sustitución atómica:** descarga a `.tmp` → verifica → renombrado atómico a
+     `content.db` + actualización del puntero de versión. Se conserva el fichero
+     anterior hasta confirmar que el nuevo abre y consulta (rollback).
+   - Las **tablas FTS5 vienen precompiladas** dentro del paquete (las crea el
+     pipeline): la app **no indexa en el dispositivo** → arranque en frío rápido. El
+     buscador consulta con `MATCH` y el **ranking es una función pura** (jerga de
+     calle), testeada aparte del runtime RN.
+6. **Migraciones / versionado de esquema:**
+   - **Contenido:** el paquete declara un `schema_version`; la app declara el rango
+     que soporta. Si el paquete exige un esquema mayor que el de la app, se conserva
+     el contenido actual y se sugiere actualizar la app (contenido y app quedan
+     desacoplados).
+   - **Datos locales:** migraciones secuenciales versionadas que corren al arrancar,
+     con tabla `meta(user_data_version)`. **Tests obligatorios** de migración: el
+     cuadrante debe sobrevivir a cualquier actualización (es el fallo de SPPLB).
+7. **Theming:** `src/ui/theme.ts` con los tokens de `perspectivas/02-ui.md`
+   (neutros, marca azul pizarra, gravedad leve/grave/muy grave/delito en claro y
+   oscuro). Sigue el esquema del sistema (`useColorScheme`), con override desde
+   Ajustes vía Zustand (`useAppTheme`). Regla codificada: la gravedad **nunca es solo
+   color** (color + etiqueta + icono). Un único punto de conversión enum de dominio
+   `Gravedad` → clave visual `Severity` (`severityFromGravedad`, pura y testeada).
+8. **Estructura de carpetas:** `app/` (solo rutas y composición) + `src/` con
+   `ui/` (tema y componentes transversales), `features/` (por dominio funcional),
+   `db/` (acceso a SQLite), `store/` (Zustand). Frontera clara: `app/` compone, no
+   contiene lógica de negocio; los tipos vienen siempre de `@agente/shared`.
+9. **Tests:** runner **Vitest** (coherente con `shared` y `content-pipeline`), scoped
+   a **lógica pura** (`src/**/*.test.ts`, entorno node). Se prueban ranking del
+   buscador y orquestación de consultas; el cálculo de horas del cuadrante y el motor
+   de reglas de consecuencias/detención se prueban en `@agente/shared`. Los
+   componentes (`.tsx`) y los flujos e2e se dejan para más adelante (React Native
+   Testing Library / Maestro): en Fase 0 solo se deja el terreno montado.
+
+### Consecuencias
+
+- App que compila y typechequea en estricto, con navegación y tema listos, sin
+  dependencias nativas pesadas todavía (Lucide/SVG, MapLibre, reanimated, expo-print,
+  RevenueCat llegan con su feature). `metro.config.js` preparado para el monorepo pnpm.
+- Riesgo controlado: menos superficie que mantener; cada dependencia entra cuando gana
+  su coste. **Reconsiderar** el SDK en cada release mayor de Expo (política: seguir la
+  estable N o N-1, nunca canary).
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

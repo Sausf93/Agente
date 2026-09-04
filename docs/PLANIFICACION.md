@@ -103,7 +103,8 @@ mientras se construye el resto. Cambios respecto a la spec marcados con ⚑.
 - ✅ Monorepo pnpm con `apps/*` y `packages/*`.
 - ✅ `packages/shared`: esquemas Zod del modelo de datos + validadores de calidad + tests.
 - ✅ Documentación: especificación, perspectivas, decisiones, planificación.
-- ⬜ App Expo vacía con navegación de 5 pestañas y tema (claro/oscuro) del sistema visual.
+- ✅ App Expo vacía con navegación de 5 pestañas y tema (claro/oscuro) del sistema visual.
+  (Expo SDK 57 + Expo Router + Zustand + tema de `perspectivas/02-ui.md`; ver ADR-010.)
 - ⬜ Panel admin Next.js mínimo (CRUD de infracciones y sinónimos).
 - ⬜ CI (lint, typecheck, test) en GitHub Actions. Sentry.
 - ⚑ **Sin auth** en Fase 0 (antes E-02). Onboarding = perfil local (cuerpo/territorio).
