@@ -402,16 +402,15 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     gravedad: 'grave',
     importeEur: 200,
     importeReducidoEur: 100,
-    puntos: 3,
+    puntos: 4,
     textoBoletin:
       'Circular sin hacer uso del cinturón de seguridad o de los sistemas de retención ' +
       'homologados estando el vehículo dotado de ellos.',
     terminos: ['sin cinturon', 'sin cinto', 'no llevar cinturon'],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR puntos: importe 200 € consolidado; los puntos (históricamente 3) pueden ' +
-      'cambiar con la reforma del RGC de octubre de 2026 (fuentes citan 3, 4 o sin puntos). ' +
-      'Confirmar con el codificado DGT vigente.',
+      'Importe 200 € (grave) y 4 puntos verificados (RGC art. 117; Ley 18/2021, en vigor desde ' +
+      'el 21/03/2022, elevó de 3 a 4 puntos). Pendiente de visto bueno del revisor.',
   }),
   construirInfraccion({
     id: 'inf-sin-casco',
@@ -420,15 +419,15 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     gravedad: 'grave',
     importeEur: 200,
     importeReducidoEur: 100,
-    puntos: 3,
+    puntos: 4,
     textoBoletin:
       'Conducir o viajar en motocicleta o ciclomotor sin el casco de protección homologado y ' +
       'correctamente abrochado.',
     terminos: ['sin casco', 'moto sin casco', 'circular sin casco'],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR puntos: importe 200 € consolidado; los puntos (históricamente 3) pueden ' +
-      'cambiar con la reforma del RGC de octubre de 2026. Confirmar con el codificado DGT vigente.',
+      'Importe 200 € (grave) y 4 puntos verificados (RGC art. 118; Ley 18/2021, en vigor desde ' +
+      'el 21/03/2022, elevó de 3 a 4 puntos). Pendiente de visto bueno del revisor.',
   }),
   construirInfraccion({
     id: 'inf-semaforo-rojo',
