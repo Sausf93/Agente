@@ -296,8 +296,11 @@ Notación simplificada. Claves foráneas implícitas por nombre (`*_id`). Todo e
 Norma          id, codigo (ej. "RGC"), titulo, tipo (ley|reglamento|ordenanza|codificado),
                ambito (estatal|autonomico|municipal), territorio_id?, url_boe, fecha_consolidacion
 
-Articulo       id, norma_id, numero ("11.1"), titulo?, texto (markdown), orden,
+Articulo       id, norma_id, numero ("5", "5 bis", "único"), titulo?, texto (markdown), orden,
                valid_from, valid_to?, hash
+               (granularidad = ARTÍCULO completo, no apartado: el BOE entrega bloques por
+                artículo y trocear por apartado desde texto libre no es fiable; el apartado
+                queda localizable dentro de `texto`. Decidido en Fase 1 al construir el pipeline.)
 
 Infraccion     id, articulo_id, codigo_dgt?, titulo_corto, gravedad (leve|grave|muy_grave|delito),
                tipo (administrativa|penal), importe_eur?, importe_reducido_eur?, puntos?,
