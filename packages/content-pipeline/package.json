@@ -8,10 +8,13 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "lint": "eslint src",
-    "build:content": "tsx src/cli/build-content.ts"
+    "build:content": "tsx src/cli/build-content.ts",
+    "extract:rgc": "tsx src/cli/extract-rgc.ts",
+    "extract:rgc:offline": "tsx src/cli/extract-rgc.ts --offline"
   },
   "dependencies": {
     "@agente/shared": "workspace:*",
+    "@xmldom/xmldom": "^0.9.8",
     "zod": "^3.23.8"
   },
   "devDependencies": {
