@@ -8,5 +8,6 @@
 export * from './enums.js';
 export * from './content.js';
 export * from './user.js';
+export * from './feedback.js';
 export * from './territorio.js';
 export * from './validators.js';

@@ -108,6 +108,14 @@ export type EstadoSuscripcion = z.infer<typeof EstadoSuscripcion>;
 export const TipoEventoUso = z.enum(['busqueda', 'consulta', 'copia', 'pdf', 'sin_resultado']);
 export type TipoEventoUso = z.infer<typeof TipoEventoUso>;
 
+/**
+ * Tipo de feedback que el socio deja durante la beta (sección 4.15).
+ * `sugerencia` = idea o mejora; `error_contenido` = un dato legal mal (importe,
+ * artículo, consecuencia); `error_tecnico` = fallo de la app (cierre, algo que no va).
+ */
+export const TipoFeedback = z.enum(['sugerencia', 'error_contenido', 'error_tecnico']);
+export type TipoFeedback = z.infer<typeof TipoFeedback>;
+
 /** Tipos de plantilla de documento (sección 4.8). */
 export const TipoPlantilla = z.enum([
   'boletin_denuncia',

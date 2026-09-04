@@ -202,6 +202,31 @@ Registro de decisiones que se apartan o concretan la especificación. Cada una l
   su coste. **Reconsiderar** el SDK en cada release mayor de Expo (política: seguir la
   estable N o N-1, nunca canary).
 
+## ADR-011 · Feedback local-first, envío desde el dispositivo, sync futura
+
+- **Estado:** aceptada (implementada en `apps/mobile` y `packages/shared`).
+- **Fecha:** 2026-09-04.
+- **Contexto:** durante la beta en Expo Go (sin backend todavía) el socio necesita poder dejar
+  sugerencias y reportes. No hay Supabase ni login (ADR-001/002), y no se pueden añadir
+  dependencias que rompan Expo Go (ni RevenueCat ni MapLibre).
+- **Decisión:**
+  1. El feedback (`sugerencia | error_contenido | error_tecnico` + texto + contexto no
+     identificativo) se guarda **solo en el dispositivo** (`expo-sqlite`, base local del usuario,
+     separada del paquete de contenido — ADR-010 punto 4). **Nunca** se envía a un servidor de
+     forma automática.
+  2. **"Enviar a los fundadores"** lo hace el propio dispositivo: `mailto:` con `expo-linking` y,
+     si no hay correo configurado, la hoja de compartir nativa (`Share`). Cero dependencias nuevas;
+     todo compatible con Expo Go. Al enviar, el feedback se marca `enviado`.
+  3. **Anónimo y con aviso fijo de privacidad** (regla CLAUDE.md): no incluir matrículas, nombres,
+     DNI ni datos de intervención; sin capturas automáticas. Solo se adjunta contexto de segmento
+     no identificativo (`cuerpo`, `territorio`).
+  4. El modelo `Feedback` vive en `@agente/shared` (fuente única). El campo `enviado` deja el
+     terreno preparado para una **sincronización futura** con Supabase, sin implementarla ahora.
+- **Consecuencias:** el socio puede reportar sin fricción y sin red; los fundadores reciben el
+  feedback por correo durante la beta. **Pendiente cuando exista Supabase:** sync en segundo plano
+  y vista de triaje en `apps/admin`. La lógica no-trivial (mapeo SQLite, texto del correo, id) es
+  pura y está testeada; el esquema tiene tests de validación/rechazo en `shared`.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

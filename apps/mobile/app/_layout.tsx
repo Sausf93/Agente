@@ -17,6 +17,10 @@ export default function RootLayout() {
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="feedback"
+          options={{ headerShown: true, title: 'Sugerencias', presentation: 'card' }}
+        />
       </Stack>
     </SafeAreaProvider>
   );

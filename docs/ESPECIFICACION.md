@@ -264,6 +264,17 @@ Para tráfico: inmovilización (art. 104 LSV), depósito (art. 105), retirada de
 - Ejecutar y revisar el pipeline de ingesta del BOE (ver sección 8).
 - Publicar una versión de contenido (`content_version`) que las apps descargan.
 - Ver métricas agregadas anónimas: consultas más frecuentes por cuerpo, búsquedas sin resultado (oro para el diccionario de sinónimos).
+- Cuando exista backend: **triar el feedback** (sugerencias y reportes) que llegue de la app por correo/sync, por tipo y cuerpo (ver 4.15).
+
+## 4.15 Sugerencias y reportes (feedback del socio)
+
+- Acceso desde **Más → "Sugerencias / reportar problema"**. Pensado sobre todo para la beta.
+- Formulario: selector de **tipo** (sugerencia · error de contenido · error técnico) + campo de texto.
+- Lista **"Mis aportaciones"** con su estado (Pendiente / Enviado). Se pueden borrar del dispositivo.
+- Botón **"Enviar a los fundadores"**: compone un correo (o la hoja de compartir) **desde el propio dispositivo** con el texto pendiente y lo marca como enviado. No hay servidor de por medio (ADR-011).
+- **Local-first, offline y anónimo** (ADR-011): el feedback se guarda solo en el dispositivo (`expo-sqlite`, base local del usuario). Nunca se envía a un servidor de forma automática. Aviso **fijo** de privacidad: *"No incluyas matrículas, nombres, DNI ni datos de intervenciones."* Sin capturas automáticas.
+- **Gancho "reportar error"** desde una ficha (cuando exista): la pantalla admite contexto opcional (`tipo`, `articuloId`, `infraccionId`, `pantalla`) que prerrellena el formulario.
+- Pendiente cuando exista Supabase: sincronización en segundo plano y vista de triaje en el panel admin.
 
 # 5. Diseño y experiencia
 
@@ -331,9 +342,17 @@ Favorito       usuario_id, infraccion_id|articulo_id, created_at
 Cuadrante      usuario_id, patron (json), inicio_ciclo, jornada_ref_h, blob_cifrado (días, notas, alarmas)
 EventoUso      anonimo: cuerpo, ccaa, tipo (busqueda|consulta|copia|pdf), termino_normalizado, fecha
                (sin usuario_id; sirve para "más usadas" y para detectar búsquedas sin resultado)
+
+Feedback       id, created_at, tipo (sugerencia|error_contenido|error_tecnico), texto,
+               contexto (pantalla?, articulo_id?, infraccion_id?), app_version, platform (ios|android),
+               cuerpo?, territorio? (contexto de segmento NO identificativo), enviado (bool)
+               LOCAL-FIRST y ANÓNIMO (ADR-011): vive solo en el dispositivo (expo-sqlite, base
+               local del usuario). No se envía a servidor de forma automática; "enviar a los
+               fundadores" usa el compositor de correo/Share del propio dispositivo y marca
+               `enviado`. Sync futura con Supabase deja el terreno preparado (campo `enviado`).
 ```
 
-**Nunca en servidor**: matrículas, nombres, DNI, contenido de los PDF generados, notas personales sobre intervenciones.
+**Nunca en servidor**: matrículas, nombres, DNI, contenido de los PDF generados, notas personales sobre intervenciones. El `texto` de `Feedback` lo escribe el socio y NO debe contener datos de terceros: la UI lo avisa de forma fija y no captura nada automáticamente.
 
 # 7. Arquitectura y stack
 

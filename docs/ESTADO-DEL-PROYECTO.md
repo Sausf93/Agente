@@ -23,6 +23,11 @@ del producto: [`ESPECIFICACION.md`](ESPECIFICACION.md).
   (Buscar · Normas · Documentos · Cuadrante · Más), tema claro/oscuro del sistema visual
   (`src/ui/theme.ts`), estado con Zustand y stubs de la capa de datos (`src/db`). Typecheck
   y tests en verde. Sin features aún (las construye `mobile-dev`). Arquitectura en **ADR-010**.
+- **Feedback del socio (beta):** modelo `Feedback` en `packages/shared` (+ tests) y pantalla
+  **Más → "Sugerencias / reportar problema"** en `apps/mobile` (formulario, lista con estado,
+  "Enviar a los fundadores"). Local-first, offline y anónimo, con persistencia en `expo-sqlite`
+  (base local del usuario) y envío por correo/Share desde el dispositivo. Compatible con Expo Go,
+  sin dependencias nuevas. Arquitectura en **ADR-011**. Sync con Supabase, pendiente.
 - Documentación completa en `docs/` (ver índice abajo).
 - Equipo del proyecto en `.claude/`: **8 agentes + 3 skills**.
 - **Aún no empezado:** las features de la app, el panel (`apps/admin`), el pipeline real de
