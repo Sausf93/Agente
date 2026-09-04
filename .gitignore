@@ -15,6 +15,10 @@ packages/content-pipeline/output/
 *.sqlite-journal
 !packages/content-pipeline/fixtures/**/*.sqlite
 
+# Secretos de despliegue (NUNCA subir): token de Cloudflare, etc.
+_deploy/
+*.secret
+
 # Entornos y secretos
 .env
 .env.*
