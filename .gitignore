@@ -30,6 +30,9 @@ GoogleService-Info.plist
 apps/mobile/ios/
 apps/mobile/android/
 
+# Grafo de conocimiento (graphify) — artefacto regenerable con `graphify update .`
+graphify-out/
+
 # Logs y temporales
 *.log
 npm-debug.log*

@@ -48,6 +48,19 @@ Todo adaptado al cuerpo y territorio de cada agente y funcionando sin cobertura.
 - `pnpm test` — tests de todo el workspace
 - `pnpm content:build` — genera el paquete de contenido SQLite
 
+## Memoria del proyecto (engram MCP)
+
+El proyecto usa **engram** como memoria persistente entre sesiones, vía MCP (`.mcp.json`,
+proyecto fijado a `Agente`). Requiere reiniciar Claude Code para que carguen sus herramientas.
+- **Al empezar una sesión**: recupera el contexto previo (herramienta de contexto/recall de engram)
+  antes de ponerte a trabajar.
+- **Guarda de forma proactiva** tras cada decisión o avance relevante (ADR nuevo, fase cerrada,
+  cambio de rumbo, dato de dominio no obvio). Frase corta y con el porqué.
+- **Nunca guardes en la memoria** datos de terceros (matrículas, nombres, DNI), secretos/claves ni
+  el contenido de PDFs generados — misma regla que el resto del producto.
+- La memoria **complementa** a `docs/`; la **fuente de verdad sigue siendo** `docs/ESPECIFICACION.md`.
+  Si algo vive mejor en el repo (una decisión, el estado), escríbelo también en los docs.
+
 ## Equipo permanente (agentes y skills del proyecto)
 
 Este proyecto trae agentes y skills propios en `.claude/` para usar durante todo el desarrollo.
