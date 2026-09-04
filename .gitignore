@@ -33,6 +33,9 @@ apps/mobile/android/
 # Grafo de conocimiento (graphify) — artefacto regenerable con `graphify update .`
 graphify-out/
 
+# Worktrees temporales de agentes de Claude Code
+.claude/worktrees/
+
 # Logs y temporales
 *.log
 npm-debug.log*
