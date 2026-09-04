@@ -1,0 +1,466 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Agente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#F5F7F9;
+    --surface:#FFFFFF;
+    --surface-2:#EEF2F5;
+    --ink:#141A1E;
+    --ink-soft:#3E4B54;
+    --muted:#697782;
+    --line:#DCE3E8;
+    --line-strong:#C4CED5;
+    --brand:#2C6E8E;        /* azul pizarra / petrÃ³leo */
+    --brand-ink:#1D4F68;
+    --brand-wash:#E4EEF3;
+    --sev:#B4630F;          /* Ã¡mbar de gravedad, uso mÃ­nimo */
+    --sev-wash:#F6E9DA;
+    --ok:#2E7D5B;
+    --shadow:0 1px 2px rgba(20,26,30,.05), 0 12px 32px -18px rgba(20,26,30,.28);
+    --radius:14px;
+    --maxw:1120px;
+    --font-display:"Archivo",system-ui,sans-serif;
+    --font-body:"Public Sans",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0D1317;
+      --surface:#141D23;
+      --surface-2:#1B262D;
+      --ink:#E8EEF2;
+      --ink-soft:#B4C1C9;
+      --muted:#8595A0;
+      --line:#25333B;
+      --line-strong:#324450;
+      --brand:#4FA3C6;
+      --brand-ink:#8FCBE3;
+      --brand-wash:#122A36;
+      --sev:#E1913F;
+      --sev-wash:#2E2114;
+      --ok:#57B98C;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -20px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0D1317;
+    --surface:#141D23;
+    --surface-2:#1B262D;
+    --ink:#E8EEF2;
+    --ink-soft:#B4C1C9;
+    --muted:#8595A0;
+    --line:#25333B;
+    --line-strong:#324450;
+    --brand:#4FA3C6;
+    --brand-ink:#8FCBE3;
+    --brand-wash:#122A36;
+    --sev:#E1913F;
+    --sev-wash:#2E2114;
+    --ok:#57B98C;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -20px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--font-body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3{font-family:var(--font-display);font-weight:800;line-height:1.08;letter-spacing:-.02em;text-wrap:balance;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .mono{font-family:var(--font-mono)}
+  .eyebrow{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-ink);font-weight:500}
+  :focus-visible{outline:2.5px solid var(--brand);outline-offset:2px;border-radius:6px}
+
+  /* ---------- header ---------- */
+  header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;gap:22px;height:64px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em}
+  .brand .mk{width:26px;height:26px;border-radius:7px;background:var(--brand);display:grid;place-items:center;color:#fff;flex:none}
+  .brand .mk svg{width:15px;height:15px;display:block}
+  nav.top{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--ink-soft)}
+  nav.top a{text-decoration:none}
+  nav.top a:hover{color:var(--ink)}
+  .tools{display:flex;align-items:center;gap:10px;margin-left:22px}
+  .icon-btn{width:38px;height:38px;border:1px solid var(--line-strong);background:var(--surface);border-radius:9px;color:var(--ink-soft);cursor:pointer;display:grid;place-items:center}
+  .icon-btn:hover{color:var(--ink);border-color:var(--brand)}
+  .icon-btn svg{width:17px;height:17px}
+  @media(max-width:820px){nav.top{display:none}.tools{margin-left:auto}}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-body);font-weight:600;font-size:15.5px;
+    padding:12px 20px;border-radius:10px;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:transform .08s ease,background .15s ease,border-color .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-primary:hover{background:var(--brand-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand-ink)}
+
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:76px 0 64px}
+  .hero .lead{max-width:560px}
+  .hero h1{font-size:clamp(38px,5.2vw,60px)}
+  .hero .sub{margin-top:22px;font-size:19px;color:var(--ink-soft);max-width:30em}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+  .assurances{display:flex;flex-wrap:wrap;gap:18px 26px;margin-top:30px;font-size:14px;color:var(--muted)}
+  .assurances span{display:inline-flex;align-items:center;gap:8px}
+  .assurances svg{width:16px;height:16px;color:var(--brand);flex:none}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;gap:44px;padding:52px 0 48px}.hero .lead{max-width:none}}
+
+  /* ---------- mock ficha ---------- */
+  .device{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:16px;position:relative}
+  .device::before{content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand) 8%,transparent)}
+  .searchbar{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--ink)}
+  .searchbar svg{width:18px;height:18px;color:var(--muted);flex:none}
+  .searchbar .q{font-family:var(--font-mono);font-size:15px}
+  .searchbar .cursor{width:1.5px;height:18px;background:var(--brand);margin-left:-4px;animation:blink 1.1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media(prefers-reduced-motion:reduce){.searchbar .cursor{animation:none}}
+  .ficha{margin-top:14px;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .ficha-head{padding:16px 16px 14px;border-bottom:1px solid var(--line)}
+  .chips{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+  .chip{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;padding:4px 9px;border-radius:6px;font-weight:500}
+  .chip.grave{background:var(--sev-wash);color:var(--sev)}
+  .chip.tipo{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line)}
+  .ficha-title{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .rows{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+  .cell{background:var(--surface);padding:13px 16px}
+  .cell .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .cell .v{font-family:var(--font-mono);font-size:17px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
+  .conseq{background:var(--brand-wash);padding:14px 16px;border-top:1px solid var(--line)}
+  .conseq .k{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--brand-ink);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .conseq .k svg{width:14px;height:14px}
+  .conseq .t{margin-top:6px;font-size:14.5px;color:var(--ink);line-height:1.5}
+  .ficha-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
+  .src{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+  .copy{display:inline-flex;align-items:center;gap:7px;background:var(--brand);color:#fff;border:none;border-radius:8px;padding:9px 13px;font-family:var(--font-body);font-weight:600;font-size:13px;cursor:pointer}
+  .copy svg{width:14px;height:14px}
+  .exemplar{position:absolute;top:-11px;right:16px;background:var(--ink);color:var(--ground);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+
+  /* ---------- generic section ---------- */
+  section{padding:72px 0}
+  .sec-head{max-width:640px;margin-bottom:44px}
+  .sec-head h2{font-size:clamp(27px,3.4vw,38px);margin-top:14px}
+  .sec-head p{margin-top:14px;color:var(--ink-soft);font-size:18px}
+  .divide{border:none;border-top:1px solid var(--line);margin:0}
+
+  /* loop steps */
+  .loop{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .step{background:var(--surface);padding:24px 22px}
+  .step .n{font-family:var(--font-mono);font-size:12px;color:var(--brand-ink);font-weight:500}
+  .step h3{font-size:17px;margin:12px 0 8px}
+  .step p{font-size:14.5px;color:var(--ink-soft)}
+  @media(max-width:820px){.loop{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.loop{grid-template-columns:1fr}}
+
+  /* features */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .card .ico{width:40px;height:40px;border-radius:10px;background:var(--brand-wash);color:var(--brand-ink);display:grid;place-items:center;margin-bottom:16px}
+  .card .ico svg{width:20px;height:20px}
+  .card h3{font-size:17.5px;margin-bottom:8px}
+  .card p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* privacy band */
+  .band{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:44px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;box-shadow:var(--shadow)}
+  @media(max-width:820px){.band{grid-template-columns:1fr;padding:30px}}
+  .band h2{font-size:clamp(25px,3vw,33px)}
+  .band p{margin-top:16px;color:var(--ink-soft);font-size:17px}
+  .priv-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .priv-list li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+  .priv-list svg{width:19px;height:19px;color:var(--brand);flex:none;margin-top:2px}
+  .priv-list b{font-weight:600}
+
+  /* price */
+  .price-wrap{display:grid;grid-template-columns:1fr;justify-items:center;text-align:center;gap:8px}
+  .plan{background:var(--surface);border:1px solid var(--line-strong);border-radius:18px;padding:34px 40px;box-shadow:var(--shadow);max-width:420px;width:100%}
+  .amount{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:10px 0 4px}
+  .amount .n{font-family:var(--font-display);font-weight:800;font-size:56px;letter-spacing:-.03em}
+  .amount .per{color:var(--muted);font-size:16px}
+  .plan .note{color:var(--ink-soft);font-size:14.5px}
+  .plan ul{list-style:none;padding:0;margin:22px 0;display:grid;gap:11px;text-align:left}
+  .plan li{display:flex;gap:10px;font-size:15px}
+  .plan li svg{width:18px;height:18px;color:var(--ok);flex:none;margin-top:2px}
+  .plan .btn{width:100%;justify-content:center;margin-top:4px}
+  .fineprint{color:var(--muted);font-size:13px;margin-top:14px}
+
+  /* faq */
+  .faq{max-width:760px}
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  summary{font-family:var(--font-display);font-weight:700;font-size:17.5px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary .pm{color:var(--brand);font-family:var(--font-mono);font-size:22px;line-height:1;flex:none;transition:transform .2s}
+  details[open] summary .pm{transform:rotate(45deg)}
+  details p{margin-top:12px;color:var(--ink-soft);font-size:15.5px;max-width:64ch}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);background:var(--surface);padding:48px 0 40px}
+  .foot{display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between;align-items:flex-start}
+  .foot .cols{display:flex;flex-wrap:wrap;gap:48px}
+  .foot h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:14.5px}
+  .foot a{color:var(--ink-soft);text-decoration:none}
+  .foot a:hover{color:var(--brand-ink)}
+  .disclaimer{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;max-width:75ch;line-height:1.55}
+  .badge-soon{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-strong);border-radius:9px;padding:9px 13px;color:var(--muted);font-size:13.5px;font-family:var(--font-mono)}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <div class="brand">
+      <span class="mk" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </span>
+      Agente
+    </div>
+    <nav class="top">
+      <a href="#comofunciona">CÃ³mo funciona</a>
+      <a href="#privacidad">Privacidad</a>
+      <a href="#precio">Precio</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <div class="tools">
+      <button class="icon-btn" id="theme" aria-label="Cambiar tema" title="Cambiar tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </button>
+      <a class="btn btn-primary" href="#lista">Lista de espera</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero">
+      <div class="lead">
+        <span class="eyebrow">Para agentes de calle Â· funciona sin cobertura</span>
+        <h1>El boletÃ­n correcto en 3 segundos.</h1>
+        <p class="sub">Ves una infracciÃ³n y Agente te dice el artÃ­culo, el importe con puntos y â€”lo que de verdad importaâ€” <b>quÃ© haces con el vehÃ­culo o la persona</b>. Con su fuente y su fecha. En el mÃ³vil, sin conexiÃ³n.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#lista">Entrar en la lista de espera</a>
+          <a class="btn btn-ghost" href="#comofunciona">Ver cÃ³mo funciona</a>
+        </div>
+        <div class="assurances">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Consulta 100% offline</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Normativa con fecha y fuente</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Tus datos no salen del mÃ³vil</span>
+        </div>
+      </div>
+
+      <div class="device" role="img" aria-label="Ejemplo de ficha de la app: bÃºsqueda 'sin seguro' con artÃ­culo, importe, puntos y consecuencia">
+        <span class="exemplar">Ejemplo</span>
+        <div class="searchbar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+          <span class="q">sin seguro</span><span class="cursor" aria-hidden="true"></span>
+        </div>
+        <div class="ficha">
+          <div class="ficha-head">
+            <div class="chips">
+              <span class="chip grave">GRAVE</span>
+              <span class="chip tipo">Administrativa Â· trÃ¡fico</span>
+            </div>
+            <div class="ficha-title">Circular sin seguro obligatorio</div>
+          </div>
+          <div class="rows">
+            <div class="cell"><div class="k">Importe</div><div class="v">601 â€“ 3.005 â‚¬</div></div>
+            <div class="cell"><div class="k">Puntos</div><div class="v">0</div></div>
+          </div>
+          <div class="conseq">
+            <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 3 7v6c0 5 3.5 7.5 9 9 5.5-1.5 9-4 9-9V7z" stroke-linejoin="round"/></svg>QuÃ© haces</div>
+            <div class="t">InmovilizaciÃ³n y depÃ³sito hasta acreditar el seguro (art. 104â€“105 LSV). Si lo contrata en el acto, puede continuar.</div>
+          </div>
+          <div class="ficha-foot">
+            <span class="src">art. 3 LRCSCVM Â· act. 2026</span>
+            <button class="copy" type="button" aria-label="Copiar texto del boletÃ­n (demostraciÃ³n)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11" stroke-linecap="round"/></svg>Copiar boletÃ­n</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <hr class="divide">
+
+  <!-- cÃ³mo funciona -->
+  <section id="comofunciona">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">El bucle de la calle</span>
+        <h2>De lo que ves a la denuncia lista, sin fricciÃ³n.</h2>
+        <p>Una mano, tres segundos, sin cobertura. Y despuÃ©s te ahorra el trabajo de oficina.</p>
+      </div>
+      <div class="loop">
+        <div class="step"><div class="n">01</div><h3>Busca en tu idioma</h3><p>Escribe como hablas: Â«faro rotoÂ», Â«sin seguroÂ», Â«mÃ³vilÂ». El buscador entiende la jerga de calle, aunque no sepas el artÃ­culo.</p></div>
+        <div class="step"><div class="n">02</div><h3>Lee la ficha</h3><p>ArtÃ­culo, importe con pronto pago y puntos. Todo con la norma, su fecha y su fuente a la vista.</p></div>
+        <div class="step"><div class="n">03</div><h3>Sabe quÃ© hacer</h3><p>Lo decisivo: Â¿grÃºa, inmovilizaciÃ³n, o sigue circulando? La consecuencia operativa, con su artÃ­culo.</p></div>
+        <div class="step"><div class="n">04</div><h3>Copia y firma</h3><p>Texto de boletÃ­n listo para pegar y plantilla en PDF con el punto kilomÃ©trico del hecho.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- features -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="grid">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg></div>
+          <h3>Buscador que te entiende</h3>
+          <p>SinÃ³nimos policiales, faltas de tilde y errores comunes. Y aprende de lo que buscÃ¡is sin resultado.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 3 7v6c0 5 3.5 7.5 9 9 5.5-1.5 9-4 9-9V7z" stroke-linejoin="round"/></svg></div>
+          <h3>La consecuencia, no solo el artÃ­culo</h3>
+          <p>GrÃºa, inmovilizaciÃ³n, retirada de permiso o detenciÃ³n orientada por LECrim. Siempre con su fuente.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round"/></svg></div>
+          <h3>Cuadrante que no se borra</h3>
+          <p>Turnos por cuerpo, festivos de tu territorio y contador de nocturnas, festivas y exceso de jornada.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <h3>Punto kilomÃ©trico offline</h3>
+          <p>Tu posiciÃ³n sobre la vÃ­a: Â«A-7, PK 623+450, sentido MurciaÂ», con aviso de fiabilidad y ediciÃ³n manual.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg></div>
+          <h3>Plantillas en PDF</h3>
+          <p>Boletines y actas rellenadas con la norma y el artÃ­culo. TÃº pones fecha, lugar y observaciones.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M20 8c-4 0-8 1-8 4 0 3 4 4 8 4M4 8c4 0 8 1 8 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Adaptada a tu cuerpo</h3>
+          <p>Guardia Civil, PolicÃ­a Nacional o local. Ves lo que te aplica segÃºn tu territorio y tu unidad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- privacidad -->
+  <section id="privacidad">
+    <div class="wrap">
+      <div class="band">
+        <div>
+          <span class="eyebrow">DiseÃ±ada para no comprometerte</span>
+          <h2>Lo que consultas se queda en tu mÃ³vil.</h2>
+          <p>Trabajas con datos sensibles. Por eso Agente estÃ¡ construida al revÃ©s que las apps de siempre: la informaciÃ³n delicada nunca viaja a ningÃºn servidor.</p>
+        </div>
+        <ul class="priv-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-linecap="round"/></svg><span><b>Nada de terceros al servidor.</b> MatrÃ­culas, nombres o notas de intervenciÃ³n no salen del dispositivo.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 3 7v6c0 5 3.5 7.5 9 9 5.5-1.5 9-4 9-9V7z" stroke-linejoin="round"/></svg><span><b>Sin cuenta ni rastreo.</b> No pedimos tu nombre ni tu TIP. Uso anÃ³nimo, sin publicidad.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>El cuadrante es tuyo.</b> Vive en tu telÃ©fono; la copia de seguridad, si la activas, va cifrada.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- precio -->
+  <section id="precio">
+    <div class="wrap">
+      <div class="sec-head" style="margin:0 auto 40px;text-align:center">
+        <span class="eyebrow">Precio</span>
+        <h2>Tres cafÃ©s al mes.</h2>
+        <p style="margin-left:auto;margin-right:auto">Pagas la herramienta, no la ley. Sin permanencia, se gestiona desde tu tienda.</p>
+      </div>
+      <div class="price-wrap">
+        <div class="plan">
+          <div class="eyebrow" style="text-align:center">SuscripciÃ³n</div>
+          <div class="amount"><span class="n">2,99&nbsp;â‚¬</span><span class="per">/ mes</span></div>
+          <div class="note">o 24,99 â‚¬ al aÃ±o Â· prueba de 14 dÃ­as</div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Toda la normativa, siempre al dÃ­a</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Buscador, fichas y consecuencias</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Cuadrante, plantillas y mapa con PK</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Funciona sin cobertura</li>
+          </ul>
+          <a class="btn btn-primary" href="#lista">AvÃ­same en el lanzamiento</a>
+          <div class="fineprint">El pago se realiza a travÃ©s de App Store o Google Play.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- lista de espera -->
+  <section id="lista" style="padding-top:0">
+    <div class="wrap">
+      <div class="band" style="grid-template-columns:1fr;text-align:center;justify-items:center">
+        <div style="max-width:560px">
+          <span class="eyebrow">AÃºn en construcciÃ³n</span>
+          <h2>SÃ© de los primeros en probarla.</h2>
+          <p style="margin-left:auto;margin-right:auto">Estamos afinÃ¡ndola con agentes reales antes de publicarla. DÃ©janos tu correo y te avisamos cuando abramos la beta para tu cuerpo.</p>
+          <div class="cta-row" style="justify-content:center;margin-top:26px">
+            <a class="btn btn-primary" href="mailto:saulodlsf@gmail.com?subject=Lista%20de%20espera%20Agente&body=Hola%2C%20me%20interesa%20probar%20Agente.%20Soy%20de%20(cuerpo%20y%20provincia)%3A%20">Apuntarme a la beta</a>
+            <span class="badge-soon">PrÃ³ximamente Â· App Store y Google Play</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- faq -->
+  <section id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Preguntas</span><h2>Lo que sueles preguntar.</h2></div>
+      <div class="faq">
+        <details open><summary>Â¿Funciona de verdad sin cobertura? <span class="pm" aria-hidden="true">+</span></summary><p>SÃ­. La normativa, el cuadrante y las plantillas viven en tu mÃ³vil. Solo necesitas conexiÃ³n de vez en cuando para descargar las actualizaciones de contenido.</p></details>
+        <details><summary>Â¿EstÃ¡ actualizada la normativa? <span class="pm" aria-hidden="true">+</span></summary><p>Cada ficha muestra su artÃ­culo fuente y la fecha de actualizaciÃ³n. El contenido se revisa y se publica de forma continua, y ves quÃ© ha cambiado.</p></details>
+        <details><summary>Â¿Sustituye mi criterio como agente? <span class="pm" aria-hidden="true">+</span></summary><p>No. Es una herramienta de apoyo y consulta. La valoraciÃ³n de los hechos y la calificaciÃ³n final siguen siendo tuyas y del juez; por eso todo lleva su fuente.</p></details>
+        <details><summary>Â¿QuÃ© datos guardÃ¡is de mÃ­? <span class="pm" aria-hidden="true">+</span></summary><p>Los mÃ­nimos y anÃ³nimos. No pedimos nombre ni TIP, y los datos de terceros (matrÃ­culas, personas) nunca salen de tu dispositivo.</p></details>
+        <details><summary>Â¿Para quÃ© cuerpos sirve? <span class="pm" aria-hidden="true">+</span></summary><p>Guardia Civil, PolicÃ­a Nacional y policÃ­as locales y autonÃ³micas. Eliges cuerpo y territorio, y la app se adapta a lo que te aplica.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="max-width:280px">
+        <div class="brand" style="font-size:18px">
+          <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg></span>
+          Agente
+        </div>
+        <p style="color:var(--muted);font-size:14px;margin-top:12px">La herramienta de consulta para las Fuerzas y Cuerpos de Seguridad. Nombre provisional.</p>
+      </div>
+      <div class="cols">
+        <div><h4>Producto</h4><ul><li><a href="#comofunciona">CÃ³mo funciona</a></li><li><a href="#precio">Precio</a></li><li><a href="#faq">Preguntas</a></li></ul></div>
+        <div><h4>Legal</h4><ul><li><a href="#lista">PolÃ­tica de privacidad</a></li><li><a href="#lista">Borrar cuenta</a></li><li><a href="#lista">TÃ©rminos</a></li></ul></div>
+        <div><h4>Contacto</h4><ul><li><a href="mailto:saulodlsf@gmail.com">saulodlsf@gmail.com</a></li><li><a href="#lista">Lista de espera</a></li></ul></div>
+      </div>
+    </div>
+    <p class="disclaimer">Agente es una herramienta privada de apoyo a la consulta y no es una aplicaciÃ³n oficial de ningÃºn cuerpo ni administraciÃ³n. La informaciÃ³n es orientativa, se ofrece con su fuente y fecha, y no sustituye la valoraciÃ³n del agente ni la calificaciÃ³n judicial. Los importes y consecuencias mostrados en esta pÃ¡gina son ejemplos ilustrativos.</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var root=document.documentElement, btn=document.getElementById("theme");
+    try{var s=localStorage.getItem("agente-theme"); if(s){root.setAttribute("data-theme",s);}}catch(e){}
+    btn.addEventListener("click",function(){
+      var cur=root.getAttribute("data-theme");
+      if(!cur){cur=matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";}
+      var next=cur==="dark"?"light":"dark";
+      root.setAttribute("data-theme",next);
+      try{localStorage.setItem("agente-theme",next);}catch(e){}
+    });
+    document.querySelector(".copy").addEventListener("click",function(){
+      var b=this, old=b.innerHTML;
+      b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>Copiado';
+      setTimeout(function(){b.innerHTML=old;},1600);
+    });
+  })();
+</script>
+</body>
+</html>
+

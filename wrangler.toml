@@ -1,0 +1,8 @@
+# Despliegue de la landing comercial (apps/landing) en Cloudflare Workers con assets estáticos.
+# El proyecto conectado por Git ejecuta `npx wrangler deploy` en la raíz del repo;
+# aquí le decimos que sirva la carpeta estática de la web. No hay Worker script: solo assets.
+name = "agente"
+compatibility_date = "2026-09-04"
+
+[assets]
+directory = "./apps/landing"
