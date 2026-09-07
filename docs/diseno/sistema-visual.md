@@ -92,14 +92,14 @@ mezcla y no necesita fijarse a mano.
 | | oscuro | `#6FC79B` | `#4FA97D` | `#0A0C10` | texto oscuro ≈ 9.6:1 (AAA) |
 | **Policía Nacional** (azul marino) | claro | `#1F3A63` | `#172C4B` | `#FFFFFF` | blanco/`accent` ≈ 11.4:1 (AAA) |
 | | oscuro | `#7FA4D6` | `#4E79B5` | `#0A0C10` | texto oscuro ≈ 7.6:1 (AAA) |
-| **Policía Local** (azul claro/cerúleo) | claro | `#0E6BA8` | `#0A5688` | `#FFFFFF` | blanco/`accent` ≈ 5.7:1 (AA) |
-| | oscuro | `#6FBEE8` | `#2E9BD6` | `#0A0C10` | texto oscuro ≈ 9.5:1 (AAA) |
-| **Autonómica** (pizarra-teal neutro) | claro | `#3E6B70` | `#325A5E` | `#FFFFFF` | blanco/`accent` ≈ 5.9:1 (AA) |
-| | oscuro | `#7FB8BC` | `#4F9298` | `#0A0C10` | texto oscuro ≈ 8.8:1 (AAA) |
+| **Policía Local** (celeste/cian) | claro | `#0B7597` | `#095E79` | `#FFFFFF` | blanco/`accent` ≈ 4.9:1 (AA) |
+| | oscuro | `#4FC4E6` | `#2AA6C8` | `#0A0C10` | texto oscuro ≈ 8.9:1 (AAA) |
+| **Autonómica** (violeta neutro) | claro | `#6A4E9C` | `#574080` | `#FFFFFF` | blanco/`accent` ≈ 5.6:1 (AA) |
+| | oscuro | `#B49BE8` | `#8F79CC` | `#0A0C10` | texto oscuro ≈ 8.6:1 (AAA) |
 
 Notas de diseño:
 - **Guardia Civil = verde**, **P. Nacional = azul marino oscuro**, **P. Local =
-  azul claro**, **Autonómica = un neutro propio** (pizarra-teal) que no compite con
+  celeste/cian**, **Autonómica = un neutro propio** (violeta) que no compite con
   los otros tres ni evoca una autonómica concreta. Sirve como acento por defecto
   para Ertzaintza, Mossos, Policía Foral y Policía Canaria (todas comparten el mismo
   acento neutro; no se replica ninguna identidad autonómica).
@@ -142,10 +142,10 @@ export const accentByCuerpo = {
                     dark: { accent:'#6FC79B', pressed:'#4FA97D', on:'#0A0C10' } },
   policiaNacional:{ light:{ accent:'#1F3A63', pressed:'#172C4B', on:'#FFFFFF' },
                     dark: { accent:'#7FA4D6', pressed:'#4E79B5', on:'#0A0C10' } },
-  policiaLocal:   { light:{ accent:'#0E6BA8', pressed:'#0A5688', on:'#FFFFFF' },
-                    dark: { accent:'#6FBEE8', pressed:'#2E9BD6', on:'#0A0C10' } },
-  autonomica:     { light:{ accent:'#3E6B70', pressed:'#325A5E', on:'#FFFFFF' },
-                    dark: { accent:'#7FB8BC', pressed:'#4F9298', on:'#0A0C10' } },
+  policiaLocal:   { light:{ accent:'#0B7597', pressed:'#095E79', on:'#FFFFFF' },
+                    dark: { accent:'#4FC4E6', pressed:'#2AA6C8', on:'#0A0C10' } },
+  autonomica:     { light:{ accent:'#6A4E9C', pressed:'#574080', on:'#FFFFFF' },
+                    dark: { accent:'#B49BE8', pressed:'#8F79CC', on:'#0A0C10' } },
 } as const;
 
 // Acento por defecto = marca neutra (antes de elegir cuerpo).
@@ -163,6 +163,11 @@ export const accentDefault = {
   para el fondo de la pastilla de tab activa y realces suaves. En RN, precalcular
   por combinación o usar una util de mezcla.
 - Cambiar de cuerpo en Ajustes reconstruye el tema en caliente (Zustand → re-render).
+- **Tema claro/oscuro elegible por el usuario**: en Ajustes hay un selector
+  **Sistema / Claro / Oscuro** (por defecto "Sistema", sigue el ajuste del teléfono).
+  Se persiste en el store del perfil junto al cuerpo; `mode` sale de esa preferencia,
+  no solo de `useColorScheme()`. Los tres cuerpos y los dos modos ya están cubiertos por
+  los tokens de acento (claro/oscuro) de la tabla anterior.
 
 ---
 

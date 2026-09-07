@@ -54,11 +54,11 @@ body[data-mode="dark"][data-cuerpo="gc"]{  --accent:#6FC79B; --accent-press:#4FA
 body[data-mode="light"][data-cuerpo="pn"]{ --accent:#1F3A63; --accent-press:#172C4B; --accent-on:#FFFFFF; }
 body[data-mode="dark"][data-cuerpo="pn"]{  --accent:#7FA4D6; --accent-press:#4E79B5; --accent-on:#0A0C10; }
 /* Policía Local · azul claro (cerúleo, aún AA) */
-body[data-mode="light"][data-cuerpo="pl"]{ --accent:#0E6BA8; --accent-press:#0A5688; --accent-on:#FFFFFF; }
-body[data-mode="dark"][data-cuerpo="pl"]{  --accent:#6FBEE8; --accent-press:#2E9BD6; --accent-on:#0A0C10; }
+body[data-mode="light"][data-cuerpo="pl"]{ --accent:#0B7597; --accent-press:#095E79; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="pl"]{  --accent:#4FC4E6; --accent-press:#2AA6C8; --accent-on:#0A0C10; }
 /* Autonómica · pizarra-teal neutro */
-body[data-mode="light"][data-cuerpo="aut"]{ --accent:#3E6B70; --accent-press:#325A5E; --accent-on:#FFFFFF; }
-body[data-mode="dark"][data-cuerpo="aut"]{  --accent:#7FB8BC; --accent-press:#4F9298; --accent-on:#0A0C10; }
+body[data-mode="light"][data-cuerpo="aut"]{ --accent:#6A4E9C; --accent-press:#574080; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="aut"]{  --accent:#B49BE8; --accent-press:#8F79CC; --accent-on:#0A0C10; }
 
 /* tinte débil del acento (píldora tab activa, fondos suaves) */
 :root{ --accent-weak: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
@@ -267,7 +267,7 @@ body[data-mode="dark"] .cell.N .l{ color:#9aa6e8; }
 .cuerpo-card .swatch{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; color:#fff; }
 .cuerpo-card b{ font-size:15px; line-height:1.25; }
 .cuerpo-card.sel{ border:2px solid var(--accent); background:var(--accent-weak); }
-.sw-gc{ background:#2E6A4E; } .sw-pn{ background:#1F3A63; } .sw-pl{ background:#0E6BA8; } .sw-aut{ background:#3E6B70; }
+.sw-gc{ background:#2E6A4E; } .sw-pn{ background:#1F3A63; } .sw-pl{ background:#0B7597; } .sw-aut{ background:#6A4E9C; }
 .field{ margin-bottom:14px; }
 .field label{ display:block; font-size:13px; font-weight:600; color:var(--text-2); margin-bottom:6px; }
 .select{ height:52px; border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface); display:flex; align-items:center; padding:0 14px; font-size:16px; font-weight:500; color:var(--text); }
@@ -609,8 +609,8 @@ body[data-mode="light"] .palette-note{ color:#4A515D; }
   <div class="swatches">
     <span class="sw"><i class="sw-gc"></i> Guardia Civil · verde pino</span>
     <span class="sw"><i class="sw-pn"></i> Policía Nacional · azul marino</span>
-    <span class="sw"><i class="sw-pl"></i> Policía Local · azul claro</span>
-    <span class="sw"><i class="sw-aut"></i> Autonómica · pizarra-teal neutro</span>
+    <span class="sw"><i class="sw-pl"></i> Policía Local · celeste/cian</span>
+    <span class="sw"><i class="sw-aut"></i> Autonómica · violeta neutro</span>
   </div>
   <p>El acento solo tiñe pestaña activa, botones primarios, enlaces y detalles. Todo lo demás es la base neutra gris del sistema. Los colores de gravedad —leve (amarillo), grave (naranja), muy grave (rojo) y delito (vino)— son <b>fijos</b> y no cambian con el cuerpo: son semántica de seguridad. Ninguno de los acentos usa la familia amarillo/naranja/rojo, por lo que nunca se confunden con la gravedad. Usa el selector de arriba para ver cada cuerpo en claro y oscuro.</p>
 </div>
