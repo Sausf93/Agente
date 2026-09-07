@@ -318,7 +318,21 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Circular con el sistema de alumbrado en deficientes condiciones (luz fundida, faro roto o ' +
       'mal reglado) que impide alumbrar la vía o ser visto por el resto de usuarios.',
-    terminos: ['faro roto', 'luz fundida', 'faro fundido', 'sin luces', 'luces fundidas'],
+    terminos: [
+      'faro roto',
+      'luz fundida',
+      'faro fundido',
+      'sin luces',
+      'luces fundidas',
+      'piloto roto',
+      'piloto fundido',
+      'luz trasera',
+      'sin luz',
+      'bombilla fundida',
+      'luz de posicion',
+      'antiniebla',
+      'circular sin luces',
+    ],
     marcoImporte: 'trafico',
     notaRevision:
       'A VERIFICAR gravedad y cuantía: puede ser leve o grave según sea alumbrado obligatorio y ' +
@@ -336,7 +350,19 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Circular con un vehículo a motor careciendo del seguro obligatorio de responsabilidad ' +
       'civil en vigor que cubra la circulación.',
-    terminos: ['sin seguro', 'sin poliza', 'seguro caducado', 'conducir sin seguro'],
+    terminos: [
+      'sin seguro',
+      'sin poliza',
+      'seguro caducado',
+      'conducir sin seguro',
+      'soa',
+      'sin soa',
+      'no tiene seguro',
+      'sin seguro obligatorio',
+      'grua',
+      'inmoviliza',
+      'deposito',
+    ],
     consecuencias: [
       {
         tipo: 'inmovilizacion',
@@ -372,6 +398,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'mirando el movil',
       'hablando por telefono',
       'wasap conduciendo',
+      'whatsapp',
+      'movil en la mano',
+      'con el movil en la mano',
+      'usando el movil',
+      'telefono en la mano',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -389,7 +420,16 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Circular con un vehículo cuya inspección técnica (ITV) está caducada o cuyo resultado no ' +
       'es favorable.',
-    terminos: ['sin itv', 'itv caducada', 'itv pasada', 'sin pasar la itv'],
+    terminos: [
+      'sin itv',
+      'itv caducada',
+      'itv pasada',
+      'sin pasar la itv',
+      'itv',
+      'itv vencida',
+      'itv fuera de plazo',
+      'no ha pasado la itv',
+    ],
     marcoImporte: 'trafico',
     notaRevision:
       'Importe 200 € (grave) verificado; no detrae puntos. A VERIFICAR: si el retraso supera un ' +
@@ -406,7 +446,15 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Circular sin hacer uso del cinturón de seguridad o de los sistemas de retención ' +
       'homologados estando el vehículo dotado de ellos.',
-    terminos: ['sin cinturon', 'sin cinto', 'no llevar cinturon'],
+    terminos: [
+      'sin cinturon',
+      'sin cinto',
+      'no llevar cinturon',
+      'cinturon',
+      'sin cinturon de seguridad',
+      'sin abrochar',
+      'sin abrocharse',
+    ],
     marcoImporte: 'trafico',
     notaRevision:
       'Importe 200 € (grave) y 4 puntos verificados (RGC art. 117; Ley 18/2021, en vigor desde ' +
@@ -423,7 +471,14 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Conducir o viajar en motocicleta o ciclomotor sin el casco de protección homologado y ' +
       'correctamente abrochado.',
-    terminos: ['sin casco', 'moto sin casco', 'circular sin casco'],
+    terminos: [
+      'sin casco',
+      'moto sin casco',
+      'circular sin casco',
+      'casco',
+      'sin casco homologado',
+      'en moto sin casco',
+    ],
     marcoImporte: 'trafico',
     notaRevision:
       'Importe 200 € (grave) y 4 puntos verificados (RGC art. 118; Ley 18/2021, en vigor desde ' +
@@ -440,7 +495,18 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'No detener el vehículo ante la luz roja de un semáforo, rebasando la línea de detención o ' +
       'el propio semáforo.',
-    terminos: ['saltarse el semaforo', 'semaforo en rojo', 'pasarse el rojo', 'saltarse un rojo'],
+    terminos: [
+      'saltarse el semaforo',
+      'semaforo en rojo',
+      'pasarse el rojo',
+      'saltarse un rojo',
+      'semaforo',
+      'se salto el rojo',
+      'se salto el semaforo',
+      'saltarse el rojo',
+      'no respetar el semaforo',
+      'semaforo rojo',
+    ],
     marcoImporte: 'trafico',
     notaRevision:
       'Importe 200 € (grave) y 4 puntos verificados (RGC art. 146). Pendiente de visto bueno del ' +
