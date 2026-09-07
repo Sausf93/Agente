@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agente — Mockup de dinamismo (copiar animado + resultados vivos)</title>
+<style>
+  :root{
+    --bg:#12151A; --surface:#1E232B; --surfaceAlt:#252B34; --border:#2C333D;
+    --textPrimary:#F2F4F7; --textSecondary:#98A1B0; --textTertiary:#6B7482;
+    --accent:#6FC79B; --accentOn:#0A0C10; --accentWeak:#1c3a30;
+    --success:#3FBE83; --successOn:#0A0C10;
+    --leveFg:#F4D58A; --leveBg:#3A2E0A;
+    --graveFg:#FBC38A; --graveBg:#3A2410;
+    --mgFg:#FBB0B3; --mgBg:#3A1113;
+    --radiusMd:12px; --radiusLg:16px; --radiusPill:999px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;background:#0A0C10;color:var(--textPrimary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 60px;}
+  h1{font-size:22px;font-weight:700;margin:0 0 4px;}
+  .sub{color:var(--textSecondary);font-size:15px;margin:0 0 24px;line-height:1.4;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:26px;}
+  .controls label{font-size:13px;color:var(--textSecondary);margin-right:4px;}
+  .swatch{width:22px;height:22px;border-radius:999px;border:2px solid transparent;cursor:pointer;}
+  .swatch.on{border-color:var(--textPrimary);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:26px;}
+  .panel{background:var(--bg);border:1px solid var(--border);border-radius:24px;padding:18px;}
+  .panel h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--textSecondary);margin:0 0 14px;}
+  .note{font-size:12.5px;color:var(--textTertiary);line-height:1.45;margin-top:14px;}
+
+  /* ---------- Interacción 1: botón Copiar boletín ---------- */
+  .boletin{background:var(--surfaceAlt);border-radius:var(--radiusMd);padding:14px;
+    font-size:16px;line-height:1.5;color:var(--textPrimary);margin-bottom:12px;}
+  .copyBtn{position:relative;width:100%;height:54px;border:0;border-radius:var(--radiusMd);
+    cursor:pointer;overflow:hidden;font:inherit;background:var(--accent);
+    transition:transform .1s ease, background-color .25s ease;}
+  .copyBtn:active{transform:scale(.98);}
+  .copyBtn.copied{background:var(--success);}
+  .copyLayer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    gap:10px;font-size:16px;font-weight:600;color:var(--accentOn);transition:opacity .22s ease;}
+  .copyBtn.copied .layerNormal{opacity:0;}
+  .copyBtn:not(.copied) .layerDone{opacity:0;}
+  .copyBtn .layerDone{color:var(--successOn);}
+  .buzz{display:inline-flex;align-items:center;gap:7px;margin-top:12px;height:20px;
+    font-size:13px;color:var(--accent);opacity:0;transition:opacity .15s ease;}
+  .buzz.show{opacity:1;}
+  @keyframes ring{0%{transform:scale(.6);opacity:.9}70%{transform:scale(1.6);opacity:0}100%{opacity:0}}
+  .buzz .ring{width:12px;height:12px;border-radius:999px;background:var(--accent);animation:ring .5s ease-out;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .sev{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;
+    border-radius:var(--radiusPill);font-size:13px;font-weight:700;}
+  .sev .dot{width:8px;height:8px;border-radius:999px;}
+  .sev.grave{background:var(--graveBg);color:var(--graveFg);} .sev.grave .dot{background:#F08A24;}
+  .tiles{display:flex;gap:10px;margin-bottom:14px;}
+  .tile{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusMd);
+    padding:12px 10px;text-align:left;}
+  .tile .num{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;}
+  .tile .num.acc{color:var(--accent);}
+  .tile .lbl{font-size:12px;color:var(--textSecondary);margin-top:6px;}
+
+  /* ---------- Interacción 2: resultados de búsqueda ---------- */
+  .search{display:flex;align-items:center;gap:10px;height:56px;background:var(--surface);
+    border:2px solid var(--accent);border-radius:var(--radiusMd);padding:0 14px;margin-bottom:6px;}
+  .search input{flex:1;background:transparent;border:0;outline:0;color:var(--textPrimary);
+    font-size:18px;font-family:inherit;}
+  .search input::placeholder{color:var(--textTertiary);}
+  .micBtn{width:36px;height:36px;border-radius:999px;border:1px solid var(--border);
+    background:var(--surfaceAlt);display:flex;align-items:center;justify-content:center;
+    color:var(--textSecondary);position:relative;}
+  .micBtn .soon{position:absolute;bottom:-16px;right:-6px;font-size:9px;color:var(--textTertiary);
+    background:var(--surfaceAlt);border:1px solid var(--border);border-radius:6px;padding:1px 4px;white-space:nowrap;}
+  .rehint{font-size:12px;color:var(--textTertiary);margin:0 0 12px;}
+  .results{list-style:none;margin:0;padding:0;}
+  .row{display:flex;align-items:center;gap:12px;padding:14px 12px;border-bottom:1px solid var(--border);
+    background:var(--surface);cursor:pointer;transition:transform .1s ease,background-color .15s ease;}
+  .row:first-child{border-top-left-radius:var(--radiusMd);border-top-right-radius:var(--radiusMd);}
+  .row:last-child{border-bottom:0;border-bottom-left-radius:var(--radiusMd);border-bottom-right-radius:var(--radiusMd);}
+  .row:active{transform:scale(.985);background:var(--surfaceAlt);}
+  .row .main{flex:1;min-width:0;}
+  .row .title{font-size:16px;font-weight:600;}
+  .row .meta{font-size:13px;color:var(--textSecondary);margin-top:3px;}
+  .row .right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .row .price{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .conseq{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;margin-top:6px;
+    border-radius:var(--radiusPill);font-size:12px;font-weight:600;background:var(--surfaceAlt);
+    border:1px solid var(--border);color:var(--textSecondary);}
+  .conseq.danger{color:var(--mgFg);}
+  mark{background:var(--accentWeak);color:var(--accent);border-radius:4px;padding:0 2px;font-weight:700;}
+  /* entrada escalonada */
+  @keyframes fadeInDown{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .row.enter{animation:fadeInDown .24s ease both;}
+  /* skeleton */
+  .sk{padding:14px 12px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .sk:last-child{border-bottom:0;}
+  .skline{height:14px;border-radius:6px;background:linear-gradient(90deg,#252B34 25%,#333A45 37%,#252B34 63%);
+    background-size:400% 100%;animation:shimmer 1.2s ease-in-out infinite;}
+  .skline.w60{width:60%;} .skline.w35{width:35%;margin-top:9px;height:11px;}
+  @keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+  .demoBtn{margin-top:14px;height:44px;padding:0 16px;border-radius:var(--radiusMd);border:1px solid var(--accent);
+    background:transparent;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;}
+  @media (prefers-reduced-motion: reduce){
+    .row.enter{animation:none;} .skline{animation:none;} .buzz .ring{animation:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Agente — Mockup de dinamismo</h1>
+  <p class="sub">Dos interacciones clave, tal como deberían sentirse tras los P0.
+    Modo oscuro (uso de noche). El acento cambia con el cuerpo, igual que en la app.
+    Todo es una maqueta: la háptica real va en el móvil (<code>expo-haptics</code>).</p>
+
+  <div class="controls">
+    <label>Acento del cuerpo:</label>
+    <div class="swatch on" style="background:#6FC79B" data-acc="#6FC79B" data-weak="#1c3a30" title="Guardia Civil"></div>
+    <div class="swatch" style="background:#7FA4D6" data-acc="#7FA4D6" data-weak="#1b2c44" title="Policía Nacional"></div>
+    <div class="swatch" style="background:#4FC4E6" data-acc="#4FC4E6" data-weak="#123642" title="Policía Local"></div>
+    <div class="swatch" style="background:#B49BE8" data-acc="#B49BE8" data-weak="#2a2440" title="Autonómica"></div>
+  </div>
+
+  <div class="grid">
+    <!-- Interacción 1 -->
+    <div class="panel">
+      <h2>1 · Copiar boletín — acción estrella</h2>
+      <div class="chips">
+        <span class="sev grave"><span class="dot"></span>Grave</span>
+        <span class="sev" style="background:var(--surfaceAlt);color:var(--textSecondary)">Vía administrativa</span>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="num">200&nbsp;€</div><div class="lbl">Importe</div></div>
+        <div class="tile"><div class="num acc">100&nbsp;€</div><div class="lbl">Pronto pago</div></div>
+        <div class="tile"><div class="num">0</div><div class="lbl">Puntos</div></div>
+      </div>
+      <div class="boletin">El vehículo circulaba con el alumbrado reglamentario deficiente
+        en el faro delantero derecho, incumpliendo lo dispuesto en el RGV art. 11.1.</div>
+      <button class="copyBtn" id="copyBtn" aria-label="Copiar texto del boletín">
+        <span class="copyLayer layerNormal">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar boletín
+        </span>
+        <span class="copyLayer layerDone">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Copiado
+        </span>
+      </button>
+      <div class="buzz" id="buzz"><span class="ring"></span> Háptico de éxito (en el móvil vibra)</div>
+      <p class="note">Al pulsar: micro-escala 0.98 → cruce suave a verde "Copiado" (1,2 s) →
+        vuelve. En el móvil se añade <code>Haptics.notificationAsync(Success)</code>. Hoy el
+        cambio es instantáneo y sin vibración.</p>
+    </div>
+
+    <!-- Interacción 2 -->
+    <div class="panel">
+      <h2>2 · Resultados vivos — match resaltado + skeleton + entrada</h2>
+      <div class="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" value="sin seg" aria-label="Campo de búsqueda" autocomplete="off">
+        <span class="micBtn" title="Búsqueda por voz (pronto)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          <span class="soon">pronto</span>
+        </span>
+      </div>
+      <p class="rehint">Resultados en vivo desde la 2.ª letra · sin cobertura</p>
+      <ul class="results" id="results"></ul>
+      <button class="demoBtn" id="replay">Volver a teclear (ver skeleton + entrada)</button>
+      <p class="note">El término tecleado se <mark>resalta</mark> en cada fila; aparece un chip de
+        consecuencia cuando es determinante (grúa, inmovilización, detención); las filas entran
+        con fade + desplazamiento escalonado. Mientras "busca", skeleton en vez de spinner.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Acento configurable ---
+  const swatches=[...document.querySelectorAll('.swatch')];
+  swatches.forEach(s=>s.addEventListener('click',()=>{
+    swatches.forEach(x=>x.classList.remove('on')); s.classList.add('on');
+    document.documentElement.style.setProperty('--accent',s.dataset.acc);
+    document.documentElement.style.setProperty('--accentWeak',s.dataset.weak);
+    // accentOn: texto oscuro sobre acento claro (modo oscuro)
+    document.documentElement.style.setProperty('--accentOn','#0A0C10');
+  }));
+
+  // --- Interacción 1: copiar ---
+  const btn=document.getElementById('copyBtn'), buzz=document.getElementById('buzz');
+  let tmr=null;
+  btn.addEventListener('click',()=>{
+    btn.classList.add('copied'); buzz.classList.add('show');
+    // re-dispara la animación del anillo
+    const ring=buzz.querySelector('.ring'); ring.style.animation='none'; void ring.offsetWidth; ring.style.animation='';
+    clearTimeout(tmr);
+    tmr=setTimeout(()=>{btn.classList.remove('copied'); buzz.classList.remove('show');},1200);
+  });
+
+  // --- Interacción 2: resultados con match + skeleton + stagger ---
+  const DATA=[
+    {t:'Circular sin seguro obligatorio', m:'LRCSCVM · art. 2', price:'601–3.000 €', sev:null, conseq:{txt:'Inmovilización', danger:false}},
+    {t:'Sin ITV (inspección caducada)', m:'RGV · art. 10', price:'200 €', sev:null, conseq:null},
+    {t:'Conducir sin permiso vigente', m:'LSV · art. 76', price:'—', sev:null, conseq:{txt:'Puede ser delito', danger:true}},
+  ];
+  const results=document.getElementById('results'), q=document.getElementById('q');
+
+  function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+  function highlight(text,term){
+    term=term.trim(); if(!term) return esc(text);
+    const i=text.toLowerCase().indexOf(term.toLowerCase());
+    if(i<0) return esc(text);
+    return esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+term.length))+'</mark>'+esc(text.slice(i+term.length));
+  }
+  function conseqHtml(c){
+    if(!c) return '';
+    const ico='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.3 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0Z"/></svg>';
+    return '<span class="conseq'+(c.danger?' danger':'')+'">'+ico+esc(c.txt)+'</span>';
+  }
+  function skeleton(){
+    results.innerHTML='';
+    for(let i=0;i<3;i++){
+      const li=document.createElement('li'); li.className='sk';
+      li.innerHTML='<div class="skline w60"></div><div class="skline w35"></div>';
+      results.appendChild(li);
+    }
+  }
+  function render(term){
+    results.innerHTML='';
+    DATA.forEach((d,idx)=>{
+      const li=document.createElement('li'); li.className='row enter';
+      li.style.animationDelay=(idx*40)+'ms';
+      li.innerHTML=
+        '<div class="main"><div class="title">'+highlight(d.t,term)+'</div>'+
+        '<div class="meta">'+esc(d.m)+'</div>'+conseqHtml(d.conseq)+'</div>'+
+        '<div class="right"><div class="price">'+esc(d.price)+'</div></div>';
+      results.appendChild(li);
+    });
+  }
+  function run(){ const term=q.value; skeleton(); setTimeout(()=>render(term),650); }
+  q.addEventListener('input',run);
+  document.getElementById('replay').addEventListener('click',run);
+  run();
+</script>
+</body>
+</html>
