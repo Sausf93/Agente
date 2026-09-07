@@ -141,7 +141,8 @@ const ART_LOSC_37_1 = articuloLosc({
   texto:
     'Tipifica como infracción leve la celebración de reuniones en lugares de tránsito público o de ' +
     'manifestaciones incumpliendo lo previsto en la Ley Orgánica 9/1983 reguladora del derecho de ' +
-    'reunión, cuando no constituyan infracción penal. Resumen orientativo; consúltese el BOE.',
+    'reunión. La responsabilidad recae en los organizadores o promotores. Resumen orientativo; ' +
+    'consúltese el BOE.',
 });
 
 const ART_LOSC_37_4 = articuloLosc({
@@ -383,15 +384,17 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede la aprehensión (comiso) de la droga y de los instrumentos empleados para su ' +
           'consumo, que se ponen a disposición de la autoridad competente.',
-        fuente: 'LO 4/2015 art. 36.16',
+        fuente: 'LO 4/2015 art. 39.2',
       },
     ],
     notaRevision:
       NOTA_GRAVE_IMPORTE +
-      ' A VERIFICAR el artículo de la aprehensión/comiso de la sustancia y la posibilidad de ' +
-      'suspensión de la sanción por sometimiento a tratamiento de deshabituación (art. 38 LO ' +
-      '4/2015). La tenencia para el consumo propio en lugar público es infracción administrativa, ' +
-      'no delito; el tráfico sí es delito (art. 368 CP). Confirmar con el revisor jurídico.',
+      ' El comiso de la sustancia y de los instrumentos es sanción accesoria del art. 39.2 LO 4/2015. ' +
+      'La suspensión de la sanción por sometimiento a tratamiento de deshabituación está prevista en ' +
+      'la Disposición Adicional Quinta LO 4/2015 y SOLO para menores de edad (el art. 38 regula la ' +
+      'prescripción, no la deshabituación). La tenencia para el consumo propio en lugar público es ' +
+      'infracción administrativa, no delito; el tráfico sí es delito (art. 368 CP). Confirmar con el ' +
+      'revisor jurídico.',
   }),
   construirInfraccion({
     id: 'sc-armas-prohibidas',
@@ -580,8 +583,8 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     importeReducidoEur: 50,
     textoBoletin:
       'Celebrar reuniones en lugares de tránsito público o manifestaciones incumpliendo lo previsto ' +
-      'en la Ley Orgánica 9/1983 reguladora del derecho de reunión (falta de comunicación previa), ' +
-      'cuando no constituya infracción penal (art. 37.1 LO 4/2015).',
+      'en la Ley Orgánica 9/1983 reguladora del derecho de reunión (falta de comunicación previa). ' +
+      'La responsabilidad recae en los organizadores o promotores (art. 37.1 LO 4/2015).',
     terminos: [
       'manifestacion no comunicada',
       'concentracion sin permiso',
@@ -595,8 +598,9 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       NOTA_LEVE_IMPORTE +
       ' A VERIFICAR: el derecho de reunión es un derecho fundamental (art. 21 CE); la falta de ' +
       'comunicación NO impide por sí sola el ejercicio del derecho y la sanción debe ponderarse. ' +
-      'Distinguir de la infracción GRAVE del art. 36.8 (reuniones en infraestructuras críticas). ' +
-      'Punto sensible: confirmar con el revisor jurídico.',
+      'Distinguir de la infracción MUY GRAVE del art. 35.1 (reuniones o manifestaciones en ' +
+      'infraestructuras críticas) y de la GRAVE del art. 36.8 (perturbación del desarrollo de una ' +
+      'reunión o manifestación lícita). Punto sensible: confirmar con el revisor jurídico.',
   }),
 ];
 
