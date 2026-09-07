@@ -12,4 +12,5 @@ export * from './user.js';
 export * from './cuadrante.js';
 export * from './feedback.js';
 export * from './territorio.js';
+export * from './geografia.js';
 export * from './validators.js';

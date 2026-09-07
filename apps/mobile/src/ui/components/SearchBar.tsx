@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
+import { Search, X } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 
 /**
@@ -42,6 +43,7 @@ export function SearchBar({
         gap: t.spacing.sm,
       }}
     >
+      <Search size={20} color={focused ? t.color.accent : t.color.textSecondary} strokeWidth={2} />
       <TextInput
         accessibilityLabel="Campo de búsqueda"
         value={value}
@@ -87,11 +89,7 @@ export function SearchBar({
               justifyContent: 'center',
             }}
           >
-            <Text
-              style={{ color: t.color.textSecondary, fontSize: 16, lineHeight: 18, fontWeight: '700' }}
-            >
-              ×
-            </Text>
+            <X size={14} color={t.color.textSecondary} strokeWidth={2.4} />
           </View>
         </Pressable>
       ) : null}

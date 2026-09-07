@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Pressable, Text, type ViewStyle } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import { Check, Copy } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 
 /**
@@ -48,7 +49,7 @@ export function CopyBulletinButton({
   }
 
   const base: ViewStyle = {
-    minHeight: t.touch.primaryHeight,
+    minHeight: 54, // acción estrella: algo más alta que un botón normal (§4 del sistema visual)
     borderRadius: t.radius.md,
     alignItems: 'center',
     justifyContent: 'center',
@@ -72,11 +73,16 @@ export function CopyBulletinButton({
             : t.color.brand,
       })}
     >
+      {copiado ? (
+        <Check size={22} color={t.color.textOnBrand} strokeWidth={2.4} />
+      ) : (
+        <Copy size={22} color={t.color.textOnBrand} strokeWidth={2} />
+      )}
       <Text
         maxFontSizeMultiplier={1.6}
         style={{ color: t.color.textOnBrand, ...t.typography.scale.bodyStrong }}
       >
-        {copiado ? 'Copiado ✓' : label}
+        {copiado ? 'Copiado' : label}
       </Text>
     </Pressable>
   );

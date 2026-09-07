@@ -328,6 +328,43 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   exportar mes a PDF/CSV, resumen anual y cómputo anual de referencia, edición por rango de días,
   onboarding de patrón con previsualización, y la copia cifrada/sincronización entre dispositivos.
 
+## ADR-015 · Rediseño visual v2: acento por cuerpo, onboarding y tema elegible
+
+- **Estado:** aceptada (implementada en `apps/mobile`; diseño en `docs/diseno/sistema-visual.md`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** la app funcionaba pero se percibía "sosa". El sistema visual v2 (aprobado por el
+  fundador) pide personalización sutil por cuerpo, onboarding y un selector de tema, sin
+  parecer oficial de ningún cuerpo.
+
+### Decisiones
+
+1. **Acento por cuerpo que SUSTITUYE a `brand`.** `theme.ts` añade `accentByCuerpo` +
+   `accentDefault` y una función pura `resolveTheme(mode, cuerpo)` que sobrescribe
+   `brand/brandPressed/textOnBrand/focusRing` (y expone `accent/accentWeak/accentOn`) con el
+   acento del cuerpo. Así todo componente que ya leía `color.brand` hereda el acento sin
+   cambios. `accentWeak` se calcula por mezcla (`mixHex`, 14 % claro / 22 % oscuro). La
+   **gravedad y los neutros NO cambian nunca** con el cuerpo (test que lo fija).
+2. **Tema elegible Sistema/Claro/Oscuro**, persistido en el perfil; `mode` sale de esa
+   preferencia (Sistema sigue `useColorScheme`). El perfil (cuerpo, autonómica, CCAA/provincia/
+   municipio, tema, `onboarded`) vive en una fila SQLite (`user.db`, migración `user_version =
+   4`), solo en el dispositivo (ADR-001).
+3. **Onboarding de 2 pasos** (`app/onboarding.tsx`), gate en el layout raíz por el flag
+   `onboarded`. Paso 1: cuerpo (con sub-lista para Autonómica: Ertzaintza/Mossos/Foral/Canaria,
+   que fija su CCAA vía `CCAA_DE_AUTONOMICA`); tiñe en caliente. Paso 2: territorio con el nuevo
+   catálogo `packages/shared/src/geografia.ts` (19 CCAA + 52 provincias). Aviso "no oficial"
+   fijo. Ajustes (`app/ajustes.tsx`) permite cambiarlo todo y re-tiñe en caliente.
+4. **Municipio como TEXTO libre (con id derivado `slugMunicipio`)**, no lista: no hay dataset
+   offline de los >8000 municipios. Obligatorio solo para Policía Local. Encaja con "mi
+   ordenanza personal" (ADR-009) como puente. *Desviación consciente del boceto, que dibujaba un
+   selector de municipio.*
+5. **Autodetección por GPS DIFERIDA.** El boceto la ofrecía "si es fácil". Para no meter
+   `expo-location` ni pedir permisos en seco en v1, el territorio se elige a mano; la
+   autodetección confirmable queda para una iteración posterior.
+6. **Barra inferior con iconos Lucide** (`lucide-react-native` sobre `react-native-svg`, ambos
+   compatibles con Expo Go). Pestaña activa con tres señales redundantes: pastilla `accentWeak`
+   + color de acento + trazo más grueso (2.4). Metáforas de objeto/acción, cero símbolos
+   oficiales.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

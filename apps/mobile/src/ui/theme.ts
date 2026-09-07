@@ -14,7 +14,7 @@
  * Uso: `import { lightTheme, darkTheme, type Theme } from '@/ui/theme';`
  */
 
-import type { Gravedad } from '@agente/shared';
+import type { Cuerpo, Gravedad } from '@agente/shared';
 
 export const palette = {
   // Neutros (grises fríos, ligerísimo tinte azul para armonizar con la marca)
@@ -150,6 +150,12 @@ const lightSemantic = {
   brandPressed: palette.brand600,
   textOnBrand: '#FFFFFF',
   focusRing: palette.brand500,
+  // Acento por cuerpo (elegido en onboarding). Por defecto = marca neutra. `resolveTheme`
+  // sobrescribe brand/brandPressed/textOnBrand/focusRing + estos tres con el acento activo,
+  // de modo que TODO componente que ya lee `color.brand` hereda el acento sin cambios.
+  accent: palette.brand500,
+  accentWeak: '#E4ECF9',
+  accentOn: '#FFFFFF',
   success: palette.success,
   successBg: '#DAF3E6',
   info: palette.info,
@@ -172,6 +178,9 @@ const darkSemantic = {
   brandPressed: palette.brand400,
   textOnBrand: palette.neutral950,
   focusRing: palette.brand300,
+  accent: palette.brand300,
+  accentWeak: '#132338',
+  accentOn: palette.neutral950,
   success: palette.successDark,
   successBg: '#0F2E20',
   info: palette.infoDark,
@@ -253,3 +262,117 @@ export const severityMeta: Record<Severity, { label: string; icon: string; a11y:
   muyGrave: { label: 'Muy grave', icon: 'triangle-alert', a11y: 'Gravedad: muy grave' },
   delito: { label: 'Delito', icon: 'gavel', a11y: 'Tipo: delito, vía penal' },
 };
+
+// ---------------------------------------------------------------------------
+// Acento por cuerpo (sistema visual v2, §1.2) — NO toca la gravedad ni los neutros.
+// ---------------------------------------------------------------------------
+
+/** Trio de acento para un modo: color de acción, estado presionado y color del texto encima. */
+export interface AccentTokens {
+  accent: string;
+  pressed: string;
+  on: string;
+}
+
+/** Clave interna de acento por cuerpo (camelCase, propia del tema). */
+export type CuerpoAccent = 'guardiaCivil' | 'policiaNacional' | 'policiaLocal' | 'autonomica';
+
+/**
+ * Tabla de acentos por cuerpo (claro y oscuro), tomada de `docs/diseno/sistema-visual.md`
+ * §1.2. Tonos SOBRIOS y desaturados, deliberadamente distintos del color institucional exacto
+ * (restricción legal: la app no puede parecer oficial). Contraste AA verificado en la tabla.
+ */
+export const accentByCuerpo: Record<CuerpoAccent, { light: AccentTokens; dark: AccentTokens }> = {
+  guardiaCivil: {
+    light: { accent: '#2E6A4E', pressed: '#245840', on: '#FFFFFF' },
+    dark: { accent: '#6FC79B', pressed: '#4FA97D', on: '#0A0C10' },
+  },
+  policiaNacional: {
+    light: { accent: '#1F3A63', pressed: '#172C4B', on: '#FFFFFF' },
+    dark: { accent: '#7FA4D6', pressed: '#4E79B5', on: '#0A0C10' },
+  },
+  policiaLocal: {
+    light: { accent: '#0B7597', pressed: '#095E79', on: '#FFFFFF' },
+    dark: { accent: '#4FC4E6', pressed: '#2AA6C8', on: '#0A0C10' },
+  },
+  autonomica: {
+    light: { accent: '#6A4E9C', pressed: '#574080', on: '#FFFFFF' },
+    dark: { accent: '#B49BE8', pressed: '#8F79CC', on: '#0A0C10' },
+  },
+};
+
+/** Acento por DEFECTO (antes de elegir cuerpo o tras un reset): la marca neutra azul pizarra. */
+export const accentDefault: { light: AccentTokens; dark: AccentTokens } = {
+  light: { accent: palette.brand500, pressed: palette.brand600, on: '#FFFFFF' },
+  dark: { accent: palette.brand300, pressed: palette.brand400, on: palette.neutral950 },
+};
+
+/**
+ * Traduce el enum de dominio `Cuerpo` (@agente/shared, snake_case) a la clave de acento del
+ * tema. Los cuatro cuerpos autonómicos comparten el mismo acento neutro (no se replica ninguna
+ * identidad autonómica concreta). `null`/desconocido → sin acento (marca neutra por defecto).
+ */
+export function accentKeyFromCuerpo(cuerpo: Cuerpo | null | undefined): CuerpoAccent | null {
+  switch (cuerpo) {
+    case 'guardia_civil':
+      return 'guardiaCivil';
+    case 'policia_nacional':
+      return 'policiaNacional';
+    case 'policia_local':
+      return 'policiaLocal';
+    case 'policia_autonomica':
+      return 'autonomica';
+    default:
+      return null;
+  }
+}
+
+/**
+ * Mezcla dos colores hex `#RRGGBB`. `ratioA` es la proporción del primero (0..1). Pura y sin
+ * dependencias de RN, para poder testearla y precalcular `accentWeak` (tinte de la pastilla de
+ * la pestaña activa) sin recurrir a canales alfa.
+ */
+export function mixHex(a: string, b: string, ratioA: number): string {
+  const clamp = Math.max(0, Math.min(1, ratioA));
+  const pa = parseHex(a);
+  const pb = parseHex(b);
+  const mix = (x: number, y: number) => Math.round(x * clamp + y * (1 - clamp));
+  const to2 = (n: number) => n.toString(16).padStart(2, '0');
+  return `#${to2(mix(pa[0], pb[0]))}${to2(mix(pa[1], pb[1]))}${to2(mix(pa[2], pb[2]))}`.toUpperCase();
+}
+
+function parseHex(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
+
+/**
+ * Resuelve el tema ACTIVO = `mode` (claro/oscuro) × `cuerpo`. Devuelve el tema base neutro con
+ * `brand`/`brandPressed`/`textOnBrand`/`focusRing` (y `accent`/`accentWeak`/`accentOn`)
+ * sobrescritos por el acento del cuerpo. La GRAVEDAD, los neutros, la tipografía y el espaciado
+ * NO cambian nunca con el cuerpo (regla innegociable del sistema visual §1.3).
+ */
+export function resolveTheme(mode: 'light' | 'dark', cuerpo: Cuerpo | null): Theme {
+  const base = mode === 'dark' ? darkTheme : lightTheme;
+  const key = accentKeyFromCuerpo(cuerpo);
+  const a = key ? accentByCuerpo[key][mode] : accentDefault[mode];
+  // Tinte débil = mezcla del acento con la superficie (14 % claro / 22 % oscuro).
+  const accentWeak = mixHex(a.accent, base.color.surface, mode === 'dark' ? 0.22 : 0.14);
+  return {
+    ...base,
+    color: {
+      ...base.color,
+      brand: a.accent,
+      brandPressed: a.pressed,
+      textOnBrand: a.on,
+      focusRing: a.accent,
+      accent: a.accent,
+      accentWeak,
+      accentOn: a.on,
+    },
+  };
+}
