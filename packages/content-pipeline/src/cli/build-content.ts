@@ -15,7 +15,7 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { CATALOGO_TRAFICO } from '../catalogo.js';
+import { ENTRADAS_A_ENRIQUECER, type EntradaCatalogo } from '../catalogo.js';
 import { BoeClient } from '../sources/boe/client.js';
 import { parseNormaConsolidada } from '../parsers/boe-xml/parse.js';
 import { SEED_TRAFICO } from '../seed/traficoSeed.js';
@@ -29,43 +29,61 @@ const RAIZ = resolve(AQUI, '..', '..');
 /** Versión de contenido de esta build (Fase 1, primera carga de tráfico). */
 const VERSION = '0.1.0';
 
-async function cargarRgc(offline: boolean): Promise<{ textoXml: string; metaXml: string }> {
-  const rgc = CATALOGO_TRAFICO.RGC;
-  if (!rgc) throw new Error('Falta la entrada RGC en el catálogo');
+/**
+ * Descarga (o lee del fixture, en `--offline`) el texto consolidado + metadatos de una norma.
+ * En modo offline SOLO el RGC tiene fixture local; el resto se salta (devuelve `null`) para no
+ * romper el build sin red. En vivo, cada norma se descarga del BOE por su identificador.
+ */
+async function cargarNorma(
+  entrada: EntradaCatalogo,
+  offline: boolean,
+  cliente: BoeClient,
+): Promise<{ textoXml: string; metaXml: string } | null> {
   if (offline) {
+    if (entrada.codigo !== 'RGC') return null;
     const [textoXml, metaXml] = await Promise.all([
       readFile(resolve(RAIZ, 'fixtures', 'rgc-fragmento.xml'), 'utf8'),
       readFile(resolve(RAIZ, 'fixtures', 'rgc-meta.xml'), 'utf8'),
     ]);
     return { textoXml, metaXml };
   }
-  const cliente = new BoeClient();
   const [textoXml, metaXml] = await Promise.all([
-    cliente.fetchTextoConsolidado(rgc.idBoe),
-    cliente.fetchMetadatos(rgc.idBoe),
+    cliente.fetchTextoConsolidado(entrada.idBoe),
+    cliente.fetchMetadatos(entrada.idBoe),
   ]);
   return { textoXml, metaXml };
 }
 
 async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaquetar> {
-  const rgc = CATALOGO_TRAFICO.RGC!;
   // Seed base: tráfico + penal (comparten la norma CP; `combinarSeeds` la deduplica).
-  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
-  try {
-    const { textoXml, metaXml } = await cargarRgc(offline);
-    const parseada = parseNormaConsolidada(textoXml, metaXml, rgc);
-    console.log(
-      `[content:build] RGC enriquecido desde el BOE: ${parseada.articulos.length} artículos.`,
-    );
-    return enriquecerConNorma(seed, parseada);
-  } catch (error) {
-    console.warn(
-      `[content:build] No se pudo enriquecer con el RGC (${
-        error instanceof Error ? error.message : error
-      }). Se construye solo con el seed.`,
-    );
-    return seed;
+  let contenido = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
+
+  const cliente = new BoeClient();
+  // Enriquecemos con el TEXTO CONSOLIDADO REAL de cada norma del catálogo, con fallback POR NORMA:
+  // si una falla (descarga o parseo), se avisa y se sigue con las demás (el seed es autosuficiente).
+  for (const entrada of ENTRADAS_A_ENRIQUECER) {
+    try {
+      const fuente = await cargarNorma(entrada, offline, cliente);
+      if (!fuente) {
+        console.warn(
+          `[content:build] ${entrada.codigo}: sin fixture offline; se omite (modo --offline).`,
+        );
+        continue;
+      }
+      const parseada = parseNormaConsolidada(fuente.textoXml, fuente.metaXml, entrada);
+      console.log(
+        `[content:build] ${entrada.codigo} enriquecido desde el BOE: ${parseada.articulos.length} artículos.`,
+      );
+      contenido = enriquecerConNorma(contenido, parseada);
+    } catch (error) {
+      console.warn(
+        `[content:build] No se pudo enriquecer con ${entrada.codigo} (${
+          error instanceof Error ? error.message : error
+        }). Se sigue con el resto.`,
+      );
+    }
   }
+  return contenido;
 }
 
 async function main(): Promise<void> {

@@ -78,8 +78,8 @@ export function validarContenido(contenido: ContenidoParaEmpaquetar): void {
 
 function insertarNormas(db: DatabaseSync, normas: Norma[]): void {
   const stmt = db.prepare(
-    `INSERT INTO norma (id, codigo, titulo, tipo, ambito, territorio_id, origen, url_boe, fecha_consolidacion)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO norma (id, codigo, titulo, tipo, ambito, territorio_id, origen, url_boe, fecha_consolidacion, cuerpos)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
   for (const n of normas) {
     stmt.run(
@@ -92,6 +92,7 @@ function insertarNormas(db: DatabaseSync, normas: Norma[]): void {
       n.origen,
       n.urlBoe,
       n.fechaConsolidacion,
+      JSON.stringify(n.cuerpos),
     );
   }
 }

@@ -44,6 +44,14 @@ describe('parseNormaConsolidada — norma', () => {
     expect(norma.id).toBe('BOE-A-2003-23514');
     expect(norma.fechaConsolidacion).toBe('2026-07-31');
   });
+
+  it('propaga los cuerpos de la entrada del catálogo a la Norma (tráfico, sin PN)', () => {
+    const { norma } = parsear();
+    expect(norma.cuerpos).toEqual(RGC.cuerpos);
+    expect(norma.cuerpos).toContain('guardia_civil');
+    expect(norma.cuerpos).toContain('policia_local');
+    expect(norma.cuerpos).not.toContain('policia_nacional');
+  });
 });
 
 describe('parseNormaConsolidada — artículos', () => {

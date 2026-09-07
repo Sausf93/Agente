@@ -93,6 +93,20 @@ describe('construirPaquete: estructura y metadatos', () => {
     ).n;
     expect(n).toBe(0);
   });
+
+  it('la columna cuerpos viaja como JSON en la tabla norma (default = todos)', () => {
+    const fila = db.prepare(`SELECT cuerpos FROM norma WHERE codigo = 'RGC'`).get() as {
+      cuerpos: string;
+    };
+    const cuerpos = JSON.parse(fila.cuerpos) as string[];
+    // El seed no etiqueta cuerpos → Norma aplica el default (todos los cuerpos).
+    expect(cuerpos).toEqual([
+      'guardia_civil',
+      'policia_nacional',
+      'policia_local',
+      'policia_autonomica',
+    ]);
+  });
 });
 
 describe('buscador FTS5: jerga de calle → infracción', () => {

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   Ambito,
+  Cuerpo,
   CuerpoCompetente,
   GravedadPenal,
   Gravedad,
@@ -54,6 +55,12 @@ export type Territorio = z.infer<typeof Territorio>;
 const capaTerritorioValida = (o: { ambito: string; territorioId: string | null }): boolean =>
   o.ambito === 'estatal' ? o.territorioId === null : o.territorioId !== null;
 
+/**
+ * Todos los cuerpos, en orden estable. Es el valor por defecto de `Norma.cuerpos`: una norma
+ * sin etiquetar es RELEVANTE para todos (conservador, no oculta contenido a nadie).
+ */
+export const CUERPOS_TODOS: readonly Cuerpo[] = Cuerpo.options;
+
 export const Norma = z
   .object({
     id: Id,
@@ -65,6 +72,12 @@ export const Norma = z
     origen: OrigenContenido.default('oficial'),
     urlBoe: z.string().url().nullable().default(null),
     fechaConsolidacion: FechaCivil.nullable().default(null),
+    /**
+     * Cuerpos que consultan esta norma habitualmente (relevancia, para filtrar la lista de
+     * Normas por cuerpo del agente). NO es una restricción de acceso: solo prioriza. Por
+     * defecto, todos los cuerpos (una norma sin etiquetar la ve todo el mundo).
+     */
+    cuerpos: z.array(Cuerpo).default(() => [...CUERPOS_TODOS]),
   })
   .refine(capaTerritorioValida, {
     message: 'El ámbito estatal no lleva territorio; el autonómico/municipal es obligatorio',
