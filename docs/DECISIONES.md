@@ -603,6 +603,42 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   filtros por norma en la sección "En la ley"; y, cuando el pipeline emita títulos de artículo del
   CP (hoy muchos van sin `titulo`), la fila mostrará el epígrafe además del extracto.
 
+## ADR-021 · Ordenanzas municipales: piloto de Tenerife + filtro territorial en cliente
+
+- **Estado:** aceptada (implementada en `content-pipeline` y `apps/mobile`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** el onboarding capturaba el municipio pero NO había ni una ordenanza cargada, así que
+  para un Policía Local la app no cumplía su razón de pagar. Se arranca la CAPA MUNICIPAL de verdad
+  con un piloto ("empezar por Tenerife e ir ampliando").
+
+### Decisiones
+
+1. **Seed municipal `oficial` en el paquete firmado** (`seed/ordenanzasSeed.ts`), NO "mi ordenanza
+   personal" (ADR-009 sigue siendo el puente editable en local). Piloto: **Santa Cruz de Tenerife**,
+   con 3 ordenanzas reales de su sede electrónica (circulación/VMP, animales, ruidos) y **7
+   infracciones de calle** (patinete por acera, patinete menor sin casco, zona azul, perro
+   suelto, excrementos, perro sin censar, ruido/convivencia). Marco de importe `municipal` (solo
+   coherencia, sin rango legal único); importes ORIENTATIVOS y TODO `pendiente_revision` con
+   `notaRevision` "a verificar" (la zona azul, en implantación 2026, avisa con máxima cautela).
+2. **Enganche territorial por `slugMunicipio`.** La norma/infracción municipal lleva
+   `territorioId = slugMunicipio('Santa Cruz de Tenerife')` = `mun-santa-cruz-de-tenerife`, el
+   MISMO id que el onboarding deriva del municipio del perfil. Sin ese acople, el filtro nunca
+   engancharía. Testeado en `shared` (que el slug coincide) y en integración (que solo lo ve el
+   Local de ese municipio).
+3. **Filtro territorial en el CLIENTE** (ADR-008): `listarNormas(runner, cadena)` aplica
+   `territorio_id IS NULL OR territorio_id IN (cadena)` con la cadena `[ccaa, provincia, municipio]`
+   del perfil. Lo estatal se ve siempre; lo municipal solo si su territorio está en la cadena. La
+   función pura `filtroTerritorialSql` y `listarMunicipiosConOrdenanza` quedan testeadas.
+4. **UI honesta en Normas.** Bloque propio **"Ordenanza de {municipio}"** cuando hay contenido;
+   si el Local no tiene su ordenanza cargada, estado claro **"La ordenanza de {municipio} aún no
+   está cargada"** + **"Solicitar mi ordenanza"**, que reutiliza el feedback (ADR-011): registra la
+   petición y abre el correo con SOLO municipio + CCAA (nunca datos de terceros). El onboarding
+   cambia el copy del municipio según haya o no ordenanza (consulta el paquete).
+
+- **Pendiente / siguiente iteración:** ampliar municipios (La Laguna y resto de Tenerife/Canarias);
+  filtro territorial también en el buscador (hoy la búsqueda no filtra por territorio, solo Normas);
+  terrazas/veladores y limpieza/residuos; curación jurídica a dos ojos para pasar a `verificado`.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

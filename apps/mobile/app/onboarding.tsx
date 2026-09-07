@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -19,6 +19,8 @@ import { Banner } from '@/ui/components/Banner';
 import { PressableScale } from '@/ui/components/PressableScale';
 import { SelectField, type SelectOption } from '@/ui/components/SelectField';
 import { hapticSelection } from '@/ui/haptics';
+import { getContentRunner } from '@/db/contentDb';
+import { listarMunicipiosConOrdenanza } from '@/features/normas/normas';
 import { useSettingsStore } from '@/store/settings';
 
 /**
@@ -66,9 +68,30 @@ export default function OnboardingScreen() {
   const [ccaaId, setCcaaId] = useState<string | null>(null);
   const [provinciaId, setProvinciaId] = useState<string | null>(null);
   const [municipio, setMunicipio] = useState('');
+  const [municipiosConOrdenanza, setMunicipiosConOrdenanza] = useState<Set<string>>(new Set());
 
   const esAutonomica = cuerpo === 'policia_autonomica';
   const esLocal = cuerpo === 'policia_local';
+
+  // Municipios que YA tienen ordenanza en el paquete: permite un copy honesto ("activa tu
+  // ordenanza" vs. "en cuanto esté disponible / solicítala"). Sin red; si no hay paquete, vacío.
+  useEffect(() => {
+    let vivo = true;
+    (async () => {
+      const runner = await getContentRunner();
+      if (!runner || !vivo) return;
+      const ids = await listarMunicipiosConOrdenanza(runner);
+      if (vivo) setMunicipiosConOrdenanza(new Set(ids));
+    })();
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const municipioTieneOrdenanza =
+    esLocal &&
+    municipio.trim().length > 0 &&
+    municipiosConOrdenanza.has(slugMunicipio(municipio.trim()));
 
   // El cuerpo autonómico fija su comunidad; si no, se elige libremente.
   const ccaaFijada = esAutonomica && autonomica ? CCAA_DE_AUTONOMICA[autonomica] : null;
@@ -149,6 +172,7 @@ export default function OnboardingScreen() {
             ccaaOptions={ccaaOptions}
             provinciaOptions={provinciaOptions}
             municipio={municipio}
+            municipioTieneOrdenanza={municipioTieneOrdenanza}
             onCcaa={(v) => {
               setCcaaId(v);
               setProvinciaId(null);
@@ -333,6 +357,7 @@ function Paso2({
   ccaaOptions,
   provinciaOptions,
   municipio,
+  municipioTieneOrdenanza,
   onCcaa,
   onProvincia,
   onMunicipio,
@@ -345,6 +370,7 @@ function Paso2({
   ccaaOptions: SelectOption[];
   provinciaOptions: SelectOption[];
   municipio: string;
+  municipioTieneOrdenanza: boolean;
   onCcaa: (v: string) => void;
   onProvincia: (v: string) => void;
   onMunicipio: (v: string) => void;
@@ -401,9 +427,11 @@ function Paso2({
           }}
         />
         <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-          {esLocal
-            ? 'Obligatorio para Policía Local. Guardamos tu municipio para activar sus ordenanzas en cuanto estén disponibles (próximamente).'
-            : 'Solo obligatorio para Policía Local.'}
+          {!esLocal
+            ? 'Solo obligatorio para Policía Local.'
+            : municipioTieneOrdenanza
+              ? 'Obligatorio para Policía Local. ¡Tenemos tu ordenanza! La verás en Normas y Buscar.'
+              : 'Obligatorio para Policía Local. Si aún no está tu ordenanza, podrás solicitárnosla desde Normas para priorizarla.'}
         </Text>
       </View>
     </View>

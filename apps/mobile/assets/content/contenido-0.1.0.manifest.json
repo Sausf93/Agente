@@ -1,12 +1,12 @@
 {
   "version": "0.1.0",
-  "fecha": "2026-09-07T21:00:52.677Z",
+  "fecha": "2026-09-07T21:49:58.694Z",
   "schemaVersion": 1,
-  "hash": "73b55fddcffd3613eda31c20d4094a309b113034f69e987f15c56b6f34903dcb",
-  "tamanoBytes": 12632064,
+  "hash": "6424a9087f71f13d102878de5d98721d8ae3b410e741498745b36d9ec15aed73",
+  "tamanoBytes": 12673024,
   "algoritmoFirma": "ed25519",
   "firma": null,
   "changelog": {
-    "resumen": "Ronda de contenido \"de calle\" (tres cuerpos): tráfico (seed + RGC) ampliado con conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). Todo el contenido nuevo queda PENDIENTE DE REVISIÓN."
+    "resumen": "Ronda de contenido \"de calle\" (tres cuerpos): tráfico (seed + RGC) ampliado con conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. Todo el contenido nuevo queda PENDIENTE DE REVISIÓN."
   }
 }

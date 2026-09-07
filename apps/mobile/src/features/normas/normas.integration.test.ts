@@ -4,7 +4,18 @@ import { dirname, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SqlRunner } from '@/db/sqlRunner';
-import { cargarArticulo, filtrarArticulos, listarArticulos, listarNormas } from './normas';
+import {
+  cargarArticulo,
+  filtrarArticulos,
+  listarArticulos,
+  listarMunicipiosConOrdenanza,
+  listarNormas,
+} from './normas';
+
+/** Cadena territorial de un Policía Local de Santa Cruz de Tenerife (Canarias). */
+const CADENA_SCTF = ['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife'];
+/** Cadena de un Local de otro municipio (para comprobar que NO ve la ordenanza ajena). */
+const CADENA_OTRO_MUNICIPIO = ['es-ccaa-05', 'es-prov-38', 'mun-la-laguna'];
 
 /**
  * Test de INTEGRACIÓN de NORMAS contra el `.sqlite` REAL empaquetado (`assets/content/…db`),
@@ -75,6 +86,34 @@ suite('normas contra el paquete real', () => {
 
     const porTexto = filtrarArticulos(articulos, 'alumbrado');
     expect(porTexto.some((a) => a.numero === '99')).toBe(true);
+  });
+
+  it('el filtro territorial NO fuga la ordenanza municipal a quien no es de ese municipio', async () => {
+    // Sin cadena: solo estatal (ninguna municipal).
+    const estatales = await listarNormas(runner);
+    expect(estatales.every((n) => n.ambito !== 'municipal')).toBe(true);
+    expect(estatales.some((n) => n.codigo === 'RGC')).toBe(true);
+
+    // Local de OTRO municipio: sigue sin ver la ordenanza de Santa Cruz.
+    const otro = await listarNormas(runner, CADENA_OTRO_MUNICIPIO);
+    expect(otro.every((n) => n.ambito !== 'municipal')).toBe(true);
+  });
+
+  it('un Local de Santa Cruz de Tenerife SÍ ve su ordenanza municipal', async () => {
+    const normas = await listarNormas(runner, CADENA_SCTF);
+    const municipales = normas.filter((n) => n.ambito === 'municipal');
+    expect(municipales.length).toBeGreaterThan(0);
+    for (const m of municipales) {
+      expect(m.tipo).toBe('ordenanza');
+      expect(m.territorioId).toBe('mun-santa-cruz-de-tenerife');
+    }
+    // Y sigue viendo lo estatal (RGC) junto a la ordenanza.
+    expect(normas.some((n) => n.codigo === 'RGC')).toBe(true);
+  });
+
+  it('listarMunicipiosConOrdenanza expone el municipio del piloto', async () => {
+    const municipios = await listarMunicipiosConOrdenanza(runner);
+    expect(municipios).toContain('mun-santa-cruz-de-tenerife');
   });
 
   it('cargarArticulo devuelve texto, fuente y fecha; id inexistente → null', async () => {

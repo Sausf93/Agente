@@ -22,6 +22,7 @@ import { SEED_TRAFICO } from '../seed/traficoSeed.js';
 import { SEED_PENAL } from '../seed/penalSeed.js';
 import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
 import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
+import { SEED_ORDENANZAS } from '../seed/ordenanzasSeed.js';
 import { SUSTANCIAS_SEED } from '../seed/sustanciasSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
@@ -67,6 +68,7 @@ async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaque
     SEED_PENAL,
     SEED_SEGURIDAD_CIUDADANA,
     SEED_EXTRANJERIA_LOCAL,
+    SEED_ORDENANZAS,
     seedSustancias,
   );
 
@@ -115,6 +117,8 @@ async function main(): Promise<void> {
         'amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; ' +
         'extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro ' +
         'peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). ' +
+        'PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, ' +
+        'zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. ' +
         'Todo el contenido nuevo queda PENDIENTE DE REVISIÓN.',
     },
   });

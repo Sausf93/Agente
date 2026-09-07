@@ -24,6 +24,8 @@ export interface NormaResumen {
   titulo: string;
   tipo: TipoNorma;
   ambito: Ambito;
+  /** Territorio al que pertenece (CCAA/provincia/municipio); `null` en lo estatal. */
+  territorioId: string | null;
   urlBoe: string | null;
   numArticulos: number;
   /**
@@ -75,6 +77,7 @@ interface FilaNorma {
   titulo: string;
   tipo: TipoNorma;
   ambito: Ambito;
+  territorio_id: string | null;
   url_boe: string | null;
   num_articulos: number;
   /** JSON array de `Cuerpo` (columna `cuerpos TEXT NOT NULL DEFAULT '[]'`). */
@@ -276,25 +279,56 @@ export function agruparNormasPorBloque(normas: readonly NormaResumen[]): Seccion
 }
 
 // ---------------------------------------------------------------------------
+// Filtro territorial (capa por territorio, ADR-006/008): estatal + cadena del perfil
+// ---------------------------------------------------------------------------
+
+/**
+ * Construye la cláusula SQL que filtra el contenido por la CADENA TERRITORIAL del perfil
+ * (`[ccaaId, provinciaId, municipioId]`, sin nulos). Lo estatal (`territorio_id IS NULL`) es
+ * SIEMPRE visible; lo autonómico/municipal solo si su territorio está en la cadena. Con cadena
+ * vacía (perfil sin territorio), solo lo estatal. Pura y determinista → cubierta por tests.
+ *
+ * Devuelve el fragmento sin `WHERE` y sus parámetros, para poder componerlo en distintas consultas
+ * (la de normas y, a futuro, la del buscador). El caller antepone `WHERE`/`AND` según convenga.
+ */
+export function filtroTerritorialSql(
+  cadena: readonly string[],
+  columna: string,
+): { sql: string; params: string[] } {
+  const ids = cadena.filter((id) => id.length > 0);
+  if (ids.length === 0) return { sql: `${columna} IS NULL`, params: [] };
+  const placeholders = ids.map(() => '?').join(', ');
+  return { sql: `(${columna} IS NULL OR ${columna} IN (${placeholders}))`, params: [...ids] };
+}
+
+// ---------------------------------------------------------------------------
 // Consultas al paquete (usan SqlRunner; combinan SQL con las funciones puras)
 // ---------------------------------------------------------------------------
 
 /**
- * Lista todas las normas del paquete con su recuento de artículos vigentes. Orden: primero lo
- * estatal, luego autonómico y municipal; dentro de cada ámbito, por código.
+ * Lista las normas VISIBLES para la cadena territorial del perfil, con su recuento de artículos
+ * vigentes. Lo estatal se ve siempre; lo autonómico/municipal solo si su territorio está en la
+ * `cadena` (`[ccaaId, provinciaId, municipioId]`). Sin cadena, solo lo estatal (no se filtra por
+ * municipio de otro). Orden: primero lo estatal, luego autonómico y municipal; por código dentro.
  */
-export async function listarNormas(runner: SqlRunner): Promise<NormaResumen[]> {
+export async function listarNormas(
+  runner: SqlRunner,
+  cadena: readonly string[] = [],
+): Promise<NormaResumen[]> {
+  const filtro = filtroTerritorialSql(cadena, 'n.territorio_id');
   const filas = await runner.getAll<FilaNorma>(
-    `SELECT n.id, n.codigo, n.titulo, n.tipo, n.ambito, n.url_boe, n.cuerpos,
+    `SELECT n.id, n.codigo, n.titulo, n.tipo, n.ambito, n.territorio_id, n.url_boe, n.cuerpos,
             (SELECT COUNT(*) FROM articulo a
               WHERE a.norma_id = n.id AND a.valid_to IS NULL) AS num_articulos
        FROM norma n
+      WHERE ${filtro.sql}
       ORDER BY CASE n.ambito
                  WHEN 'estatal' THEN 0
                  WHEN 'autonomico' THEN 1
                  ELSE 2
                END,
                n.codigo`,
+    filtro.params,
   );
   return filas.map((f) => ({
     id: f.id,
@@ -302,10 +336,25 @@ export async function listarNormas(runner: SqlRunner): Promise<NormaResumen[]> {
     titulo: f.titulo,
     tipo: f.tipo,
     ambito: f.ambito,
+    territorioId: f.territorio_id,
     urlBoe: f.url_boe,
     numArticulos: f.num_articulos,
     cuerpos: parseCuerpos(f.cuerpos),
   }));
+}
+
+/**
+ * Devuelve los `territorioId` de municipios que TIENEN ordenanza cargada en el paquete (distinct
+ * de las normas municipales). Sirve para decidir, en el onboarding y en Normas, si el municipio
+ * del perfil ya tiene contenido ("activa tu ordenanza") o aún no ("solicítala"). Sin red.
+ */
+export async function listarMunicipiosConOrdenanza(runner: SqlRunner): Promise<string[]> {
+  const filas = await runner.getAll<{ territorio_id: string | null }>(
+    `SELECT DISTINCT n.territorio_id
+       FROM norma n
+      WHERE n.ambito = 'municipal' AND n.territorio_id IS NOT NULL`,
+  );
+  return filas.map((f) => f.territorio_id).filter((id): id is string => id !== null);
 }
 
 /**

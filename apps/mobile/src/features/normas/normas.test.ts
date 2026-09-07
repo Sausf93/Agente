@@ -3,6 +3,7 @@ import {
   agruparNormasPorBloque,
   esResumenOrientativo,
   estadoCambio,
+  filtroTerritorialSql,
   filtrarArticulos,
   normaRelevantePara,
   numeroSortKey,
@@ -171,6 +172,7 @@ describe('filtrado por cuerpo y bloques', () => {
       titulo: codigo,
       tipo: 'ley',
       ambito: 'estatal',
+      territorioId: null,
       urlBoe: null,
       numArticulos: 1,
       cuerpos: [],
@@ -178,5 +180,28 @@ describe('filtrado por cuerpo y bloques', () => {
     const secciones = agruparNormasPorBloque([norma('CP'), norma('RGC'), norma('LOSC')]);
     expect(secciones.map((s) => s.bloque)).toEqual(['trafico', 'penal', 'seguridad']);
     expect(secciones[0]?.data.map((n) => n.codigo)).toEqual(['RGC']);
+  });
+});
+
+describe('filtroTerritorialSql: capa por territorio (ADR-006/008)', () => {
+  it('sin cadena → solo lo estatal (territorio_id IS NULL)', () => {
+    const f = filtroTerritorialSql([], 'n.territorio_id');
+    expect(f.sql).toBe('n.territorio_id IS NULL');
+    expect(f.params).toEqual([]);
+  });
+
+  it('con cadena → estatal o dentro de la cadena, con placeholders y params', () => {
+    const f = filtroTerritorialSql(
+      ['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife'],
+      'n.territorio_id',
+    );
+    expect(f.sql).toBe('(n.territorio_id IS NULL OR n.territorio_id IN (?, ?, ?))');
+    expect(f.params).toEqual(['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife']);
+  });
+
+  it('descarta ids vacíos de la cadena', () => {
+    const f = filtroTerritorialSql(['', 'mun-x', ''], 'n.territorio_id');
+    expect(f.sql).toBe('(n.territorio_id IS NULL OR n.territorio_id IN (?))');
+    expect(f.params).toEqual(['mun-x']);
   });
 });

@@ -53,6 +53,17 @@ export {
   INFRACCIONES_SEGURIDAD_SEED,
 } from './seed/seguridadCiudadanaSeed.js';
 
+// Seed de ORDENANZAS MUNICIPALES (piloto Santa Cruz de Tenerife, capa municipal).
+export {
+  SEED_ORDENANZAS,
+  NORMAS_ORDENANZAS_SEED,
+  ARTICULOS_ORDENANZAS_SEED,
+  INFRACCIONES_ORDENANZAS_SEED,
+  MUNICIPIOS_CON_ORDENANZA,
+  MUNICIPIO_SCTF_NOMBRE,
+  TERRITORIO_SCTF,
+} from './seed/ordenanzasSeed.js';
+
 // Tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico.
 export { SUSTANCIAS_SEED } from './seed/sustanciasSeed.js';
 
