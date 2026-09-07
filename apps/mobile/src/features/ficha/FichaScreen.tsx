@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import type { ComponentType } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import {
   Ban,
   FileDown,
@@ -171,6 +171,9 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         gap: t.spacing.lg,
       }}
     >
+      {/* El encabezado se adapta: un delito NO es una "infracción" administrativa. */}
+      <Stack.Screen options={{ title: ficha.tipo === 'penal' ? 'Delito' : 'Infracción' }} />
+
       {/* 1-3. Cabecera: título, norma+artículo, gravedad/tipo + distintivo de revisión. */}
       <View style={{ gap: t.spacing.sm }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, alignItems: 'center' }}>
