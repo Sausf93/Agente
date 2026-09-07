@@ -276,6 +276,14 @@ describe('validarImporte: marcos SIN rango legal único (municipal / autonomico)
   });
 });
 
+describe('validarImporte (entrada consultable no sancionadora)', () => {
+  it('no exige importe a una entrada `no_sancionador` (requerimiento de identificación)', () => {
+    expect(
+      validarImporte(infraccion({ importeEur: null, importeReducidoEur: null }), 'no_sancionador'),
+    ).toEqual([]);
+  });
+});
+
 describe('validarMinimosPublicacion (sección 8.3)', () => {
   it('exige al menos 2 sinónimos', () => {
     const problemas = validarMinimosPublicacion(infraccion(), 1);
@@ -289,5 +297,14 @@ describe('validarMinimosPublicacion (sección 8.3)', () => {
   it('detecta falta de importe en administrativa', () => {
     const problemas = validarMinimosPublicacion(infraccion({ importeEur: null }), 2);
     expect(problemas.some((p) => p.campo === 'importeEur')).toBe(true);
+  });
+
+  it('NO exige importe a una entrada `no_sancionador` (facultad/diligencia, no sanción)', () => {
+    const problemas = validarMinimosPublicacion(
+      infraccion({ importeEur: null }),
+      2,
+      'no_sancionador',
+    );
+    expect(problemas.some((p) => p.campo === 'importeEur')).toBe(false);
   });
 });

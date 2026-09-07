@@ -76,6 +76,23 @@ function articuloLosc({ numero, titulo, texto }: ArticuloSeedInput): Articulo {
   });
 }
 
+const ART_LOSC_16 = articuloLosc({
+  numero: '16',
+  titulo: 'Identificación de personas (requerimiento y diligencia)',
+  texto:
+    'Regula la facultad de los agentes de requerir la IDENTIFICACIÓN de las personas en el ejercicio ' +
+    'de sus funciones de indagación o prevención, cuando existan indicios de que han podido participar ' +
+    'en una infracción, o cuando resulte necesario para prevenir la comisión de un delito. Los agentes ' +
+    'pueden realizar las comprobaciones precisas en la vía pública o en el lugar donde se hubiera hecho ' +
+    'el requerimiento. Si la identificación no se logra por cualquier medio y resulta necesaria, se ' +
+    'puede requerir a la persona que ACOMPAÑE a los agentes a las dependencias más próximas que cuenten ' +
+    'con medios para la identificación, por el TIEMPO IMPRESCINDIBLE (que no es una detención) y a los ' +
+    'solos efectos de identificarla. De esta actuación se extiende un LIBRO-REGISTRO/diligencia con ' +
+    'las causas, la identidad, el tiempo y las circunstancias. La negativa a identificarse o la ' +
+    'alegación de datos falsos puede ser infracción del art. 36.6. Resumen orientativo; consúltese el ' +
+    'texto consolidado en el BOE.',
+});
+
 const ART_LOSC_36_1 = articuloLosc({
   numero: '36.1',
   titulo: 'Perturbación de la seguridad en actos públicos y espectáculos (grave)',
@@ -166,6 +183,7 @@ const ART_LOSC_37_7 = articuloLosc({
 });
 
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
+  ART_LOSC_16,
   ART_LOSC_36_1,
   ART_LOSC_36_3,
   ART_LOSC_36_6,
@@ -194,12 +212,21 @@ interface InfraccionSeedInput {
   articulo: Articulo;
   tituloCorto: string;
   gravedad: Infraccion['gravedad'];
-  importeEur: number;
-  importeReducidoEur: number;
+  /** Importe base. `null` SOLO para entradas `no_sancionador` (consultables sin sanción). */
+  importeEur: number | null;
+  /** Importe con pronto pago. `null` para las entradas sin sanción. */
+  importeReducidoEur: number | null;
   textoBoletin: string;
   terminos: string[];
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
   notaRevision: string;
+  /**
+   * Marco de importe para la validación (§8.3). Por defecto `seguridad_ciudadana` (horquilla del
+   * art. 39). Se pone `no_sancionador` en las ENTRADAS CONSULTABLES que no imponen sanción, como el
+   * REQUERIMIENTO de identificación (art. 16 LO 4/2015): es una facultad/diligencia, no una
+   * infracción, por lo que no lleva importe y los validadores no lo exigen.
+   */
+  marcoImporte?: MarcoImporte;
 }
 
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
@@ -250,7 +277,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     infraccion,
     sinonimos,
     consecuencias,
-    marcoImporte: 'seguridad_ciudadana' satisfies MarcoImporte,
+    marcoImporte: input.marcoImporte ?? ('seguridad_ciudadana' satisfies MarcoImporte),
     revision: 'pendiente_revision',
     notaRevision: input.notaRevision,
   };
@@ -275,6 +302,61 @@ const NOTA_LEVE_IMPORTE =
 
 // --- Infracciones sembradas -----------------------------------------------------------------
 export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
+  // ENTRADA CONSULTABLE (no es una infracción): el REQUERIMIENTO de identificación (art. 16). Se
+  // modela como entrada `no_sancionador` (sin importe) para que el buscador y el acceso rápido
+  // "Identificación" (consulta diaria de PN/GC/Local) devuelvan algo útil. La NEGATIVA a
+  // identificarse sí es infracción y vive aparte (`sc-negativa-identificarse`, art. 36.6).
+  construirInfraccion({
+    id: 'sc-identificacion-requerimiento',
+    articulo: ART_LOSC_16,
+    tituloCorto: 'Identificación de personas (requerimiento)',
+    // No sanciona: es una facultad/diligencia. `gravedad: 'leve'` es un valor de relleno exigido
+    // por el modelo (revisar la presentación de una entrada no sancionadora en la ficha con el
+    // revisor y mobile-dev); lo determinante es que no lleva importe (marco `no_sancionador`).
+    gravedad: 'leve',
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Requerimiento de identificación (art. 16 LO 4/2015): procede identificar a una persona cuando ' +
+      'existan indicios de su participación en una infracción o cuando resulte necesario para prevenir ' +
+      'un delito. REQUISITOS orientativos: motivo concreto, comprobaciones en el propio lugar y, solo ' +
+      'si la identificación no se logra por otro medio y es necesaria, requerir que acompañe a las ' +
+      'dependencias por el TIEMPO IMPRESCINDIBLE y a los solos efectos de identificar. Este traslado ' +
+      'NO es una detención: la persona no queda privada de libertad por un delito, no se le leen los ' +
+      'derechos del detenido (art. 520 LECrim) y debe quedar constancia en el libro-registro/diligencia ' +
+      '(causa, identidad, tiempo y circunstancias). Si la persona se niega a identificarse o aporta ' +
+      'datos falsos, puede incurrir en la infracción del art. 36.6. La valoración final corresponde al agente.',
+    terminos: [
+      'identificacion',
+      'pedir la documentacion',
+      'control de identidad',
+      'filiar',
+      'documentacion por favor',
+      'identificar a alguien',
+      'requerimiento de identificacion',
+      'diligencia de identificacion',
+      'pedir el dni',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede requerir la identificación con un motivo concreto; el traslado a dependencias, ' +
+          'cuando sea imprescindible para identificar, es por el TIEMPO MÍNIMO y NO constituye ' +
+          'detención (no se leen los derechos del art. 520 LECrim). Levantar la diligencia/libro-registro.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE, no infracción: el art. 16 LO 4/2015 regula la FACULTAD de identificación, ' +
+      'no una sanción (por eso el marco es `no_sancionador` y no lleva importe). A VERIFICAR con el ' +
+      'revisor jurídico: (i) los requisitos y límites del traslado a dependencias (tiempo ' +
+      'imprescindible, solo efectos de identificación, constancia en libro-registro), (ii) la ' +
+      'DIFERENCIA con la detención (art. 520 LECrim: no privación de libertad por delito, no lectura ' +
+      'de derechos) y (iii) la presentación en la ficha de una entrada sin sanción (evitar que se ' +
+      'muestre como un "tramo" sancionador). Confirmar redacción orientativa antes de publicar.',
+  }),
   construirInfraccion({
     id: 'sc-desobediencia-resistencia',
     articulo: ART_LOSC_36_6,

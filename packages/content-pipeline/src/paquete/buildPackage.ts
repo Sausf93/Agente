@@ -66,7 +66,7 @@ export interface ResultadoBuild {
 function validarInfraccion(item: InfraccionSeed): string[] {
   const problemas = [
     ...validarImporte(item.infraccion, item.marcoImporte),
-    ...validarMinimosPublicacion(item.infraccion, item.sinonimos.length),
+    ...validarMinimosPublicacion(item.infraccion, item.sinonimos.length, item.marcoImporte),
   ];
   return problemas.map((p) => `${item.infraccion.id} · ${p.campo}: ${p.mensaje}`);
 }

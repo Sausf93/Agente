@@ -65,6 +65,13 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     ['zona azul', 'inf-estacionamiento-indebido'],
     ['perro sin bozal', 'ppp-sin-bozal'],
     ['trafico de drogas', 'del-trafico-drogas'],
+    // Fichas penales / seguridad ciudadana añadidas para la Policía Nacional (ronda validadores).
+    ['malos tratos', 'del-violencia-genero'],
+    ['violencia machista', 'del-violencia-genero'],
+    ['disturbios', 'del-desordenes-publicos'],
+    ['se resiste', 'del-resistencia-desobediencia'],
+    ['estafa', 'del-estafa'],
+    ['identificacion', 'sc-identificacion-requerimiento'],
   ];
 
   for (const [consulta, esperado] of casos) {

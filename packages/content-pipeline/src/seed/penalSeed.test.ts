@@ -15,8 +15,8 @@ const idsArticulos = new Set(SEED_PENAL.articulos.map((a) => a.id));
 const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_PENAL: integridad de los delitos', () => {
-  it('siembra 9 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(9);
+  it('siembra 13 delitos, todos por vía penal y sin importe administrativo', () => {
+    expect(SEED_PENAL.infracciones).toHaveLength(13);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -84,6 +84,46 @@ describe('SEED_PENAL: consecuencia de detención (motor LECrim, §4.6)', () => {
   });
 });
 
+describe('SEED_PENAL: fichas nuevas para la Policía Nacional (VG, orden público, estafa)', () => {
+  it('cada ficha nueva tiene artículo del CP, pena legible, gravedad penal y detención flagrante', () => {
+    for (const id of [
+      'del-violencia-genero',
+      'del-desordenes-publicos',
+      'del-resistencia-desobediencia',
+      'del-estafa',
+    ]) {
+      const item = porId(id);
+      expect(item, id).toBeDefined();
+      // Artículo fuente presente en el seed.
+      expect(idsArticulos.has(item!.infraccion.articuloId), id).toBe(true);
+      // Marco penal: pena legible + gravedad del art. 33 CP (no importe administrativo).
+      expect(item!.infraccion.penaTexto, id).toBeTruthy();
+      expect(item!.infraccion.gravedadPenal, id).toBe('menos_grave');
+      expect(item!.infraccion.importeEur, id).toBeNull();
+      // Detención flagrante (menos grave) → procede, con fuente LECrim 490, lenguaje orientativo.
+      const det = item!.consecuencias.find((c) => c.tipo === 'detencion')!;
+      expect(det.regla.orientacionBase, id).toBe('procede');
+      expect(det.fuente, id).toMatch(/LECrim art\. 490/);
+      expect(det.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+    }
+  });
+
+  it('violencia de género: mensaje operativo de protección de la víctima y distinción 153.1/173.2', () => {
+    const vg = porId('del-violencia-genero');
+    expect(vg).toBeDefined();
+    const texto = vg!.infraccion.textoBoletin;
+    // Medidas de protección de la víctima (orden de protección, arts. 544 bis/ter LECrim) y VioGén.
+    expect(texto).toMatch(/544/);
+    expect(texto.toLowerCase()).toMatch(/protecci/);
+    expect(texto.toLowerCase()).toMatch(/viogen|vpr|riesgo/);
+    // Las medidas/detención las acuerda o ratifica la autoridad judicial (no imperativo).
+    expect(texto.toLowerCase()).toMatch(/autoridad judicial/);
+    // Distingue el acto único (153.1) de la habitualidad (173.2).
+    expect(vg!.notaRevision).toMatch(/153\.1/);
+    expect(vg!.notaRevision).toMatch(/173\.2/);
+  });
+});
+
 describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
   const combinado = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
 
@@ -99,23 +139,28 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
     expect(new Set(artIds).size).toBe(artIds.length);
   });
 
-  it('conserva los artículos penales del CP (tráfico 380/383 + penal 147/169/234/241/242/263/368/468/550)', () => {
+  it('conserva los artículos penales del CP (tráfico 380/383 + penal, incluidos VG 153/173, desórdenes 557, resistencia 556 y estafa 249)', () => {
     const numerosCp = combinado.articulos
       .filter((a) => a.normaId === 'BOE-A-1995-25444')
       .map((a) => a.numero)
       .sort();
     expect(numerosCp).toEqual([
       '147',
+      '153',
       '169',
+      '173.2',
       '234',
       '241',
       '242',
+      '249',
       '263',
       '368',
       '380',
       '383',
       '468',
       '550',
+      '556',
+      '557',
     ]);
   });
 

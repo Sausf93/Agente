@@ -108,7 +108,10 @@ export const RANGOS_IMPORTE_ANIMALES = {
  * (varía por ordenanza/comunidad): solo se valida coherencia (presencia y reducido ≤ base) y
  * queda para revisión a dos ojos. `penal` marca los DELITOS (vía penal): no llevan importe
  * administrativo, `validarImporte` corta de inmediato para ellos (la pena la fija el Código
- * Penal, no un rango de multa).
+ * Penal, no un rango de multa). `no_sancionador` marca las ENTRADAS CONSULTABLES que no imponen
+ * sanción (p. ej. el REQUERIMIENTO de identificación del art. 16 LO 4/2015, una facultad/
+ * diligencia, no una infracción): no llevan importe y `validarImporte`/`validarMinimosPublicacion`
+ * no lo exigen.
  */
 export type MarcoImporte =
   | 'trafico'
@@ -121,7 +124,8 @@ export type MarcoImporte =
   | 'animales'
   | 'municipal'
   | 'autonomico'
-  | 'penal';
+  | 'penal'
+  | 'no_sancionador';
 
 function validarCoherenciaImporte(
   infraccion: Pick<Infraccion, 'importeEur' | 'importeReducidoEur'>,
@@ -153,6 +157,9 @@ export function validarImporte(
 ): ProblemaValidacion[] {
   if (infraccion.tipo === 'penal' || infraccion.gravedad === 'delito') {
     return []; // los delitos no llevan importe administrativo
+  }
+  if (marco === 'no_sancionador') {
+    return []; // entrada consultable sin sanción (p. ej. requerimiento de identificación)
   }
 
   // Sin rango legal único: solo coherencia (queda para revisión a dos ojos).
@@ -209,13 +216,17 @@ export function validarImporte(
  * Comprueba los mínimos de publicación de una infracción (sección 8.3):
  * artículo enlazado, importe (si administrativa), gravedad, texto de boletín,
  * al menos dos sinónimos y fuente/consecuencia. `numSinonimos` se pasa aparte
- * porque los sinónimos viven en otra tabla.
+ * porque los sinónimos viven en otra tabla. `marco` es opcional y solo sirve para
+ * eximir del importe a las entradas `no_sancionador` (consultables sin sanción, p. ej.
+ * el requerimiento de identificación del art. 16 LO 4/2015).
  */
 export function validarMinimosPublicacion(
   infraccion: Infraccion,
   numSinonimos: number,
+  marco?: MarcoImporte,
 ): ProblemaValidacion[] {
   const problemas: ProblemaValidacion[] = [];
+  const esNoSancionador = marco === 'no_sancionador';
 
   if (!infraccion.articuloId) {
     problemas.push({ campo: 'articuloId', mensaje: 'Falta el artículo enlazado' });
@@ -223,7 +234,7 @@ export function validarMinimosPublicacion(
   if (!infraccion.textoBoletin.trim()) {
     problemas.push({ campo: 'textoBoletin', mensaje: 'Falta el texto del boletín' });
   }
-  if (infraccion.tipo === 'administrativa' && infraccion.importeEur === null) {
+  if (infraccion.tipo === 'administrativa' && infraccion.importeEur === null && !esNoSancionador) {
     problemas.push({ campo: 'importeEur', mensaje: 'Falta el importe' });
   }
   if (numSinonimos < 2) {

@@ -177,6 +177,70 @@ const ART_CP_241 = articuloCp({
     'consúltese el texto consolidado en el BOE.',
 });
 
+const ART_CP_153 = articuloCp({
+  numero: '153',
+  titulo: 'Maltrato o lesión de menor entidad en el ámbito de la violencia de género o doméstica',
+  texto:
+    'Castiga causar a otra persona un menoscabo psíquico o una lesión de menor gravedad de las ' +
+    'previstas en el art. 147.2, o golpear o maltratar de obra sin causar lesión, cuando la ofendida ' +
+    'es o ha sido esposa o mujer ligada al autor por análoga relación de afectividad aun sin ' +
+    'convivencia, o una persona especialmente vulnerable que conviva con el autor (art. 153.1). El ' +
+    'art. 153.2 recoge el resto de personas del art. 173.2 (otros miembros del ámbito familiar). Se ' +
+    'agrava, entre otros supuestos, si el hecho se comete en presencia de menores o en el domicilio ' +
+    'común. La violencia física o psíquica HABITUAL se castiga aparte por el art. 173.2. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_173 = articuloCp({
+  numero: '173.2',
+  titulo: 'Violencia física o psíquica habitual en el ámbito familiar',
+  texto:
+    'Castiga a quien habitualmente ejerce violencia física o psíquica sobre quien sea o haya sido su ' +
+    'cónyuge o persona ligada por análoga relación de afectividad, o sobre los demás miembros del ' +
+    'ámbito familiar o personas del art. 173.2 (descendientes, ascendientes, personas vulnerables que ' +
+    'convivan, etc.). Para apreciar la HABITUALIDAD se atiende al número de actos de violencia y a su ' +
+    'proximidad temporal, con independencia de que hayan sido o no enjuiciados antes. Es compatible ' +
+    'con las penas por los concretos actos de violencia (arts. 153, 147, 148…). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_557 = articuloCp({
+  numero: '557',
+  titulo: 'Desórdenes públicos',
+  texto:
+    'Castiga a quienes, actuando en grupo y con el fin de atentar contra la paz pública, alteren el ' +
+    'orden público causando lesiones a las personas, produciendo daños en las propiedades, ' +
+    'obstaculizando las vías públicas o los accesos de emergencia de forma peligrosa, o invadiendo ' +
+    'instalaciones o edificios. Existen tipos agravados (art. 557 bis: porte de armas, actos de ' +
+    'violencia con peligro para la vida, actuación en multitud que facilita la impunidad, etc.). La ' +
+    'alteración de menor entidad puede ser infracción administrativa (art. 36.1/36.3 LO 4/2015). ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_556 = articuloCp({
+  numero: '556',
+  titulo: 'Resistencia o desobediencia grave a la autoridad o sus agentes',
+  texto:
+    'Castiga a quienes, sin estar comprendidos en el atentado del art. 550, resistan o desobedezcan ' +
+    'gravemente a la autoridad o a sus agentes en el ejercicio de sus funciones. La resistencia del ' +
+    'art. 556 es la NO violenta o de escasa entidad (p. ej. forcejeo pasivo, negarse activamente a ' +
+    'cumplir una orden legítima); cuando media agresión, violencia o intimidación grave, el hecho es ' +
+    'atentado (art. 550). La desobediencia o resistencia que no llega a "grave" puede ser infracción ' +
+    'administrativa (art. 36.6 LO 4/2015). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_249 = articuloCp({
+  numero: '249',
+  titulo: 'Estafa',
+  texto:
+    'Castiga como estafa a quien, con ánimo de lucro, utiliza engaño bastante para producir error en ' +
+    'otra persona, induciéndola a realizar un acto de disposición en perjuicio propio o ajeno (art. ' +
+    '248). El art. 249 fija la pena atendiendo a la cuantía de lo defraudado, el perjuicio, las ' +
+    'relaciones entre las partes y demás circunstancias. Cuando la cuantía no excede de 400 euros, el ' +
+    'hecho es delito leve. La calificación final corresponde a la autoridad judicial. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_234,
   ART_CP_242,
@@ -187,6 +251,11 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_169,
   ART_CP_263,
   ART_CP_241,
+  ART_CP_153,
+  ART_CP_173,
+  ART_CP_557,
+  ART_CP_556,
+  ART_CP_249,
 ];
 
 // --- Constructor de un delito con su consecuencia de detención generada por el motor --------
@@ -564,6 +633,157 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       '2 a 5 años → MENOS GRAVE; agravado (art. 241.2/241.4, organización o especial gravedad) puede ' +
       'elevarse. Distinguir del robo con fuerza NO en casa habitada (art. 240, prisión de 1 a 3 años) ' +
       'y del hurto (sin fuerza). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Violencia de género / doméstica: el delito nº1 de la Policía Nacional (contenido MUY ---
+  // --- sensible: se extrema el lenguaje orientativo y el "a verificar"). --------------------
+  construirDelito({
+    id: 'del-violencia-genero',
+    articulo: ART_CP_153,
+    tituloCorto: 'Violencia de género o doméstica',
+    // Art. 153.1 (un acto de maltrato/lesión leve): prisión de 6 meses a 1 año → MENOS GRAVE.
+    // Flagrancia frecuente (aviso en el momento) → el motor orienta a que PROCEDE la detención.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 1 año o trabajos en beneficio de la comunidad (un acto, art. 153.1 CP); ' +
+      'violencia física o psíquica HABITUAL: prisión de 6 meses a 3 años (art. 173.2 CP). A verificar',
+    textoBoletin:
+      'Maltrato de obra o lesión de menor entidad sobre quien es o ha sido esposa o mujer ligada al ' +
+      'autor por análoga relación de afectividad (art. 153.1 CP), o sobre otras personas del ámbito ' +
+      'familiar (art. 153.2); la violencia física o psíquica HABITUAL se persigue por el art. 173.2 ' +
+      'CP y las lesiones que requieren tratamiento por los arts. 147/148. MENSAJE OPERATIVO ' +
+      '(orientativo): procede valorar de forma prioritaria las MEDIDAS DE PROTECCIÓN de la víctima ' +
+      '(orden de protección, arts. 544 bis y 544 ter LECrim) y realizar la valoración policial del ' +
+      'riesgo (VPR/sistema VioGén). La detención y las medidas cautelares las acuerda o ratifica la ' +
+      'AUTORIDAD JUDICIAL; la valoración final del caso corresponde al agente y, en su caso, al juez.',
+    terminos: [
+      'malos tratos',
+      'le pega a su mujer',
+      'violencia machista',
+      'maltrato en casa',
+      'violencia domestica',
+      'vg',
+      'agresion a la pareja',
+      'violencia de genero',
+      'maltratador',
+      'pega a su pareja',
+      'violencia en la pareja',
+    ],
+    notaRevision:
+      'CONTENIDO MUY SENSIBLE — a verificar con especial cuidado. DISTINGUIR los tipos: art. 153.1 ' +
+      'CP (UN acto de maltrato de obra o lesión de menor entidad sobre pareja/expareja mujer) → ' +
+      'prisión de 6 meses a 1 año o trabajos en beneficio de la comunidad de 31 a 80 días, y en ' +
+      'todo caso privación del derecho a la tenencia y porte de armas; art. 153.2 (resto de personas ' +
+      'del art. 173.2); art. 173.2 (violencia HABITUAL) → prisión de 6 meses a 3 años; y las LESIONES ' +
+      'de los arts. 147/148 cuando requieren tratamiento médico o quirúrgico. Todos los tramos ' +
+      'citados son MENOS GRAVE (art. 33 CP) → detención flagrante regida por el art. 490 LECrim. A ' +
+      'VERIFICAR las penas exactas, las agravantes (presencia de menores, domicilio común, quebranto ' +
+      'del art. 468) y la redacción de las MEDIDAS DE PROTECCIÓN (arts. 544 bis/ter LECrim, VPR/' +
+      'VioGén) con el revisor jurídico antes de publicar. Confirmar contra el texto consolidado del CP.',
+  }),
+  // --- Delitos de orden público y contra la autoridad (frecuentes en la Policía Nacional) -----
+  construirDelito({
+    id: 'del-desordenes-publicos',
+    articulo: ART_CP_557,
+    tituloCorto: 'Desórdenes públicos',
+    // Art. 557 (actuar en grupo alterando la paz pública con violencia sobre personas/cosas):
+    // prisión de 6 meses a 3 años → MENOS GRAVE; agravados del art. 557 bis pueden elevarse.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 3 años (desórdenes públicos en grupo, art. 557 CP); tipos agravados del ' +
+      'art. 557 bis (armas, peligro para la vida, etc.). A verificar',
+    textoBoletin:
+      'Actuar en grupo y con el fin de atentar contra la paz pública alterando el orden mediante ' +
+      'violencia sobre las personas o las cosas: causar lesiones, producir daños, obstaculizar de ' +
+      'forma peligrosa las vías o los accesos de emergencia, o invadir instalaciones o edificios ' +
+      '(art. 557 CP). La alteración de menor entidad, sin llegar a delito, puede ser infracción ' +
+      'administrativa (art. 36.1/36.3 LO 4/2015). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'disturbios',
+      'batalla campal',
+      'pelea multitudinaria en grupo',
+      'desordenes publicos graves',
+      'altercado violento en grupo',
+      'destrozos en grupo',
+      'altercados en la manifestacion',
+      'grupo violento en la calle',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el encaje: desórdenes públicos del art. 557 CP → prisión de 6 ' +
+      'meses a 3 años → MENOS GRAVE; los tipos agravados del art. 557 bis (porte de armas u objetos ' +
+      'peligrosos, actos de violencia con peligro para la vida, aprovechar la multitud para asegurar ' +
+      'la impunidad, etc.) elevan la pena y podrían pasar a GRAVE, cambiando la rama de detención. ' +
+      'DISTINGUIR de la infracción administrativa de desórdenes (art. 36.1/36.3 LO 4/2015), que exige ' +
+      'alteración grave de la seguridad ciudadana SIN llegar a delito. Confirmar penas y encaje contra ' +
+      'el texto consolidado del CP con el revisor jurídico.',
+  }),
+  construirDelito({
+    id: 'del-resistencia-desobediencia',
+    articulo: ART_CP_556,
+    tituloCorto: 'Resistencia o desobediencia grave a la autoridad',
+    // Art. 556.1 (resistencia NO violenta o desobediencia grave): prisión de 3 meses a 1 año o
+    // multa de 6 a 18 meses → MENOS GRAVE. Flagrante → el motor orienta a que PROCEDE.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 3 meses a 1 año o multa de 6 a 18 meses (resistencia o desobediencia grave, ' +
+      'art. 556.1 CP). A verificar',
+    textoBoletin:
+      'Resistir o desobedecer GRAVEMENTE a la autoridad o a sus agentes en el ejercicio de sus ' +
+      'funciones, sin llegar al atentado del art. 550 (art. 556 CP): resistencia no violenta o de ' +
+      'escasa entidad (p. ej. forcejeo pasivo) y desobediencia grave a una orden legítima. Cuando ' +
+      'media agresión, violencia o intimidación grave, el hecho puede ser ATENTADO (art. 550 CP); si ' +
+      'no llega a "grave", puede ser infracción administrativa (art. 36.6 LO 4/2015). La calificación ' +
+      'final corresponde a la autoridad judicial.',
+    terminos: [
+      'se resiste',
+      'no obedece',
+      'desobediencia grave',
+      'forcejeo pasivo',
+      'resistencia no violenta',
+      'desobedece a la autoridad',
+      'no acata la orden del agente',
+      'se opone al agente sin violencia',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la frontera: resistencia o desobediencia grave del art. 556.1 ' +
+      'CP → prisión de 3 meses a 1 año o multa de 6 a 18 meses → MENOS GRAVE. DISTINGUIR (i) del ' +
+      'ATENTADO (art. 550 CP: agresión, acometimiento o violencia/intimidación grave sobre el agente), ' +
+      'que es más grave, y (ii) de la infracción administrativa del art. 36.6 LO 4/2015 ' +
+      '(desobediencia/resistencia que NO alcanza la gravedad penal). El juicio de "gravedad" es ' +
+      'delicado: confirmar el encaje del caso con el revisor jurídico. Confirmar penas contra el CP.',
+  }),
+  // --- Estafa (patrimonial frecuente: timos, fraudes) ----------------------------------------
+  construirDelito({
+    id: 'del-estafa',
+    articulo: ART_CP_249,
+    tituloCorto: 'Estafa',
+    // Art. 249 (cuantía > 400 €): prisión de 6 meses a 3 años → MENOS GRAVE. ≤ 400 € es delito leve.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 3 años (estafa cuya cuantía excede de 400 €, art. 249 CP); ≤ 400 € es ' +
+      'delito leve (multa). A verificar',
+    textoBoletin:
+      'Utilizar, con ánimo de lucro, un engaño bastante para producir error en otra persona e ' +
+      'inducirla a realizar un acto de disposición patrimonial en perjuicio propio o ajeno (arts. 248 ' +
+      'y 249 CP). Cuando la cuantía de lo defraudado no excede de 400 euros, el hecho es delito leve. ' +
+      'La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'estafa',
+      'timo',
+      'me han estafado',
+      'tocomocho',
+      'fraude',
+      'engaño con animo de lucro',
+      'estafador',
+      'timador',
+      'me han timado',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la frontera leve/menos grave: estafa del art. 249 CP → prisión ' +
+      'de 6 meses a 3 años cuando la cuantía EXCEDE de 400 € → MENOS GRAVE; con cuantía de 400 € o ' +
+      'menos es DELITO LEVE (multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. Comprobar ' +
+      'los subtipos AGRAVADOS del art. 250 (vivienda, especial gravedad, abuso de relaciones ' +
+      'personales, etc.), que elevan la pena. Distinguir de la apropiación indebida (art. 253) y de la ' +
+      'administración desleal (art. 252). Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
 ];
 

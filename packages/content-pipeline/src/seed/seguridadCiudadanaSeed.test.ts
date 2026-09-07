@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 10 infracciones de calle de la LO 4/2015', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(10);
+  it('siembra 11 entradas de calle de la LO 4/2015 (10 infracciones + identificación art. 16)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(11);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {
@@ -63,9 +63,28 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
   it('todas quedan pendientes de revisión con nota "a verificar" (nada se autopublica)', () => {
     for (const item of SEED_SEGURIDAD_CIUDADANA.infracciones) {
       expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
-      expect(item.marcoImporte, item.infraccion.id).toBe('seguridad_ciudadana');
+      // Todas son del marco de seguridad ciudadana salvo el requerimiento de identificación
+      // (art. 16), que es una entrada consultable sin sanción (`no_sancionador`).
+      expect(['seguridad_ciudadana', 'no_sancionador'], item.infraccion.id).toContain(
+        item.marcoImporte,
+      );
       expect(item.notaRevision.toUpperCase()).toContain('A VERIFICAR');
     }
+  });
+
+  it('el requerimiento de identificación (art. 16) es una entrada consultable SIN sanción', () => {
+    const ident = porId('sc-identificacion-requerimiento');
+    expect(ident).toBeDefined();
+    expect(ident!.marcoImporte).toBe('no_sancionador');
+    expect(ident!.infraccion.importeEur).toBeNull();
+    expect(ident!.infraccion.importeReducidoEur).toBeNull();
+    // Lleva una consecuencia de identificación ORIENTATIVA con su fuente (art. 16).
+    const cons = ident!.consecuencias.find((c) => c.tipo === 'identificacion');
+    expect(cons).toBeDefined();
+    expect(cons!.textoCorto.toLowerCase()).toMatch(/procede|puede/);
+    expect(cons!.fuente).toMatch(/art\. 16/);
+    // Diferencia con la detención: no se leen los derechos del art. 520 LECrim.
+    expect(ident!.infraccion.textoBoletin).toMatch(/520|no es una detenci/i);
   });
 });
 
@@ -78,14 +97,19 @@ describe('SEED_SEGURIDAD_CIUDADANA: calidad de importes (§8.3, art. 39)', () =>
   });
 
   it('cada infracción supera los mínimos de publicación', () => {
-    for (const { infraccion, sinonimos } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
-      const problemas = validarMinimosPublicacion(infraccion, sinonimos.length);
+    for (const { infraccion, sinonimos, marcoImporte } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
+      const problemas = validarMinimosPublicacion(infraccion, sinonimos.length, marcoImporte);
       expect(problemas, `${infraccion.id}: ${JSON.stringify(problemas)}`).toEqual([]);
     }
   });
 
   it('las graves fijan el extremo inferior (601 €) y las leves (100 €); el pronto pago es el 50 %', () => {
-    for (const { infraccion } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
+    for (const { infraccion, marcoImporte } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
+      // Las entradas sin sanción (identificación, art. 16) no llevan importe: se excluyen.
+      if (marcoImporte === 'no_sancionador') {
+        expect(infraccion.importeEur, infraccion.id).toBeNull();
+        continue;
+      }
       if (infraccion.gravedad === 'grave') expect(infraccion.importeEur, infraccion.id).toBe(601);
       if (infraccion.gravedad === 'leve') expect(infraccion.importeEur, infraccion.id).toBe(100);
       // Reducido = 50 % del base (art. 54: procedimiento abreviado / pago voluntario).
@@ -200,6 +224,11 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
 
   it('"desobediencia" resuelve a desobediencia o resistencia', () => {
     expect(buscarSinonimoExacto('desobediencia')).toContain('sc-desobediencia-resistencia');
+  });
+
+  it('"identificacion" resuelve al requerimiento de identificación (art. 16)', () => {
+    expect(buscarSinonimoExacto('identificacion')).toContain('sc-identificacion-requerimiento');
+    expect(buscarFts('identificacion')).toContain('sc-identificacion-requerimiento');
   });
 
   it('encuentra por número de artículo ("LOSC 36")', () => {
