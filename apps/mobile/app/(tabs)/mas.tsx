@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  Car,
   ChevronRight,
   Languages,
   MessageSquarePlus,
@@ -52,6 +53,14 @@ export default function MasScreen() {
             descripcion="Derechos del detenido en varios idiomas, para leérselos en el suyo."
           />
         </Link>
+        <Link href="/vehiculos" asChild>
+          <FilaMas
+            t={t}
+            icon={Car}
+            titulo="Vehículos"
+            descripcion="Documentación, vehículos extranjeros, comprobaciones y falsedad documental."
+          />
+        </Link>
         <Link href="/feedback" asChild>
           <FilaMas
             t={t}
@@ -69,7 +78,7 @@ export default function MasScreen() {
           ...t.typography.scale.caption,
         }}
       >
-        Próximamente: mapa/PK, sustancias, vehículos y suscripción.
+        Próximamente: mapa/PK, sustancias y suscripción.
       </Text>
     </ScrollView>
   );
