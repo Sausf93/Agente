@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import {
+  anclarInicioCiclo,
   Cuadrante,
   DiaCuadrante,
   FESTIVOS_NACIONALES_2026,
+  ocurrenciasEnPatron,
+  type AnclaCuadrante,
   type FranjaNocturna,
   type PatronTurno,
   type TipoServicio,
@@ -23,12 +26,23 @@ import {
  * está en `@agente/shared` (`proyectarMes`, `resumenHorasMes`), probada al 100 %.
  */
 
-/** Datos para dar de alta el cuadrante por primera vez (onboarding del patrón). */
+/**
+ * Datos para dar de alta el cuadrante por primera vez (arranque del rediseño).
+ *
+ * Ya NO se pide "primer día del ciclo": el agente indica el ANCLA (qué turno hace un día real,
+ * normalmente HOY) y el motor DERIVA `inicioCiclo` con `anclarInicioCiclo`. La jornada de
+ * referencia es opcional (default 37,5): no bloquea el alta (docs/diseno/cuadrante-rediseno.md §2).
+ */
 export interface AltaCuadrante {
   patron: PatronTurno;
-  inicioCiclo: string;
-  jornadaRefHorasSemana: number;
+  ancla: AnclaCuadrante;
+  jornadaRefHorasSemana?: number;
+  /** Franja nocturna afinada en "ajustes finos"; si se omite, el default 22:00–06:00. */
+  franjaNocturna?: FranjaNocturna;
 }
+
+/** Jornada de referencia por defecto si el agente no la afina en "ajustes finos" (§3). */
+const JORNADA_REF_DEFECTO = 37.5;
 
 /** Edición manual de un día (excepción sagrada). */
 export interface EdicionDia {
@@ -47,6 +61,8 @@ interface CuadranteState {
   load: () => Promise<void>;
   crear: (alta: AltaCuadrante) => Promise<void>;
   cambiarPatron: (patron: PatronTurno) => Promise<void>;
+  /** Re-ancla el ciclo desde un (día, turno) real (p. ej. tras cambiar a un patrón sin ese turno). */
+  reanclar: (ancla: AnclaCuadrante) => Promise<void>;
   cambiarInicioCiclo: (inicioCiclo: string) => Promise<void>;
   cambiarJornada: (jornadaRefHorasSemana: number) => Promise<void>;
   cambiarFranjaNocturna: (franja: FranjaNocturna) => Promise<void>;
@@ -80,12 +96,22 @@ export const useCuadranteStore = create<CuadranteState>((set, get) => ({
   },
 
   crear: async (alta) => {
+    // El `inicioCiclo` se DERIVA del ancla (día real + turno de ese día): así el calendario
+    // cuadra con la realidad del agente sin pedirle una fecha teórica de inicio de ciclo.
+    const inicioCiclo = anclarInicioCiclo(
+      alta.patron.secuencia,
+      alta.ancla.fecha,
+      alta.ancla.servicio,
+      alta.ancla.ocurrencia,
+    );
     // Los festivos nacionales de 2026 se siembran de serie (§4.9): el agente solo añade
     // los autonómicos y locales de su municipio (las fiestas del pueblo, dinero real).
     const cuadrante = Cuadrante.parse({
       patron: alta.patron,
-      inicioCiclo: alta.inicioCiclo,
-      jornadaRefHorasSemana: alta.jornadaRefHorasSemana,
+      inicioCiclo,
+      ancla: alta.ancla,
+      jornadaRefHorasSemana: alta.jornadaRefHorasSemana ?? JORNADA_REF_DEFECTO,
+      ...(alta.franjaNocturna ? { franjaNocturna: alta.franjaNocturna } : {}),
       festivosExtra: FESTIVOS_NACIONALES_2026,
     });
     const validado = await persistirConfig(cuadrante);
@@ -96,7 +122,35 @@ export const useCuadranteStore = create<CuadranteState>((set, get) => ({
     const actual = get().cuadrante;
     if (!actual) return;
     // Cambiar el patrón NO borra las excepciones: son sagradas (se conservan en su tabla).
-    const validado = await persistirConfig({ ...actual, patron });
+    // Si hay ancla y el turno de ese día EXISTE en el nuevo patrón, recomputamos `inicioCiclo`
+    // desde el ancla → el cuadrante sigue cuadrando SIN volver a preguntar (§1.3). Si el turno
+    // ya no existe en el patrón nuevo, se conserva el `inicioCiclo` actual (la UI puede
+    // re-preguntar el turno de hoy con `reanclar`, un mini-paso, no todo el alta).
+    let inicioCiclo = actual.inicioCiclo;
+    if (actual.ancla && ocurrenciasEnPatron(patron.secuencia, actual.ancla.servicio).length > 0) {
+      inicioCiclo = anclarInicioCiclo(
+        patron.secuencia,
+        actual.ancla.fecha,
+        actual.ancla.servicio,
+        actual.ancla.ocurrencia,
+      );
+    }
+    const validado = await persistirConfig({ ...actual, patron, inicioCiclo });
+    set({ cuadrante: validado });
+  },
+
+  reanclar: async (ancla) => {
+    const actual = get().cuadrante;
+    if (!actual) return;
+    // Re-ancla el ciclo a partir de un (día, turno) real. Recomputa `inicioCiclo` y guarda el
+    // ancla para futuros cambios de patrón. Las excepciones manuales siguen intactas (sagradas).
+    const inicioCiclo = anclarInicioCiclo(
+      actual.patron.secuencia,
+      ancla.fecha,
+      ancla.servicio,
+      ancla.ocurrencia,
+    );
+    const validado = await persistirConfig({ ...actual, inicioCiclo, ancla });
     set({ cuadrante: validado });
   },
 

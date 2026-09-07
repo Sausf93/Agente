@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Cuadrante, PatronTurno, DiaCuadrante } from './user.js';
 import {
+  anclarInicioCiclo,
   computarTurno,
   construirFestivos,
   diasEntre,
@@ -11,6 +12,7 @@ import {
   horasReferenciaPeriodo,
   indicePatron,
   minutosNocturnos,
+  ocurrenciasEnPatron,
   PATRONES_PREDEFINIDOS,
   proyectarDia,
   proyectarMes,
@@ -18,8 +20,10 @@ import {
   resumenHoras,
   resumenHorasMes,
   sumarDias,
+  turnosDelPatron,
   type DiaProyectado,
 } from './cuadrante.js';
+import type { TipoServicio } from './enums.js';
 
 /** Patrón Guardia Civil "6 + saliente + 3" mínimo válido. */
 const patronGC = {
@@ -193,6 +197,139 @@ describe('proyección del calendario', () => {
     expect(proyectarDia(c, '2026-09-02').esFestivo).toBe(true);
     expect(proyectarDia(c, '2026-09-01').esFestivo).toBe(false);
     expect(proyectarDia(c, '2026-09-05').esFinDeSemana).toBe(true); // sábado
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Anclaje por (día, turno) — el inverso de la proyección. Núcleo crítico del rediseño.
+// ---------------------------------------------------------------------------
+
+describe('turnosDelPatron', () => {
+  it('devuelve los turnos DISTINTOS en orden de aparición (sin duplicados)', () => {
+    // GC: M M T T N N · S · L L L → mañana, tarde, noche, saliente, libre.
+    expect(turnosDelPatron(PATRONES_PREDEFINIDOS[0]!)).toEqual([
+      'manana',
+      'tarde',
+      'noche',
+      'saliente',
+      'libre',
+    ]);
+    // Oficina L–V: solo mañana y libre.
+    expect(turnosDelPatron(PATRONES_PREDEFINIDOS[3]!)).toEqual(['manana', 'libre']);
+  });
+
+  it('alimenta botones válidos para cada patrón predefinido (todos los turnos existen en la secuencia)', () => {
+    for (const patron of PATRONES_PREDEFINIDOS) {
+      const turnos = turnosDelPatron(patron);
+      expect(turnos.length).toBeGreaterThan(0);
+      for (const turno of turnos) {
+        expect(patron.secuencia).toContain(turno);
+      }
+      // Sin duplicados.
+      expect(new Set(turnos).size).toBe(turnos.length);
+    }
+  });
+});
+
+describe('ocurrenciasEnPatron', () => {
+  const gc = PATRONES_PREDEFINIDOS[0]!.secuencia;
+  it('localiza todas las posiciones de un turno repetido', () => {
+    expect(ocurrenciasEnPatron(gc, 'manana')).toEqual([0, 1]);
+    expect(ocurrenciasEnPatron(gc, 'noche')).toEqual([4, 5]);
+    expect(ocurrenciasEnPatron(gc, 'libre')).toEqual([7, 8, 9]);
+  });
+  it('un turno que aparece una sola vez da un único índice', () => {
+    expect(ocurrenciasEnPatron(gc, 'saliente')).toEqual([6]);
+  });
+  it('un turno ausente da lista vacía', () => {
+    expect(ocurrenciasEnPatron(gc, 'vacaciones')).toEqual([]);
+  });
+});
+
+describe('anclarInicioCiclo (inverso de la proyección)', () => {
+  const gc = PATRONES_PREDEFINIDOS[0]!.secuencia;
+
+  it('reproduce el ejemplo real del rediseño (hoy = 2026-09-07)', () => {
+    // Tabla de docs/diseno/cuadrante-rediseno.md §1.1.
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'manana', 0)).toBe('2026-09-07'); // índice 0
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', 0)).toBe('2026-09-03'); // índice 4
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'saliente', 0)).toBe('2026-09-01'); // índice 6
+  });
+
+  it('el inicioCiclo calculado hace que la proyección en la fecha ancla dé el turno indicado', () => {
+    // Para CADA patrón, CADA turno y CADA ocurrencia: anclar y volver a proyectar cuadra.
+    const fechaAncla = '2026-09-07';
+    for (const patron of PATRONES_PREDEFINIDOS) {
+      const L = patron.secuencia.length;
+      for (const servicio of turnosDelPatron(patron)) {
+        const nOcurrencias = ocurrenciasEnPatron(patron.secuencia, servicio).length;
+        for (let k = 0; k < nOcurrencias; k++) {
+          const inicio = anclarInicioCiclo(patron.secuencia, fechaAncla, servicio, k);
+          const idx = indicePatron(inicio, fechaAncla, L);
+          expect(patron.secuencia[idx]).toBe(servicio);
+        }
+      }
+    }
+  });
+
+  it('la ocurrencia elige QUÉ posición del ciclo (turno repetido)', () => {
+    // Dos noches (índices 4 y 5). k=0 → resta 4 días; k=1 → resta 5 días.
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', 0)).toBe('2026-09-03');
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', 1)).toBe('2026-09-02');
+  });
+
+  it('la ocurrencia se toma MÓDULO el nº de ocurrencias (‹/› envuelve; admite negativos)', () => {
+    // 'noche' aparece 2 veces: k=2 ≡ k=0, k=3 ≡ k=1, k=-1 ≡ k=1.
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', 2)).toBe(
+      anclarInicioCiclo(gc, '2026-09-07', 'noche', 0),
+    );
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', 3)).toBe(
+      anclarInicioCiclo(gc, '2026-09-07', 'noche', 1),
+    );
+    expect(anclarInicioCiclo(gc, '2026-09-07', 'noche', -1)).toBe(
+      anclarInicioCiclo(gc, '2026-09-07', 'noche', 1),
+    );
+  });
+
+  it('es idempotente: proyectar en la fecha ancla devuelve el turno para CUALQUIER k', () => {
+    const L = gc.length;
+    for (let k = -3; k <= 5; k++) {
+      const inicio = anclarInicioCiclo(gc, '2026-09-07', 'libre', k);
+      expect(gc[indicePatron(inicio, '2026-09-07', L)]).toBe('libre');
+    }
+  });
+
+  it('cruza el fin de mes hacia atrás al restar el índice', () => {
+    // Ancla el 2 de octubre con la 3.ª libre (índice 9) → inicioCiclo el 23 de septiembre.
+    expect(anclarInicioCiclo(gc, '2026-10-02', 'libre', 2)).toBe('2026-09-23');
+    // Y la proyección cuadra.
+    expect(indicePatron('2026-09-23', '2026-10-02', gc.length)).toBe(9);
+  });
+
+  it('cruza el fin de año hacia atrás', () => {
+    // Ancla el 3 de enero de 2027 con la 2.ª noche (índice 5) → 29 de diciembre de 2026.
+    expect(anclarInicioCiclo(gc, '2027-01-03', 'noche', 1)).toBe('2026-12-29');
+    expect(indicePatron('2026-12-29', '2027-01-03', gc.length)).toBe(5);
+  });
+
+  it('lanza si el turno no está en el patrón', () => {
+    expect(() => anclarInicioCiclo(gc, '2026-09-07', 'vacaciones')).toThrow();
+    // Oficina L–V no tiene noche.
+    const oficina = PATRONES_PREDEFINIDOS[3]!.secuencia;
+    expect(() => anclarInicioCiclo(oficina, '2026-09-07', 'noche')).toThrow();
+  });
+
+  it('el cuadrante creado desde el ancla proyecta HOY como el turno indicado', () => {
+    // Integración con la proyección real: anclar → construir Cuadrante → proyectarDia(hoy).
+    const inicio = anclarInicioCiclo(gc, '2026-09-07', 'noche', 0);
+    const c = Cuadrante.parse({
+      patron: PATRONES_PREDEFINIDOS[0],
+      inicioCiclo: inicio,
+      ancla: { fecha: '2026-09-07', servicio: 'noche' as TipoServicio, ocurrencia: 0 },
+      jornadaRefHorasSemana: 37.5,
+    });
+    expect(c.ancla?.servicio).toBe('noche');
+    expect(proyectarDia(c, '2026-09-07').servicio).toBe('noche');
   });
 });
 

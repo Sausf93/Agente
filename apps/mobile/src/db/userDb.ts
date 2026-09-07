@@ -182,8 +182,8 @@ export async function saveCuadranteConfig(cuadrante: Cuadrante, updatedAt: strin
   await db.runAsync(
     `INSERT INTO cuadrante_config
        (id, patron_json, inicio_ciclo, jornada_ref_h, computo_anual_ref_h,
-        franja_inicio, franja_fin, festivos_extra_json, updated_at)
-     VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
+        franja_inicio, franja_fin, festivos_extra_json, ancla_json, updated_at)
+     VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET
        patron_json = excluded.patron_json,
        inicio_ciclo = excluded.inicio_ciclo,
@@ -192,6 +192,7 @@ export async function saveCuadranteConfig(cuadrante: Cuadrante, updatedAt: strin
        franja_inicio = excluded.franja_inicio,
        franja_fin = excluded.franja_fin,
        festivos_extra_json = excluded.festivos_extra_json,
+       ancla_json = excluded.ancla_json,
        updated_at = excluded.updated_at`,
     [
       row.patron_json,
@@ -201,6 +202,7 @@ export async function saveCuadranteConfig(cuadrante: Cuadrante, updatedAt: strin
       row.franja_inicio,
       row.franja_fin,
       row.festivos_extra_json,
+      row.ancla_json,
       row.updated_at,
     ],
   );

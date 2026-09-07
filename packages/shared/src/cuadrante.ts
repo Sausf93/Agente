@@ -205,6 +205,74 @@ export function indicePatron(inicioCiclo: string, fecha: string, longitud: numbe
   return ((diff % longitud) + longitud) % longitud;
 }
 
+// ---------------------------------------------------------------------------
+// Anclaje por (día, turno) — el INVERSO de la proyección (rediseño del cuadrante).
+//
+// El arranque no pregunta ya "¿qué día empezó tu ciclo?" (teoría que nadie sabe),
+// sino "¿qué turno tienes HOY?". A partir de ese dato trivial y real, el motor calcula
+// el `inicioCiclo` que hace que la proyección cuadre con la realidad del agente.
+// Ver docs/diseno/cuadrante-rediseno.md §1.
+// ---------------------------------------------------------------------------
+
+/**
+ * Turnos DISTINTOS presentes en un patrón, en ORDEN DE APARICIÓN (sin duplicados).
+ * Alimenta los botones "¿Qué haces hoy?": así nunca se ofrece un turno que el patrón
+ * no contiene (p. ej. no ofrecer "noche" en un patrón de oficina L–V).
+ */
+export function turnosDelPatron(patron: PatronTurno): TipoServicio[] {
+  const vistos = new Set<TipoServicio>();
+  const orden: TipoServicio[] = [];
+  for (const servicio of patron.secuencia) {
+    if (!vistos.has(servicio)) {
+      vistos.add(servicio);
+      orden.push(servicio);
+    }
+  }
+  return orden;
+}
+
+/**
+ * Índices de la secuencia donde aparece `servicio` (para desambiguar cuando un turno se
+ * repite en el ciclo y para contar sus ocurrencias). Vacío si el turno no está en el patrón.
+ */
+export function ocurrenciasEnPatron(
+  secuencia: readonly TipoServicio[],
+  servicio: TipoServicio,
+): number[] {
+  const indices: number[] = [];
+  for (let i = 0; i < secuencia.length; i++) {
+    if (secuencia[i] === servicio) indices.push(i);
+  }
+  return indices;
+}
+
+/**
+ * Calcula el `inicioCiclo` que hace que en `fechaAncla` el patrón proyecte `servicioAncla`.
+ * Es el INVERSO de `indicePatron`: si el turno cae en el índice `I[k]` de la secuencia,
+ * entonces `inicioCiclo = fechaAncla − I[k] días` (comprobación:
+ * `indicePatron(inicioCiclo, fechaAncla, L) === I[k]` porque `0 ≤ I[k] < L`).
+ *
+ * `ocurrencia` (0-based) elige la posición del ciclo cuando el turno se repite; se toma
+ * MÓDULO el nº de ocurrencias (así ‹/› en la UI puede envolver sin salirse de rango, y
+ * también admite valores negativos). Lanza si `servicioAncla` no está en el patrón (no
+ * debería pasar: los botones salen de `turnosDelPatron`).
+ */
+export function anclarInicioCiclo(
+  secuencia: readonly TipoServicio[],
+  fechaAncla: string,
+  servicioAncla: TipoServicio,
+  ocurrencia = 0,
+): string {
+  const indices = ocurrenciasEnPatron(secuencia, servicioAncla);
+  if (indices.length === 0) {
+    throw new Error(`El turno "${servicioAncla}" no está en el patrón, no se puede anclar el ciclo`);
+  }
+  const n = indices.length;
+  const k = ((ocurrencia % n) + n) % n; // módulo seguro (envuelve y admite negativos)
+  const idx = indices[k] as number;
+  return sumarDias(fechaAncla, -idx);
+}
+
 /** Construye el conjunto de festivos aplicables (nacionales sembrados + los extra del cuadrante). */
 export function construirFestivos(cuadrante: Cuadrante, extra: readonly string[] = []): Set<string> {
   return new Set<string>([...cuadrante.festivosExtra, ...extra]);

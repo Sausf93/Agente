@@ -149,11 +149,30 @@ export const FranjaNocturna = z.object({
 });
 export type FranjaNocturna = z.infer<typeof FranjaNocturna>;
 
+/**
+ * Ancla del cuadrante: el dato REAL con el que el agente configura su ciclo en el arranque
+ * ("el {fecha} hago {servicio}"). De aquí se DERIVA `inicioCiclo` (ver `anclarInicioCiclo` en
+ * cuadrante.ts). Se guarda para poder RECOMPUTAR el desfase si el agente cambia de patrón sin
+ * volver a preguntarle nada. `ocurrencia` desambigua cuando el turno se repite en el ciclo.
+ */
+export const AnclaCuadrante = z.object({
+  fecha: FechaCivil,
+  servicio: TipoServicio,
+  ocurrencia: z.number().int().nonnegative().default(0),
+});
+export type AnclaCuadrante = z.infer<typeof AnclaCuadrante>;
+
 export const Cuadrante = z.object({
   /** Versión de esquema para migraciones seguras y no destructivas. */
   schemaVersion: z.number().int().positive().default(1),
   patron: PatronTurno,
   inicioCiclo: FechaCivil,
+  /**
+   * Ancla original (día + turno) del que se derivó `inicioCiclo`. OPCIONAL y aditivo: los
+   * cuadrantes creados antes del rediseño no lo tienen (siguen funcionando con `inicioCiclo`).
+   * Si existe, permite recomputar `inicioCiclo` al cambiar de patrón sin re-preguntar.
+   */
+  ancla: AnclaCuadrante.nullable().default(null),
   /** Jornada de referencia CONFIGURABLE por cuerpo (no un 37,5 fijo como verdad). */
   jornadaRefHorasSemana: z.number().positive(),
   /** Cómputo anual de referencia (p. ej. 1.400–1.700 h/año), opcional. */

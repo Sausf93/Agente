@@ -177,6 +177,58 @@ describe('cuadrante: las excepciones manuales son SAGRADAS (el fallo de SPPLB)',
     db.close();
   });
 
+  it('la migración v8 (columna ancla_json) es ADITIVA: la config previa sobrevive con ancla NULL', () => {
+    const db = new DatabaseSync(':memory:');
+    // Instalación con el cuadrante ya configurado ANTES del rediseño (hasta la v7).
+    for (const m of USER_DB_MIGRATIONS) {
+      if (m.version <= 7) db.exec(m.sql);
+    }
+    db.exec('PRAGMA user_version = 7;');
+    db.exec(`
+      INSERT INTO cuadrante_config
+        (id, patron_json, inicio_ciclo, jornada_ref_h, computo_anual_ref_h, franja_inicio, franja_fin, festivos_extra_json, updated_at)
+        VALUES (1, '{"nombre":"6+S+3"}', '2026-09-01', 37.5, NULL, '22:00', '06:00', '[]', '2026-09-01T10:00:00.000Z');
+    `);
+
+    // Actualización de la app: se aplica la v8 (ALTER TABLE ADD COLUMN ancla_json).
+    migrar(db);
+    expect(versionDe(db)).toBe(USER_DB_SCHEMA_VERSION);
+
+    // La config previa sigue intacta y la columna nueva existe con valor NULL.
+    const config = db
+      .prepare('SELECT inicio_ciclo, jornada_ref_h, ancla_json FROM cuadrante_config WHERE id = 1')
+      .get() as { inicio_ciclo: string; jornada_ref_h: number; ancla_json: string | null };
+    expect(config.inicio_ciclo).toBe('2026-09-01');
+    expect(config.jornada_ref_h).toBe(37.5);
+    expect(config.ancla_json).toBeNull();
+    db.close();
+  });
+
+  it('guarda y recupera el ancla (día + turno) del rediseño', () => {
+    const db = new DatabaseSync(':memory:');
+    migrar(db);
+    db.prepare(
+      `INSERT INTO cuadrante_config
+         (id, patron_json, inicio_ciclo, jornada_ref_h, computo_anual_ref_h, franja_inicio, franja_fin, festivos_extra_json, ancla_json, updated_at)
+       VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).run(
+      '{"nombre":"6+S+3"}',
+      '2026-09-03',
+      37.5,
+      null,
+      '22:00',
+      '06:00',
+      '[]',
+      JSON.stringify({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 0 }),
+      '2026-09-07T10:00:00.000Z',
+    );
+    const row = db.prepare('SELECT ancla_json FROM cuadrante_config WHERE id = 1').get() as {
+      ancla_json: string;
+    };
+    expect(JSON.parse(row.ancla_json)).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 0 });
+    db.close();
+  });
+
   it('borrar una excepción no afecta a las demás ni a la config', () => {
     const db = new DatabaseSync(':memory:');
     migrar(db);

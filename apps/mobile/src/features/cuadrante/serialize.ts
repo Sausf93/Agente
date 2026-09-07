@@ -1,4 +1,4 @@
-import { Cuadrante, DiaCuadrante, PatronTurno, type FranjaNocturna } from '@agente/shared';
+import { AnclaCuadrante, Cuadrante, DiaCuadrante, PatronTurno, type FranjaNocturna } from '@agente/shared';
 
 /**
  * Lógica PURA de persistencia del cuadrante (sin runtime de React Native ni SQLite).
@@ -25,6 +25,8 @@ export interface CuadranteConfigRow {
   franja_inicio: string;
   franja_fin: string;
   festivos_extra_json: string;
+  /** Ancla (día + turno) del que se derivó `inicio_ciclo`. NULL en cuadrantes previos al rediseño. */
+  ancla_json: string | null;
   updated_at: string;
 }
 
@@ -50,6 +52,7 @@ export function configToRow(cuadrante: Cuadrante, updatedAt: string): CuadranteC
     franja_inicio: cuadrante.franjaNocturna.inicio,
     franja_fin: cuadrante.franjaNocturna.fin,
     festivos_extra_json: JSON.stringify(cuadrante.festivosExtra),
+    ancla_json: cuadrante.ancla ? JSON.stringify(cuadrante.ancla) : null,
     updated_at: updatedAt,
   };
 }
@@ -93,6 +96,16 @@ export function ensamblarCuadrante(
   const patron = PatronTurno.parse(JSON.parse(config.patron_json));
   const festivosExtra = JSON.parse(config.festivos_extra_json) as unknown;
   const franja: FranjaNocturna = { inicio: config.franja_inicio, fin: config.franja_fin };
+  // Ancla opcional: solo desde el rediseño del arranque. Una fila previa (o un JSON corrupto)
+  // deja `ancla = null` sin tumbar el cuadrante (el `inicio_ciclo` ya basta para proyectar).
+  let ancla: AnclaCuadrante | null = null;
+  if (config.ancla_json) {
+    try {
+      ancla = AnclaCuadrante.parse(JSON.parse(config.ancla_json));
+    } catch {
+      ancla = null;
+    }
+  }
 
   const dias: DiaCuadrante[] = [];
   for (const row of excepciones) {
@@ -106,6 +119,7 @@ export function ensamblarCuadrante(
   return Cuadrante.parse({
     patron,
     inicioCiclo: config.inicio_ciclo,
+    ancla,
     jornadaRefHorasSemana: config.jornada_ref_h,
     computoAnualRefHoras: config.computo_anual_ref_h,
     franjaNocturna: franja,
