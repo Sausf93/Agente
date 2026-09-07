@@ -110,9 +110,48 @@ export const CATALOGO_PENAL: Record<string, EntradaCatalogo> = {
 };
 
 /**
+ * Fase 1 — normativa transversal de intervención policial (armas, extranjería, menores). La
+ * consultan TODOS los cuerpos: el Reglamento de Armas es de aplicación general; la Ley de
+ * Extranjería la manejan a diario Guardia Civil y Policía Nacional (fronteras, CIE, expulsiones)
+ * y también las policías locales/autonómicas en identificaciones; la responsabilidad penal del
+ * menor condiciona detenciones y diligencias de cualquier cuerpo. Por ahora solo articulado
+ * navegable en Normas (sin seed de infracciones propio).
+ */
+export const CATALOGO_TRANSVERSAL: Record<string, EntradaCatalogo> = {
+  RA: {
+    // Reglamento de Armas (RD 137/1993).
+    codigo: 'RA',
+    idBoe: 'BOE-A-1993-6202',
+    tipo: 'reglamento',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TODOS,
+    implementada: true,
+  },
+  LOEX: {
+    // LO 4/2000, sobre derechos y libertades de los extranjeros en España y su integración social.
+    codigo: 'LOEX',
+    idBoe: 'BOE-A-2000-544',
+    tipo: 'ley',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TODOS,
+    implementada: true,
+  },
+  LORPM: {
+    // LO 5/2000, reguladora de la responsabilidad penal de los menores.
+    codigo: 'LORPM',
+    idBoe: 'BOE-A-2000-641',
+    tipo: 'ley',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TODOS,
+    implementada: true,
+  },
+};
+
+/**
  * Normas que el build enriquece con el TEXTO CONSOLIDADO REAL del BOE (bucle de ingesta).
- * Orden estable: primero tráfico, luego penal/procesal/seguridad ciudadana. Cada una cae a su
- * propio fallback si su descarga o parseo fallan (el resto se ingiere igualmente).
+ * Orden estable: primero tráfico, luego penal/procesal/seguridad ciudadana, luego transversal
+ * (armas, extranjería, menores). Cada una cae a su propio fallback si su descarga o parseo fallan
+ * (el resto se ingiere igualmente).
  */
 export const ENTRADAS_A_ENRIQUECER: EntradaCatalogo[] = [
   CATALOGO_TRAFICO.RGC!,
@@ -121,4 +160,7 @@ export const ENTRADAS_A_ENRIQUECER: EntradaCatalogo[] = [
   CATALOGO_PENAL.CP!,
   CATALOGO_PENAL.LECrim!,
   CATALOGO_PENAL.LOSC!,
+  CATALOGO_TRANSVERSAL.RA!,
+  CATALOGO_TRANSVERSAL.LOEX!,
+  CATALOGO_TRANSVERSAL.LORPM!,
 ];
