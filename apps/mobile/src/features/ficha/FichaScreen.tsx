@@ -152,7 +152,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xl }}>
           <Dato t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} />
           {ficha.importeReducidoEur !== null ? (
-            <Dato t={t} etiqueta="Pronto pago" valor={formatEuros(ficha.importeReducidoEur)} />
+            <Dato t={t} etiqueta="Pronto pago" valor={formatEuros(ficha.importeReducidoEur)} acento />
           ) : null}
           <Dato t={t} etiqueta="Puntos" valor={ficha.puntos !== null ? String(ficha.puntos) : '—'} />
         </View>
@@ -299,13 +299,23 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   );
 }
 
-function Dato({ t, etiqueta, valor }: { t: Theme; etiqueta: string; valor: string }) {
+function Dato({
+  t,
+  etiqueta,
+  valor,
+  acento = false,
+}: {
+  t: Theme;
+  etiqueta: string;
+  valor: string;
+  acento?: boolean;
+}) {
   return (
     <View style={{ gap: t.spacing.xxs }}>
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
       <Text
         style={{
-          color: t.color.textPrimary,
+          color: acento ? t.color.accent : t.color.textPrimary,
           ...t.typography.scale.titleM,
           fontVariant: ['tabular-nums'],
         }}

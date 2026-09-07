@@ -1,15 +1,22 @@
+import type { ComponentType } from 'react';
+import { View, type ColorValue } from 'react-native';
 import { Tabs } from 'expo-router';
+import {
+  BookOpen,
+  CalendarDays,
+  FileText,
+  LayoutGrid,
+  Search,
+  type LucideProps,
+} from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
+import type { Theme } from '@/ui/theme';
 
 /**
- * Barra de pestañas inferior (ADR-003): Buscar · Normas · Documentos · Cuadrante · Más.
- *
- * "Buscar" es la home (el buscador ES el producto). El Mapa/PK NO es pestaña de
- * nivel 1: vive como apoyo contextual dentro de la ficha/documento y en "Más".
- *
- * Los iconos (Lucide) los añade mobile-dev: activo = relleno, inactivo = línea,
- * de modo que el estado activo no dependa solo del color (regla UI 2.4). De
- * momento la pestaña activa se distingue por color de marca + peso de la etiqueta.
+ * Barra de pestañas inferior (ADR-003; sistema visual v2 §3): Buscar · Normas · Documentos ·
+ * Cuadrante · Más. Iconos Lucide (sobre react-native-svg, compatible con Expo Go). La pestaña
+ * ACTIVA usa TRES señales redundantes (nunca solo color): pastilla de fondo `accentWeak`, icono
+ * y etiqueta en acento, y trazo del icono más grueso (2.4 vs 2.0). Etiqueta siempre visible.
  */
 export default function TabsLayout() {
   const t = useAppTheme();
@@ -17,20 +24,56 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: t.color.brand,
+        tabBarActiveTintColor: t.color.accent,
         tabBarInactiveTintColor: t.color.textSecondary,
         tabBarStyle: {
           backgroundColor: t.color.surface,
           borderTopColor: t.color.border,
         },
-        tabBarLabelStyle: { fontSize: 13, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+        tabBarItemStyle: { minWidth: t.touch.min },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Buscar' }} />
-      <Tabs.Screen name="normas" options={{ title: 'Normas' }} />
-      <Tabs.Screen name="documentos" options={{ title: 'Documentos' }} />
-      <Tabs.Screen name="cuadrante" options={{ title: 'Cuadrante' }} />
-      <Tabs.Screen name="mas" options={{ title: 'Más' }} />
+      <Tabs.Screen
+        name="index"
+        options={{ title: 'Buscar', tabBarIcon: makeIcon(t, Search) }}
+      />
+      <Tabs.Screen
+        name="normas"
+        options={{ title: 'Normas', tabBarIcon: makeIcon(t, BookOpen) }}
+      />
+      <Tabs.Screen
+        name="documentos"
+        options={{ title: 'Documentos', tabBarIcon: makeIcon(t, FileText) }}
+      />
+      <Tabs.Screen
+        name="cuadrante"
+        options={{ title: 'Cuadrante', tabBarIcon: makeIcon(t, CalendarDays) }}
+      />
+      <Tabs.Screen
+        name="mas"
+        options={{ title: 'Más', tabBarIcon: makeIcon(t, LayoutGrid) }}
+      />
     </Tabs>
   );
+}
+
+/** Genera el `tabBarIcon`: pastilla `accentWeak` + trazo grueso cuando la pestaña está activa. */
+function makeIcon(t: Theme, Icon: ComponentType<LucideProps>) {
+  return function TabIcon({ focused, color }: { focused: boolean; color: ColorValue }) {
+    return (
+      <View
+        style={{
+          width: 52,
+          height: 30,
+          borderRadius: t.radius.pill,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: focused ? t.color.accentWeak : 'transparent',
+        }}
+      >
+        <Icon size={24} color={color as string} strokeWidth={focused ? 2.4 : 2} />
+      </View>
+    );
+  };
 }

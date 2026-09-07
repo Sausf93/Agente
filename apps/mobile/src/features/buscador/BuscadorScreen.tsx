@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { SearchX, Sparkles } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { SearchBar } from '@/ui/components/SearchBar';
 import { ListRow } from '@/ui/components/ListRow';
 import { SeverityChip } from '@/ui/components/SeverityChip';
+import { Button } from '@/ui/components/Button';
 import { formatEuros } from '@/features/ficha/format';
 import { useBuscadorStore } from './store';
 import type { ResultadoBusqueda } from './search';
@@ -83,6 +85,7 @@ export function BuscadorScreen() {
             buscado={buscado}
             sinContenido={sinContenido}
             consulta={consulta}
+            onReportar={() => router.push('/feedback')}
           />
         }
       />
@@ -132,23 +135,26 @@ function EstadoVacio({
   buscado,
   sinContenido,
   consulta,
+  onReportar,
 }: {
   t: ReturnType<typeof useAppTheme>;
   buscando: boolean;
   buscado: boolean;
   sinContenido: boolean;
   consulta: string;
+  onReportar: () => void;
 }) {
   if (buscando && consulta.trim().length > 0) {
     return (
       <View style={{ paddingTop: t.spacing.xxl, alignItems: 'center' }}>
-        <ActivityIndicator color={t.color.brand} />
+        <ActivityIndicator color={t.color.accent} />
       </View>
     );
   }
 
   let titulo: string;
   let detalle: string;
+  let sinResultados = false;
   if (sinContenido) {
     titulo = 'Contenido no disponible aquí';
     detalle =
@@ -157,16 +163,36 @@ function EstadoVacio({
     titulo = 'Busca en el lenguaje de la calle';
     detalle = 'Prueba con "faro roto", "sin seguro", "móvil" o un artículo como "RGC 18".';
   } else if (buscado) {
-    titulo = 'Sin resultados';
+    titulo = 'Nada exacto para esto';
     detalle = 'No encontramos ninguna infracción. Lo hemos anotado para mejorar el buscador.';
+    sinResultados = true;
   } else {
     return null;
   }
 
+  const Icono = sinResultados ? SearchX : Sparkles;
+
   return (
-    <View style={{ paddingTop: t.spacing.xxl, paddingHorizontal: t.spacing.base, gap: t.spacing.sm }}>
-      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>{titulo}</Text>
-      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>{detalle}</Text>
+    <View
+      style={{
+        paddingTop: t.spacing.xxl,
+        paddingHorizontal: t.spacing.xl,
+        gap: t.spacing.md,
+        alignItems: 'center',
+      }}
+    >
+      <Icono size={44} color={t.color.textTertiary} strokeWidth={1.75} />
+      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM, textAlign: 'center' }}>
+        {titulo}
+      </Text>
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body, textAlign: 'center' }}>
+        {detalle}
+      </Text>
+      {sinResultados ? (
+        <View style={{ alignSelf: 'stretch', marginTop: t.spacing.sm }}>
+          <Button title="Reportar que falta esto" variant="secondary" onPress={onReportar} />
+        </View>
+      ) : null}
     </View>
   );
 }

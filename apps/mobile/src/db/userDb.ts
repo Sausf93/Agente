@@ -1,5 +1,5 @@
 import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
-import type { Cuadrante, DiaCuadrante, Feedback } from '@agente/shared';
+import type { Cuadrante, Cuerpo, DiaCuadrante, Feedback, PoliciaAutonomica } from '@agente/shared';
 import { feedbackToRow, rowToFeedback, type FeedbackRow } from '@/features/feedback/serialize';
 import {
   configToRow,
@@ -90,6 +90,28 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
         editado_el TEXT NOT NULL
       );
       PRAGMA user_version = 3;
+    `);
+  }
+
+  if (version < 4) {
+    // PERFIL LOCAL del agente (cuerpo, territorio y preferencia de tema), fijado en el
+    // onboarding y editable en Ajustes. Una única fila. Vive SOLO en el dispositivo (ADR-001,
+    // local-first, sin login): nada de esto viaja a un servidor. `onboarded` marca que el
+    // onboarding se completó (gate de primera apertura).
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS perfil (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        cuerpo TEXT,
+        policia_autonomica TEXT,
+        ccaa_id TEXT,
+        provincia_id TEXT,
+        municipio_id TEXT,
+        municipio_nombre TEXT,
+        tema TEXT NOT NULL DEFAULT 'system',
+        onboarded INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL
+      );
+      PRAGMA user_version = 4;
     `);
   }
 }
@@ -279,4 +301,83 @@ export async function upsertExcepcion(dia: DiaCuadrante): Promise<void> {
 export async function deleteExcepcion(fecha: string): Promise<void> {
   const db = await openUserDb();
   await db.runAsync('DELETE FROM cuadrante_excepcion WHERE fecha = ?', [fecha]);
+}
+
+// ---------------------------------------------------------------------------
+// Perfil local (cuerpo, territorio, tema, onboarding) — una sola fila, solo en el dispositivo
+// ---------------------------------------------------------------------------
+
+/** Preferencia de tema persistida: sigue el sistema o se fuerza claro/oscuro. */
+export type ThemePreference = 'system' | 'light' | 'dark';
+
+/** Perfil local tal y como se guarda/lee del dispositivo. Todos los campos son nullables salvo tema. */
+export interface PerfilLocal {
+  cuerpo: Cuerpo | null;
+  policiaAutonomica: PoliciaAutonomica | null;
+  ccaaId: string | null;
+  provinciaId: string | null;
+  municipioId: string | null;
+  municipioNombre: string | null;
+  tema: ThemePreference;
+  onboarded: boolean;
+}
+
+interface PerfilRow {
+  cuerpo: string | null;
+  policia_autonomica: string | null;
+  ccaa_id: string | null;
+  provincia_id: string | null;
+  municipio_id: string | null;
+  municipio_nombre: string | null;
+  tema: string;
+  onboarded: number;
+}
+
+/** Carga el perfil local, o `null` si aún no existe (primera apertura → onboarding). */
+export async function loadPerfil(): Promise<PerfilLocal | null> {
+  const db = await openUserDb();
+  const row = await db.getFirstAsync<PerfilRow>('SELECT * FROM perfil WHERE id = 1');
+  if (!row) return null;
+  return {
+    cuerpo: (row.cuerpo as Cuerpo | null) ?? null,
+    policiaAutonomica: (row.policia_autonomica as PoliciaAutonomica | null) ?? null,
+    ccaaId: row.ccaa_id,
+    provinciaId: row.provincia_id,
+    municipioId: row.municipio_id,
+    municipioNombre: row.municipio_nombre,
+    tema: (['system', 'light', 'dark'].includes(row.tema) ? row.tema : 'system') as ThemePreference,
+    onboarded: row.onboarded === 1,
+  };
+}
+
+/** Guarda (upsert) el perfil local de forma atómica en su única fila. */
+export async function savePerfil(perfil: PerfilLocal, updatedAt: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO perfil
+       (id, cuerpo, policia_autonomica, ccaa_id, provincia_id, municipio_id, municipio_nombre,
+        tema, onboarded, updated_at)
+     VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       cuerpo = excluded.cuerpo,
+       policia_autonomica = excluded.policia_autonomica,
+       ccaa_id = excluded.ccaa_id,
+       provincia_id = excluded.provincia_id,
+       municipio_id = excluded.municipio_id,
+       municipio_nombre = excluded.municipio_nombre,
+       tema = excluded.tema,
+       onboarded = excluded.onboarded,
+       updated_at = excluded.updated_at`,
+    [
+      perfil.cuerpo,
+      perfil.policiaAutonomica,
+      perfil.ccaaId,
+      perfil.provinciaId,
+      perfil.municipioId,
+      perfil.municipioNombre,
+      perfil.tema,
+      perfil.onboarded ? 1 : 0,
+      updatedAt,
+    ],
+  );
 }
