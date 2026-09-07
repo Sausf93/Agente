@@ -52,6 +52,42 @@ describe('DERECHOS_520 — estructura', () => {
   });
 });
 
+describe('DERECHOS_520 — lenguas cooficiales (ca/eu/gl)', () => {
+  const COOFICIALES: IdiomaDerechos[] = ['ca', 'eu', 'gl'];
+
+  it('incluye català, euskara y galego en la entrega', () => {
+    for (const idioma of COOFICIALES) {
+      expect(IDIOMAS_DERECHOS).toContain(idioma);
+    }
+  });
+
+  it('coloca las cooficiales en lugar visible: justo tras el castellano', () => {
+    // Orden pensado para intervención (§4.11): es → cooficiales → resto.
+    expect(IDIOMAS_DERECHOS.slice(0, 4)).toEqual(['es', 'ca', 'eu', 'gl']);
+  });
+
+  it('cada cooficial tiene TODOS los apartados y va pendiente de cotejo', () => {
+    for (const idioma of COOFICIALES) {
+      const texto = DERECHOS_520[idioma];
+      expect(Object.keys(texto.textoNativo).sort()).toEqual([...APARTADOS_520].sort());
+      for (const clave of APARTADOS_520) {
+        expect(texto.textoNativo[clave].trim().length).toBeGreaterThan(0);
+      }
+      expect(texto.revisado).toBe(false);
+      expect(texto.nota).not.toBeNull();
+    }
+  });
+
+  it('cada cooficial tiene metadatos (nombre en español y endónimo) y no es RTL', () => {
+    for (const idioma of COOFICIALES) {
+      const meta = IDIOMAS_META[idioma];
+      expect(meta.nombre.trim().length).toBeGreaterThan(0);
+      expect(meta.endonimo.trim().length).toBeGreaterThan(0);
+      expect(meta.rtl).toBe(false);
+    }
+  });
+});
+
 describe('DERECHOS_520 — referencia en español', () => {
   it('todas las entradas incluyen la referencia en español completa', () => {
     for (const idioma of IDIOMAS_DERECHOS) {

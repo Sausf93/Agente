@@ -21,6 +21,7 @@ export function useAppTheme(): Theme {
   const system = useColorScheme();
   const tema = useSettingsStore((s) => s.tema);
   const cuerpo = useSettingsStore((s) => s.cuerpo);
+  const policiaAutonomica = useSettingsStore((s) => s.policiaAutonomica);
   const mode: 'light' | 'dark' = tema === 'system' ? (system === 'dark' ? 'dark' : 'light') : tema;
-  return resolveTheme(mode, cuerpo);
+  return resolveTheme(mode, cuerpo, policiaAutonomica);
 }

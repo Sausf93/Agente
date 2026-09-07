@@ -14,7 +14,7 @@
  * Uso: `import { lightTheme, darkTheme, type Theme } from '@/ui/theme';`
  */
 
-import type { Cuerpo, Gravedad } from '@agente/shared';
+import type { Cuerpo, Gravedad, PoliciaAutonomica } from '@agente/shared';
 
 export const palette = {
   // Neutros (grises fríos, ligerísimo tinte azul para armonizar con la marca)
@@ -274,13 +274,28 @@ export interface AccentTokens {
   on: string;
 }
 
-/** Clave interna de acento por cuerpo (camelCase, propia del tema). */
-export type CuerpoAccent = 'guardiaCivil' | 'policiaNacional' | 'policiaLocal' | 'autonomica';
+/**
+ * Clave interna de acento por cuerpo (camelCase, propia del tema). Las cuatro `autonomica*`
+ * son MATICES dentro de la misma familia violeta (§1.2): cada cuerpo autonómico ve un tono
+ * propio pero reconociblemente "autonómico". `autonomica` (genérico) es el fallback cuando
+ * aún no se ha elegido la autonómica concreta.
+ */
+export type CuerpoAccent =
+  | 'guardiaCivil'
+  | 'policiaNacional'
+  | 'policiaLocal'
+  | 'autonomica'
+  | 'autonomicaMossos'
+  | 'autonomicaErtzaintza'
+  | 'autonomicaForal'
+  | 'autonomicaCanaria';
 
 /**
  * Tabla de acentos por cuerpo (claro y oscuro), tomada de `docs/diseno/sistema-visual.md`
  * §1.2. Tonos SOBRIOS y desaturados, deliberadamente distintos del color institucional exacto
  * (restricción legal: la app no puede parecer oficial). Contraste AA verificado en la tabla.
+ * Las autonómicas comparten familia violeta con matices de tono (magenta, violeta, ciruela,
+ * azul-violeta) para distinguir cuerpos sin romper la coherencia del sistema.
  */
 export const accentByCuerpo: Record<CuerpoAccent, { light: AccentTokens; dark: AccentTokens }> = {
   guardiaCivil: {
@@ -295,10 +310,36 @@ export const accentByCuerpo: Record<CuerpoAccent, { light: AccentTokens; dark: A
     light: { accent: '#0B7597', pressed: '#095E79', on: '#FFFFFF' },
     dark: { accent: '#4FC4E6', pressed: '#2AA6C8', on: '#0A0C10' },
   },
+  // Genérico autonómico (fallback sin autonómica concreta): violeta neutro.
   autonomica: {
     light: { accent: '#6A4E9C', pressed: '#574080', on: '#FFFFFF' },
     dark: { accent: '#B49BE8', pressed: '#8F79CC', on: '#0A0C10' },
   },
+  // Matices por cuerpo autonómico (misma familia violeta; AA verificado).
+  autonomicaMossos: {
+    light: { accent: '#9A3F7E', pressed: '#7F3268', on: '#FFFFFF' },
+    dark: { accent: '#E294C6', pressed: '#C877B0', on: '#0A0C10' },
+  },
+  autonomicaErtzaintza: {
+    light: { accent: '#5A45A0', pressed: '#493784', on: '#FFFFFF' },
+    dark: { accent: '#B79BEC', pressed: '#9C7FD6', on: '#0A0C10' },
+  },
+  autonomicaForal: {
+    light: { accent: '#7E4A6E', pressed: '#663B58', on: '#FFFFFF' },
+    dark: { accent: '#CF9BC4', pressed: '#B87FAC', on: '#0A0C10' },
+  },
+  autonomicaCanaria: {
+    light: { accent: '#3D5AA0', pressed: '#314A84', on: '#FFFFFF' },
+    dark: { accent: '#8FA4EA', pressed: '#7488D0', on: '#0A0C10' },
+  },
+};
+
+/** Acento concreto por cuerpo autonómico (matiz propio dentro de la familia violeta). */
+const ACCENT_KEY_BY_AUTONOMICA: Record<PoliciaAutonomica, CuerpoAccent> = {
+  mossos: 'autonomicaMossos',
+  ertzaintza: 'autonomicaErtzaintza',
+  policia_foral: 'autonomicaForal',
+  policia_canaria: 'autonomicaCanaria',
 };
 
 /** Acento por DEFECTO (antes de elegir cuerpo o tras un reset): la marca neutra azul pizarra. */
@@ -309,8 +350,9 @@ export const accentDefault: { light: AccentTokens; dark: AccentTokens } = {
 
 /**
  * Traduce el enum de dominio `Cuerpo` (@agente/shared, snake_case) a la clave de acento del
- * tema. Los cuatro cuerpos autonómicos comparten el mismo acento neutro (no se replica ninguna
- * identidad autonómica concreta). `null`/desconocido → sin acento (marca neutra por defecto).
+ * tema, SIN distinguir la autonómica concreta: `policia_autonomica` → `autonomica` (genérico).
+ * Para diferenciar Mossos/Ertzaintza/Foral/Canaria, usa `accentKeyFor`. `null`/desconocido →
+ * sin acento (marca neutra por defecto).
  */
 export function accentKeyFromCuerpo(cuerpo: Cuerpo | null | undefined): CuerpoAccent | null {
   switch (cuerpo) {
@@ -325,6 +367,21 @@ export function accentKeyFromCuerpo(cuerpo: Cuerpo | null | undefined): CuerpoAc
     default:
       return null;
   }
+}
+
+/**
+ * Clave de acento teniendo en cuenta la autonómica CONCRETA: si el cuerpo es `policia_autonomica`
+ * y se conoce cuál (Mossos, Ertzaintza, Foral, Canaria), devuelve su matiz propio; si no se sabe,
+ * cae al violeta genérico `autonomica`. Para el resto de cuerpos, igual que `accentKeyFromCuerpo`.
+ */
+export function accentKeyFor(
+  cuerpo: Cuerpo | null | undefined,
+  policiaAutonomica: PoliciaAutonomica | null | undefined,
+): CuerpoAccent | null {
+  if (cuerpo === 'policia_autonomica' && policiaAutonomica) {
+    return ACCENT_KEY_BY_AUTONOMICA[policiaAutonomica];
+  }
+  return accentKeyFromCuerpo(cuerpo);
 }
 
 /**
@@ -356,9 +413,13 @@ function parseHex(hex: string): [number, number, number] {
  * sobrescritos por el acento del cuerpo. La GRAVEDAD, los neutros, la tipografía y el espaciado
  * NO cambian nunca con el cuerpo (regla innegociable del sistema visual §1.3).
  */
-export function resolveTheme(mode: 'light' | 'dark', cuerpo: Cuerpo | null): Theme {
+export function resolveTheme(
+  mode: 'light' | 'dark',
+  cuerpo: Cuerpo | null,
+  policiaAutonomica: PoliciaAutonomica | null = null,
+): Theme {
   const base = mode === 'dark' ? darkTheme : lightTheme;
-  const key = accentKeyFromCuerpo(cuerpo);
+  const key = accentKeyFor(cuerpo, policiaAutonomica);
   const a = key ? accentByCuerpo[key][mode] : accentDefault[mode];
   // Tinte débil = mezcla del acento con la superficie (14 % claro / 22 % oscuro).
   const accentWeak = mixHex(a.accent, base.color.surface, mode === 'dark' ? 0.22 : 0.14);

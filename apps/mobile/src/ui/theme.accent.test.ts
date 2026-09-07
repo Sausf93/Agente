@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   accentByCuerpo,
   accentDefault,
+  accentKeyFor,
   accentKeyFromCuerpo,
   darkTheme,
   lightTheme,
@@ -24,6 +25,28 @@ describe('accentKeyFromCuerpo', () => {
   it('sin cuerpo (null/undefined) devuelve null → marca neutra por defecto', () => {
     expect(accentKeyFromCuerpo(null)).toBeNull();
     expect(accentKeyFromCuerpo(undefined)).toBeNull();
+  });
+
+  it('policia_autonomica (sin subtipo) mapea al genérico', () => {
+    expect(accentKeyFromCuerpo('policia_autonomica')).toBe('autonomica');
+  });
+});
+
+describe('accentKeyFor (cuerpo × autonómica concreta)', () => {
+  it('mapea cada autonómica concreta a su clave de acento propia', () => {
+    expect(accentKeyFor('policia_autonomica', 'mossos')).toBe('autonomicaMossos');
+    expect(accentKeyFor('policia_autonomica', 'ertzaintza')).toBe('autonomicaErtzaintza');
+    expect(accentKeyFor('policia_autonomica', 'policia_foral')).toBe('autonomicaForal');
+    expect(accentKeyFor('policia_autonomica', 'policia_canaria')).toBe('autonomicaCanaria');
+  });
+
+  it('autonómica sin subtipo cae al genérico', () => {
+    expect(accentKeyFor('policia_autonomica', null)).toBe('autonomica');
+  });
+
+  it('para el resto de cuerpos ignora el subtipo autonómico', () => {
+    expect(accentKeyFor('guardia_civil', 'mossos')).toBe('guardiaCivil');
+    expect(accentKeyFor(null, 'mossos')).toBeNull();
   });
 });
 
@@ -78,11 +101,44 @@ describe('resolveTheme (mode × cuerpo)', () => {
     expect(gc.color.accentWeak).toBe(esperado);
   });
 
-  it('las cuatro autonómicas comparten el mismo acento neutro', () => {
-    // El dominio solo tiene un cuerpo `policia_autonomica`: todas las autonómicas lo comparten.
+  it('sin autonómica concreta usa el violeta genérico', () => {
+    // Fallback: cuerpo autonómico elegido pero aún sin subtipo → acento genérico.
     expect(resolveTheme('light', 'policia_autonomica').color.accent).toBe(
       accentByCuerpo.autonomica.light.accent,
     );
+    expect(resolveTheme('light', 'policia_autonomica', null).color.accent).toBe(
+      accentByCuerpo.autonomica.light.accent,
+    );
+  });
+
+  it('cada cuerpo autonómico concreto tiene su propio matiz de acento', () => {
+    expect(resolveTheme('light', 'policia_autonomica', 'mossos').color.accent).toBe(
+      accentByCuerpo.autonomicaMossos.light.accent,
+    );
+    expect(resolveTheme('light', 'policia_autonomica', 'ertzaintza').color.accent).toBe(
+      accentByCuerpo.autonomicaErtzaintza.light.accent,
+    );
+    expect(resolveTheme('dark', 'policia_autonomica', 'policia_foral').color.accent).toBe(
+      accentByCuerpo.autonomicaForal.dark.accent,
+    );
+    expect(resolveTheme('light', 'policia_autonomica', 'policia_canaria').color.accent).toBe(
+      accentByCuerpo.autonomicaCanaria.light.accent,
+    );
+  });
+
+  it('las cuatro autonómicas concretas tienen acentos distintos entre sí', () => {
+    const acentos = (['mossos', 'ertzaintza', 'policia_foral', 'policia_canaria'] as const).map(
+      (a) => resolveTheme('light', 'policia_autonomica', a).color.accent,
+    );
+    expect(new Set(acentos).size).toBe(4);
+  });
+
+  it('la autonómica concreta NO altera la gravedad ni los neutros', () => {
+    const mossos = resolveTheme('light', 'policia_autonomica', 'mossos');
+    expect(mossos.severity).toEqual(lightTheme.severity);
+    expect(mossos.color.bg).toBe(lightTheme.color.bg);
+    expect(mossos.color.surface).toBe(lightTheme.color.surface);
+    expect(mossos.color.textPrimary).toBe(lightTheme.color.textPrimary);
   });
 
   it('la GRAVEDAD NO cambia con el cuerpo (mismos HEX que el tema base)', () => {

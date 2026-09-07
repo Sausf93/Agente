@@ -13,7 +13,7 @@ import {
 } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
-import { accentByCuerpo, accentKeyFromCuerpo } from '@/ui/theme';
+import { accentByCuerpo, accentKeyFor } from '@/ui/theme';
 import { Button } from '@/ui/components/Button';
 import { Banner } from '@/ui/components/Banner';
 import { PressableScale } from '@/ui/components/PressableScale';
@@ -42,9 +42,12 @@ const AUTONOMICAS: { value: PoliciaAutonomica; label: string; comunidad: string 
   { value: 'policia_canaria', label: 'Policía Canaria', comunidad: 'Canarias' },
 ];
 
-/** Color de acento (según el modo) para el swatch de cada tarjeta de cuerpo. */
-function swatchColor(t: Theme, cuerpo: Cuerpo): string {
-  const key = accentKeyFromCuerpo(cuerpo);
+/**
+ * Color de acento (según el modo) para el swatch de cada tarjeta de cuerpo. Si se pasa la
+ * autonómica concreta, muestra su matiz propio (Mossos, Ertzaintza, Foral, Canaria).
+ */
+function swatchColor(t: Theme, cuerpo: Cuerpo, autonomica?: PoliciaAutonomica | null): string {
+  const key = accentKeyFor(cuerpo, autonomica ?? null);
   if (!key) return t.color.accent;
   return accentByCuerpo[key][t.mode].accent;
 }
@@ -260,7 +263,7 @@ function Paso1({
                 t={t}
                 label={a.label}
                 sub={a.comunidad}
-                swatch={swatchColor(t, 'policia_autonomica')}
+                swatch={swatchColor(t, 'policia_autonomica', a.value)}
                 activo={activo}
                 onPress={() => onElegirAutonomica(a.value)}
               />

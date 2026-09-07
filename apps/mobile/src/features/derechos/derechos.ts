@@ -21,11 +21,14 @@
  */
 
 /**
- * Idiomas de esta entrega (§4.11): los más frecuentes en intervención. Códigos ISO 639-1.
+ * Idiomas de esta entrega (§4.11). Códigos ISO 639-1. Orden PENSADO para intervención:
+ *  1) `es` (castellano, literal del BOE); 2) las LENGUAS COOFICIALES del Estado (`ca`, `eu`,
+ *     `gl`), de uso diario para los cuerpos autonómicos (Mossos, Ertzaintza, Foral, Canaria);
+ *  3) el resto de idiomas frecuentes con población extranjera.
  * TODO(§4.11): ampliar con 'zh' (chino), 'ru' (ruso), 'pt' (portugués), 'it' (italiano)
  * cuando se disponga de traducción fiel (idealmente la oficial del Ministerio del Interior).
  */
-export const IDIOMAS_DERECHOS = ['es', 'en', 'fr', 'de', 'ar', 'ro'] as const;
+export const IDIOMAS_DERECHOS = ['es', 'ca', 'eu', 'gl', 'en', 'fr', 'de', 'ar', 'ro'] as const;
 export type IdiomaDerechos = (typeof IDIOMAS_DERECHOS)[number];
 
 /** Metadatos de presentación de cada idioma (endónimo = como se llama en su propia lengua). */
@@ -41,6 +44,10 @@ export interface IdiomaMeta {
 
 export const IDIOMAS_META: Readonly<Record<IdiomaDerechos, IdiomaMeta>> = {
   es: { codigo: 'es', nombre: 'Español', endonimo: 'Español', rtl: false },
+  // Lenguas cooficiales del Estado (uso diario de los cuerpos autonómicos).
+  ca: { codigo: 'ca', nombre: 'Catalán', endonimo: 'Català', rtl: false },
+  eu: { codigo: 'eu', nombre: 'Euskera', endonimo: 'Euskara', rtl: false },
+  gl: { codigo: 'gl', nombre: 'Gallego', endonimo: 'Galego', rtl: false },
   en: { codigo: 'en', nombre: 'Inglés', endonimo: 'English', rtl: false },
   fr: { codigo: 'fr', nombre: 'Francés', endonimo: 'Français', rtl: false },
   de: { codigo: 'de', nombre: 'Alemán', endonimo: 'Deutsch', rtl: false },
@@ -139,6 +146,86 @@ const APARTADOS_ES: TextoApartados = {
 // Traducciones (revisado: false). Fieles, PERO pendientes de cotejo con la versión oficial
 // del Ministerio del Interior antes de publicar.
 // ---------------------------------------------------------------------------
+
+// Lenguas cooficiales del Estado (§4.11). Uso diario de los cuerpos autonómicos.
+const APARTADOS_CA: TextoApartados = {
+  informacion:
+    'Queda vostè detingut. Té dret a ser informat, de manera immediata i comprensible, dels fets que se li atribueixen i de les raons de la seva detenció.',
+  silencio:
+    'Té dret a guardar silenci, a no declarar si no ho vol, a no contestar alguna de les preguntes, o a declarar únicament davant el jutge.',
+  noDeclararContraSi: 'Té dret a no declarar contra si mateix i a no confessar-se culpable.',
+  abogado:
+    'Té dret a designar un advocat i a ser assistit per ell sense demora injustificada. Si no en designa cap, se n’hi nomenarà un d’ofici.',
+  accesoActuaciones:
+    'Té dret a accedir als elements de les actuacions que siguin essencials per impugnar la legalitat de la seva detenció.',
+  comunicacionDetencion:
+    'Té dret que es comuniqui a un familiar o a la persona que vostè desitgi el fet de la seva detenció i el lloc on es troba en cada moment.',
+  comunicacionTercero:
+    'Té dret a comunicar-se telefònicament, sense demora injustificada, amb un tercer de la seva elecció.',
+  asistenciaConsular:
+    'Si vostè és estranger, té dret que es comuniqui la seva detenció a l’oficina consular del seu país i a comunicar-s’hi.',
+  interprete:
+    'Té dret a ser assistit gratuïtament per un intèrpret si no comprèn o no parla el castellà, o si és una persona sorda o amb discapacitat auditiva.',
+  reconocimientoMedico:
+    'Té dret a ser reconegut pel metge forense o el seu substitut legal i, si no n’hi ha, pel de la institució on es trobi.',
+  habeasCorpus:
+    'Té dret a sol·licitar el procediment d’Habeas Corpus si considera que la seva detenció no és legal.',
+  plazoDetencion:
+    'La seva detenció durarà el temps estrictament necessari i no podrà superar les 72 hores sense ser posat a disposició de l’autoritat judicial.',
+};
+
+const APARTADOS_EU: TextoApartados = {
+  informacion:
+    'Atxilotuta zaude. Eskubidea duzu berehala eta modu ulergarrian jakinarazteko egozten zaizkizun egitateak eta zure atxiloketaren arrazoiak.',
+  silencio:
+    'Isilik egoteko eskubidea duzu, nahi ez baduzu ez deklaratzeko, galdera batzuei ez erantzuteko, edo epailearen aurrean bakarrik deklaratzeko.',
+  noDeclararContraSi: 'Zure aurka ez deklaratzeko eta errudun ez aitortzeko eskubidea duzu.',
+  abogado:
+    'Abokatu bat izendatzeko eta hark bidegabeko atzerapenik gabe lagundu diezazun eskubidea duzu. Izendatzen ez baduzu, ofiziozko bat izendatuko zaizu.',
+  accesoActuaciones:
+    'Zure atxiloketaren legezkotasuna aurkaratzeko funtsezkoak diren jardun-elementuetara sartzeko eskubidea duzu.',
+  comunicacionDetencion:
+    'Eskubidea duzu senide bati edo nahi duzun pertsonari zure atxiloketaren berri eta une oro zauden lekuaren berri eman diezaieten.',
+  comunicacionTercero:
+    'Telefonoz, bidegabeko atzerapenik gabe, zuk aukeratutako hirugarren batekin komunikatzeko eskubidea duzu.',
+  asistenciaConsular:
+    'Atzerritarra bazara, eskubidea duzu zure atxiloketaren berri zure herrialdeko kontsulatuari eman diezaioten eta harekin komunikatzeko.',
+  interprete:
+    'Gaztelania ulertzen edo hitz egiten ez baduzu, edo gorra edo entzumen-desgaitasuna baduzu, doako interprete baten laguntza izateko eskubidea duzu.',
+  reconocimientoMedico:
+    'Auzitegiko medikuak edo haren legezko ordezkoak, eta halakorik ezean zauden erakundeko medikuak, azter zaitzan eskubidea duzu.',
+  habeasCorpus:
+    'Habeas Corpus prozedura eskatzeko eskubidea duzu, zure atxiloketa legezkoa ez dela uste baduzu.',
+  plazoDetencion:
+    'Zure atxiloketak behar-beharrezko denbora iraungo du, eta ezin izango ditu 72 ordu gainditu agintaritza judizialaren esku jarri gabe.',
+};
+
+const APARTADOS_GL: TextoApartados = {
+  informacion:
+    'Queda vostede detido. Ten dereito a ser informado, de forma inmediata e comprensible, dos feitos que se lle atribúen e das razóns da súa detención.',
+  silencio:
+    'Ten dereito a gardar silencio, a non declarar se non quere, a non contestar algunha das preguntas, ou a declarar unicamente ante o xuíz.',
+  noDeclararContraSi: 'Ten dereito a non declarar contra si mesmo e a non confesarse culpable.',
+  abogado:
+    'Ten dereito a designar avogado e a ser asistido por el sen demora inxustificada. Se non o designa, nomearáselle un de oficio.',
+  accesoActuaciones:
+    'Ten dereito a acceder aos elementos das actuacións que sexan esenciais para impugnar a legalidade da súa detención.',
+  comunicacionDetencion:
+    'Ten dereito a que se comunique a un familiar ou á persoa que vostede desexe o feito da súa detención e o lugar no que se atopa en cada momento.',
+  comunicacionTercero:
+    'Ten dereito a comunicarse telefonicamente, sen demora inxustificada, cun terceiro da súa elección.',
+  asistenciaConsular:
+    'Se vostede é estranxeiro, ten dereito a que se comunique a súa detención á oficina consular do seu país e a comunicarse con ela.',
+  interprete:
+    'Ten dereito a ser asistido gratuitamente por un intérprete se non comprende ou non fala o castelán, ou se é unha persoa xorda ou con discapacidade auditiva.',
+  reconocimientoMedico:
+    'Ten dereito a ser recoñecido polo médico forense ou o seu substituto legal e, na súa falta, polo da institución na que se atope.',
+  habeasCorpus:
+    'Ten dereito a solicitar o procedemento de Habeas Corpus se considera que a súa detención non é legal.',
+  plazoDetencion:
+    'A súa detención durará o tempo estritamente necesario e non poderá superar as 72 horas sen ser posto a disposición da autoridade xudicial.',
+};
+
 const APARTADOS_EN: TextoApartados = {
   informacion:
     'You are under arrest. You have the right to be informed, immediately and in a way you understand, of the acts you are accused of and the reasons for your arrest.',
@@ -297,6 +384,9 @@ function crearTexto(
  */
 export const DERECHOS_520: Readonly<Record<IdiomaDerechos, TextoDerechos>> = {
   es: crearTexto('es', true, APARTADOS_ES),
+  ca: crearTexto('ca', false, APARTADOS_CA),
+  eu: crearTexto('eu', false, APARTADOS_EU),
+  gl: crearTexto('gl', false, APARTADOS_GL),
   en: crearTexto('en', false, APARTADOS_EN),
   fr: crearTexto('fr', false, APARTADOS_FR),
   de: crearTexto('de', false, APARTADOS_DE),
