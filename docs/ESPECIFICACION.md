@@ -224,7 +224,7 @@ Se modela como **reglas con fuente**, no como texto libre. Para delitos:
   - Art. 490: flagrancia, tentativa, fuga, rebeldía → procede detención.
   - Art. 492.4: indicios racionales de delito + participación + riesgo de incomparecencia (492.3) → puede proceder.
   - Art. 493: si no se detiene, identificar y comunicar al juzgado.
-  - Art. 495: delito leve → no cabe detención salvo sin domicilio conocido o sin fianza.
+  - Art. 495: delito leve → no cabe detención salvo que **no tenga domicilio conocido *ni* preste fianza bastante** (requisitos acumulativos; redacción vigente tras la LO 5/2024, "delitos leves").
 - La ficha muestra el resultado del árbol y **siempre** los artículos. Texto fijo al pie: "Orientación basada en LECrim; la valoración de los indicios y del riesgo corresponde al agente."
 
 Para tráfico: inmovilización (art. 104 LSV), depósito (art. 105), retirada de permiso, pérdida de puntos, con la causa concreta.
