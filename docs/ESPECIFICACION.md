@@ -180,6 +180,14 @@ Campos mostrados en este orden:
 - Marcadores y notas personales (solo en dispositivo).
 - Indicador de "cambió el dd/mm/aaaa" en artículos modificados recientemente, con diff resumido.
 
+> **Estado v1 (ADR-016).** Implementado en `apps/mobile`: navegación **norma → artículo** (el
+> paquete no modela "capítulo"; el apartado queda localizable dentro del texto, coherente con la
+> granularidad de `Articulo` en §6.1), buscador dentro de la norma, **marcadores** locales e
+> indicador "cambió el dd/mm" a partir de `valid_from`. El texto se renderiza con un render de
+> Markdown propio y ligero (compatible con Expo Go). Las **notas personales** por artículo y el
+> **diff resumido** quedan para una iteración posterior (el diff depende de que el pipeline emita
+> `Novedad` con artículos concretos).
+
 Normas de la v1 (todas de fuentes públicas oficiales):
 
 | Norma | Fuente |
