@@ -78,7 +78,11 @@ los parsea con los esquemas Zod de shared (`Competencia`, `VarianteBoletin`…).
 
 `id`, `codigo` (`"RGC"`), `titulo`, `tipo` (`ley|reglamento|ordenanza|codificado`),
 `ambito` (`estatal|autonomico|municipal`), `territorio_id?`, `origen` (`oficial|personal`),
-`url_boe?`, `fecha_consolidacion?` (`YYYY-MM-DD`, fuente BOE).
+`url_boe?`, `fecha_consolidacion?` (`YYYY-MM-DD`, fuente BOE),
+`cuerpos` (JSON `Cuerpo[]`, relevancia por cuerpo para filtrar la lista de Normas; NO restringe
+el acceso, solo prioriza). Por defecto (norma sin etiquetar) = todos los cuerpos. Tráfico
+(RGC/LSV/RGV) = `guardia_civil, policia_local, policia_autonomica`; penal/procesal (CP, LECrim) y
+seguridad ciudadana (LO 4/2015) = todos.
 
 ### `articulo`
 

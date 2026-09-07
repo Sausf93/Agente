@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS norma (
   territorio_id       TEXT,
   origen              TEXT NOT NULL,       -- oficial|personal
   url_boe             TEXT,
-  fecha_consolidacion TEXT                 -- YYYY-MM-DD (fuente BOE)
+  fecha_consolidacion TEXT,                -- YYYY-MM-DD (fuente BOE)
+  cuerpos             TEXT NOT NULL DEFAULT '[]'  -- JSON: Cuerpo[] (relevancia, para filtrar)
 );
 
 CREATE TABLE IF NOT EXISTS articulo (

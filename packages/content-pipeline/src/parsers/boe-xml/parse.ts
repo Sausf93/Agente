@@ -179,6 +179,7 @@ export function parseNormaConsolidada(
     origen: 'oficial',
     urlBoe: meta.urlBoe,
     fechaConsolidacion: meta.fechaConsolidacion,
+    cuerpos: entrada.cuerpos,
   });
 
   const doc = parsearXml(textoXml);
