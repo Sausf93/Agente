@@ -149,6 +149,66 @@ describe('validarImporte (alcohol y drogas, cuadro DGT)', () => {
   });
 });
 
+describe('validarImporte: bordes EXACTOS de rango (tráfico, LSV art. 80)', () => {
+  // El borde de rango es donde un error de contenido pasa desapercibido: se prueban los
+  // extremos inclusivos y el primer valor fuera de rango de cada gravedad.
+  it('leve: 0 y 100 € entran; 101 € queda fuera', () => {
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 0, importeReducidoEur: null }), 'trafico')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 100, importeReducidoEur: null }), 'trafico')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 101, importeReducidoEur: null }), 'trafico')).toHaveLength(1);
+  });
+
+  it('grave: solo 200 € es válido (valor fijo); 199 y 201 quedan fuera', () => {
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 200, importeReducidoEur: null }), 'trafico')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 199, importeReducidoEur: null }), 'trafico')).toHaveLength(1);
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 201, importeReducidoEur: null }), 'trafico')).toHaveLength(1);
+  });
+
+  it('muy grave: solo 500 € es válido (valor fijo); 499 y 501 quedan fuera', () => {
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 500, importeReducidoEur: null }), 'trafico')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 499, importeReducidoEur: null }), 'trafico')).toHaveLength(1);
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 501, importeReducidoEur: null }), 'trafico')).toHaveLength(1);
+  });
+});
+
+describe('validarImporte: bordes EXACTOS de rango (seguridad ciudadana, LO 4/2015 art. 39)', () => {
+  it('leve: 100 y 600 € entran; 99 y 601 salen del tramo leve', () => {
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 100, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 600, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 99, importeReducidoEur: null }), 'seguridad_ciudadana')).toHaveLength(1);
+    expect(validarImporte(infraccion({ gravedad: 'leve', importeEur: 601, importeReducidoEur: null }), 'seguridad_ciudadana')).toHaveLength(1);
+  });
+
+  it('grave: 601 y 30.000 € entran; 30.001 sale', () => {
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 601, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 30_000, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'grave', importeEur: 30_001, importeReducidoEur: null }), 'seguridad_ciudadana')).toHaveLength(1);
+  });
+
+  it('muy grave: 30.001 y 600.000 € entran; 600.001 sale', () => {
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 30_001, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 600_000, importeReducidoEur: null }), 'seguridad_ciudadana')).toEqual([]);
+    expect(validarImporte(infraccion({ gravedad: 'muy_grave', importeEur: 600_001, importeReducidoEur: null }), 'seguridad_ciudadana')).toHaveLength(1);
+  });
+});
+
+describe('validarImporte: marcos SIN rango legal único (municipal / autonomico)', () => {
+  it('municipal: no valida rango, pero sí coherencia (falta importe)', () => {
+    const problemas = validarImporte(infraccion({ importeEur: null }), 'municipal');
+    expect(problemas).toHaveLength(1);
+    expect(problemas[0]?.campo).toBe('importeEur');
+  });
+
+  it('municipal: acepta cualquier importe positivo con reducido coherente', () => {
+    expect(validarImporte(infraccion({ importeEur: 750, importeReducidoEur: 375 }), 'municipal')).toEqual([]);
+  });
+
+  it('autonomico: detecta reducido mayor que el base (única comprobación posible)', () => {
+    const problemas = validarImporte(infraccion({ importeEur: 300, importeReducidoEur: 400 }), 'autonomico');
+    expect(problemas.some((p) => p.campo === 'importeReducidoEur')).toBe(true);
+  });
+});
+
 describe('validarMinimosPublicacion (sección 8.3)', () => {
   it('exige al menos 2 sinónimos', () => {
     const problemas = validarMinimosPublicacion(infraccion(), 1);
