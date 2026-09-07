@@ -30,7 +30,7 @@ import { hashTexto } from '../parsers/boe-xml/hash.js';
  */
 
 /** Fecha de curación de este seed (la que verá el agente como "Actualizado el…"). */
-const FECHA_ACTUALIZACION = '2026-09-04';
+const FECHA_ACTUALIZACION = '2026-09-07';
 const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 // --- Identificadores de norma (BOE, legislación consolidada) --------------------------------
@@ -38,6 +38,7 @@ const ID_RGC = 'BOE-A-2003-23514'; // RD 1428/2003, Reglamento General de Circul
 const ID_LSV = 'BOE-A-2015-11722'; // RDL 6/2015, texto refundido de la Ley de Tráfico (LSV)
 const ID_RGV = 'BOE-A-1999-1826'; // RD 2822/1998, Reglamento General de Vehículos
 const ID_LRCSCVM = 'BOE-A-2004-18911'; // RDL 8/2004, seguro obligatorio (LRCSCVM)
+const ID_CP = 'BOE-A-1995-25444'; // LO 10/1995, Código Penal (delitos contra la seguridad vial)
 
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
 
@@ -82,6 +83,15 @@ export const NORMAS_SEED: Norma[] = [
     tipo: 'ley',
     ambito: 'estatal',
     urlBoe: urlBoe(ID_LRCSCVM),
+    fechaConsolidacion: null,
+  }),
+  Norma.parse({
+    id: ID_CP,
+    codigo: 'CP',
+    titulo: 'Código Penal (Ley Orgánica 10/1995) — delitos contra la seguridad vial',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_CP),
     fechaConsolidacion: null,
   }),
 ];
@@ -199,16 +209,82 @@ const ART_LSV_105 = articuloSeed({
     'por ejemplo si tras la inmovilización no se subsana la causa. Resumen orientativo.',
 });
 
+const ART_RGC_48 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '48',
+  titulo: 'Límites de velocidad',
+  texto:
+    'Fija los límites máximos de velocidad según el tipo de vía y de vehículo (vías urbanas y ' +
+    'travesías, carreteras convencionales, autovías y autopistas). Superar el límite se sanciona ' +
+    'con un cuadro graduado por tramos de km/h de exceso. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_94 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '94',
+  titulo: 'Lugares prohibidos para la parada y el estacionamiento',
+  texto:
+    'Enumera los lugares donde se prohíbe parar o estacionar: pasos de peatones, aceras y zonas ' +
+    'peatonales, vados señalizados, carriles reservados (bus, bici), dobles filas que obstaculizan ' +
+    'la circulación, intersecciones y curvas de visibilidad reducida, etc. Resumen orientativo.',
+});
+
+const ART_RGC_121 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '121',
+  titulo: 'Circulación de peatones y de vehículos de movilidad personal (VMP)',
+  texto:
+    'Regula por dónde pueden circular peatones y vehículos de movilidad personal (patinetes ' +
+    'eléctricos). Los VMP tienen prohibido circular por aceras y zonas peatonales, y deben ' +
+    'ajustarse a lo que fije la ordenanza municipal (alumbrado, casco, chaleco). Resumen orientativo.',
+});
+
+const ART_LSV_14 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '14',
+  titulo: 'Bebidas alcohólicas y drogas',
+  texto:
+    'Prohíbe conducir con tasas de alcohol superiores a las reglamentarias o con presencia de ' +
+    'drogas en el organismo, y obliga al conductor a someterse a las pruebas de detección de ' +
+    'alcohol y drogas practicadas por los agentes de tráfico. Resumen orientativo.',
+});
+
+const ART_LSV_77 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '77',
+  titulo: 'Infracciones muy graves',
+  texto:
+    'Cataloga como muy graves determinadas conductas, entre ellas conducir careciendo del permiso ' +
+    'o licencia de conducción correspondiente cuando el hecho no sea constitutivo de delito. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_383 = articuloSeed({
+  normaId: ID_CP,
+  numero: '383',
+  titulo: 'Negativa a someterse a las pruebas de alcohol o drogas',
+  texto:
+    'Castiga como delito al conductor que, requerido por un agente de la autoridad, se niegue a ' +
+    'someterse a las pruebas legalmente establecidas para la comprobación de las tasas de alcohol ' +
+    'o de la presencia de drogas. La valoración final corresponde a la autoridad judicial. Resumen orientativo.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_99,
   ART_RGC_18,
   ART_RGC_117,
   ART_RGC_118,
   ART_RGC_146,
+  ART_RGC_48,
+  ART_RGC_94,
+  ART_RGC_121,
   ART_RGV_10,
   ART_LRCSCVM_3,
   ART_LSV_104,
   ART_LSV_105,
+  ART_LSV_14,
+  ART_LSV_77,
+  ART_CP_383,
 ];
 
 // --- Infracciones ---------------------------------------------------------------------------
@@ -236,9 +312,11 @@ interface InfraccionSeedInput {
   codigoDgt?: string | null;
   tituloCorto: string;
   gravedad: Infraccion['gravedad'];
-  importeEur: number;
+  /** Vía sancionadora. Por defecto administrativa; `penal` para delitos (art. 383/384 CP…). */
+  tipo?: Infraccion['tipo'];
+  importeEur: number | null;
   importeReducidoEur: number | null;
-  puntos: number;
+  puntos: number | null;
   textoBoletin: string;
   terminos: string[];
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
@@ -259,7 +337,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     codigoDgt: input.codigoDgt ?? null,
     tituloCorto: input.tituloCorto,
     gravedad: input.gravedad,
-    tipo: 'administrativa',
+    tipo: input.tipo ?? 'administrativa',
     importeEur: input.importeEur,
     importeReducidoEur: input.importeReducidoEur,
     puntos: input.puntos,
@@ -511,6 +589,315 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'Importe 200 € (grave) y 4 puntos verificados (RGC art. 146). Pendiente de visto bueno del ' +
       'revisor.',
+  }),
+  // --- Infracciones "reina" de calle añadidas en la ampliación del seed ---------------------
+  construirInfraccion({
+    id: 'inf-exceso-velocidad',
+    articulo: ART_RGC_48,
+    tituloCorto: 'Exceso de velocidad',
+    gravedad: 'grave',
+    // Cuadro graduado (LSV): 100 € sin puntos → 300/400/500/600 € con 2/4/6 puntos. Se
+    // sitúa un tramo intermedio (300 € / 2 puntos) como valor de referencia de la ficha; el
+    // cuadro completo va en el texto del boletín y en la nota de revisión.
+    importeEur: 300,
+    importeReducidoEur: 150,
+    puntos: 2,
+    textoBoletin:
+      'Circular a velocidad superior a la permitida en la vía. La sanción se gradúa por el exceso ' +
+      'sobre el límite: 100 € (sin puntos), 300 € (2 puntos), 400 € (4 puntos), 500 € (6 puntos) y ' +
+      '600 € (6 puntos) en el tramo más alto. Superar el límite en más de 60 km/h en vía urbana o ' +
+      'en más de 80 km/h en vía interurbana puede ser delito (art. 379.1 CP).',
+    terminos: [
+      'exceso de velocidad',
+      'iba muy rapido',
+      'corriendo',
+      'a toda pastilla',
+      'radar',
+      'me pillo el radar',
+      'velocidad',
+      'demasiado rapido',
+      'sobrepasar el limite',
+      'iba a 150',
+    ],
+    marcoImporte: 'velocidad',
+    notaRevision:
+      'A VERIFICAR el cuadro completo de tramos (importe y puntos por km/h de exceso, distinto ' +
+      'según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha muestra ' +
+      'un tramo de referencia (300 €/2 puntos). Confirmar también la frontera penal del art. 379.1 ' +
+      'CP (60 km/h urbana / 80 km/h interurbana sobre el límite). No publicar sin desglose por tramos.',
+  }),
+  construirInfraccion({
+    id: 'inf-alcoholemia',
+    articulo: ART_LSV_14,
+    tituloCorto: 'Conducir bajo los efectos del alcohol',
+    gravedad: 'muy_grave',
+    // Cuadro DGT: 500 € (0,25–0,50 mg/l, 4 puntos) o 1.000 € (>0,50 mg/l, reincidencia o
+    // conductor profesional/novel, 6 puntos). Se toma el tramo bajo como referencia.
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 4,
+    textoBoletin:
+      'Conducir con una tasa de alcohol superior a la permitida. En vía administrativa: 500 € y 4 ' +
+      'puntos con tasa entre 0,25 y 0,50 mg/l en aire espirado; 1.000 € y 6 puntos con tasa superior ' +
+      'a 0,50 mg/l, en caso de reincidencia o para conductores profesionales y noveles (límite 0,15 ' +
+      'mg/l). Una tasa superior a 0,60 mg/l en aire espirado (1,2 g/l en sangre) puede ser delito ' +
+      '(art. 379.2 CP).',
+    terminos: [
+      'alcoholemia',
+      'dio positivo',
+      'positivo en alcohol',
+      'borracho',
+      'bebido',
+      'ha bebido',
+      'control de alcohol',
+      'soplar',
+      'test de alcohol',
+      'conducir bebido',
+      'tasa de alcohol',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la causa, salvo que ' +
+          'se haga cargo otro conductor habilitado (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'alcohol_drogas',
+    notaRevision:
+      'A VERIFICAR los dos tramos (500 €/4 puntos y 1.000 €/6 puntos), sus umbrales exactos y el ' +
+      'límite reducido de 0,15 mg/l para noveles y profesionales, contra el cuadro DGT. Confirmar ' +
+      'la frontera penal del art. 379.2 CP (0,60 mg/l aire / 1,2 g/l sangre). La ficha muestra el ' +
+      'tramo bajo como referencia. No publicar sin el desglose por tramos.',
+  }),
+  construirInfraccion({
+    id: 'inf-drogas-volante',
+    articulo: ART_LSV_14,
+    tituloCorto: 'Conducir con presencia de drogas',
+    gravedad: 'muy_grave',
+    importeEur: 1000,
+    importeReducidoEur: 500,
+    puntos: 6,
+    textoBoletin:
+      'Conducir con presencia de drogas en el organismo, detectada mediante prueba salival. La mera ' +
+      'presencia se sanciona con 1.000 € y 6 puntos, sin que exista una tasa mínima tolerada (se ' +
+      'excluyen las sustancias bajo prescripción y con finalidad terapéutica). Si se acredita que la ' +
+      'droga influía en la conducción, el hecho puede ser delito (art. 379.2 CP).',
+    terminos: [
+      'drogas al volante',
+      'positivo en drogas',
+      'dio positivo en drogas',
+      'test salival',
+      'test de saliva',
+      'porros',
+      'cocaina al volante',
+      'conducir drogado',
+      'control de drogas',
+      'droga',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la causa, salvo que ' +
+          'se haga cargo otro conductor habilitado (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'alcohol_drogas',
+    notaRevision:
+      'A VERIFICAR importe (1.000 €) y puntos (6) por mera presencia contra el cuadro DGT, y la ' +
+      'frontera con el delito del art. 379.2 CP (exige acreditar la influencia en la conducción, ' +
+      'según jurisprudencia reciente del TS). Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionamiento-indebido',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionamiento indebido',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Estacionar el vehículo en un lugar prohibido —sobre la acera o zona peatonal, en doble fila, ' +
+      'en un paso de peatones, delante de un vado señalizado o en un carril reservado— obstaculizando ' +
+      'la circulación o el paso de peatones.',
+    terminos: [
+      'mal aparcado',
+      'aparcado en doble fila',
+      'doble fila',
+      'aparcar en la acera',
+      'encima de la acera',
+      'en el paso de cebra',
+      'en el vado',
+      'aparcado en el paso de peatones',
+      'estacionar mal',
+      'aparcar donde no se debe',
+      'grua',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Procede valorar la retirada del vehículo por la grúa al depósito cuando obstaculiza la ' +
+          'circulación o el paso, en los supuestos del art. 105 LSV.',
+        fuente: 'LSV art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: muchos supuestos de parada/estacionamiento son leves (80–90 €) o dependen de la ' +
+      'ordenanza municipal; la ficha modela el supuesto grave de 200 € (acera, paso de peatones, ' +
+      'doble fila que obstaculiza). Confirmar clasificación y cuantía por supuesto antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-sin-permiso',
+    articulo: ART_LSV_77,
+    tituloCorto: 'Conducir sin permiso o sin vigencia',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'Conducir un vehículo careciendo del permiso o licencia de conducción correspondiente (por no ' +
+      'haberlo obtenido para esa clase de vehículo o por pérdida de vigencia), cuando el hecho no sea ' +
+      'constitutivo de delito. Es delito del art. 384 CP conducir tras perder todos los puntos, tras ' +
+      'una privación judicial del permiso o sin haberlo obtenido nunca.',
+    terminos: [
+      'sin carnet',
+      'sin carne de conducir',
+      'conducir sin carnet',
+      'no tiene carnet',
+      'sin permiso',
+      'carnet caducado',
+      'permiso caducado',
+      'sin puntos',
+      'perdio todos los puntos',
+      'conducir sin puntos',
+      'nunca ha tenido carnet',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras el conductor no acredite estar ' +
+          'habilitado o no se haga cargo otro conductor habilitado (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR la frontera administrativa/penal: 500 € (muy grave, art. 77 LSV) SOLO cuando no ' +
+      'sea delito. Si nunca obtuvo permiso, si fue privado judicialmente o si perdió todos los ' +
+      'puntos y sigue conduciendo, es delito del art. 384 CP (procede atestado). El caso del permiso ' +
+      'caducado sin renovar suele ser administrativo. Revisar clasificación antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vmp-patinete',
+    articulo: ART_RGC_121,
+    tituloCorto: 'Infracciones con patinete (VMP)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo de movilidad personal (patinete eléctrico) incumpliendo las normas: ' +
+      'por la acera o zona peatonal, sin alumbrado ni elementos reflectantes de noche, o con dos ' +
+      'ocupantes. Circular por la acera o sin alumbrado nocturno se sanciona con 200 €; llevar dos ' +
+      'personas, con 100 €. El VMP no detrae puntos porque no requiere permiso de conducción.',
+    terminos: [
+      'patinete',
+      'patinete electrico',
+      'vmp',
+      'patinete en la acera',
+      'patinete sin luces',
+      'dos en un patinete',
+      'patinete dos personas',
+      'patinete de noche',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: los VMP se regulan por el RGC (reforma del RD 970/2020) Y por la ordenanza ' +
+      'municipal, que puede endurecer o matizar (casco, chaleco, zonas). Los importes citados ' +
+      '(200 €/100 €) proceden de criterios DGT; confirmar por supuesto y advertir de la variación ' +
+      'municipal. Alcohol y drogas en VMP se rigen por sus propias tasas. No detrae puntos. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-menor-sin-sri',
+    articulo: ART_RGC_117,
+    tituloCorto: 'Menor sin sistema de retención (sillita)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'Circular transportando a un menor sin el sistema de retención infantil homologado y adecuado ' +
+      'a su talla y peso, o utilizándolo de forma incorrecta, estando obligado a ello.',
+    terminos: [
+      'sin sillita',
+      'nino sin sillita',
+      'menor sin sillita',
+      'sin silla del bebe',
+      'nino sin cinturon',
+      'sillita mal puesta',
+      'sin sistema de retencion',
+      'bebe sin silla',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo si el menor no puede continuar el viaje ' +
+          'de forma segura (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave) verificado. A VERIFICAR los puntos: se citan 4 puntos, que se detraen ' +
+      'al conductor solo cuando es el responsable del menor; confirmar contra el codificado DGT. ' +
+      'La infracción se aplica por cada ocupante menor sin retención. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-negativa-prueba',
+    articulo: ART_CP_383,
+    tituloCorto: 'Negativa a la prueba de alcohol o drogas',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    textoBoletin:
+      'Negarse, requerido por el agente, a someterse a las pruebas legalmente establecidas de ' +
+      'detección de alcohol o de presencia de drogas. Es un delito autónomo del art. 383 CP, ' +
+      'castigado con prisión de seis meses a un año y privación del derecho a conducir. La ' +
+      'valoración final corresponde a la autoridad judicial.',
+    terminos: [
+      'negarse a soplar',
+      'no quiere soplar',
+      'se niega a la prueba',
+      'negativa a la prueba',
+      'no sopla',
+      'se niega al test',
+      'rechaza la prueba de alcohol',
+      'no se somete a la prueba',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante procede valorar la detención conforme a los arts. 490 y 492 ' +
+          'LECrim; la valoración de los indicios y del riesgo corresponde al agente y al juez.',
+        fuente: 'CP art. 383; LECrim arts. 490 y 492',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el encaje penal: delito del art. 383 CP (negativa a las pruebas). Confirmar la ' +
+      'redacción orientativa de la detención con el revisor jurídico (§4.6, lenguaje NUNCA ' +
+      'imperativo) y si procede reflejar pérdida de puntos asociada. No es sanción administrativa: ' +
+      'no lleva importe. Revisar antes de publicar.',
   }),
 ];
 

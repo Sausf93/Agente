@@ -60,12 +60,13 @@ describe('construirPaquete: estructura y metadatos', () => {
   it('puebla todas las tablas con las cuentas del seed', () => {
     const cuenta = (tabla: string): number =>
       (db.prepare(`SELECT COUNT(*) AS n FROM ${tabla}`).get() as { n: number }).n;
-    expect(cuenta('norma')).toBe(4);
-    expect(cuenta('articulo')).toBe(9);
-    expect(cuenta('infraccion')).toBe(7);
-    expect(cuenta('busqueda')).toBe(7);
+    expect(cuenta('norma')).toBe(5);
+    expect(cuenta('articulo')).toBe(15);
+    expect(cuenta('infraccion')).toBe(15);
+    expect(cuenta('busqueda')).toBe(15);
     expect(cuenta('sinonimo')).toBeGreaterThanOrEqual(14);
-    expect(cuenta('consecuencia')).toBe(2); // sin seguro: inmovilización + depósito
+    // sin seguro (inmov.+depósito) + alcohol, drogas, estacionamiento, sin permiso, menor, negativa
+    expect(cuenta('consecuencia')).toBe(8);
   });
 
   it('escribe la meta con la versión de esquema y de contenido', () => {
@@ -79,12 +80,14 @@ describe('construirPaquete: estructura y metadatos', () => {
     expect(resultado.manifiesto.hash).toMatch(/^[0-9a-f]{64}$/);
     expect(resultado.manifiesto.firma).toBeNull();
     expect(resultado.manifiesto.schemaVersion).toBe(1);
-    expect(resultado.resumen.pendientesRevision).toBe(7);
+    expect(resultado.resumen.pendientesRevision).toBe(15);
   });
 
   it('marca todas las infracciones del seed como pendientes de revisión', () => {
     const n = (
-      db.prepare(`SELECT COUNT(*) AS n FROM infraccion WHERE estado_revision = 'verificado'`).get() as {
+      db
+        .prepare(`SELECT COUNT(*) AS n FROM infraccion WHERE estado_revision = 'verificado'`)
+        .get() as {
         n: number;
       }
     ).n;

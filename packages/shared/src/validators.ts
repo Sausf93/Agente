@@ -42,9 +42,29 @@ export const RANGOS_IMPORTE_SEGURIDAD_CIUDADANA = {
 export const RANGO_IMPORTE_SEGURO_OBLIGATORIO = { min: 601, max: 3_005 } as const;
 
 /**
+ * Rango de importe del EXCESO DE VELOCIDAD (LSV, cuadro del Anexo IV / RDL 6/2015).
+ * La sanción NO es un valor fijo por gravedad, sino un cuadro graduado por tramos de km/h de
+ * exceso: 100 € (sin puntos), 300, 400, 500 y 600 € (con 2/4/6 puntos según el tramo). Por eso
+ * no encaja en los tramos fijos de `trafico` (grave 200 / muy grave 500) y se modela aparte con
+ * un rango único graduable. Fuente: LSV (BOE-A-2015-11722), cuadro de excesos de velocidad.
+ * Marcar "a verificar" ante cambios del cuadro.
+ */
+export const RANGO_IMPORTE_VELOCIDAD = { min: 100, max: 600 } as const;
+
+/**
+ * Rango de importe de ALCOHOLEMIA y DROGAS por vía administrativa (LSV art. 77/80 y cuadro DGT).
+ * Tampoco es un valor fijo: alcohol 500 € (tramo 0,25–0,50 mg/l, 4 puntos) o 1.000 € (tramo
+ * superior, reincidencia o negativa parcial, 6 puntos); drogas 1.000 € (6 puntos) por mera
+ * presencia. Al superar el tope de `muy_grave` de tráfico (500 €) se modela con rango propio.
+ * Fuente: LSV (BOE-A-2015-11722) y cuadro sancionador DGT. Marcar "a verificar" ante cambios.
+ */
+export const RANGO_IMPORTE_ALCOHOL_DROGAS = { min: 500, max: 1_000 } as const;
+
+/**
  * Marco normativo con el que interpretar los rangos de importe.
  * `trafico` y `seguridad_ciudadana` tienen rangos legales fijos que se validan.
- * `seguro_obligatorio` tiene un rango único legal (LRCSCVM art. 3), sin tramos por gravedad.
+ * `seguro_obligatorio`, `velocidad` y `alcohol_drogas` tienen un rango único legal graduable
+ * (sin tramos por gravedad), modelados aparte porque no encajan en los tramos fijos de tráfico.
  * `municipal` y `autonomico` no tienen un rango único (varía por ordenanza/comunidad):
  * solo se valida coherencia (presencia y reducido ≤ base) y queda para revisión a dos ojos.
  */
@@ -52,6 +72,8 @@ export type MarcoImporte =
   | 'trafico'
   | 'seguridad_ciudadana'
   | 'seguro_obligatorio'
+  | 'velocidad'
+  | 'alcohol_drogas'
   | 'municipal'
   | 'autonomico';
 
@@ -95,20 +117,25 @@ export function validarImporte(
   const problemas = validarCoherenciaImporte(infraccion);
   if (infraccion.importeEur === null) return problemas;
 
-  // Seguro obligatorio: rango único (LRCSCVM art. 3), sin tramos por gravedad.
-  if (marco === 'seguro_obligatorio') {
-    const { min, max } = RANGO_IMPORTE_SEGURO_OBLIGATORIO;
+  // Marcos con rango único graduable (sin tramos por gravedad).
+  const rangosUnicos: Partial<Record<MarcoImporte, { min: number; max: number }>> = {
+    seguro_obligatorio: RANGO_IMPORTE_SEGURO_OBLIGATORIO,
+    velocidad: RANGO_IMPORTE_VELOCIDAD,
+    alcohol_drogas: RANGO_IMPORTE_ALCOHOL_DROGAS,
+  };
+  const rangoUnico = rangosUnicos[marco];
+  if (rangoUnico) {
+    const { min, max } = rangoUnico;
     if (infraccion.importeEur < min || infraccion.importeEur > max) {
       problemas.push({
         campo: 'importeEur',
-        mensaje: `Importe ${infraccion.importeEur} € fuera del rango legal [${min}-${max}] del seguro obligatorio (LRCSCVM art. 3)`,
+        mensaje: `Importe ${infraccion.importeEur} € fuera del rango legal [${min}-${max}] para el marco "${marco}"`,
       });
     }
     return problemas;
   }
 
-  const tabla =
-    marco === 'trafico' ? RANGOS_IMPORTE_TRAFICO : RANGOS_IMPORTE_SEGURIDAD_CIUDADANA;
+  const tabla = marco === 'trafico' ? RANGOS_IMPORTE_TRAFICO : RANGOS_IMPORTE_SEGURIDAD_CIUDADANA;
   const rango = tabla[infraccion.gravedad];
 
   if (infraccion.importeEur < rango.min || infraccion.importeEur > rango.max) {

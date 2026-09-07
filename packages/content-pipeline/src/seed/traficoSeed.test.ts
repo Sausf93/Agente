@@ -12,8 +12,14 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 7 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(7);
+  it('siembra 15 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(15);
+  });
+
+  it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
+    for (const { infraccion, sinonimos } of SEED_TRAFICO.infracciones) {
+      expect(sinonimos.length, infraccion.id).toBeGreaterThanOrEqual(3);
+    }
   });
 
   it('cada infracción cita un artículo existente en el seed', () => {
@@ -49,6 +55,43 @@ describe('SEED_TRAFICO: calidad de importes (§8.3)', () => {
       const problemas = validarMinimosPublicacion(infraccion, sinonimos.length);
       expect(problemas, `${infraccion.id}: ${JSON.stringify(problemas)}`).toEqual([]);
     }
+  });
+});
+
+describe('SEED_TRAFICO: la negativa a la prueba es un delito (vía penal)', () => {
+  it('"negativa" es delito penal, sin importe y con detención orientativa', () => {
+    const negativa = SEED_TRAFICO.infracciones.find(
+      (i) => i.infraccion.id === 'inf-negativa-prueba',
+    );
+    expect(negativa).toBeDefined();
+    expect(negativa!.infraccion.tipo).toBe('penal');
+    expect(negativa!.infraccion.gravedad).toBe('delito');
+    expect(negativa!.infraccion.importeEur).toBeNull();
+    const detencion = negativa!.consecuencias.find((c) => c.tipo === 'detencion');
+    expect(detencion).toBeDefined();
+    // Lenguaje ORIENTATIVO, nunca imperativo (CLAUDE.md §4.6).
+    expect(detencion!.textoCorto.toLowerCase()).toMatch(/procede|puede/);
+    expect(detencion!.textoCorto.toLowerCase()).not.toMatch(/\bdeten\b|\bdetén\b/);
+  });
+});
+
+describe('SEED_TRAFICO: alcohol y drogas usan su marco de importe propio', () => {
+  it('alcoholemia y drogas superan el tope de tráfico y validan con "alcohol_drogas"', () => {
+    const ids = ['inf-alcoholemia', 'inf-drogas-volante'];
+    for (const id of ids) {
+      const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+      expect(item, id).toBeDefined();
+      expect(item!.marcoImporte).toBe('alcohol_drogas');
+    }
+    const drogas = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === 'inf-drogas-volante');
+    expect(drogas!.infraccion.importeEur).toBe(1000);
+  });
+
+  it('exceso de velocidad valida con el marco "velocidad"', () => {
+    const velocidad = SEED_TRAFICO.infracciones.find(
+      (i) => i.infraccion.id === 'inf-exceso-velocidad',
+    );
+    expect(velocidad!.marcoImporte).toBe('velocidad');
   });
 });
 
