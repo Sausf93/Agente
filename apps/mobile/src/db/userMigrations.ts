@@ -172,6 +172,18 @@ export const USER_DB_MIGRATIONS: readonly UserDbMigration[] = [
       );
     `,
   },
+  {
+    // ANCLA del cuadrante (rediseño del arranque, docs/diseno/cuadrante-rediseno.md §1.3): el
+    // dato REAL con el que el agente configura el ciclo ("el {fecha} hago {servicio}"), del que
+    // se DERIVA `inicio_ciclo`. Se guarda para recomputar el desfase si cambia de patrón sin
+    // volver a preguntar. Migración ADITIVA: columna nueva NULL en la fila de config existente;
+    // los cuadrantes previos siguen funcionando (ya tienen `inicio_ciclo`). Solo se ejecuta una
+    // vez (protegida por `user_version`), así que ADD COLUMN es seguro.
+    version: 8,
+    sql: `
+      ALTER TABLE cuadrante_config ADD COLUMN ancla_json TEXT;
+    `,
+  },
 ];
 
 /** Versión de esquema objetivo de la base local (la mayor de las migraciones). */

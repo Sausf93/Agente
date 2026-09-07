@@ -33,6 +33,29 @@ describe('serialización de la configuración del cuadrante', () => {
   });
 });
 
+describe('serialización del ancla (rediseño del arranque)', () => {
+  it('guarda el ancla como JSON y la reensambla', () => {
+    const c = cuadranteBase({ ancla: { fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 } });
+    const row = configToRow(c, '2026-09-07T10:00:00.000Z');
+    expect(JSON.parse(row.ancla_json!)).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 });
+    const reensamblado = ensamblarCuadrante(row, []);
+    expect(reensamblado.ancla).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 });
+  });
+
+  it('sin ancla (cuadrante previo) la columna es NULL y se reensambla como null', () => {
+    const c = cuadranteBase();
+    const row = configToRow(c, '2026-09-07T10:00:00.000Z');
+    expect(row.ancla_json).toBeNull();
+    expect(ensamblarCuadrante(row, []).ancla).toBeNull();
+  });
+
+  it('un ancla_json corrupto no tumba el cuadrante (queda null)', () => {
+    const c = cuadranteBase();
+    const row = { ...configToRow(c, '2026-09-07T10:00:00.000Z'), ancla_json: '{roto' };
+    expect(ensamblarCuadrante(row, []).ancla).toBeNull();
+  });
+});
+
 describe('serialización de una excepción manual', () => {
   const dia = DiaCuadrante.parse({
     fecha: '2026-09-05',
