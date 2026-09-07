@@ -309,6 +309,103 @@ describe('cómputo de horas de un turno', () => {
   });
 });
 
+describe('casos límite de calendario (DST, cambio de mes/año, festivo en libre)', () => {
+  it('el cambio de hora (DST) NO desplaza ningún día del cuadrante', () => {
+    // España: adelanto 2026-03-29 (02:00→03:00) y atraso 2026-10-25. Como todo se calcula en
+    // UTC sobre fechas civiles, la proyección no debe saltarse ni duplicar días.
+    const c = hacerCuadrante({ inicioCiclo: '2026-03-20' });
+    const marzo = proyectarRango(c, '2026-03-28', '2026-03-30');
+    expect(marzo.map((d) => d.fecha)).toEqual(['2026-03-28', '2026-03-29', '2026-03-30']);
+    // Continuidad del índice del patrón a través del salto de hora primaveral.
+    const len = c.patron.secuencia.length;
+    expect(indicePatron(c.inicioCiclo, '2026-03-29', len)).toBe(
+      (indicePatron(c.inicioCiclo, '2026-03-28', len) + 1) % len,
+    );
+    // Atraso de octubre: mismo comportamiento, sin días repetidos.
+    const octubre = proyectarRango(c, '2026-10-24', '2026-10-26');
+    expect(octubre.map((d) => d.fecha)).toEqual(['2026-10-24', '2026-10-25', '2026-10-26']);
+  });
+
+  it('proyecta correctamente el cruce de año (31/12 → 01/01)', () => {
+    const c = hacerCuadrante({ inicioCiclo: '2026-12-01' });
+    const cruce = proyectarRango(c, '2026-12-31', '2027-01-01');
+    expect(cruce.map((d) => d.fecha)).toEqual(['2026-12-31', '2027-01-01']);
+    const len = c.patron.secuencia.length;
+    expect(indicePatron(c.inicioCiclo, '2027-01-01', len)).toBe(
+      (indicePatron(c.inicioCiclo, '2026-12-31', len) + 1) % len,
+    );
+  });
+
+  it('un festivo que cae en día LIBRE no suma horas festivas ni cuenta como festivo trabajado', () => {
+    // 2026-09-08 es 'libre' en el patrón GC (inicio 2026-09-01). Marcarlo festivo no debe
+    // inventar horas: sin presencia efectiva no hay festivo trabajado.
+    const c = hacerCuadrante({ festivosExtra: ['2026-09-08'] });
+    expect(proyectarDia(c, '2026-09-08').servicio).toBe('libre');
+    expect(proyectarDia(c, '2026-09-08').esFestivo).toBe(true);
+    const dias = proyectarRango(c, '2026-09-08', '2026-09-08');
+    const r = resumenHoras(dias, {
+      jornadaRefHorasSemana: 37.5,
+      franjaNocturna: c.franjaNocturna,
+      festivos: construirFestivos(c),
+    });
+    expect(r.horasFestivas).toBe(0);
+    expect(r.festivosTrabajados).toBe(0);
+    expect(r.horasTotales).toBe(0);
+  });
+});
+
+describe('cómputo en los bordes de la medianoche', () => {
+  const franja = { inicio: '22:00', fin: '06:00' } as const;
+
+  it('un turno que acaba EXACTO a medianoche no vierte minutos al día siguiente', () => {
+    // 16:00 → 00:00 (fin = 24:00). Duración 8 h, todas en la fecha de inicio.
+    expect(duracionMinutos('16:00', '00:00')).toBe(480);
+    const dia: DiaProyectado = {
+      fecha: '2026-09-05', // sábado
+      servicio: 'tarde',
+      horaInicio: '16:00',
+      horaFin: '00:00',
+      clase: 'trabajo',
+      computaPresencia: true,
+      cruzaMedianoche: false,
+      origen: 'patron',
+      esFestivo: false,
+      esFinDeSemana: true,
+      nota: null,
+      alarmaMinutosAntes: null,
+    };
+    const c = computarTurno(dia, franja, () => false);
+    expect(c.minutosTotales).toBe(480);
+    // 22:00→24:00 son nocturnas: 120 min.
+    expect(c.minutosNocturnos).toBe(120);
+    // Todo cae en sábado (fin de semana); nada se derrama al domingo.
+    expect(c.minutosFinDeSemana).toBe(480);
+  });
+
+  it('un turno que arranca a las 00:00 computa íntegro en su fecha', () => {
+    expect(duracionMinutos('00:00', '08:00')).toBe(480);
+    const dia: DiaProyectado = {
+      fecha: '2026-09-06', // domingo
+      servicio: 'manana',
+      horaInicio: '00:00',
+      horaFin: '08:00',
+      clase: 'trabajo',
+      computaPresencia: true,
+      cruzaMedianoche: false,
+      origen: 'patron',
+      esFestivo: false,
+      esFinDeSemana: true,
+      nota: null,
+      alarmaMinutosAntes: null,
+    };
+    const c = computarTurno(dia, franja, () => false);
+    expect(c.minutosTotales).toBe(480);
+    // 00:00→06:00 nocturnas: 360 min.
+    expect(c.minutosNocturnos).toBe(360);
+    expect(c.minutosFinDeSemana).toBe(480);
+  });
+});
+
 describe('resumen de horas del periodo', () => {
   it('prorratea la jornada de referencia configurable (no fija 37,5)', () => {
     expect(horasReferenciaPeriodo(37.5, 30)).toBeCloseTo(160.71, 2);
