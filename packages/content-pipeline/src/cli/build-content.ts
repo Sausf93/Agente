@@ -20,6 +20,7 @@ import { BoeClient } from '../sources/boe/client.js';
 import { parseNormaConsolidada } from '../parsers/boe-xml/parse.js';
 import { SEED_TRAFICO } from '../seed/traficoSeed.js';
 import { SEED_PENAL } from '../seed/penalSeed.js';
+import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
 
@@ -49,8 +50,9 @@ async function cargarRgc(offline: boolean): Promise<{ textoXml: string; metaXml:
 
 async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaquetar> {
   const rgc = CATALOGO_TRAFICO.RGC!;
-  // Seed base: tráfico + penal (comparten la norma CP; `combinarSeeds` la deduplica).
-  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
+  // Seed base: tráfico + penal + seguridad ciudadana (LO 4/2015). `combinarSeeds` deduplica las
+  // normas/artículos compartidos por `id` (tráfico y penal comparten el CP).
+  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL, SEED_SEGURIDAD_CIUDADANA);
   try {
     const { textoXml, metaXml } = await cargarRgc(offline);
     const parseada = parseNormaConsolidada(textoXml, metaXml, rgc);
@@ -78,9 +80,11 @@ async function main(): Promise<void> {
     version: VERSION,
     changelog: {
       resumen:
-        'Carga inicial: infracciones de tráfico (seed de calle + RGC) y primeros delitos ' +
-        'penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de ' +
-        'detención según LECrim.',
+        'Carga inicial: infracciones de tráfico (seed de calle + RGC), primeros delitos penales ' +
+        '(hurto, robo con violencia, lesiones y quebrantamiento) con orientación de detención ' +
+        'según LECrim, e infracciones de seguridad ciudadana (LO 4/2015): desobediencia, negativa ' +
+        'a identificarse, drogas en vía pública, armas prohibidas, desórdenes, falta de respeto, ' +
+        'ocupación y reuniones no comunicadas.',
     },
   });
 

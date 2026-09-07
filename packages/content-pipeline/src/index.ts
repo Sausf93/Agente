@@ -36,3 +36,22 @@ export { enriquecerConNorma } from './paquete/combinar.js';
 // Seed de infracciones de tráfico "de calle".
 export { SEED_TRAFICO, NORMAS_SEED, ARTICULOS_SEED, INFRACCIONES_SEED } from './seed/traficoSeed.js';
 export type { SeedContenido, InfraccionSeed } from './seed/traficoSeed.js';
+
+// Seed de delitos penales (motor de detención LECrim).
+export {
+  SEED_PENAL,
+  NORMAS_PENAL_SEED,
+  ARTICULOS_PENAL_SEED,
+  INFRACCIONES_PENAL_SEED,
+} from './seed/penalSeed.js';
+
+// Seed de infracciones de seguridad ciudadana (LO 4/2015).
+export {
+  SEED_SEGURIDAD_CIUDADANA,
+  NORMAS_SEGURIDAD_SEED,
+  ARTICULOS_SEGURIDAD_SEED,
+  INFRACCIONES_SEGURIDAD_SEED,
+} from './seed/seguridadCiudadanaSeed.js';
+
+// Combinación de seeds (dedupe de normas/artículos por id).
+export { combinarSeeds } from './paquete/combinar.js';
