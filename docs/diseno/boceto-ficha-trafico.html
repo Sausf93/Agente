@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agente · Ficha de TRÁFICO y SEGURIDAD CIUDADANA (rediseño adaptativo)</title>
+<style>
+  :root{
+    --bg:#12151A; --surface:#1E232B; --surfaceAlt:#252B34; --border:#2C333D;
+    --textPrimary:#F2F4F7; --textSecondary:#98A1B0; --textTertiary:#6B7482;
+    --accent:#6FC79B; --accentOn:#0A0C10; --accentWeak:#2F4A43;
+    --success:#3FBE83; --successBg:#0F2E20;
+    --warning:#F08A24; --warningBg:#3A2410;
+    --danger:#F0555B; --dangerBg:#3A1113;
+    --sev-leve:#E0A82E;   --sev-leve-fg:#F4D58A;   --sev-leve-bg:#3A2E0A;
+    --sev-grave:#F08A24;  --sev-grave-fg:#FBC38A;  --sev-grave-bg:#3A2410;
+    --sev-muy:#F0555B;    --sev-muy-fg:#FBB0B3;    --sev-muy-bg:#3A1113;
+    --sev-delito:#D6558C; --sev-delito-fg:#F2AFCC; --sev-delito-bg:#33101F;
+    --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-pill:999px;
+  }
+  :root.light{
+    --bg:#F6F7F9; --surface:#FFFFFF; --surfaceAlt:#ECEEF2; --border:#DBDFE6;
+    --textPrimary:#1E232B; --textSecondary:#6B7482; --textTertiary:#98A1B0;
+    --accent:#2E6A4E; --accentOn:#FFFFFF; --accentWeak:#E1EDE7;
+    --success:#1E7F4F; --successBg:#DAF3E6;
+    --warning:#C25E00; --warningBg:#FDEBD8;
+    --danger:#C1272D;  --dangerBg:#FCE0E1;
+    --sev-leve:#B8860B;   --sev-leve-fg:#6B4E00;   --sev-leve-bg:#FFF4D6;
+    --sev-grave:#C25E00;  --sev-grave-fg:#7A3B00;  --sev-grave-bg:#FFE7D1;
+    --sev-muy:#C1272D;    --sev-muy-fg:#7A1418;    --sev-muy-bg:#FCE0E1;
+    --sev-delito:#8E1B4E; --sev-delito-fg:#5C0E33; --sev-delito-bg:#F7DBE8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--textPrimary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+  .toolbar b{font-size:13px;color:var(--textSecondary);margin-right:4px}
+  .toolbar button{font:inherit;font-size:13px;padding:7px 12px;border-radius:var(--radius-pill);
+    border:1px solid var(--border);background:var(--surfaceAlt);color:var(--textPrimary);cursor:pointer}
+  .toolbar button.on{border-color:var(--accent);background:var(--accentWeak);color:var(--accent)}
+  .note{max-width:900px;margin:0 auto 8px;padding:0 16px;color:var(--textSecondary);font-size:13px;text-align:center}
+  .stage{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:24px 12px 60px}
+
+  .phone{width:390px;max-width:100%;background:var(--bg);border:1px solid var(--border);
+    border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .caplabel{text-align:center;font-size:13px;font-weight:600;color:var(--textSecondary);margin:0 0 10px}
+  .navbar{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--surface);
+    border-bottom:1px solid var(--border)}
+  .navbar .back{color:var(--textSecondary)}
+  .navbar .navtitle{font-size:17px;font-weight:600}
+  .screen{padding:16px;display:flex;flex-direction:column;gap:20px}
+
+  .titleXL{font-size:28px;font-weight:700;line-height:34px;margin:0}
+  .bodyStrong{font-size:16px;font-weight:600;line-height:24px}
+  .body{font-size:16px;line-height:24px}
+  .label{font-size:15px;font-weight:600;line-height:20px}
+  .caption{font-size:14px;line-height:18px;color:var(--textSecondary)}
+  .tertiary{color:var(--textTertiary)}
+  .tnum{font-variant-numeric:tabular-nums}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .col{display:flex;flex-direction:column;gap:8px}
+  .section-label{font-size:15px;font-weight:600;color:var(--textPrimary)}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:var(--radius-pill);
+    font-size:14px;font-weight:600;line-height:1}
+  .chip.sev-grave{background:var(--sev-grave-bg);color:var(--sev-grave-fg);border:1px solid var(--sev-grave)}
+  .chip.sev-muy{background:var(--sev-muy-bg);color:var(--sev-muy-fg);border:1px solid var(--sev-muy)}
+  .chip.neutral{background:var(--surface);color:var(--textSecondary);border:1px solid var(--border)}
+  .chip svg{width:15px;height:15px}
+
+  /* Tiles */
+  .tiles{display:flex;gap:8px}
+  .tile{flex:1;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-md);
+    padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+  .tile.enfasis{border:1.5px solid var(--accent);background:var(--accentWeak)}
+  .tile .num{font-size:30px;font-weight:700;line-height:36px}
+  .tile.enfasis .num{color:var(--accent)}
+  .tile .k{font-size:14px;color:var(--textSecondary)}
+
+  /* Variantes (segmented) */
+  .variantes{display:flex;gap:8px;flex-wrap:wrap}
+  .vari{min-height:44px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-pill);
+    border:1px solid var(--border);background:var(--surface);color:var(--textSecondary);font-size:15px;font-weight:600}
+  .vari.on{border-color:var(--accent);background:var(--accentWeak);color:var(--accent)}
+
+  .boletin{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:16px;font-size:16px;line-height:24px}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:var(--radius-md);
+    font-size:16px;font-weight:600;cursor:pointer;border:1px solid transparent}
+  .btn.primary{height:54px;background:var(--accent);color:var(--accentOn)}
+  .btn.ghost{min-height:48px;background:var(--surface);border-color:var(--border);color:var(--textPrimary);flex:1;padding:0 12px}
+  .btn svg{width:20px;height:20px}
+  .actions2{display:flex;gap:10px}
+
+  .cons{display:flex;gap:12px;border:1px solid var(--border);background:var(--surface);
+    border-radius:var(--radius-md);padding:12px}
+  .cons.coerc{border-color:var(--danger)}
+  .cons .ic{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;
+    justify-content:center;background:var(--surfaceAlt);flex:none}
+  .cons .ic svg{width:22px;height:22px;color:var(--textSecondary)}
+  .cons.coerc .ic{background:var(--dangerBg)} .cons.coerc .ic svg{color:var(--danger)}
+  .cons .tt{font-size:16px;font-weight:600}
+  .cons.coerc .tt{color:var(--danger)}
+
+  .link{color:var(--accent);font-size:15px;font-weight:600;min-height:44px;display:flex;align-items:center}
+  .foot{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+  .foot .caption{color:var(--textTertiary)}
+  .foot .fr{display:flex;align-items:center;gap:6px}
+  .foot svg{width:14px;height:14px;color:var(--textTertiary)}
+
+  @page{size:A4;margin:14mm}
+  @media print{
+    .toolbar,.note{display:none}
+    body{background:#fff}
+    .stage{padding:0;gap:8mm}
+    .phone{width:100%;border:none;box-shadow:none;border-radius:0;break-inside:avoid}
+    .phone+.phone{break-before:page}
+    .tile,.cons,.boletin{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <b>Cuerpo</b>
+    <button data-accent="guardiaCivil" class="on">Guardia Civil</button>
+    <button data-accent="policiaNacional">P. Nacional</button>
+    <button data-accent="policiaLocal">P. Local</button>
+    <button data-accent="autonomica">Autonómica</button>
+    <span style="width:14px"></span>
+    <b>Tema</b>
+    <button data-mode="dark" class="on">Oscuro</button>
+    <button data-mode="light">Claro</button>
+  </div>
+  <p class="note">Dos variantes administrativas. <b>Izquierda: TRÁFICO</b> (importe · pronto pago · <b>puntos</b>).
+  <b>Derecha: SEGURIDAD CIUDADANA</b> (LO 4/2015): importe · pronto pago · <b>Tramo</b>, <b>sin puntos</b>.
+  Compárese con la ficha de delito (otro archivo): allí no hay ni importe ni puntos.</p>
+
+  <div class="stage">
+
+    <!-- ================= TRÁFICO ================= -->
+    <div>
+      <p class="caplabel">Variante TRÁFICO · con puntos</p>
+      <div class="phone">
+        <div class="navbar"><span class="back">‹</span><span class="navtitle">Infracción</span></div>
+        <div class="screen">
+
+          <div class="col" style="gap:8px">
+            <h1 class="titleXL">Conducir usando el móvil</h1>
+            <div class="bodyStrong" style="color:var(--textSecondary)">LSV · art. 76.c</div>
+            <div class="row">
+              <span class="chip sev-grave">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                Grave
+              </span>
+              <span class="chip neutral">Vía administrativa</span>
+            </div>
+          </div>
+
+          <!-- Tiles: importe manda, SOLO los que tienen valor -->
+          <div class="tiles">
+            <div class="tile enfasis"><span class="num tnum">200 €</span><span class="k">Importe</span></div>
+            <div class="tile"><span class="num tnum">100 €</span><span class="k">Pronto pago</span></div>
+            <div class="tile"><span class="num tnum">6</span><span class="k">Puntos</span></div>
+          </div>
+
+          <div class="col" style="gap:8px">
+            <div class="section-label">Texto para el boletín</div>
+            <div class="boletin">Conduce el vehículo reseñado utilizando manualmente el teléfono móvil, sin sistema de manos libres, incumpliendo la obligación de mantener la atención permanente a la conducción.</div>
+            <div class="variantes">
+              <span class="vari on">Sujetándolo con la mano</span>
+              <span class="vari">Enviando mensajes</span>
+            </div>
+            <a class="btn primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copiar boletín
+            </a>
+            <div class="actions2">
+              <a class="btn ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Guardar
+              </a>
+              <a class="btn ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                Generar boletín
+              </a>
+            </div>
+          </div>
+
+          <div class="col" style="gap:8px">
+            <div class="section-label">Consecuencias</div>
+            <div class="cons">
+              <div class="ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div class="col" style="gap:2px">
+                <div class="tt">Detracción de puntos</div>
+                <div class="body">Conlleva la pérdida de 6 puntos del permiso de conducción.</div>
+                <div class="caption tertiary">Fuente: LSV Anexo II</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col" style="gap:4px">
+            <div class="section-label">Competencia</div>
+            <div class="body" style="color:var(--textSecondary)">Guardia Civil, Policía Local, Tráfico · urbana e interurbana</div>
+          </div>
+
+          <div class="col" style="gap:6px">
+            <a class="link">Ver artículo completo · Distracciones</a>
+            <a class="link">Abrir en el BOE ↗</a>
+          </div>
+
+          <div class="foot">
+            <div class="fr">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg>
+              <span class="caption tertiary">Actualizado el 05/09/2026</span>
+            </div>
+            <span class="caption tertiary">Fuente: LSV art. 76.c</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SEGURIDAD CIUDADANA ================= -->
+    <div>
+      <p class="caplabel">Variante SEGURIDAD CIUDADANA · sin puntos, con Tramo</p>
+      <div class="phone">
+        <div class="navbar"><span class="back">‹</span><span class="navtitle">Infracción</span></div>
+        <div class="screen">
+
+          <div class="col" style="gap:8px">
+            <h1 class="titleXL">Consumo de drogas en vía pública</h1>
+            <div class="bodyStrong" style="color:var(--textSecondary)">LO 4/2015 · art. 36.16</div>
+            <div class="row">
+              <span class="chip sev-grave">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                Grave
+              </span>
+              <span class="chip neutral">Vía administrativa</span>
+            </div>
+          </div>
+
+          <!-- Tiles: importe + pronto pago + TRAMO. NUNCA puntos. -->
+          <div class="tiles">
+            <div class="tile enfasis"><span class="num tnum">601 €</span><span class="k">Importe</span></div>
+            <div class="tile"><span class="num tnum">300 €</span><span class="k">Pronto pago</span></div>
+            <div class="tile"><span class="num" style="font-size:22px;line-height:30px">Grave</span><span class="k">Tramo</span></div>
+          </div>
+          <div class="caption tertiary" style="margin-top:-8px">Tramo grave: de 601 € a 30.000 € (LO 4/2015 art. 39). El importe mostrado es el mínimo orientativo.</div>
+
+          <div class="col" style="gap:8px">
+            <div class="section-label">Texto para el boletín</div>
+            <div class="boletin">Se observa a la persona consumiendo sustancias estupefacientes en un lugar de tránsito público, con afectación a la seguridad ciudadana en los términos de la norma.</div>
+            <a class="btn primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copiar boletín
+            </a>
+            <div class="actions2">
+              <a class="btn ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Guardar
+              </a>
+              <a class="btn ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                Generar boletín
+              </a>
+            </div>
+          </div>
+
+          <div class="col" style="gap:8px">
+            <div class="section-label">Consecuencias</div>
+            <div class="cons">
+              <div class="ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div class="col" style="gap:2px">
+                <div class="tt">Identificación</div>
+                <div class="body">Procede la identificación de la persona a los efectos de la denuncia.</div>
+                <div class="caption tertiary">Fuente: LO 4/2015 art. 16</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col" style="gap:4px">
+            <div class="section-label">Competencia</div>
+            <div class="body" style="color:var(--textSecondary)">Guardia Civil, Policía Nacional, Policía Local · urbana e interurbana</div>
+          </div>
+
+          <div class="col" style="gap:6px">
+            <a class="link">Ver artículo completo · Infracciones graves</a>
+            <a class="link">Abrir en el BOE ↗</a>
+          </div>
+
+          <div class="foot">
+            <div class="fr">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg>
+              <span class="caption tertiary">Actualizado el 05/09/2026</span>
+            </div>
+            <span class="caption tertiary">Fuente: LO 4/2015 art. 36.16</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  var ACCENT = {
+    guardiaCivil:   { dark:['#6FC79B','#0A0C10','#2F4A43'], light:['#2E6A4E','#FFFFFF','#E1EDE7'] },
+    policiaNacional:{ dark:['#7FA4D6','#0A0C10','#333C4B'], light:['#1F3A63','#FFFFFF','#E2E7EE'] },
+    policiaLocal:   { dark:['#4FC4E6','#0A0C10','#274956'], light:['#0B7597','#FFFFFF','#DCEEF4'] },
+    autonomica:     { dark:['#B49BE8','#0A0C10','#3A3A4C'], light:['#6A4E9C','#FFFFFF','#E7E1F1'] },
+  };
+  var mode='dark', cuerpo='guardiaCivil';
+  function apply(){
+    var root=document.documentElement;
+    root.classList.toggle('light', mode==='light');
+    var a=ACCENT[cuerpo][mode];
+    root.style.setProperty('--accent',a[0]);
+    root.style.setProperty('--accentOn',a[1]);
+    root.style.setProperty('--accentWeak',a[2]);
+  }
+  document.querySelectorAll('[data-accent]').forEach(function(b){
+    b.onclick=function(){cuerpo=b.dataset.accent;
+      document.querySelectorAll('[data-accent]').forEach(function(x){x.classList.toggle('on',x===b)});apply();};
+  });
+  document.querySelectorAll('[data-mode]').forEach(function(b){
+    b.onclick=function(){mode=b.dataset.mode;
+      document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('on',x===b)});apply();};
+  });
+  apply();
+</script>
+</body>
+</html>
