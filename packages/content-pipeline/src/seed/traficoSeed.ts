@@ -861,9 +861,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'FRONTERA administrativo ↔ penal. Conducir con una tasa de alcohol superior a 0,60 mg/l en ' +
       'aire espirado (o 1,2 g/l en sangre), o bajo la influencia acreditada de drogas o alcohol, es ' +
       'DELITO contra la seguridad vial (art. 379.2 CP) → procede instruir ATESTADO. POR DEBAJO de ' +
-      '0,60 mg/l en aire, la conducción con exceso de alcohol es SANCIÓN ADMINISTRATIVA (art. 14 ' +
-      'LSV) → boletín (ver ficha "Conducir bajo los efectos del alcohol"). La calificación final ' +
-      'corresponde a la autoridad judicial.',
+      '0,60 mg/l en aire (o 1,2 g/l en sangre), la conducción con exceso de alcohol es SANCIÓN ' +
+      'ADMINISTRATIVA (art. 14 LSV) → boletín (ver ficha "Conducir bajo los efectos del alcohol"), ' +
+      'SALVO que se acredite la influencia en la conducción, en cuyo caso también es delito ' +
+      '(art. 379.2 CP, primer inciso). La calificación final corresponde a la autoridad judicial.',
     terminos: [
       'alcoholemia penal',
       'delito de alcoholemia',
