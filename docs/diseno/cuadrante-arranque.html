@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agente — Arranque del cuadrante (anclaje por día+turno)</title>
+<title>Agente — Arranque del cuadrante (anclaje por días seguidos)</title>
 <style>
   :root{
     --bg:#12151A; --surface:#1E232B; --surfaceAlt:#252B34; --border:#2C333D;
@@ -13,6 +13,7 @@
     --success:#3FBE83; --danger:#F0555B;
     /* turno: color + LETRA (servicioVisual.ts) — trabajo=info, saliente/libre=neutros */
     --infoBg:#132338; --info:#8FB0E6;
+    --warnBg:#3A2410; --warn:#F08A24;
     --radiusSm:8px; --radiusMd:12px; --radiusLg:16px; --radiusXl:24px; --radiusPill:999px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -20,8 +21,12 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   .page{max-width:900px;margin:0 auto;padding:28px 20px 60px;}
   .intro h1{font-size:22px;font-weight:700;margin:0 0 6px;}
-  .intro p{color:var(--textSecondary);font-size:15px;line-height:1.5;margin:0 0 22px;max-width:640px;}
+  .intro p{color:var(--textSecondary);font-size:15px;line-height:1.5;margin:0 0 14px;max-width:660px;}
   .intro code{background:var(--surfaceAlt);border:1px solid var(--border);border-radius:6px;padding:1px 5px;font-size:13px;}
+  .try{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px;}
+  .try button{background:var(--surfaceAlt);border:1px solid var(--border);color:var(--textPrimary);
+    font:inherit;font-size:13px;border-radius:var(--radiusPill);padding:7px 13px;cursor:pointer;}
+  .try button:hover{border-color:var(--accent);color:var(--accent);}
 
   /* teléfono */
   .phone{max-width:400px;margin:0 auto;background:var(--bg);border:1px solid var(--border);
@@ -53,44 +58,68 @@
   .c-sal{background:var(--surfaceAlt);color:var(--textSecondary);}
   .c-libre{background:var(--surface);color:var(--textTertiary);}
 
-  /* botones ¿qué haces hoy? */
-  .today{font-size:16px;font-weight:600;margin:0 0 10px;}
-  .shifts{display:flex;gap:8px;flex-wrap:wrap;}
-  .shift{flex:1 0 60px;min-height:56px;border-radius:var(--radiusMd);border:1px solid var(--border);
-    background:var(--surface);color:var(--textPrimary);font:inherit;font-size:15px;font-weight:600;
+  /* filas de día (días seguidos) */
+  .dayrow{border:1px solid var(--border);border-radius:var(--radiusMd);padding:12px 13px;margin-bottom:9px;
+    background:var(--surface);transition:border-color .2s,background-color .2s,opacity .2s;}
+  .dayrow.active{border:2px solid var(--accent);background:var(--accentWeak);padding:11px 12px;}
+  .dayrow.answered{opacity:.92;}
+  @keyframes slidein{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:none}}
+  .dayrow.reveal{animation:slidein .24s ease both;}
+  .dr-label{font-size:14px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .dr-label .when{color:var(--textSecondary);font-weight:600;}
+  .dr-label .pill{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);
+    background:var(--accentWeak);border:1px solid var(--accent);border-radius:999px;padding:2px 9px;}
+  .shifts{display:flex;gap:7px;flex-wrap:wrap;}
+  .shift{flex:1 0 58px;min-height:56px;border-radius:var(--radiusMd);border:1px solid var(--border);
+    background:var(--bg);color:var(--textPrimary);font:inherit;font-size:14px;font-weight:600;
     cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     transition:border-color .16s,background-color .16s,transform .1s;}
   .shift:active{transform:scale(.97);}
   .shift .lt{font-size:15px;font-weight:800;width:22px;height:22px;border-radius:6px;
     display:flex;align-items:center;justify-content:center;}
   .shift.on{border:2px solid var(--accent);background:var(--accentWeak);}
+
+  /* estado / contador de alineaciones */
+  .status{display:flex;align-items:flex-start;gap:9px;border-radius:var(--radiusMd);padding:11px 12px;
+    font-size:13.5px;line-height:1.4;margin-top:4px;}
+  .status.hidden{display:none;}
+  .status.info{background:var(--infoBg);border:1px solid #24406b;border-left:3px solid var(--info);color:#cfe0f7;}
+  .status.ok{background:#0F2E20;border:1px solid #1E7F4F;border-left:3px solid var(--success);color:#CDEBD9;font-weight:600;}
+  .status .n{font-weight:800;color:var(--info);}
+  .status svg{flex:none;margin-top:1px;}
+
+  /* aviso caso 0 */
+  .warn{background:var(--warnBg);border:1px solid #6b4416;border-left:3px solid var(--warn);
+    border-radius:var(--radiusMd);padding:12px 13px;margin-top:4px;}
+  .warn.hidden{display:none;}
+  .warn p{margin:0 0 10px;font-size:13.5px;line-height:1.45;color:#f6d9b6;}
+  .warn .acts{display:flex;gap:8px;flex-wrap:wrap;}
+  .warn .acts button{background:var(--surface);border:1px solid var(--border);color:var(--textPrimary);
+    font:inherit;font-size:13px;font-weight:600;border-radius:var(--radiusMd);padding:9px 12px;cursor:pointer;}
+  .warn .acts button:active{transform:scale(.98);}
+
   .link{background:none;border:0;color:var(--accent);font:inherit;font-size:13.5px;cursor:pointer;
-    padding:10px 0 0;text-decoration:underline;text-underline-offset:2px;}
+    padding:12px 0 0;text-decoration:underline;text-underline-offset:2px;display:block;}
 
   /* preview */
   .preview{margin-top:20px;border-top:1px solid var(--border);padding-top:16px;}
   .preview.hidden{display:none;}
   .plabel{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
-    color:var(--textSecondary);margin:0 0 10px;}
+    color:var(--textSecondary);margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .plabel .prov{font-weight:600;letter-spacing:0;text-transform:none;color:var(--textTertiary);font-size:11.5px;}
   .week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
   .wd{text-align:center;font-size:11px;font-weight:700;color:var(--textTertiary);}
-  .day{aspect-ratio:1/1.05;border-radius:var(--radiusSm);border:1px solid var(--border);
+  .day{aspect-ratio:1/1.12;border-radius:var(--radiusSm);border:1px solid var(--border);
     display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0;
-    transition:background-color .2s,color .2s;}
+    transition:background-color .2s,color .2s,opacity .2s;position:relative;}
   .day.today{border:2px solid var(--accent);}
+  .day.prov{opacity:.45;}
+  .day.conf::after{content:"✓";position:absolute;top:2px;right:4px;font-size:9px;color:var(--success);font-weight:800;}
   .day .dn{font-size:11px;color:var(--textSecondary);}
   .day .dl{font-size:16px;font-weight:800;}
+  .day .tag{font-size:9px;color:var(--textTertiary);height:11px;}
   @keyframes pop{0%{opacity:.25;transform:translateY(6px)}100%{opacity:1;transform:none}}
-  .anim .day{animation:pop .24s ease both;}
-
-  .disamb{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;}
-  .disamb.hidden{display:none;}
-  .nav{width:40px;height:40px;border-radius:var(--radiusMd);border:1px solid var(--border);
-    background:var(--surface);color:var(--accent);font-size:20px;cursor:pointer;line-height:1;}
-  .nav:active{transform:scale(.95);}
-  .occ{font-size:14px;color:var(--textPrimary);min-width:150px;text-align:center;font-weight:600;}
-  .disamb-q{text-align:center;font-size:12.5px;color:var(--textTertiary);margin-top:12px;}
-  .disamb-q.hidden{display:none;}
+  .anim .day:not(.prov){animation:pop .24s ease both;}
 
   /* ajustes finos + cta */
   .acc{margin-top:20px;border:1px solid var(--border);border-radius:var(--radiusMd);overflow:hidden;}
@@ -107,23 +136,32 @@
     transition:opacity .2s,transform .1s;}
   .cta:disabled{opacity:.4;cursor:not-allowed;}
   .cta:not(:disabled):active{transform:scale(.99);}
-  .done{margin-top:14px;text-align:center;font-size:13.5px;color:var(--success);min-height:18px;}
+  .done{margin-top:14px;text-align:center;font-size:13.5px;color:var(--success);min-height:18px;line-height:1.4;}
 </style>
 </head>
 <body>
 <div class="page">
   <div class="intro">
-    <h1>Arranque del cuadrante — anclado a la realidad</h1>
-    <p>El arranque ya no pide "primer día del ciclo" (teoría que el agente no sabe). Pregunta
-    <strong>qué turno tienes HOY</strong> y el motor calcula el desfase para que
-    <strong>todo cuadre</strong>. Elige un patrón, toca tu turno de hoy y mira cómo se pinta la
-    semana. Si el turno se repite en el ciclo (dos noches seguidas), usa
-    <code>‹ ›</code> para decir cuál es el de hoy. Mockup: fecha fijada a lunes 7 sep 2026.</p>
+    <h1>Arranque del cuadrante — anclado por días seguidos</h1>
+    <p>El arranque ya no pide "primer día del ciclo" ni "¿1.ª o 2.ª mañana?" (teoría de ciclos que el
+    agente no tiene en la cabeza). Solo pregunta <strong>qué haces cada día, empezando por hoy</strong>.
+    Tras cada día, la app calcula <strong>cuántas posiciones del ciclo siguen encajando</strong>
+    (<code>offsetsCompatibles</code>): si queda <strong>1</strong>, cuadra y termina; si quedan
+    <strong>varias</strong>, revela el día siguiente; si quedan <strong>0</strong>, avisa de que no
+    encaja. Fecha del mockup fijada a <strong>lunes 7 sep 2026</strong>.</p>
+    <div class="try">
+      <span style="font-size:12.5px;color:var(--textTertiary);align-self:center">Prueba rápida:</span>
+      <button data-seq="manana,manana">Hoy M, mañana M → cuadra en 2</button>
+      <button data-seq="saliente">Hoy Saliente → cuadra en 1</button>
+      <button data-seq="libre,libre,libre">3 libres → cuadra en 3</button>
+      <button data-seq="noche,tarde">Hoy N, mañana T → no encaja</button>
+      <button data-seq="">Reiniciar</button>
+    </div>
   </div>
 
   <div class="phone">
     <div class="title">Tu cuadrante</div>
-    <p class="subtitle">Dos toques y lo tienes cuadrado con tu turno.</p>
+    <p class="subtitle">Dime qué haces estos días y lo cuadro yo solo.</p>
 
     <div class="banner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3FBE83" stroke-width="2"
@@ -135,19 +173,24 @@
     <div id="patrones"></div>
     <p class="hint">Es un punto de partida: luego ajustas los días sueltos que no encajen.</p>
 
-    <div class="step"><span class="stepnum">2</span><span id="todayLabel">¿Qué haces hoy, lunes 7?</span></div>
-    <div class="shifts" id="shifts"></div>
-    <button class="link" id="otroDia">¿Hoy libras o es un día raro? Elegir otro día</button>
+    <div class="step"><span class="stepnum">2</span>¿Qué haces estos días?</div>
+    <div id="dias"></div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="warn hidden" id="warn">
+      <p>Esto no encaja con este patrón. ¿Seguro que es tu patrón? ¿O ese día fue una
+      <strong>excepción</strong> (un cambio con un compañero, un refuerzo…)?</p>
+      <div class="acts">
+        <button id="fixLast">Corregir el último día</button>
+        <button id="exception">Ese día fue una excepción</button>
+      </div>
+    </div>
+
+    <button class="link" id="otroDia">¿Hoy libras o es un día raro? Empezar por otro día</button>
 
     <div class="preview hidden" id="preview">
-      <p class="plabel">Vista previa · esta semana</p>
+      <p class="plabel">Vista previa · esta semana <span class="prov hidden" id="provTag">(estimado hasta que cuadre)</span></p>
       <div class="week" id="week"></div>
-      <div class="disamb-q hidden" id="disambQ">¿No cuadra? Dime cuál de tus turnos es el de hoy</div>
-      <div class="disamb hidden" id="disamb">
-        <button class="nav" id="prev" aria-label="Ocurrencia anterior">‹</button>
-        <div class="occ" id="occLabel"></div>
-        <button class="nav" id="next" aria-label="Ocurrencia siguiente">›</button>
-      </div>
     </div>
 
     <details class="acc">
@@ -180,26 +223,45 @@ const META={ [M]:{lt:'M',lbl:'Mañana',cls:'c-work'}, [T]:{lt:'T',lbl:'Tarde',cl
   [N]:{lt:'N',lbl:'Noche',cls:'c-work'}, [S]:{lt:'S',lbl:'Saliente',cls:'c-sal'},
   [L]:{lt:'L',lbl:'Libre',cls:'c-libre'} };
 const ORDEN=[M,T,N,S,L];
-const WD=['L','M','X','J','V','S','D'];
+const WD=['L','M','X','J','V','S','D'];              /* cabecera semana (lun→dom) */
+const DOW=['dom','lun','mar','mié','jue','vie','sáb']; /* getUTCDay 0..6 */
 const MS=86400000;
 
 /* fecha fijada del mockup: lunes 7 de septiembre de 2026 */
 const HOY=Date.UTC(2026,8,7);
-function fmt(ms){const d=new Date(ms);return d.getUTCDate();}
+function num(ms){return new Date(ms).getUTCDate();}
+function dow(ms){return DOW[new Date(ms).getUTCDay()];}
 function diasEntre(a,b){return Math.round((b-a)/MS);}
 function mod(n,m){return ((n%m)+m)%m;}
 
 /* --- funciones puras propuestas para shared --- */
-function turnosDelPatron(seq){const out=[];for(const s of seq)if(!out.includes(s))out.push(s);
-  return ORDEN.filter(x=>out.includes(x));}
-function ocurrenciasEnPatron(seq,serv){const r=[];seq.forEach((s,i)=>{if(s===serv)r.push(i);});return r;}
-function anclarInicioCiclo(seq,fechaAnclaMs,serv,ocur){
-  const I=ocurrenciasEnPatron(seq,serv); if(!I.length)throw new Error('turno no está en patrón');
-  const k=mod(ocur,I.length); return fechaAnclaMs - I[k]*MS;}
+function turnosDelPatron(seq){const set=new Set(seq);return ORDEN.filter(x=>set.has(x));}
+/* offsetsCompatibles: desfases 0..L-1 consistentes con turnos en días CONSECUTIVOS desde fechaBase */
+function offsetsCompatibles(seq,turnos){
+  const Ln=seq.length,out=[];
+  for(let d=0;d<Ln;d++){
+    let ok=true;
+    for(let i=0;i<turnos.length;i++){ if(seq[(d+i)%Ln]!==turnos[i]){ok=false;break;} }
+    if(ok)out.push(d);
+  }
+  return out;
+}
+function inicioCicloDesdeOffset(fechaBaseMs,offset){return fechaBaseMs-offset*MS;}
 function proyectar(seq,inicioMs,fechaMs){return seq[mod(diasEntre(inicioMs,fechaMs),seq.length)];}
 
 /* ---- Estado del arranque ---- */
-let patIdx=0, turnoHoy=null, ocur=0, anclaFecha=HOY;
+let patIdx=0, turnos=[], fechaBase=HOY;
+
+/* etiqueta de la fila del día i (0=Hoy,1=Mañana,2=Pasado,>=3=weekday) */
+function etiquetaDia(i){
+  const ms=fechaBase+i*MS, cuando=`${dow(ms)} ${num(ms)}`;
+  if(i===0)return{titulo:'Hoy',cuando};
+  if(i===1)return{titulo:'Mañana',cuando};
+  if(i===2)return{titulo:'Pasado',cuando};
+  return{titulo:cuando,cuando:''};
+}
+function nombreSiguiente(i){ if(i===1)return'mañana'; if(i===2)return'pasado';
+  return`el ${dow(fechaBase+i*MS)}`; }
 
 /* ---- Render de patrones ---- */
 const patC=document.getElementById('patrones');
@@ -213,78 +275,163 @@ function pintarPatrones(){
     b.innerHTML=`<div class="nm"><span class="radio"></span>${p.nombre}</div>
       <div class="strip">${strip}</div>
       <div style="font-size:12.5px;color:var(--textTertiary);margin-top:8px">${p.sub}</div>`;
-    b.onclick=()=>{patIdx=i;turnoHoy=null;ocur=0;pintarPatrones();pintarShifts();refrescarPreview();};
+    b.onclick=()=>{patIdx=i;turnos=[];pintarPatrones();render(false);};
     patC.appendChild(b);
   });
 }
 
-/* ---- Render de botones de turno de hoy ---- */
-const shiftsC=document.getElementById('shifts');
-function pintarShifts(){
-  shiftsC.innerHTML='';
-  turnosDelPatron(PATRONES[patIdx].seq).forEach(s=>{
-    const m=META[s];
-    const b=document.createElement('button');
-    b.className='shift'+(s===turnoHoy?' on':'');
-    b.innerHTML=`<span class="lt ${m.cls}">${m.lt}</span>${m.lbl}`;
-    b.onclick=()=>{turnoHoy=s;ocur=0;pintarShifts();refrescarPreview();};
-    shiftsC.appendChild(b);
+/* ---- Filas de día ---- */
+const diasC=document.getElementById('dias');
+function pintarDias(revelarNueva){
+  const seq=PATRONES[patIdx].seq;
+  const comp=offsetsCompatibles(seq,turnos);
+  /* nº de filas: las contestadas + la activa si aún hay ambigüedad (>1) */
+  const revelaSiguiente = comp.length>1;            /* solo se revela otro día si sigue ambiguo */
+  const total = turnos.length + (revelaSiguiente?1:0); /* contestados + la activa; con 0 turnos = solo "Hoy" */
+  diasC.innerHTML='';
+  const turnosPatron=turnosDelPatron(seq);
+  for(let i=0;i<total;i++){
+    const activa = (i===turnos.length) && comp.length!==1; /* activa = primera sin contestar */
+    const row=document.createElement('div');
+    row.className='dayrow'+(activa?' active':'')+(i<turnos.length?' answered':'')
+      +(revelarNueva&&i===turnos.length&&activa?' reveal':'');
+    const et=etiquetaDia(i);
+    const pill = i<turnos.length ? `<span class="pill">${META[turnos[i]].lbl}</span>` : '';
+    let shifts='';
+    turnosPatron.forEach(s=>{
+      const m=META[s], on=(i<turnos.length&&turnos[i]===s)?' on':'';
+      shifts+=`<button class="shift${on}" data-i="${i}" data-s="${s}">
+        <span class="lt ${m.cls}">${m.lt}</span>${m.lbl}</button>`;
+    });
+    row.innerHTML=`<div class="dr-label">${et.titulo}
+        ${et.cuando?`<span class="when">· ${et.cuando}</span>`:''}${pill}</div>
+      <div class="shifts">${shifts}</div>`;
+    diasC.appendChild(row);
+  }
+  diasC.querySelectorAll('.shift').forEach(b=>{
+    b.onclick=()=>{
+      const i=+b.dataset.i;
+      turnos=turnos.slice(0,i);      /* re-contestar un día trunca los posteriores */
+      turnos.push(b.dataset.s);
+      render(true);
+    };
   });
+}
+
+/* ---- Estado / contador / aviso ---- */
+const statusEl=document.getElementById('status');
+const warnEl=document.getElementById('warn');
+function pintarStatus(comp){
+  warnEl.classList.add('hidden');
+  if(turnos.length===0){statusEl.classList.add('hidden');return;}
+  statusEl.className='status';
+  if(comp.length===1){
+    statusEl.classList.add('ok');
+    statusEl.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3FBE83"
+      stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      Ya cuadra con tu turno.`;
+  }else if(comp.length>1){
+    statusEl.classList.add('info');
+    const sig=nombreSiguiente(turnos.length);
+    statusEl.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8FB0E6"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+      <span>Encajan <span class="n">${comp.length}</span> posiciones del ciclo · dime qué haces
+      <strong>${sig}</strong> para afinar.</span>`;
+  }else{
+    statusEl.classList.add('hidden');
+    warnEl.classList.remove('hidden');
+  }
 }
 
 /* ---- Preview de la semana (lunes–domingo que contiene HOY) ---- */
 const previewEl=document.getElementById('preview');
 const weekEl=document.getElementById('week');
-const disambEl=document.getElementById('disamb');
-const disambQ=document.getElementById('disambQ');
-const occLabel=document.getElementById('occLabel');
-const cta=document.getElementById('cta');
-const ORD=['1.ª','2.ª','3.ª','4.ª','5.ª'];
-
-function refrescarPreview(){
-  if(turnoHoy===null){previewEl.classList.add('hidden');cta.disabled=true;return;}
-  previewEl.classList.remove('hidden');cta.disabled=false;
+const provTag=document.getElementById('provTag');
+function pintarPreview(comp){
+  if(turnos.length===0){previewEl.classList.add('hidden');return;}
   const seq=PATRONES[patIdx].seq;
-  const inicio=anclarInicioCiclo(seq,anclaFecha,turnoHoy,ocur);
-  /* lunes de la semana de HOY */
-  const dow=mod(new Date(HOY).getUTCDay()+6,7);
-  const lunes=HOY-dow*MS;
+  const offset = comp.length>=1 ? comp[0] : null; /* provisional mientras ambiguo; nulo si 0 */
+  if(offset===null){ /* caso 0: no proyectamos, solo mostramos lo dicho */ }
+  previewEl.classList.remove('hidden');
+  provTag.classList.toggle('hidden', comp.length===1);
+  const dowHoy=mod(new Date(HOY).getUTCDay()+6,7); /* 0=lunes */
+  const lunes=HOY-dowHoy*MS;
   weekEl.innerHTML='';
   WD.forEach(d=>{const h=document.createElement('div');h.className='wd';h.textContent=d;weekEl.appendChild(h);});
   for(let i=0;i<7;i++){
     const fecha=lunes+i*MS;
-    const serv=proyectar(seq,inicio,fecha);
-    const m=META[serv];
+    const iRel=diasEntre(fechaBase,fecha);
+    const confirmado = iRel>=0 && iRel<turnos.length;
+    let serv=null;
+    if(confirmado) serv=turnos[iRel];
+    else if(offset!==null) serv=proyectar(seq,inicioCicloDesdeOffset(fechaBase,offset),fecha);
     const cell=document.createElement('div');
     const esHoy=fecha===HOY;
-    cell.className='day '+m.cls+(esHoy?' today':'');
-    cell.innerHTML=`<span class="dn">${fmt(fecha)}</span><span class="dl">${m.lt}</span>
-      <span style="font-size:9px;color:var(--textTertiary)">${esHoy?'HOY':''}</span>`;
+    const prov = !confirmado && comp.length>1;
+    if(serv===null){
+      cell.className='day'+(esHoy?' today':'');
+      cell.innerHTML=`<span class="dn">${num(fecha)}</span><span class="dl" style="color:var(--textTertiary)">·</span>
+        <span class="tag">${esHoy?'HOY':''}</span>`;
+    }else{
+      const m=META[serv];
+      cell.className='day '+m.cls+(esHoy?' today':'')+(confirmado?' conf':'')+(prov?' prov':'');
+      cell.innerHTML=`<span class="dn">${num(fecha)}</span><span class="dl">${m.lt}</span>
+        <span class="tag">${esHoy?'HOY':''}</span>`;
+    }
     weekEl.appendChild(cell);
   }
-  /* animación de re-pintado */
   weekEl.parentElement.classList.remove('anim');void weekEl.offsetWidth;weekEl.parentElement.classList.add('anim');
-  /* desambiguación */
-  const occ=ocurrenciasEnPatron(seq,turnoHoy);
-  if(occ.length>1){
-    disambEl.classList.remove('hidden');disambQ.classList.remove('hidden');
-    occLabel.textContent=`${ORD[mod(ocur,occ.length)]} ${META[turnoHoy].lbl.toLowerCase()} del ciclo`;
-  }else{disambEl.classList.add('hidden');disambQ.classList.add('hidden');}
 }
 
-document.getElementById('prev').onclick=()=>{ocur--;refrescarPreview();};
-document.getElementById('next').onclick=()=>{ocur++;refrescarPreview();};
-document.getElementById('otroDia').onclick=()=>{
-  alert('En la app: abre un selector de fecha compacto por debajo del pliegue y cambia el rótulo a\n"¿Qué haces el {fecha}?". El anclaje usa esa fecha en vez de HOY.');
-};
+/* ---- CTA ---- */
+const cta=document.getElementById('cta');
+const done=document.getElementById('done');
+function pintarCta(comp){
+  cta.disabled = comp.length!==1;
+  if(comp.length!==1) done.textContent='';
+}
 cta.onclick=()=>{
   const seq=PATRONES[patIdx].seq;
-  const inicio=anclarInicioCiclo(seq,anclaFecha,turnoHoy,ocur);
+  const comp=offsetsCompatibles(seq,turnos);
+  const inicio=inicioCicloDesdeOffset(fechaBase,comp[0]);
   const iso=new Date(inicio).toISOString().slice(0,10);
-  document.getElementById('done').textContent=`Creado. inicioCiclo calculado = ${iso} · hoy proyecta ${META[proyectar(seq,inicio,HOY)].lbl}. ✓ cuadra`;
+  done.textContent=`Creado. inicioCiclo = ${iso} (desfase ${comp[0]}) · hoy proyecta `
+    +`${META[proyectar(seq,inicio,HOY)].lbl}. ✓ cuadra con lo que dijiste.`;
 };
 
-pintarPatrones();pintarShifts();refrescarPreview();
+/* ---- Render maestro ---- */
+function render(animar){
+  const comp=offsetsCompatibles(PATRONES[patIdx].seq,turnos);
+  pintarDias(animar);
+  pintarStatus(comp);
+  pintarPreview(comp);
+  pintarCta(comp);
+  done.textContent='';
+}
+
+/* ---- Acciones de borde ---- */
+document.getElementById('fixLast').onclick=()=>{turnos.pop();render(false);};
+document.getElementById('exception').onclick=()=>{
+  turnos.pop();render(false);
+  done.style.color='var(--textSecondary)';
+  done.textContent='En la app: ese día se marcaría como excepción manual en el mes y no contaría para deducir el ciclo. Sigue con el día siguiente.';
+};
+document.getElementById('otroDia').onclick=()=>{
+  alert('En la app: abre un selector de fecha compacto por debajo del pliegue.\n'
+    +'Cambia "fechaBase" (la fila "Hoy" pasa a ser esa fecha; las siguientes, sus consecutivas).\n'
+    +'El anclaje por días seguidos funciona igual desde esa fecha.');
+};
+
+/* ---- Prueba rápida ---- */
+document.querySelectorAll('.try button').forEach(b=>{
+  b.onclick=()=>{
+    turnos = b.dataset.seq ? b.dataset.seq.split(',') : [];
+    patIdx=0; pintarPatrones(); render(true);
+    document.querySelector('.phone').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+});
+
+pintarPatrones();render(false);
 </script>
 </body>
 </html>
