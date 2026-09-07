@@ -134,6 +134,21 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
       PRAGMA user_version = 5;
     `);
   }
+
+  if (version < 6) {
+    // DOCUMENTOS (§4.8): valores RECORDADOS de campos DEL AGENTE entre documentos (p. ej. su
+    // unidad), para no reescribir lo mismo cada vez. Local-first (ADR-001) y separado del paquete.
+    // REGLA CRÍTICA: aquí NUNCA se guardan datos de terceros (matrículas, nombres, DNI): la capa
+    // de documentos solo persiste campos con `esDatoTercero = false`. El PDF tampoco se guarda.
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS documento_campo_recordado (
+        clave TEXT PRIMARY KEY NOT NULL,
+        valor TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      PRAGMA user_version = 6;
+    `);
+  }
 }
 
 /** Abre (una sola vez) la base local del usuario y aplica migraciones. */
@@ -477,4 +492,47 @@ export async function addMarcador(marcador: Omit<Marcador, 'createdAt'>, created
 export async function removeMarcador(articuloId: string): Promise<void> {
   const db = await openUserDb();
   await db.runAsync('DELETE FROM marcador_articulo WHERE articulo_id = ?', [articuloId]);
+}
+
+// ---------------------------------------------------------------------------
+// Documentos (§4.8) — valores recordados de campos DEL AGENTE (nunca de terceros)
+// ---------------------------------------------------------------------------
+
+/**
+ * Devuelve los valores recordados de campos del agente (p. ej. `unidad`), para prerrellenar el
+ * formulario de un documento. Nunca contiene datos de terceros: la capa de documentos solo
+ * llama a `rememberFields` con campos `esDatoTercero = false`.
+ */
+export async function getRememberedFields(): Promise<Record<string, string>> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{ clave: string; valor: string }>(
+    'SELECT clave, valor FROM documento_campo_recordado',
+  );
+  const out: Record<string, string> = {};
+  for (const r of rows) out[r.clave] = r.valor;
+  return out;
+}
+
+/**
+ * Recuerda (upsert) valores de campos del agente. Los valores vacíos se ignoran; no se borra lo
+ * ya recordado si el agente deja el campo en blanco esta vez. `updatedAt` lo inyecta el llamante.
+ *
+ * PRECONDICIÓN de privacidad: el llamante DEBE filtrar y pasar solo campos que no sean datos de
+ * terceros. Esta función no valida el origen; la garantía vive en la capa de documentos.
+ */
+export async function rememberFields(
+  values: Record<string, string>,
+  updatedAt: string,
+): Promise<void> {
+  const entradas = Object.entries(values).filter(([, v]) => v.trim().length > 0);
+  if (entradas.length === 0) return;
+  const db = await openUserDb();
+  for (const [clave, valor] of entradas) {
+    await db.runAsync(
+      `INSERT INTO documento_campo_recordado (clave, valor, updated_at)
+         VALUES (?, ?, ?)
+       ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor, updated_at = excluded.updated_at`,
+      [clave, valor.trim(), updatedAt],
+    );
+  }
 }
