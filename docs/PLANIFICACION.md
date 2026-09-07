@@ -124,10 +124,13 @@ mientras se construye el resto. Cambios respecto a la spec marcados con ⚑.
 ### Fase 2 · Resto de normativa y capa penal *(en marcha)*
 - ✅ **Capa penal**: hurto/robo/lesiones/quebrantamiento + **LECrim con árbol de detención**
   (orientativo, con fuente) — motor `evaluarDetencion` con tests.
-- ✅ **LO 4/2015 seguridad ciudadana**: 10 infracciones (desobediencia, drogas en vía pública,
-  armas prohibidas, faltas de respeto, ocupación…). *(revisión jurídica en curso)*
-- ⬜ Tabla de sustancias (umbrales). Lectura de derechos multilingüe (art. 520). Sección Vehículos.
-- ⬜ Extranjería, menores, animales, transportes, VMP.
+- ✅ **LO 4/2015 seguridad ciudadana**: 10 infracciones, revisadas jurídicamente (8 APTO, 2 corregidas).
+- ✅ **Articulado completo del BOE**: LSV (148), RGV (144), RGC (232), Código Penal (784), LECrim
+  (1095), LO 4/2015 (68) = **2.485 artículos**, cada norma etiquetada por cuerpo (Normas se filtra
+  por el cuerpo del agente).
+- ✅ **Tabla de sustancias** (umbrales consumo/tráfico, revisada). ✅ **Lectura de derechos art. 520**
+  multilingüe. ✅ **Sección Vehículos** (enlaces pendientes de aportar el cofundador).
+- ⬜ Extranjería, menores, animales, transportes, VMP (siguientes tandas de contenido).
 
 ### Fase 3 · Cuadrante *(en curso — es retención)*
 - ✅ Patrones por cuerpo, excepciones manuales, festivos, contador de nocturnas/festivas,
