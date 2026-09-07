@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import {
-  anclarInicioCiclo,
   Cuadrante,
   DiaCuadrante,
   FESTIVOS_NACIONALES_2026,
-  ocurrenciasEnPatron,
+  inicioCicloDesdeOffset,
+  offsetsCompatibles,
   type AnclaCuadrante,
   type FranjaNocturna,
   type PatronTurno,
@@ -27,10 +27,12 @@ import {
  */
 
 /**
- * Datos para dar de alta el cuadrante por primera vez (arranque del rediseño).
+ * Datos para dar de alta el cuadrante por primera vez (arranque del rediseño v3).
  *
- * Ya NO se pide "primer día del ciclo": el agente indica el ANCLA (qué turno hace un día real,
- * normalmente HOY) y el motor DERIVA `inicioCiclo` con `anclarInicioCiclo`. La jornada de
+ * Ya NO se pide "primer día del ciclo" ni "¿1.ª/2.ª mañana?": el agente dice qué hace en unos
+ * pocos días SEGUIDOS (`ancla.turnos` desde `ancla.fechaBase`) y el motor DERIVA `inicioCiclo`
+ * con `offsetsCompatibles` + `inicioCicloDesdeOffset`. La UI solo habilita el alta cuando queda
+ * un único desfase compatible, así que aquí está garantizado `length === 1`. La jornada de
  * referencia es opcional (default 37,5): no bloquea el alta (docs/diseno/cuadrante-rediseno.md §2).
  */
 export interface AltaCuadrante {
@@ -39,6 +41,22 @@ export interface AltaCuadrante {
   jornadaRefHorasSemana?: number;
   /** Franja nocturna afinada en "ajustes finos"; si se omite, el default 22:00–06:00. */
   franjaNocturna?: FranjaNocturna;
+}
+
+/**
+ * Deriva `inicioCiclo` desde el ancla por días seguidos. Solo tiene sentido cuando los días
+ * dichos dejan UN único desfase compatible con el patrón; si no, lanza (la UI evita llegar aquí
+ * sin cuadrar: el botón "Empezar a usarlo" se habilita solo con `length === 1`).
+ */
+function derivarInicioCiclo(patron: PatronTurno, ancla: AnclaCuadrante): string {
+  const compatibles = offsetsCompatibles(patron, ancla.fechaBase, ancla.turnos);
+  const offset = compatibles[0];
+  if (compatibles.length !== 1 || offset === undefined) {
+    throw new Error(
+      `El ancla no fija un único ciclo (${compatibles.length} desfases compatibles); faltan días o no encaja con el patrón`,
+    );
+  }
+  return inicioCicloDesdeOffset(ancla.fechaBase, offset);
 }
 
 /** Jornada de referencia por defecto si el agente no la afina en "ajustes finos" (§3). */
@@ -96,14 +114,10 @@ export const useCuadranteStore = create<CuadranteState>((set, get) => ({
   },
 
   crear: async (alta) => {
-    // El `inicioCiclo` se DERIVA del ancla (día real + turno de ese día): así el calendario
-    // cuadra con la realidad del agente sin pedirle una fecha teórica de inicio de ciclo.
-    const inicioCiclo = anclarInicioCiclo(
-      alta.patron.secuencia,
-      alta.ancla.fecha,
-      alta.ancla.servicio,
-      alta.ancla.ocurrencia,
-    );
+    // El `inicioCiclo` se DERIVA del ancla (qué hace el agente en días seguidos desde una fecha
+    // real, normalmente HOY): así el calendario cuadra con su realidad sin pedirle una fecha
+    // teórica de inicio de ciclo ni un ordinal ("1.ª/2.ª mañana").
+    const inicioCiclo = derivarInicioCiclo(alta.patron, alta.ancla);
     // Los festivos nacionales de 2026 se siembran de serie (§4.9): el agente solo añade
     // los autonómicos y locales de su municipio (las fiestas del pueblo, dinero real).
     const cuadrante = Cuadrante.parse({
@@ -122,18 +136,18 @@ export const useCuadranteStore = create<CuadranteState>((set, get) => ({
     const actual = get().cuadrante;
     if (!actual) return;
     // Cambiar el patrón NO borra las excepciones: son sagradas (se conservan en su tabla).
-    // Si hay ancla y el turno de ese día EXISTE en el nuevo patrón, recomputamos `inicioCiclo`
-    // desde el ancla → el cuadrante sigue cuadrando SIN volver a preguntar (§1.3). Si el turno
-    // ya no existe en el patrón nuevo, se conserva el `inicioCiclo` actual (la UI puede
-    // re-preguntar el turno de hoy con `reanclar`, un mini-paso, no todo el alta).
+    // Si hay ancla y los días guardados dejan UN único desfase compatible con el patrón nuevo,
+    // recomputamos `inicioCiclo` desde el ancla → el cuadrante sigue cuadrando SIN volver a
+    // preguntar (§1.3). Si los días guardados ya no bastan (o no encajan) con el patrón nuevo,
+    // se conserva el `inicioCiclo` actual: la UI re-pide el mini-flujo de días con `reanclar`
+    // (no todo el alta).
     let inicioCiclo = actual.inicioCiclo;
-    if (actual.ancla && ocurrenciasEnPatron(patron.secuencia, actual.ancla.servicio).length > 0) {
-      inicioCiclo = anclarInicioCiclo(
-        patron.secuencia,
-        actual.ancla.fecha,
-        actual.ancla.servicio,
-        actual.ancla.ocurrencia,
-      );
+    if (actual.ancla) {
+      const compatibles = offsetsCompatibles(patron, actual.ancla.fechaBase, actual.ancla.turnos);
+      const offset = compatibles[0];
+      if (compatibles.length === 1 && offset !== undefined) {
+        inicioCiclo = inicioCicloDesdeOffset(actual.ancla.fechaBase, offset);
+      }
     }
     const validado = await persistirConfig({ ...actual, patron, inicioCiclo });
     set({ cuadrante: validado });
@@ -142,14 +156,9 @@ export const useCuadranteStore = create<CuadranteState>((set, get) => ({
   reanclar: async (ancla) => {
     const actual = get().cuadrante;
     if (!actual) return;
-    // Re-ancla el ciclo a partir de un (día, turno) real. Recomputa `inicioCiclo` y guarda el
-    // ancla para futuros cambios de patrón. Las excepciones manuales siguen intactas (sagradas).
-    const inicioCiclo = anclarInicioCiclo(
-      actual.patron.secuencia,
-      ancla.fecha,
-      ancla.servicio,
-      ancla.ocurrencia,
-    );
+    // Re-ancla el ciclo a partir de unos días seguidos reales. Recomputa `inicioCiclo` y guarda
+    // el ancla para futuros cambios de patrón. Las excepciones manuales siguen intactas (sagradas).
+    const inicioCiclo = derivarInicioCiclo(actual.patron, ancla);
     const validado = await persistirConfig({ ...actual, inicioCiclo, ancla });
     set({ cuadrante: validado });
   },

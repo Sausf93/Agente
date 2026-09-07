@@ -204,7 +204,7 @@ describe('cuadrante: las excepciones manuales son SAGRADAS (el fallo de SPPLB)',
     db.close();
   });
 
-  it('guarda y recupera el ancla (día + turno) del rediseño', () => {
+  it('guarda y recupera el ancla ({ fechaBase, turnos }) del rediseño v3', () => {
     const db = new DatabaseSync(':memory:');
     migrar(db);
     db.prepare(
@@ -219,13 +219,13 @@ describe('cuadrante: las excepciones manuales son SAGRADAS (el fallo de SPPLB)',
       '22:00',
       '06:00',
       '[]',
-      JSON.stringify({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 0 }),
+      JSON.stringify({ fechaBase: '2026-09-07', turnos: ['noche', 'saliente'] }),
       '2026-09-07T10:00:00.000Z',
     );
     const row = db.prepare('SELECT ancla_json FROM cuadrante_config WHERE id = 1').get() as {
       ancla_json: string;
     };
-    expect(JSON.parse(row.ancla_json)).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 0 });
+    expect(JSON.parse(row.ancla_json)).toEqual({ fechaBase: '2026-09-07', turnos: ['noche', 'saliente'] });
     db.close();
   });
 

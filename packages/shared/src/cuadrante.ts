@@ -206,11 +206,13 @@ export function indicePatron(inicioCiclo: string, fecha: string, longitud: numbe
 }
 
 // ---------------------------------------------------------------------------
-// Anclaje por (día, turno) — el INVERSO de la proyección (rediseño del cuadrante).
+// Anclaje por DÍAS SEGUIDOS — el INVERSO de la proyección (rediseño del cuadrante v3).
 //
-// El arranque no pregunta ya "¿qué día empezó tu ciclo?" (teoría que nadie sabe),
-// sino "¿qué turno tienes HOY?". A partir de ese dato trivial y real, el motor calcula
-// el `inicioCiclo` que hace que la proyección cuadre con la realidad del agente.
+// El arranque no pregunta ya "¿qué día empezó tu ciclo?" (teoría que nadie sabe) ni
+// "¿es tu 1.ª o 2.ª mañana?" (ordinal que nadie tiene en la cabeza). Solo pregunta "¿qué
+// haces HOY? ¿y MAÑANA? ¿y PASADO?" y, tras CADA día, calcula cuántas posiciones del ciclo
+// siguen encajando con esa secuencia de días CONSECUTIVOS. En cuanto queda UNA sola, el
+// `inicioCiclo` queda fijado y la proyección cuadra con la realidad del agente.
 // Ver docs/diseno/cuadrante-rediseno.md §1.
 // ---------------------------------------------------------------------------
 
@@ -232,8 +234,11 @@ export function turnosDelPatron(patron: PatronTurno): TipoServicio[] {
 }
 
 /**
- * Índices de la secuencia donde aparece `servicio` (para desambiguar cuando un turno se
- * repite en el ciclo y para contar sus ocurrencias). Vacío si el turno no está en el patrón.
+ * Índices de la secuencia donde aparece `servicio`. Vacío si el turno no está en el patrón.
+ *
+ * @deprecated Rediseño v3: el arranque ya NO desambigua por ordinal ("1.ª/2.ª mañana"), sino
+ * por días seguidos (`offsetsCompatibles`). Esta función se conserva solo para cálculos
+ * internos (contar ocurrencias de un turno) y para no romper tests antiguos. No usarla en la UI.
  */
 export function ocurrenciasEnPatron(
   secuencia: readonly TipoServicio[],
@@ -256,6 +261,10 @@ export function ocurrenciasEnPatron(
  * MÓDULO el nº de ocurrencias (así ‹/› en la UI puede envolver sin salirse de rango, y
  * también admite valores negativos). Lanza si `servicioAncla` no está en el patrón (no
  * debería pasar: los botones salen de `turnosDelPatron`).
+ *
+ * @deprecated Rediseño v3: sustituido por `offsetsCompatibles` + `inicioCicloDesdeOffset`
+ * (anclaje por días seguidos, sin ordinal). Se conserva marcado como obsoleto para no romper
+ * a quien aún lo importe; la UI del arranque ya no lo usa.
  */
 export function anclarInicioCiclo(
   secuencia: readonly TipoServicio[],
@@ -271,6 +280,59 @@ export function anclarInicioCiclo(
   const k = ((ocurrencia % n) + n) % n; // módulo seguro (envuelve y admite negativos)
   const idx = indices[k] as number;
   return sumarDias(fechaAncla, -idx);
+}
+
+/**
+ * Desfases `d ∈ [0, L)` del ciclo compatibles con lo que el agente dice hacer en `n` días
+ * CONSECUTIVOS desde `fechaBase`. Un desfase `d` es la hipótesis "hoy (`fechaBase`) cae en la
+ * posición `d` del ciclo"; bajo ella, el turno del día `fechaBase + i` es `secuencia[(d+i) mod L]`.
+ *
+ * `d` es compatible ⟺ para todo `i ∈ [0, n)`: `secuencia[(d + i) mod L] === turnos[i]`.
+ * (`secuencia` = `patron.secuencia`, `L = secuencia.length`; NO son los turnos distintos.)
+ *
+ *  - `length === 0` → esos días NO encajan con este patrón (excepción o patrón erróneo).
+ *  - `length === 1` → el cuadrante YA está anclado (ver `inicioCicloDesdeOffset`).
+ *  - `length  >  1` → aún ambiguo: pedir el siguiente día.
+ *
+ * Con `turnos` vacío devuelve los `L` desfases (todo es posible aún). Es pura y barata
+ * (recorre `L` desfases × `n` días; `L ≤ ~21`, `n ≤ 3`): la UI la recalcula sobre el array
+ * completo `turnos` tras cada toque, sin estado incremental. Sustituye por completo a la
+ * desambiguación por ordinal ("1.ª/2.ª mañana"). Nunca lanza: el 0 es un estado válido de UI.
+ *
+ * `fechaBase` no interviene en el cálculo (los desfases son relativos al ciclo), pero forma
+ * parte de la firma para emparejarse con `inicioCicloDesdeOffset(fechaBase, offset)`.
+ */
+export function offsetsCompatibles(
+  patron: PatronTurno,
+  fechaBase: string,
+  turnos: readonly TipoServicio[],
+): number[] {
+  const { secuencia } = patron;
+  const L = secuencia.length;
+  const compatibles: number[] = [];
+  for (let d = 0; d < L; d++) {
+    let ok = true;
+    for (let i = 0; i < turnos.length; i++) {
+      if (secuencia[(d + i) % L] !== turnos[i]) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) compatibles.push(d);
+  }
+  return compatibles;
+}
+
+/**
+ * `inicioCiclo` a partir de `(fechaBase, desfase único)`. Se llama SOLO cuando
+ * `offsetsCompatibles(...).length === 1`, con `offset = offsetsCompatibles(...)[0]`.
+ *
+ * Como el desfase `d` significa "hoy cae en la posición `d` del ciclo", el inicio del ciclo
+ * es `fechaBase − d días`. Comprobación de coherencia (verificada en tests):
+ * `indicePatron(inicioCicloDesdeOffset(fechaBase, d), fechaBase, L) === d`.
+ */
+export function inicioCicloDesdeOffset(fechaBase: string, offset: number): string {
+  return sumarDias(fechaBase, -offset);
 }
 
 /** Construye el conjunto de festivos aplicables (nacionales sembrados + los extra del cuadrante). */

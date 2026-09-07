@@ -150,27 +150,38 @@ export const FranjaNocturna = z.object({
 export type FranjaNocturna = z.infer<typeof FranjaNocturna>;
 
 /**
- * Ancla del cuadrante: el dato REAL con el que el agente configura su ciclo en el arranque
- * ("el {fecha} hago {servicio}"). De aquí se DERIVA `inicioCiclo` (ver `anclarInicioCiclo` en
- * cuadrante.ts). Se guarda para poder RECOMPUTAR el desfase si el agente cambia de patrón sin
- * volver a preguntarle nada. `ocurrencia` desambigua cuando el turno se repite en el ciclo.
+ * Ancla del cuadrante (rediseño v3): los datos REALES con los que el agente configura su ciclo
+ * en el arranque. NO es teoría de ciclos: es "qué hago HOY (`fechaBase`), qué hago MAÑANA, qué
+ * hago PASADO…" — una secuencia de `turnos` en días CONSECUTIVOS desde `fechaBase`. De aquí se
+ * DERIVA `inicioCiclo` con `offsetsCompatibles` + `inicioCicloDesdeOffset` (cuadrante.ts): el
+ * único desfase compatible fija el ciclo. Se guarda para poder RECOMPUTAR el desfase si el
+ * agente cambia de patrón sin volver a preguntarle nada (si el nuevo patrón deja un único
+ * desfase compatible, se re-ancla en silencio; si no, se re-pide el mini-flujo de días).
+ *
+ * Sustituye al ancla de la iteración por ordinal (`{ fecha, servicio, ocurrencia }`): los
+ * cuadrantes guardados con aquella forma no validan contra este esquema y degradan a `null`
+ * en el reensamblado (siguen proyectando con su `inicioCiclo`; ver `serialize.ts`).
  */
 export const AnclaCuadrante = z.object({
-  fecha: FechaCivil,
-  servicio: TipoServicio,
-  ocurrencia: z.number().int().nonnegative().default(0),
+  fechaBase: FechaCivil,
+  /** Turnos dichos por el agente en días consecutivos desde `fechaBase` (hoy, mañana, pasado…). */
+  turnos: z.array(TipoServicio).min(1),
 });
 export type AnclaCuadrante = z.infer<typeof AnclaCuadrante>;
 
 export const Cuadrante = z.object({
-  /** Versión de esquema para migraciones seguras y no destructivas. */
-  schemaVersion: z.number().int().positive().default(1),
+  /**
+   * Versión de esquema para migraciones seguras y no destructivas. v2: el ancla pasó de
+   * `{ fecha, servicio, ocurrencia }` (ordinal) a `{ fechaBase, turnos }` (días seguidos).
+   */
+  schemaVersion: z.number().int().positive().default(2),
   patron: PatronTurno,
   inicioCiclo: FechaCivil,
   /**
-   * Ancla original (día + turno) del que se derivó `inicioCiclo`. OPCIONAL y aditivo: los
-   * cuadrantes creados antes del rediseño no lo tienen (siguen funcionando con `inicioCiclo`).
-   * Si existe, permite recomputar `inicioCiclo` al cambiar de patrón sin re-preguntar.
+   * Ancla original (fechaBase + días seguidos) del que se derivó `inicioCiclo`. OPCIONAL y
+   * aditivo: los cuadrantes creados antes del rediseño no lo tienen (siguen funcionando con
+   * `inicioCiclo`). Si existe, permite recomputar `inicioCiclo` al cambiar de patrón sin
+   * re-preguntar (§1.3 de docs/diseno/cuadrante-rediseno.md).
    */
   ancla: AnclaCuadrante.nullable().default(null),
   /** Jornada de referencia CONFIGURABLE por cuerpo (no un 37,5 fijo como verdad). */

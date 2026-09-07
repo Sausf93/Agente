@@ -25,7 +25,7 @@ export interface CuadranteConfigRow {
   franja_inicio: string;
   franja_fin: string;
   festivos_extra_json: string;
-  /** Ancla (día + turno) del que se derivó `inicio_ciclo`. NULL en cuadrantes previos al rediseño. */
+  /** Ancla ({ fechaBase, turnos }) del que se derivó `inicio_ciclo`. NULL en cuadrantes previos al rediseño. */
   ancla_json: string | null;
   updated_at: string;
 }
@@ -96,8 +96,10 @@ export function ensamblarCuadrante(
   const patron = PatronTurno.parse(JSON.parse(config.patron_json));
   const festivosExtra = JSON.parse(config.festivos_extra_json) as unknown;
   const franja: FranjaNocturna = { inicio: config.franja_inicio, fin: config.franja_fin };
-  // Ancla opcional: solo desde el rediseño del arranque. Una fila previa (o un JSON corrupto)
-  // deja `ancla = null` sin tumbar el cuadrante (el `inicio_ciclo` ya basta para proyectar).
+  // Ancla opcional ({ fechaBase, turnos }, rediseño v3). Un ancla de la iteración por ordinal
+  // ({ fecha, servicio, ocurrencia }), una fila previa al rediseño o un JSON corrupto no validan
+  // contra el esquema nuevo y dejan `ancla = null` sin tumbar el cuadrante (el `inicio_ciclo` ya
+  // basta para proyectar; al cambiar de patrón se re-pediría el mini-flujo de días).
   let ancla: AnclaCuadrante | null = null;
   if (config.ancla_json) {
     try {
