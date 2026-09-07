@@ -4,6 +4,12 @@
     "slug": "agente",
     "scheme": "agente",
     "version": "0.1.0",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/92c01f68-bf32-494e-8a73-0b5489620845"
+    },
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -32,6 +38,11 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "92c01f68-bf32-494e-8a73-0b5489620845"
+      }
     }
   }
 }
