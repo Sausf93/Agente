@@ -148,6 +148,13 @@ Inventario extraído de las fichas de App Store y Google Play y de las capturas 
 - Lista "Más usadas en tu cuerpo" (agregado anónimo de consultas) y "Tus favoritas".
 - Aviso de novedades normativas si las hay desde la última apertura.
 
+> **Estado v1 (ADR-018).** Implementado en `apps/mobile` (bajo la pestaña Buscar, que es el
+> Inicio): accesos rápidos (lista por defecto de términos de calle; configurable, pendiente),
+> **tarjeta de turno** (del cuadrante si está configurado; si no, CTA para configurarlo), **Tus
+> favoritas** (+ lista completa en `/favoritos`), **Tus más usadas** (top LOCAL del dispositivo;
+> el agregado "en tu cuerpo" entre usuarios es de servidor y queda para después) y **aviso de
+> novedades** (badge). Todo local, offline y anónimo (ADR-001).
+
 ## 4.3 Buscador
 
 - Búsqueda local (índice en el dispositivo). Resultados en <300 ms.
@@ -266,6 +273,12 @@ Para tráfico: inmovilización (art. 104 LSV), depósito (art. 105), retirada de
 
 - Cada actualización de contenido genera una entrada: qué norma, qué artículos, resumen en dos líneas, fecha. Notificación push opcional.
 
+> **Estado v1 (ADR-018).** La pantalla "Novedades" (`/novedades`) lista las entradas `Novedad`
+> del paquete (resumen + fecha + versión) y, al abrirla, las marca como vistas (marca local en
+> `user.db`). El Inicio muestra un aviso (badge) si hay novedades posteriores a esa marca. La
+> notificación push y el `Novedad` con norma/artículos concretos + enlace quedan para cuando el
+> pipeline los emita (depende del diff por artículo, §8.2).
+
 ## 4.14 Panel de administración (web, solo para los dos fundadores)
 
 - Editar infracciones, sinónimos, consecuencias, plantillas, sustancias.
@@ -353,6 +366,11 @@ Favorito       usuario_id, infraccion_id|articulo_id, created_at
 Cuadrante      usuario_id, patron (json), inicio_ciclo, jornada_ref_h, blob_cifrado (días, notas, alarmas)
 EventoUso      anonimo: cuerpo, ccaa, tipo (busqueda|consulta|copia|pdf), termino_normalizado, fecha
                (sin usuario_id; sirve para "más usadas" y para detectar búsquedas sin resultado)
+               ESTADO v1 (ADR-018): en el dispositivo se materializa como contadores LOCALES y
+               anónimos: `busqueda_sin_resultado` (por término) y `uso_infraccion` (consultas +
+               copias por infracción, base de "TUS más usadas"). Sin usuario_id ni id de
+               dispositivo; nada sale del teléfono. El agregado "más usadas EN TU CUERPO" (entre
+               usuarios) llegará con el backend.
 
 Feedback       id, created_at, tipo (sugerencia|error_contenido|error_tecnico), texto,
                contexto (pantalla?, articulo_id?, infraccion_id?), app_version, platform (ios|android),

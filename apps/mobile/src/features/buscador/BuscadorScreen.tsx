@@ -9,6 +9,7 @@ import { ListRow } from '@/ui/components/ListRow';
 import { SeverityChip } from '@/ui/components/SeverityChip';
 import { Button } from '@/ui/components/Button';
 import { formatEuros } from '@/features/ficha/format';
+import { HomeInicio } from '@/features/inicio/HomeInicio';
 import { useBuscadorStore } from './store';
 import type { ResultadoBusqueda } from './search';
 
@@ -52,6 +53,10 @@ export function BuscadorScreen() {
     router.push(`/ficha/${id}`);
   }
 
+  // Inicio (§4.2) cuando NO hay búsqueda activa: accesos rápidos, turno, favoritas, más usadas y
+  // novedades. En cuanto el agente escribe algo, la pantalla pasa a los resultados del buscador.
+  const enInicio = consulta.trim().length === 0;
+
   return (
     <View
       style={{
@@ -70,25 +75,33 @@ export function BuscadorScreen() {
         <SearchBar value={consulta} onChangeText={setConsulta} />
       </View>
 
-      <FlatList
-        data={resultados}
-        keyExtractor={(r) => r.infraccionId}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
-        style={{ marginTop: t.spacing.md }}
-        contentContainerStyle={{ paddingBottom: insets.bottom + t.spacing.xxl }}
-        renderItem={({ item }) => <FilaResultado t={t} item={item} onPress={abrirFicha} />}
-        ListEmptyComponent={
-          <EstadoVacio
-            t={t}
-            buscando={buscando}
-            buscado={buscado}
-            sinContenido={sinContenido}
-            consulta={consulta}
-            onReportar={() => router.push('/feedback')}
-          />
-        }
-      />
+      {enInicio ? (
+        <HomeInicio
+          onQuickSearch={setConsulta}
+          onAbrirFicha={abrirFicha}
+          paddingBottom={insets.bottom + t.spacing.xxl}
+        />
+      ) : (
+        <FlatList
+          data={resultados}
+          keyExtractor={(r) => r.infraccionId}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          style={{ marginTop: t.spacing.md }}
+          contentContainerStyle={{ paddingBottom: insets.bottom + t.spacing.xxl }}
+          renderItem={({ item }) => <FilaResultado t={t} item={item} onPress={abrirFicha} />}
+          ListEmptyComponent={
+            <EstadoVacio
+              t={t}
+              buscando={buscando}
+              buscado={buscado}
+              sinContenido={sinContenido}
+              consulta={consulta}
+              onReportar={() => router.push('/feedback')}
+            />
+          }
+        />
+      )}
     </View>
   );
 }

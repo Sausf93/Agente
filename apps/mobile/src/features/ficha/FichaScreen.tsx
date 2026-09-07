@@ -20,6 +20,9 @@ import { Card } from '@/ui/components/Card';
 import { SeverityChip } from '@/ui/components/SeverityChip';
 import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
 import { getContentRunner } from '@/db/contentDb';
+import { recordUso } from '@/db/userDb';
+import { FavoriteToggle } from '@/features/inicio/FavoriteToggle';
+import type { InfraccionSnapshot } from '@/features/inicio/masUsadas';
 import { cargarFicha, type FichaInfraccion } from './ficha';
 import {
   CONSECUENCIA_LABEL,
@@ -89,6 +92,25 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
     }
     return ficha.textoBoletin;
   }, [ficha, varianteIdx]);
+
+  // Snapshot DESNORMALIZADO para favoritos y "tus más usadas" (§4.2/§6.2). Anónimo y local.
+  const snapshot = useMemo<InfraccionSnapshot | null>(() => {
+    if (!ficha) return null;
+    return {
+      infraccionId: ficha.infraccionId,
+      tituloCorto: ficha.tituloCorto,
+      gravedad: ficha.gravedad,
+      normaCodigo: ficha.normaCodigo,
+      articuloNumero: ficha.articuloNumero,
+      importeEur: ficha.importeEur,
+    };
+  }, [ficha]);
+
+  // Registra la CONSULTA de la ficha (una vez por apertura). Contador local y anónimo.
+  useEffect(() => {
+    if (!snapshot) return;
+    void recordUso(snapshot, 'consulta', new Date().toISOString());
+  }, [snapshot]);
 
   if (estado === 'cargando') {
     return (
@@ -210,7 +232,16 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           </View>
         ) : null}
 
-        <CopyBulletinButton texto={textoCopiable} />
+        <CopyBulletinButton
+          texto={textoCopiable}
+          onCopied={() => {
+            // Copiar el boletín es la señal más fuerte de "uso real": pesa en "tus más usadas".
+            if (snapshot) void recordUso(snapshot, 'copia', new Date().toISOString());
+          }}
+        />
+
+        {/* Acción "Favorito" (§4.4 punto 9): guardar/quitar de "Tus favoritas". */}
+        {snapshot ? <FavoriteToggle snapshot={snapshot} /> : null}
 
         {/* 9. Generar documento: prerrellena el boletín con norma, artículo, importe y hecho. */}
         <Button
