@@ -24,11 +24,25 @@
  * Idiomas de esta entrega (§4.11). Códigos ISO 639-1. Orden PENSADO para intervención:
  *  1) `es` (castellano, literal del BOE); 2) las LENGUAS COOFICIALES del Estado (`ca`, `eu`,
  *     `gl`), de uso diario para los cuerpos autonómicos (Mossos, Ertzaintza, Foral, Canaria);
- *  3) el resto de idiomas frecuentes con población extranjera.
- * TODO(§4.11): ampliar con 'zh' (chino), 'ru' (ruso), 'pt' (portugués), 'it' (italiano)
- * cuando se disponga de traducción fiel (idealmente la oficial del Ministerio del Interior).
+ *  3) los europeos más frecuentes en intervención (`en`, `fr`, `de`, `it`, `pt`, `ro`);
+ *  4) el eslavo cirílico frecuente (`ru`, `uk`), el chino (`zh`) y, al final, el árabe (RTL).
  */
-export const IDIOMAS_DERECHOS = ['es', 'ca', 'eu', 'gl', 'en', 'fr', 'de', 'ar', 'ro'] as const;
+export const IDIOMAS_DERECHOS = [
+  'es',
+  'ca',
+  'eu',
+  'gl',
+  'en',
+  'fr',
+  'de',
+  'it',
+  'pt',
+  'ro',
+  'ru',
+  'uk',
+  'zh',
+  'ar',
+] as const;
 export type IdiomaDerechos = (typeof IDIOMAS_DERECHOS)[number];
 
 /** Metadatos de presentación de cada idioma (endónimo = como se llama en su propia lengua). */
@@ -51,8 +65,15 @@ export const IDIOMAS_META: Readonly<Record<IdiomaDerechos, IdiomaMeta>> = {
   en: { codigo: 'en', nombre: 'Inglés', endonimo: 'English', rtl: false },
   fr: { codigo: 'fr', nombre: 'Francés', endonimo: 'Français', rtl: false },
   de: { codigo: 'de', nombre: 'Alemán', endonimo: 'Deutsch', rtl: false },
-  ar: { codigo: 'ar', nombre: 'Árabe', endonimo: 'العربية', rtl: true },
+  it: { codigo: 'it', nombre: 'Italiano', endonimo: 'Italiano', rtl: false },
+  pt: { codigo: 'pt', nombre: 'Portugués', endonimo: 'Português', rtl: false },
   ro: { codigo: 'ro', nombre: 'Rumano', endonimo: 'Română', rtl: false },
+  // Eslavo cirílico frecuente en intervención.
+  ru: { codigo: 'ru', nombre: 'Ruso', endonimo: 'Русский', rtl: false },
+  uk: { codigo: 'uk', nombre: 'Ucraniano', endonimo: 'Українська', rtl: false },
+  zh: { codigo: 'zh', nombre: 'Chino', endonimo: '中文', rtl: false },
+  // Árabe: único idioma de escritura de derecha a izquierda; se coloca al final del selector.
+  ar: { codigo: 'ar', nombre: 'Árabe', endonimo: 'العربية', rtl: true },
 };
 
 /**
@@ -358,6 +379,134 @@ const APARTADOS_RO: TextoApartados = {
     'Reținerea dumneavoastră va dura doar timpul strict necesar și nu poate depăși 72 de ore fără a fi prezentat autorității judiciare.',
 };
 
+const APARTADOS_IT: TextoApartados = {
+  informacion:
+    'Lei è in stato di arresto. Ha il diritto di essere informato, in modo immediato e comprensibile, dei fatti che le vengono attribuiti e dei motivi del suo arresto.',
+  silencio:
+    'Ha il diritto di rimanere in silenzio, di non rendere dichiarazioni se non lo desidera, di non rispondere ad alcune domande, o di dichiarare soltanto dinanzi al giudice.',
+  noDeclararContraSi:
+    'Ha il diritto di non testimoniare contro sé stesso e di non dichiararsi colpevole.',
+  abogado:
+    'Ha il diritto di nominare un avvocato e di essere assistito da lui senza ingiustificato ritardo. Se non lo nomina, gliene sarà nominato uno d’ufficio.',
+  accesoActuaciones:
+    'Ha il diritto di accedere agli elementi degli atti che siano essenziali per impugnare la legittimità del suo arresto.',
+  comunicacionDetencion:
+    'Ha il diritto di far comunicare a un familiare o alla persona che desidera il fatto del suo arresto e il luogo in cui si trova in ogni momento.',
+  comunicacionTercero:
+    'Ha il diritto di comunicare telefonicamente, senza ingiustificato ritardo, con un terzo di sua scelta.',
+  asistenciaConsular:
+    'Se è straniero, ha il diritto di far comunicare il suo arresto all’ufficio consolare del suo paese e di comunicare con esso.',
+  interprete:
+    'Ha il diritto di essere assistito gratuitamente da un interprete se non comprende o non parla lo spagnolo, o se è una persona sorda o con disabilità uditiva.',
+  reconocimientoMedico:
+    'Ha il diritto di essere esaminato dal medico legale o dal suo sostituto legale e, in mancanza, da quello dell’istituzione in cui si trova.',
+  habeasCorpus:
+    'Ha il diritto di richiedere la procedura di Habeas Corpus se ritiene che il suo arresto non sia legittimo.',
+  plazoDetencion:
+    'Il suo arresto durerà il tempo strettamente necessario e non potrà superare le 72 ore senza essere messo a disposizione dell’autorità giudiziaria.',
+};
+
+const APARTADOS_PT: TextoApartados = {
+  informacion:
+    'Fica o senhor detido. Tem direito a ser informado, de forma imediata e compreensível, dos factos que lhe são imputados e das razões da sua detenção.',
+  silencio:
+    'Tem direito a guardar silêncio, a não declarar se não quiser, a não responder a algumas das perguntas, ou a declarar unicamente perante o juiz.',
+  noDeclararContraSi: 'Tem direito a não declarar contra si próprio e a não se confessar culpado.',
+  abogado:
+    'Tem direito a designar advogado e a ser assistido por ele sem demora injustificada. Se não o designar, ser-lhe-á nomeado um oficiosamente.',
+  accesoActuaciones:
+    'Tem direito a aceder aos elementos das atuações que sejam essenciais para impugnar a legalidade da sua detenção.',
+  comunicacionDetencion:
+    'Tem direito a que se comunique a um familiar ou à pessoa que desejar o facto da sua detenção e o lugar em que se encontra a cada momento.',
+  comunicacionTercero:
+    'Tem direito a comunicar-se telefonicamente, sem demora injustificada, com um terceiro à sua escolha.',
+  asistenciaConsular:
+    'Se for estrangeiro, tem direito a que se comunique a sua detenção à repartição consular do seu país e a comunicar-se com ela.',
+  interprete:
+    'Tem direito a ser assistido gratuitamente por um intérprete se não compreender ou não falar o castelhano, ou se for uma pessoa surda ou com deficiência auditiva.',
+  reconocimientoMedico:
+    'Tem direito a ser examinado pelo médico legista ou pelo seu substituto legal e, na sua falta, pelo da instituição em que se encontre.',
+  habeasCorpus:
+    'Tem direito a solicitar o procedimento de Habeas Corpus se considerar que a sua detenção não é legal.',
+  plazoDetencion:
+    'A sua detenção durará o tempo estritamente necessário e não poderá exceder 72 horas sem ser posto à disposição da autoridade judicial.',
+};
+
+const APARTADOS_RU: TextoApartados = {
+  informacion:
+    'Вы задержаны. Вы имеете право быть незамедлительно и в понятной форме проинформированным о деяниях, которые вам вменяются, и о причинах вашего задержания.',
+  silencio:
+    'Вы имеете право хранить молчание, не давать показаний, если не желаете, не отвечать на некоторые вопросы или давать показания только перед судьёй.',
+  noDeclararContraSi:
+    'Вы имеете право не свидетельствовать против самого себя и не признавать себя виновным.',
+  abogado:
+    'Вы имеете право назначить адвоката и получать его помощь без необоснованной задержки. Если вы его не назначите, вам будет назначен адвокат по назначению.',
+  accesoActuaciones:
+    'Вы имеете право на доступ к материалам дела, которые являются существенными для оспаривания законности вашего задержания.',
+  comunicacionDetencion:
+    'Вы имеете право на то, чтобы о факте вашего задержания и о месте вашего нахождения в каждый момент был уведомлён член семьи или лицо по вашему выбору.',
+  comunicacionTercero:
+    'Вы имеете право без необоснованной задержки связаться по телефону с третьим лицом по вашему выбору.',
+  asistenciaConsular:
+    'Если вы иностранец, вы имеете право на то, чтобы о вашем задержании было сообщено в консульское учреждение вашей страны, и на общение с ним.',
+  interprete:
+    'Вы имеете право на бесплатную помощь переводчика, если вы не понимаете или не говорите по-испански, либо если вы глухой или страдаете нарушением слуха.',
+  reconocimientoMedico:
+    'Вы имеете право на осмотр судебно-медицинским экспертом или его законным заместителем, а при его отсутствии — врачом учреждения, в котором вы находитесь.',
+  habeasCorpus:
+    'Вы имеете право потребовать применения процедуры Habeas Corpus, если считаете, что ваше задержание незаконно.',
+  plazoDetencion:
+    'Ваше задержание продлится строго необходимое время и не может превышать 72 часов без передачи в распоряжение судебного органа.',
+};
+
+const APARTADOS_UK: TextoApartados = {
+  informacion:
+    'Вас затримано. Ви маєте право бути негайно та у зрозумілій формі поінформованим про діяння, які вам інкримінуються, і про причини вашого затримання.',
+  silencio:
+    'Ви маєте право зберігати мовчання, не давати показань, якщо не бажаєте, не відповідати на деякі запитання або давати показання лише перед суддею.',
+  noDeclararContraSi:
+    'Ви маєте право не свідчити проти самого себе і не визнавати себе винним.',
+  abogado:
+    'Ви маєте право призначити адвоката і отримувати його допомогу без невиправданої затримки. Якщо ви його не призначите, вам буде призначено адвоката за призначенням.',
+  accesoActuaciones:
+    'Ви маєте право на доступ до матеріалів справи, які є суттєвими для оскарження законності вашого затримання.',
+  comunicacionDetencion:
+    'Ви маєте право на те, щоб про факт вашого затримання та про місце вашого перебування в кожний момент було повідомлено члена сім’ї або особу за вашим вибором.',
+  comunicacionTercero:
+    'Ви маєте право без невиправданої затримки зв’язатися по телефону з третьою особою за вашим вибором.',
+  asistenciaConsular:
+    'Якщо ви іноземець, ви маєте право на те, щоб про ваше затримання було повідомлено консульську установу вашої країни, і на спілкування з нею.',
+  interprete:
+    'Ви маєте право на безоплатну допомогу перекладача, якщо ви не розумієте або не розмовляєте іспанською, або якщо ви глухий чи маєте порушення слуху.',
+  reconocimientoMedico:
+    'Ви маєте право на огляд судово-медичним експертом або його законним заступником, а за його відсутності — лікарем установи, в якій ви перебуваєте.',
+  habeasCorpus:
+    'Ви маєте право вимагати застосування процедури Habeas Corpus, якщо вважаєте, що ваше затримання незаконне.',
+  plazoDetencion:
+    'Ваше затримання триватиме строго необхідний час і не може перевищувати 72 години без передання в розпорядження судового органу.',
+};
+
+const APARTADOS_ZH: TextoApartados = {
+  informacion:
+    '您已被拘留。您有权立即以您能理解的方式获知对您指控的事实以及拘留您的理由。',
+  silencio:
+    '您有权保持沉默，如不愿意可不作陈述，可不回答某些问题，或仅在法官面前作陈述。',
+  noDeclararContraSi: '您有权不作出对自己不利的陈述，也有权不承认有罪。',
+  abogado:
+    '您有权指定一名律师，并在没有不当延误的情况下获得其协助。如您不指定，将为您指派一名公设律师。',
+  accesoActuaciones: '您有权查阅案卷中对质疑拘留合法性至关重要的材料。',
+  comunicacionDetencion:
+    '您有权要求将您被拘留的事实以及您随时所在的地点通知一名家属或您所指定的人。',
+  comunicacionTercero: '您有权在没有不当延误的情况下，以电话与您所选择的第三人联系。',
+  asistenciaConsular: '如果您是外国人，您有权要求将您被拘留一事通知贵国领事馆，并与其联系。',
+  interprete:
+    '如果您不懂或不会说西班牙语，或您是聋人或有听力障碍，您有权获得免费口译员的协助。',
+  reconocimientoMedico:
+    '您有权接受法医或其合法替代人的检查；如无上述人员，则由您所在机构的医生检查。',
+  habeasCorpus: '如果您认为拘留不合法，您有权申请人身保护令（Habeas Corpus）程序。',
+  plazoDetencion: '您的拘留将仅持续严格必要的时间，未将您移交司法机关的情况下不得超过72小时。',
+};
+
 /** Nota común para las traducciones pendientes de cotejo (misma filosofía `pendiente_revision`). */
 const NOTA_PENDIENTE =
   'Traducción fiel pendiente de cotejo con la versión oficial del Ministerio del Interior antes de publicar.';
@@ -390,8 +539,13 @@ export const DERECHOS_520: Readonly<Record<IdiomaDerechos, TextoDerechos>> = {
   en: crearTexto('en', false, APARTADOS_EN),
   fr: crearTexto('fr', false, APARTADOS_FR),
   de: crearTexto('de', false, APARTADOS_DE),
-  ar: crearTexto('ar', false, APARTADOS_AR),
+  it: crearTexto('it', false, APARTADOS_IT),
+  pt: crearTexto('pt', false, APARTADOS_PT),
   ro: crearTexto('ro', false, APARTADOS_RO),
+  ru: crearTexto('ru', false, APARTADOS_RU),
+  uk: crearTexto('uk', false, APARTADOS_UK),
+  zh: crearTexto('zh', false, APARTADOS_ZH),
+  ar: crearTexto('ar', false, APARTADOS_AR),
 };
 
 /** Devuelve los textos de un idioma (o los españoles si el código no existe). */

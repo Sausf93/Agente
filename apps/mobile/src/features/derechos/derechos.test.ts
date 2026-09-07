@@ -88,6 +88,60 @@ describe('DERECHOS_520 — lenguas cooficiales (ca/eu/gl)', () => {
   });
 });
 
+describe('DERECHOS_520 — ampliación (zh/ru/pt/it/uk)', () => {
+  const NUEVOS: IdiomaDerechos[] = ['zh', 'ru', 'pt', 'it', 'uk'];
+
+  it('incluye chino, ruso, portugués, italiano y ucraniano en la entrega', () => {
+    for (const idioma of NUEVOS) {
+      expect(IDIOMAS_DERECHOS).toContain(idioma);
+    }
+  });
+
+  it('los coloca tras es/cooficiales y los europeos frecuentes (no entre los 4 primeros)', () => {
+    for (const idioma of NUEVOS) {
+      expect(IDIOMAS_DERECHOS.indexOf(idioma)).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  it('cada idioma nuevo tiene TODOS los apartados, sin huecos, y va pendiente de cotejo', () => {
+    for (const idioma of NUEVOS) {
+      const texto = DERECHOS_520[idioma];
+      expect(Object.keys(texto.textoNativo).sort()).toEqual([...APARTADOS_520].sort());
+      for (const clave of APARTADOS_520) {
+        expect(texto.textoNativo[clave].trim().length).toBeGreaterThan(0);
+      }
+      expect(texto.revisado).toBe(false);
+      expect(texto.nota).not.toBeNull();
+      expect((texto.nota ?? '').toLowerCase()).toContain('oficial');
+    }
+  });
+
+  it('cada idioma nuevo tiene metadatos (nombre en español y endónimo) y no es RTL', () => {
+    for (const idioma of NUEVOS) {
+      const meta = IDIOMAS_META[idioma];
+      expect(meta.codigo).toBe(idioma);
+      expect(meta.nombre.trim().length).toBeGreaterThan(0);
+      expect(meta.endonimo.trim().length).toBeGreaterThan(0);
+      expect(meta.rtl).toBe(false);
+    }
+  });
+
+  it('el texto nativo del idioma nuevo NO es idéntico al español (traducción real, no copia)', () => {
+    for (const idioma of NUEVOS) {
+      expect(DERECHOS_520[idioma].textoNativo).not.toEqual(DERECHOS_520.es.textoNativo);
+    }
+  });
+
+  it('usa la escritura esperada en cirílico (ru/uk) y en chino (zh)', () => {
+    const CIRILICO = /[Ѐ-ӿ]/;
+    const HAN = /[一-鿿]/;
+    for (const idioma of ['ru', 'uk'] as IdiomaDerechos[]) {
+      expect(CIRILICO.test(DERECHOS_520[idioma].textoNativo.informacion)).toBe(true);
+    }
+    expect(HAN.test(DERECHOS_520.zh.textoNativo.informacion)).toBe(true);
+  });
+});
+
 describe('DERECHOS_520 — referencia en español', () => {
   it('todas las entradas incluyen la referencia en español completa', () => {
     for (const idioma of IDIOMAS_DERECHOS) {
