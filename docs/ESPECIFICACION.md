@@ -234,6 +234,12 @@ Para tráfico: inmovilización (art. 104 LSV), depósito (art. 105), retirada de
 - Por sustancia: umbral orientativo de consumo diario y de acopio para consumo (Instituto Nacional de Toxicología, acuerdo de la Sala 2ª del TS de 19/10/2001 y jurisprudencia posterior), pureza, indicadores de tráfico (dosis fraccionadas, útiles de pesaje, dinero fraccionado).
 - Resultado: "Probable consumo (sanción LO 4/2015 art. 36.16)" o "Indicios de tráfico (art. 368 CP)", siempre con fuente y aviso de que la calificación final es judicial.
 - Contenido curado por el cofundador agente y revisado con un segundo agente o jurista antes de publicarse.
+- **Orientador (implementado):** el agente introduce la cantidad aprehendida y, en las sustancias
+  cuyo umbral está en peso **puro** (cocaína, heroína, MDMA, anfetamina, metanfetamina), un campo
+  opcional de **pureza (%)**; la app reduce a la riqueza real antes de comparar y avisa de forma
+  destacada de que hay que reducir a pureza para no sobre-marcar "tráfico" con droga de baja riqueza
+  (peso bruto para cannabis y hachís). Requisito de la revisión jurídica. Todo orientativo, con pie
+  fijo de que la calificación es judicial.
 
 ## 4.8 Plantillas y documentos (PDF)
 
