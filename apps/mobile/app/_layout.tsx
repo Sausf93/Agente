@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useSettingsStore } from '@/store/settings';
+import { useAppTheme } from '@/ui/useAppTheme';
 
 /**
  * Layout raíz de la app. Aporta el proveedor de safe-area, la barra de estado (sigue el tema
@@ -23,6 +24,7 @@ export default function RootLayout() {
   const onboarded = useSettingsStore((s) => s.onboarded);
   const router = useRouter();
   const segments = useSegments();
+  const t = useAppTheme();
 
   useEffect(() => {
     void hydrate();
@@ -51,6 +53,13 @@ export default function RootLayout() {
             // era el crudo "(tabs)"). iOS: minimal; el resto ignora la opción sin romper.
             headerBackButtonDisplayMode: 'minimal',
             headerBackTitle: 'Atrás',
+            // Cabeceras TEMATIZADAS: la barra seguía el color por defecto (blanca sobre la app
+            // oscura, "franja blanca" que cantaba). Ahora sigue el tema (oscuro/claro + acento).
+            headerStyle: { backgroundColor: t.color.surface },
+            headerTintColor: t.color.accent,
+            headerTitleStyle: { color: t.color.textPrimary },
+            headerShadowVisible: false,
+            contentStyle: { backgroundColor: t.color.bg },
           }}
         >
         <Stack.Screen name="(tabs)" />
