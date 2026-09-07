@@ -33,13 +33,13 @@ describe('serialización de la configuración del cuadrante', () => {
   });
 });
 
-describe('serialización del ancla (rediseño del arranque)', () => {
-  it('guarda el ancla como JSON y la reensambla', () => {
-    const c = cuadranteBase({ ancla: { fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 } });
+describe('serialización del ancla (rediseño v3: días seguidos)', () => {
+  it('guarda el ancla { fechaBase, turnos } como JSON y la reensambla', () => {
+    const c = cuadranteBase({ ancla: { fechaBase: '2026-09-07', turnos: ['manana', 'manana'] } });
     const row = configToRow(c, '2026-09-07T10:00:00.000Z');
-    expect(JSON.parse(row.ancla_json!)).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 });
+    expect(JSON.parse(row.ancla_json!)).toEqual({ fechaBase: '2026-09-07', turnos: ['manana', 'manana'] });
     const reensamblado = ensamblarCuadrante(row, []);
-    expect(reensamblado.ancla).toEqual({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 1 });
+    expect(reensamblado.ancla).toEqual({ fechaBase: '2026-09-07', turnos: ['manana', 'manana'] });
   });
 
   it('sin ancla (cuadrante previo) la columna es NULL y se reensambla como null', () => {
@@ -53,6 +53,19 @@ describe('serialización del ancla (rediseño del arranque)', () => {
     const c = cuadranteBase();
     const row = { ...configToRow(c, '2026-09-07T10:00:00.000Z'), ancla_json: '{roto' };
     expect(ensamblarCuadrante(row, []).ancla).toBeNull();
+  });
+
+  it('un ancla de la iteración por ordinal (formato viejo) degrada a null sin romper', () => {
+    // Cuadrantes guardados con { fecha, servicio, ocurrencia } no validan contra el esquema
+    // nuevo → ancla null; el inicio_ciclo persistido sigue proyectando (no se pierde el cuadrante).
+    const c = cuadranteBase();
+    const row = {
+      ...configToRow(c, '2026-09-07T10:00:00.000Z'),
+      ancla_json: JSON.stringify({ fecha: '2026-09-07', servicio: 'noche', ocurrencia: 0 }),
+    };
+    const reensamblado = ensamblarCuadrante(row, []);
+    expect(reensamblado.ancla).toBeNull();
+    expect(reensamblado.inicioCiclo).toBe('2026-09-01');
   });
 });
 

@@ -18,13 +18,12 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {
-  anclarInicioCiclo,
-  Cuadrante as CuadranteSchema,
   diaSemanaLunes0,
-  ocurrenciasEnPatron,
+  indicePatron,
+  inicioCicloDesdeOffset,
+  offsetsCompatibles,
   PATRONES_PREDEFINIDOS,
   proyectarMes,
-  proyectarRango,
   resumenHorasMes,
   sumarDias,
   turnosDelPatron,
@@ -43,7 +42,7 @@ import { Badge } from '@/ui/components/Badge';
 import { Banner } from '@/ui/components/Banner';
 import { Button } from '@/ui/components/Button';
 import { Card } from '@/ui/components/Card';
-import { hapticSelection, hapticSuccess } from '@/ui/haptics';
+import { hapticSelection, hapticSuccess, hapticWarning } from '@/ui/haptics';
 import {
   colorServicio,
   DIAS_SEMANA_ABREV,
@@ -97,8 +96,9 @@ function Cargando({ t }: { t: Theme }) {
 }
 
 // ---------------------------------------------------------------------------
-// Arranque (rediseño): elegir patrón + "¿qué haces HOY?" → el ciclo se ANCLA a un dato
-// real. Nada de "primer día del ciclo" ni de escribir fechas (docs/diseno/cuadrante-rediseno.md).
+// Arranque (rediseño v3): elegir patrón + "¿qué haces HOY? ¿y mañana? ¿y pasado?" hasta que
+// el ciclo se ANCLA a esos días seguidos. Nada de "primer día del ciclo", de escribir fechas
+// ni de elegir "1.ª/2.ª mañana" (docs/diseno/cuadrante-rediseno.md §2).
 // ---------------------------------------------------------------------------
 
 function hoyISO(): string {
@@ -112,21 +112,33 @@ function hoyISO(): string {
 /** Nombres completos de día de semana (lunes = 0, convención del cuadrante). */
 const DIAS_SEMANA_LARGO = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'] as const;
 
-/** Ordinal femenino ("1.ª", "2.ª"…) para la fila de desambiguación. */
-function ordinalFem(n: number): string {
-  return `${n}.ª`;
-}
-
 /** Número de día del mes de una fecha civil YYYY-MM-DD. */
 function numeroDia(fecha: string): number {
   return Number(fecha.slice(8, 10));
 }
 
-/** "¿Qué haces hoy, lunes 7?" (o "el {fecha}" si el ancla no es hoy). */
-function rotuloDia(fecha: string, esHoy: boolean): string {
+/**
+ * Etiqueta de la fila del día `i` (0 = fechaBase). Si la base es HOY: "Hoy", "Mañana",
+ * "Pasado" y, del 4.º en adelante, "{díaSem} {díaMes}". Si el agente arrancó por otro día,
+ * no mentimos con "Hoy": todas las filas van con "{díaSem} {díaMes}".
+ */
+function etiquetaDia(fechaBase: string, i: number, baseEsHoy: boolean): string {
+  const fecha = sumarDias(fechaBase, i);
   const dow = DIAS_SEMANA_LARGO[diaSemanaLunes0(fecha)];
   const num = numeroDia(fecha);
-  return esHoy ? `¿Qué haces hoy, ${dow} ${num}?` : `¿Qué haces el ${dow} ${num}?`;
+  if (baseEsHoy) {
+    if (i === 0) return `Hoy · ${dow} ${num}`;
+    if (i === 1) return `Mañana · ${dow} ${num}`;
+    if (i === 2) return `Pasado · ${dow} ${num}`;
+  }
+  return `${dow} ${num}`;
+}
+
+/** Nombre del día que se va a pedir a continuación (índice `i` desde fechaBase). */
+function nombreSiguienteDia(fechaBase: string, i: number, baseEsHoy: boolean): string {
+  if (baseEsHoy && i === 1) return 'mañana';
+  if (baseEsHoy && i === 2) return 'pasado';
+  return `el ${DIAS_SEMANA_LARGO[diaSemanaLunes0(sumarDias(fechaBase, i))]}`;
 }
 
 /** Índice del patrón por defecto según el cuerpo del perfil (o 0 si no hay coincidencia). */
@@ -136,14 +148,24 @@ function patronPorDefecto(cuerpo: ReturnType<typeof useSettingsStore.getState>['
   return idx >= 0 ? idx : 0;
 }
 
+/** Una celda del preview de la semana (color + letra), ya resuelta desde los días dichos. */
+interface CeldaPreview {
+  fecha: string;
+  servicio: TipoServicio | null;
+  confirmado: boolean;
+  provisional: boolean;
+  esAncla: boolean;
+}
+
 function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
   const crear = useCuadranteStore((s) => s.crear);
   const cuerpo = useSettingsStore((s) => s.cuerpo);
 
   const [patronIdx, setPatronIdx] = useState(() => patronPorDefecto(cuerpo));
-  const [servicioHoy, setServicioHoy] = useState<TipoServicio | null>(null);
-  const [ocurrencia, setOcurrencia] = useState(0);
-  const [anclaFecha, setAnclaFecha] = useState(hoyISO());
+  // `turnos` = lo que el agente dice hacer en días SEGUIDOS desde `fechaBase` (hoy, mañana…).
+  const [turnos, setTurnos] = useState<TipoServicio[]>([]);
+  const [fechaBase, setFechaBase] = useState(hoyISO());
+  const [avisoExcepcion, setAvisoExcepcion] = useState(false);
   const [ajustesAbiertos, setAjustesAbiertos] = useState(false);
   const [jornada, setJornada] = useState('37.5');
   const [franjaInicio, setFranjaInicio] = useState('22:00');
@@ -151,73 +173,108 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
   const [creando, setCreando] = useState(false);
 
   const patron = PATRONES_PREDEFINIDOS[patronIdx] as PatronTurno;
-  const turnos = useMemo(() => turnosDelPatron(patron), [patron]);
-  const ocurrencias = useMemo(
-    () => (servicioHoy ? ocurrenciasEnPatron(patron.secuencia, servicioHoy) : []),
-    [patron, servicioHoy],
-  );
-  const nOcurrencias = ocurrencias.length;
+  const turnosPatron = useMemo(() => turnosDelPatron(patron), [patron]);
+  const baseEsHoy = fechaBase === hoyISO();
 
-  const esHoy = anclaFecha === hoyISO();
+  // El motor de todo el flujo: cuántas posiciones del ciclo siguen encajando con lo dicho.
+  const compatibles = useMemo(
+    () => offsetsCompatibles(patron, fechaBase, turnos),
+    [patron, fechaBase, turnos],
+  );
+  const cuadra = compatibles.length === 1;
+  const ambiguo = compatibles.length > 1;
+  const noEncaja = turnos.length > 0 && compatibles.length === 0;
+
   const jornadaNum = Number(jornada.replace(',', '.'));
   const jornadaOk = Number.isFinite(jornadaNum) && jornadaNum > 0;
 
-  // Vista previa de la semana del ancla: se recalcula al elegir turno / desambiguar / cambiar día.
-  const previewDias = useMemo<DiaProyectado[] | null>(() => {
-    if (!servicioHoy) return null;
-    try {
-      const inicioCiclo = anclarInicioCiclo(patron.secuencia, anclaFecha, servicioHoy, ocurrencia);
-      const cuadrantePreview = CuadranteSchema.parse({
-        patron,
-        inicioCiclo,
-        jornadaRefHorasSemana: jornadaOk ? jornadaNum : 37.5,
-      });
-      const lunes = sumarDias(anclaFecha, -diaSemanaLunes0(anclaFecha));
-      return proyectarRango(cuadrantePreview, lunes, sumarDias(lunes, 6));
-    } catch {
-      return null;
-    }
-  }, [patron, servicioHoy, ocurrencia, anclaFecha, jornadaOk, jornadaNum]);
+  // Nº de filas de día: las contestadas + la activa mientras siga habiendo ambigüedad (>1).
+  // Con 0 turnos, `ambiguo` es cierto (encajan todos los desfases) → se muestra solo "Hoy".
+  const filasDia = turnos.length + (ambiguo ? 1 : 0);
 
-  const puedeCrear = servicioHoy !== null && !creando;
+  // Vista previa de la semana que contiene `fechaBase`. Los días dichos van CONFIRMADOS; el
+  // resto se proyecta desde el primer desfase compatible (PROVISIONAL) hasta que cuadre.
+  const previewSemana = useMemo<CeldaPreview[] | null>(() => {
+    if (turnos.length === 0) return null;
+    const offset = compatibles[0];
+    const { secuencia } = patron;
+    const L = secuencia.length;
+    const dowBase = diaSemanaLunes0(fechaBase); // 0 = lunes
+    const lunes = sumarDias(fechaBase, -dowBase);
+    const celdas: CeldaPreview[] = [];
+    for (let i = 0; i < 7; i++) {
+      const fecha = sumarDias(lunes, i);
+      const iRel = i - dowBase; // posición del día respecto a fechaBase (negativa antes del ancla)
+      const confirmado = iRel >= 0 && iRel < turnos.length;
+      let servicio: TipoServicio | null = null;
+      if (confirmado) servicio = turnos[iRel] ?? null;
+      else if (offset !== undefined) {
+        const inicio = inicioCicloDesdeOffset(fechaBase, offset);
+        servicio = secuencia[indicePatron(inicio, fecha, L)] ?? null;
+      }
+      celdas.push({ fecha, servicio, confirmado, provisional: !confirmado && ambiguo, esAncla: fecha === fechaBase });
+    }
+    return celdas;
+  }, [patron, fechaBase, turnos, compatibles, ambiguo]);
+
+  const puedeCrear = cuadra && !creando;
+
+  function reiniciarDias() {
+    setTurnos([]);
+    setAvisoExcepcion(false);
+  }
 
   function elegirPatron(i: number) {
     hapticSelection();
     setPatronIdx(i);
-    // Si el turno elegido ya no existe en el patrón nuevo, se limpia (los botones cambian).
-    const nuevoPatron = PATRONES_PREDEFINIDOS[i] as PatronTurno;
-    if (servicioHoy && !nuevoPatron.secuencia.includes(servicioHoy)) {
-      setServicioHoy(null);
-    }
-    setOcurrencia(0);
+    reiniciarDias(); // los botones (turnos del patrón) cambian: la secuencia dicha se reinicia.
   }
 
-  function elegirTurno(s: TipoServicio) {
+  function responderDia(indice: number, servicio: TipoServicio) {
     hapticSelection();
-    setServicioHoy(s);
-    setOcurrencia(0);
+    setAvisoExcepcion(false);
+    // Re-contestar un día trunca los posteriores (la secuencia debe ser consecutiva).
+    setTurnos((prev) => {
+      const siguiente = [...prev.slice(0, indice), servicio];
+      // Aviso háptico si con este día deja de encajar (caso 0): es un estado de conversación.
+      if (offsetsCompatibles(patron, fechaBase, siguiente).length === 0) hapticWarning();
+      return siguiente;
+    });
   }
 
-  function moverOcurrencia(delta: number) {
-    if (nOcurrencias <= 1) return;
+  function corregirUltimoDia() {
     hapticSelection();
-    setOcurrencia((o) => ((o + delta) % nOcurrencias + nOcurrencias) % nOcurrencias);
+    setAvisoExcepcion(false);
+    setTurnos((prev) => prev.slice(0, -1));
+  }
+
+  function marcarExcepcion() {
+    hapticSelection();
+    // Ese día no cuenta para deducir el ciclo (se podrá marcar como excepción en el mes).
+    setTurnos((prev) => prev.slice(0, -1));
+    setAvisoExcepcion(true);
   }
 
   function moverDia(delta: number) {
     hapticSelection();
-    setAnclaFecha((f) => sumarDias(f, delta));
-    setOcurrencia(0);
+    setFechaBase((f) => sumarDias(f, delta));
+    reiniciarDias();
+  }
+
+  function volverAHoy() {
+    hapticSelection();
+    setFechaBase(hoyISO());
+    reiniciarDias();
   }
 
   async function onCrear() {
-    if (!puedeCrear || !servicioHoy) return;
+    if (!puedeCrear) return;
     setCreando(true);
     try {
       const franjaOk = RE_HORA.test(franjaInicio) && RE_HORA.test(franjaFin);
       await crear({
         patron,
-        ancla: { fecha: anclaFecha, servicio: servicioHoy, ocurrencia },
+        ancla: { fechaBase, turnos },
         ...(jornadaOk ? { jornadaRefHorasSemana: jornadaNum } : {}),
         ...(ajustesAbiertos && franjaOk ? { franjaNocturna: { inicio: franjaInicio, fin: franjaFin } } : {}),
       });
@@ -242,7 +299,7 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
           Tu cuadrante
         </Text>
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-          Dos toques y lo tienes cuadrado con tu turno.
+          Dime qué haces estos días y lo cuadro yo solo.
         </Text>
       </View>
 
@@ -288,56 +345,69 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
         </Text>
       </View>
 
-      {/* ② ¿Qué haces hoy? — solo los turnos del patrón, botones grandes */}
+      {/* ② ¿Qué haces estos días? — filas que se revelan una a una, empezando por hoy */}
       <View style={{ gap: t.spacing.sm }}>
         <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
-          {rotuloDia(anclaFecha, esHoy)}
+          ¿Qué haces estos días?
         </Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
-          {turnos.map((s) => (
-            <BotonTurno
-              key={s}
+        {Array.from({ length: filasDia }).map((_, i) => {
+          const activa = i === turnos.length && !cuadra;
+          const contestado = i < turnos.length;
+          return (
+            <FilaDia
+              key={`${fechaBase}-${i}`}
               t={t}
-              servicio={s}
-              activo={s === servicioHoy}
-              onPress={() => elegirTurno(s)}
+              etiqueta={etiquetaDia(fechaBase, i, baseEsHoy)}
+              turnosPatron={turnosPatron}
+              seleccionado={contestado ? (turnos[i] ?? null) : null}
+              activa={activa}
+              onElegir={(s) => responderDia(i, s)}
             />
-          ))}
-        </View>
+          );
+        })}
+
+        {/* Estado honesto: contador de posiciones (>1), "ya cuadra" (1) o aviso "no encaja" (0). */}
+        {ambiguo && turnos.length > 0 ? (
+          <Banner tone="info">
+            Encajan {compatibles.length} posiciones del ciclo · dime qué haces{' '}
+            {nombreSiguienteDia(fechaBase, turnos.length, baseEsHoy)} para afinar.
+          </Banner>
+        ) : null}
+        {cuadra ? <Banner tone="success">✓ Ya cuadra con tu turno.</Banner> : null}
+        {noEncaja ? (
+          <View style={{ gap: t.spacing.sm }}>
+            <Banner tone="warning">
+              Esto no encaja con este patrón. ¿Seguro que es tu patrón? ¿O ese día fue una
+              excepción (un cambio con un compañero, un refuerzo…)?
+            </Banner>
+            <View style={{ flexDirection: 'row', gap: t.spacing.sm, flexWrap: 'wrap' }}>
+              <Button title="Corregir el último día" variant="secondary" onPress={corregirUltimoDia} />
+              <Button title="Ese día fue una excepción" variant="secondary" onPress={marcarExcepcion} />
+            </View>
+          </View>
+        ) : null}
+        {avisoExcepcion ? (
+          <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+            Ese día no cuenta para deducir el ciclo. Podrás marcarlo como excepción en el mes.
+            Sigue diciéndome qué haces el día siguiente.
+          </Text>
+        ) : null}
+
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm, flexWrap: 'wrap' }}>
           <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
             ¿Hoy libras o es un día raro?
           </Text>
-          <SelectorDia t={t} fecha={anclaFecha} esHoy={esHoy} onMover={moverDia} onHoy={() => { hapticSelection(); setAnclaFecha(hoyISO()); setOcurrencia(0); }} />
+          <SelectorDia t={t} fecha={fechaBase} esHoy={baseEsHoy} onMover={moverDia} onHoy={volverAHoy} />
         </View>
       </View>
 
       {/* Vista previa en vivo de la semana */}
-      {previewDias ? (
+      {previewSemana ? (
         <View style={{ gap: t.spacing.sm }}>
           <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption, fontWeight: '700' }}>
-            VISTA PREVIA · ESTA SEMANA
+            VISTA PREVIA · ESTA SEMANA{ambiguo ? ' (estimado hasta que cuadre)' : ''}
           </Text>
-          <PreviewSemana
-            t={t}
-            dias={previewDias}
-            anclaFecha={anclaFecha}
-            firma={`${servicioHoy}-${ocurrencia}-${anclaFecha}`}
-          />
-          {servicioHoy && nOcurrencias > 1 ? (
-            <View style={{ gap: t.spacing.xs }}>
-              <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-                ¿No cuadra? Dime cuál de tus turnos es el de hoy
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: t.spacing.sm }}>
-                <FlechaMes t={t} etiqueta="Turno anterior del ciclo" Icono={ChevronLeft} onPress={() => moverOcurrencia(-1)} />
-                <Text style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong, textAlign: 'center', flex: 1 }}>
-                  {ordinalFem(ocurrencia + 1)} {SERVICIO_LABEL[servicioHoy].toLowerCase()} del ciclo
-                </Text>
-                <FlechaMes t={t} etiqueta="Turno siguiente del ciclo" Icono={ChevronRight} onPress={() => moverOcurrencia(1)} />
-              </View>
-            </View>
-          ) : null}
+          <PreviewSemana t={t} celdas={previewSemana} firma={`${patronIdx}-${fechaBase}-${turnos.join(',')}`} />
         </View>
       ) : null}
 
@@ -411,8 +481,56 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
 }
 
 // ---------------------------------------------------------------------------
-// Piezas del arranque: mini-tira del ciclo, botón de turno, selector de día, preview
+// Piezas del arranque: mini-tira del ciclo, fila de día, botón de turno, selector, preview
 // ---------------------------------------------------------------------------
+
+/**
+ * Fila de un día del arranque: etiqueta ("Hoy · lun 7"), y los turnos del patrón como botones
+ * grandes (≥56 dp, color + letra + nombre). La fila ACTIVA (la primera sin contestar) se resalta
+ * con el acento; las ya contestadas muestran el turno elegido marcado.
+ */
+function FilaDia({
+  t,
+  etiqueta,
+  turnosPatron,
+  seleccionado,
+  activa,
+  onElegir,
+}: {
+  t: Theme;
+  etiqueta: string;
+  turnosPatron: readonly TipoServicio[];
+  seleccionado: TipoServicio | null;
+  activa: boolean;
+  onElegir: (servicio: TipoServicio) => void;
+}) {
+  return (
+    <View
+      style={{
+        borderRadius: t.radius.md,
+        borderWidth: activa ? 2 : 1,
+        borderColor: activa ? t.color.accent : t.color.border,
+        backgroundColor: activa ? t.color.accentWeak : t.color.surface,
+        padding: t.spacing.md,
+        gap: t.spacing.sm,
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}>{etiqueta}</Text>
+        {seleccionado ? (
+          <View style={{ marginLeft: 'auto' }}>
+            <Badge label={SERVICIO_LABEL[seleccionado]} tone="info" />
+          </View>
+        ) : null}
+      </View>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
+        {turnosPatron.map((s) => (
+          <BotonTurno key={s} t={t} servicio={s} activo={s === seleccionado} onPress={() => onElegir(s)} />
+        ))}
+      </View>
+    </View>
+  );
+}
 
 /** Mini-tira del ciclo: una celda por posición de la secuencia (color + letra). */
 function MiniTira({ t, secuencia }: { t: Theme; secuencia: readonly TipoServicio[] }) {
@@ -547,18 +665,12 @@ function SelectorDia({
   );
 }
 
-/** Vista previa de la semana (L–D) con HOY resaltado; re-pinta con transición ≤240 ms. */
-function PreviewSemana({
-  t,
-  dias,
-  anclaFecha,
-  firma,
-}: {
-  t: Theme;
-  dias: DiaProyectado[];
-  anclaFecha: string;
-  firma: string;
-}) {
+/**
+ * Vista previa de la semana (L–D) con el día del ancla resaltado. Los días que el agente ya
+ * ha dicho van CONFIRMADOS (tilde); el resto se proyecta PROVISIONAL (atenuado) mientras el
+ * ciclo sigue siendo ambiguo. Re-pinta con transición ≤240 ms (respeta reduce-motion).
+ */
+function PreviewSemana({ t, celdas, firma }: { t: Theme; celdas: CeldaPreview[]; firma: string }) {
   const reduce = useReduceMotion();
   const progreso = useSharedValue(1);
 
@@ -588,30 +700,36 @@ function PreviewSemana({
         ))}
       </View>
       <View style={{ flexDirection: 'row', gap: t.spacing.xxs }}>
-        {dias.map((dia) => {
-          const c = colorServicio(t, dia.servicio);
-          const esHoy = dia.fecha === anclaFecha;
+        {celdas.map((celda) => {
+          const c = celda.servicio ? colorServicio(t, celda.servicio) : null;
+          const estado = celda.confirmado ? ', confirmado' : celda.provisional ? ', estimado' : '';
           return (
             <View
-              key={dia.fecha}
-              accessibilityLabel={`${numeroDia(dia.fecha)} ${SERVICIO_LABEL[dia.servicio]}${esHoy ? ', hoy' : ''}`}
+              key={celda.fecha}
+              accessibilityLabel={`${numeroDia(celda.fecha)}${
+                celda.servicio ? ` ${SERVICIO_LABEL[celda.servicio]}` : ''
+              }${celda.esAncla ? ', día de referencia' : ''}${estado}`}
               style={{
                 flex: 1,
                 aspectRatio: 0.82,
                 borderRadius: t.radius.sm,
-                borderWidth: esHoy ? 2 : 1,
-                borderColor: esHoy ? t.color.accent : t.color.border,
-                backgroundColor: c.bg,
+                borderWidth: celda.esAncla ? 2 : 1,
+                borderColor: celda.esAncla ? t.color.accent : t.color.border,
+                backgroundColor: c ? c.bg : t.color.surface,
+                opacity: celda.provisional ? 0.5 : 1,
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 2,
               }}
             >
               <Text style={{ color: t.color.textSecondary, fontSize: 11, fontVariant: ['tabular-nums'] }}>
-                {numeroDia(dia.fecha)}
+                {numeroDia(celda.fecha)}
               </Text>
-              <Text style={{ color: c.fg, fontSize: 15, fontWeight: '700' }}>
-                {SERVICIO_ABREV[dia.servicio]}
+              <Text style={{ color: c ? c.fg : t.color.textTertiary, fontSize: 15, fontWeight: '700' }}>
+                {celda.servicio ? SERVICIO_ABREV[celda.servicio] : '·'}
+              </Text>
+              <Text style={{ color: t.color.success, fontSize: 9, fontWeight: '800', minHeight: 11 }}>
+                {celda.confirmado ? '✓' : ''}
               </Text>
             </View>
           );

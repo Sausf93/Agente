@@ -11,8 +11,10 @@ import {
   horaAMinutos,
   horasReferenciaPeriodo,
   indicePatron,
+  inicioCicloDesdeOffset,
   minutosNocturnos,
   ocurrenciasEnPatron,
+  offsetsCompatibles,
   PATRONES_PREDEFINIDOS,
   proyectarDia,
   proyectarMes,
@@ -61,7 +63,7 @@ describe('Cuadrante (modelo de dos capas)', () => {
         { fecha: '2026-09-14', servicio: 'libre', editadoEl: '2026-09-01T10:00:00+02:00' },
       ],
     });
-    expect(c.schemaVersion).toBe(1); // default
+    expect(c.schemaVersion).toBe(2); // default (v2: ancla por días seguidos)
     expect(c.franjaNocturna.inicio).toBe('22:00'); // default
     expect(c.dias).toHaveLength(1);
     // la excepción manual queda marcada como sagrada
@@ -325,11 +327,135 @@ describe('anclarInicioCiclo (inverso de la proyección)', () => {
     const c = Cuadrante.parse({
       patron: PATRONES_PREDEFINIDOS[0],
       inicioCiclo: inicio,
-      ancla: { fecha: '2026-09-07', servicio: 'noche' as TipoServicio, ocurrencia: 0 },
+      ancla: { fechaBase: '2026-09-07', turnos: ['noche' as TipoServicio] },
       jornadaRefHorasSemana: 37.5,
     });
-    expect(c.ancla?.servicio).toBe('noche');
+    expect(c.ancla?.turnos[0]).toBe('noche');
     expect(proyectarDia(c, '2026-09-07').servicio).toBe('noche');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Anclaje por DÍAS SEGUIDOS (rediseño v3) — offsetsCompatibles / inicioCicloDesdeOffset.
+// Núcleo crítico: cobertura al 100 % (regla CLAUDE.md). Sustituye a la desambiguación por ordinal.
+// ---------------------------------------------------------------------------
+
+describe('offsetsCompatibles (anclaje por días seguidos)', () => {
+  const gc = PATRONES_PREDEFINIDOS[0]!; // M M T T N N · S · L L L (ciclo de 10)
+  const L = gc.secuencia.length;
+
+  it('con turnos = [] devuelve TODOS los desfases [0..L-1] (todo es posible aún)', () => {
+    expect(offsetsCompatibles(gc, '2026-09-07', [])).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  it('reproduce los recorridos del rediseño §1.1 (hoy = 2026-09-07)', () => {
+    // Hoy M → {0, 1} (dos mañanas en el ciclo, ambiguo).
+    expect(offsetsCompatibles(gc, '2026-09-07', ['manana'])).toEqual([0, 1]);
+    // Hoy M, mañana M → {0} (la transición mañana→mañana solo ocurre en el punto 0).
+    expect(offsetsCompatibles(gc, '2026-09-07', ['manana', 'manana'])).toEqual([0]);
+    // Hoy S → {6} (el saliente es único: cuadra al primer día).
+    expect(offsetsCompatibles(gc, '2026-09-07', ['saliente'])).toEqual([6]);
+    // Hoy L → {7, 8, 9}; +L → {7, 8}; +L → {7} (peor caso: racha de tres libres).
+    expect(offsetsCompatibles(gc, '2026-09-07', ['libre'])).toEqual([7, 8, 9]);
+    expect(offsetsCompatibles(gc, '2026-09-07', ['libre', 'libre'])).toEqual([7, 8]);
+    expect(offsetsCompatibles(gc, '2026-09-07', ['libre', 'libre', 'libre'])).toEqual([7]);
+  });
+
+  it('una secuencia imposible en el patrón da [] (noche→tarde nunca ocurre en GC)', () => {
+    expect(offsetsCompatibles(gc, '2026-09-07', ['noche', 'tarde'])).toEqual([]);
+    // Tres mañanas seguidas: ningún punto del ciclo lo permite (solo hay dos mañanas contiguas).
+    expect(offsetsCompatibles(gc, '2026-09-07', ['manana', 'manana', 'manana'])).toEqual([]);
+  });
+
+  it('un turno que NO está en el patrón produce [] (nunca lanza; el 0 es estado de UI)', () => {
+    const oficina = PATRONES_PREDEFINIDOS[3]!; // solo mañana y libre
+    expect(() => offsetsCompatibles(oficina, '2026-09-07', ['noche'])).not.toThrow();
+    expect(offsetsCompatibles(oficina, '2026-09-07', ['noche'])).toEqual([]);
+  });
+
+  it('la matriz de desfases §1.1 cuadra: cada d proyecta secuencia[(d+i) mod L]', () => {
+    // Para cada desfase d, la secuencia proyectada de L días desde hoy es la rotación por d.
+    for (let d = 0; d < L; d++) {
+      const proyeccion: TipoServicio[] = [];
+      for (let i = 0; i < L; i++) proyeccion.push(gc.secuencia[(d + i) % L] as TipoServicio);
+      // Alimentar esa proyección completa deja EXACTAMENTE ese desfase (el ciclo no se repite en L días).
+      expect(offsetsCompatibles(gc, '2026-09-07', proyeccion)).toEqual([d]);
+    }
+  });
+});
+
+describe('inicioCicloDesdeOffset', () => {
+  it('resta el desfase a fechaBase (inicioCiclo = fechaBase − d días)', () => {
+    expect(inicioCicloDesdeOffset('2026-09-07', 0)).toBe('2026-09-07');
+    expect(inicioCicloDesdeOffset('2026-09-07', 4)).toBe('2026-09-03');
+    expect(inicioCicloDesdeOffset('2026-09-07', 6)).toBe('2026-09-01');
+  });
+
+  it('cruza el fin de mes y de año hacia atrás', () => {
+    expect(inicioCicloDesdeOffset('2026-10-02', 9)).toBe('2026-09-23');
+    expect(inicioCicloDesdeOffset('2027-01-03', 5)).toBe('2026-12-29');
+  });
+
+  it('coherencia: indicePatron(inicioCicloDesdeOffset(fechaBase, d), fechaBase, L) === d', () => {
+    const gc = PATRONES_PREDEFINIDOS[0]!;
+    const L = gc.secuencia.length;
+    for (let d = 0; d < L; d++) {
+      const inicio = inicioCicloDesdeOffset('2026-09-07', d);
+      expect(indicePatron(inicio, '2026-09-07', L)).toBe(d);
+    }
+  });
+
+  it('proyecta en fechaBase el turno secuencia[d]', () => {
+    const gc = PATRONES_PREDEFINIDOS[0]!;
+    const L = gc.secuencia.length;
+    for (let d = 0; d < L; d++) {
+      const inicio = inicioCicloDesdeOffset('2026-09-07', d);
+      expect(gc.secuencia[indicePatron(inicio, '2026-09-07', L)]).toBe(gc.secuencia[d]);
+    }
+  });
+});
+
+describe('convergencia anclaje ↔ proyección (propiedad, todos los patrones)', () => {
+  // Para varios inicioCiclo sembrados y varias fechaBase, alimentar la proyección REAL día a día
+  // hace que offsetsCompatibles llegue a length === 1, e inicioCicloDesdeOffset reconstruye el
+  // mismo inicioCiclo (módulo la longitud del ciclo). Es la idempotencia anclaje↔proyección.
+  const fechasBase = ['2026-09-07', '2026-01-01', '2026-12-30', '2026-02-27', '2027-03-15'];
+  const semillas = ['2026-01-01', '2026-06-15', '2026-09-07', '2025-11-20', '2026-12-31'];
+
+  it('llega a un único desfase y reconstruye el inicioCiclo (mód L)', () => {
+    for (const patron of PATRONES_PREDEFINIDOS) {
+      const L = patron.secuencia.length;
+      for (const inicioCiclo of semillas) {
+        const cuadrante = Cuadrante.parse({
+          patron,
+          inicioCiclo,
+          jornadaRefHorasSemana: 37.5,
+        });
+        for (const fechaBase of fechasBase) {
+          // Se alimenta la proyección real, día a día, hasta que queda un único desfase.
+          const turnos: TipoServicio[] = [];
+          let compatibles = offsetsCompatibles(patron, fechaBase, turnos);
+          let i = 0;
+          // A lo sumo L días bastan para desambiguar cualquier ciclo (cota dura).
+          while (compatibles.length > 1 && i < L) {
+            turnos.push(proyectarDia(cuadrante, sumarDias(fechaBase, i)).servicio);
+            compatibles = offsetsCompatibles(patron, fechaBase, turnos);
+            i += 1;
+          }
+          expect(compatibles).toHaveLength(1);
+          const inicioReconstruido = inicioCicloDesdeOffset(fechaBase, compatibles[0]!);
+          // Mismo índice de ciclo para fechaBase ⟺ mismo inicioCiclo módulo L.
+          expect(indicePatron(inicioReconstruido, fechaBase, L)).toBe(
+            indicePatron(inicioCiclo, fechaBase, L),
+          );
+          // Y el turno de cada día dicho coincide con la proyección reconstruida.
+          for (let k = 0; k < turnos.length; k++) {
+            const fecha = sumarDias(fechaBase, k);
+            expect(patron.secuencia[indicePatron(inicioReconstruido, fecha, L)]).toBe(turnos[k]);
+          }
+        }
+      }
+    }
   });
 });
 
