@@ -49,10 +49,11 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     }
   });
 
-  it('la competencia cubre a los tres cuerpos generalistas (GC, Nacional, Local)', () => {
+  it('la competencia cubre a todos los cuerpos (GC, Nacional, Local, Autonómica)', () => {
     for (const { infraccion } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
       expect(infraccion.competencia.cuerpos.sort(), infraccion.id).toEqual([
         'guardia_civil',
+        'policia_autonomica',
         'policia_local',
         'policia_nacional',
       ]);

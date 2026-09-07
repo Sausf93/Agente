@@ -423,7 +423,10 @@ interface InfraccionSeedInput {
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
 const COMPETENCIA_TRAFICO = {
-  cuerpos: ['guardia_civil', 'policia_local', 'trafico'] as const,
+  // Incluye policia_autonomica: las integrales (Mossos, Ertzaintza, Foral) tienen tráfico
+  // transferido en su territorio. El aviso de competencia es orientativo; no debe echar al
+  // autonómico de su propio trabajo.
+  cuerpos: ['guardia_civil', 'policia_local', 'policia_autonomica', 'trafico'] as const,
   via: 'ambas' as const,
 };
 

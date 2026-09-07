@@ -193,7 +193,7 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
 
 /** Competencia por defecto para delitos: los tres cuerpos generalistas pueden intervenir. */
 const COMPETENCIA_PENAL = {
-  cuerpos: ['guardia_civil', 'policia_nacional', 'policia_local'] as const,
+  cuerpos: ['guardia_civil', 'policia_nacional', 'policia_local', 'policia_autonomica'] as const,
   via: 'ambas' as const,
 };
 

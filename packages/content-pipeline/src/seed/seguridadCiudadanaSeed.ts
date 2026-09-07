@@ -185,7 +185,7 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
  * app; aquí se deja el vocabulario básico común a GC, Nacional y Local.)
  */
 const COMPETENCIA_SEGURIDAD = {
-  cuerpos: ['guardia_civil', 'policia_nacional', 'policia_local'] as const,
+  cuerpos: ['guardia_civil', 'policia_nacional', 'policia_local', 'policia_autonomica'] as const,
   via: 'ambas' as const,
 };
 

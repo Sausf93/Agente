@@ -57,7 +57,7 @@ const ETIQUETA_CUERPO: Record<CuerpoCompetente, string> = {
   guardia_civil: 'Guardia Civil',
   policia_nacional: 'Policía Nacional',
   policia_local: 'Policía Local',
-  policia_autonomica: 'policía autonómica',
+  policia_autonomica: 'Policía autonómica',
   trafico: 'Guardia Civil de Tráfico',
 };
 
