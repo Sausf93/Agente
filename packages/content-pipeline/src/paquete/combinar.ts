@@ -1,4 +1,4 @@
-import type { Articulo, Norma } from '@agente/shared';
+import type { Articulo, Norma, Sustancia } from '@agente/shared';
 import type { SeedContenido } from '../seed/traficoSeed.js';
 import type { NormaParseada } from '../parsers/boe-xml/parse.js';
 
@@ -24,8 +24,10 @@ export function combinarSeeds(...seeds: SeedContenido[]): SeedContenido {
   const normas: Norma[] = [];
   const articulos: Articulo[] = [];
   const infracciones: SeedContenido['infracciones'] = [];
+  const sustancias: Sustancia[] = [];
   const normaVista = new Set<string>();
   const articuloVisto = new Set<string>();
+  const sustanciaVista = new Set<string>();
 
   for (const seed of seeds) {
     for (const n of seed.normas) {
@@ -39,9 +41,14 @@ export function combinarSeeds(...seeds: SeedContenido[]): SeedContenido {
       articulos.push(a);
     }
     infracciones.push(...seed.infracciones);
+    for (const s of seed.sustancias ?? []) {
+      if (sustanciaVista.has(s.id)) continue;
+      sustanciaVista.add(s.id);
+      sustancias.push(s);
+    }
   }
 
-  return { normas, articulos, infracciones };
+  return { normas, articulos, infracciones, sustancias };
 }
 
 export function enriquecerConNorma(seed: SeedContenido, parseada: NormaParseada): SeedContenido {
@@ -58,5 +65,6 @@ export function enriquecerConNorma(seed: SeedContenido, parseada: NormaParseada)
     normas,
     articulos: [...seed.articulos, ...nuevos],
     infracciones: seed.infracciones,
+    ...(seed.sustancias ? { sustancias: seed.sustancias } : {}),
   };
 }

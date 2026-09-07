@@ -196,17 +196,8 @@ export type ReglaDetencion = z.infer<typeof ReglaDetencion>;
 // ---------------------------------------------------------------------------
 // Tabla de sustancias (sección 4.7)
 // ---------------------------------------------------------------------------
-export const Sustancia = z.object({
-  id: Id,
-  nombre: z.string().min(1),
-  aliases: z.array(z.string()).default([]),
-  umbralConsumoDiarioMg: z.number().nonnegative().nullable().default(null),
-  umbralAcopioG: z.number().nonnegative().nullable().default(null),
-  notasPureza: z.string().nullable().default(null),
-  indicadoresTrafico: z.array(z.string()).default([]),
-  fuentes: z.array(z.string()).min(1),
-});
-export type Sustancia = z.infer<typeof Sustancia>;
+// El modelo `Sustancia` vive en su propio módulo `./sustancias.ts` (esquema Zod + orientación
+// consumo/tráfico y su pie de responsabilidad). Se re-exporta desde `index.ts`.
 
 // ---------------------------------------------------------------------------
 // Plantillas de documentos (sección 4.8)

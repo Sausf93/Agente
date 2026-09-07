@@ -6,6 +6,7 @@ import {
   Sinonimo,
   type EstadoRevision,
   type MarcoImporte,
+  type Sustancia,
 } from '@agente/shared';
 import { hashTexto } from '../parsers/boe-xml/hash.js';
 
@@ -907,6 +908,11 @@ export interface SeedContenido {
   normas: Norma[];
   articulos: Articulo[];
   infracciones: InfraccionSeed[];
+  /**
+   * Tabla de sustancias (§4.7). Opcional: solo el seed de sustancias la aporta; el resto de
+   * seeds (tráfico, penal, seguridad ciudadana) la dejan sin definir.
+   */
+  sustancias?: Sustancia[];
 }
 
 export const SEED_TRAFICO: SeedContenido = {

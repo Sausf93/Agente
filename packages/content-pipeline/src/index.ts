@@ -53,5 +53,8 @@ export {
   INFRACCIONES_SEGURIDAD_SEED,
 } from './seed/seguridadCiudadanaSeed.js';
 
+// Tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico.
+export { SUSTANCIAS_SEED } from './seed/sustanciasSeed.js';
+
 // Combinación de seeds (dedupe de normas/artículos por id).
 export { combinarSeeds } from './paquete/combinar.js';
