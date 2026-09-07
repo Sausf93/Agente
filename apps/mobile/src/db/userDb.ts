@@ -1,5 +1,6 @@
 import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
-import type { Cuadrante, Cuerpo, DiaCuadrante, Feedback, PoliciaAutonomica } from '@agente/shared';
+import type { Cuadrante, Cuerpo, DiaCuadrante, Feedback, Gravedad, PoliciaAutonomica } from '@agente/shared';
+import type { InfraccionSnapshot, UsoInfraccion } from '@/features/inicio/masUsadas';
 import { feedbackToRow, rowToFeedback, type FeedbackRow } from '@/features/feedback/serialize';
 import {
   configToRow,
@@ -147,6 +148,48 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
         updated_at TEXT NOT NULL
       );
       PRAGMA user_version = 6;
+    `);
+  }
+
+  if (version < 7) {
+    // INICIO (§4.2): FAVORITOS, "TUS MÁS USADAS" y marca de NOVEDADES vistas. Todo local-first
+    // (ADR-001) y ANÓNIMO (§6.2: sin usuario_id ni identificador de dispositivo), separado del
+    // paquete de contenido (ADR-010, punto 4). Nunca sale del teléfono.
+    //
+    //  - `favorito`: infracciones que el agente marca en la ficha (§4.4). Datos DESNORMALIZADOS
+    //    (título, gravedad, norma…) para pintar "tus favoritas" sin abrir el paquete y para que
+    //    el favorito SOBREVIVA a un cambio de versión de contenido.
+    //  - `uso_infraccion`: contador local por infracción (consultas de ficha + copias de boletín)
+    //    para "tus más usadas". El agregado "más usadas EN TU CUERPO" (entre usuarios) es de
+    //    servidor (§6.2) y queda para cuando exista backend.
+    //  - `app_flag`: clave/valor de banderas locales de la app (p. ej. "novedades vistas hasta").
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS favorito (
+        infraccion_id TEXT PRIMARY KEY NOT NULL,
+        titulo_corto TEXT NOT NULL,
+        gravedad TEXT NOT NULL,
+        norma_codigo TEXT NOT NULL,
+        articulo_numero TEXT NOT NULL,
+        importe_eur REAL,
+        created_at TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_favorito_created_at ON favorito (created_at DESC);
+      CREATE TABLE IF NOT EXISTS uso_infraccion (
+        infraccion_id TEXT PRIMARY KEY NOT NULL,
+        titulo_corto TEXT NOT NULL,
+        gravedad TEXT NOT NULL,
+        norma_codigo TEXT NOT NULL,
+        articulo_numero TEXT NOT NULL,
+        importe_eur REAL,
+        consultas INTEGER NOT NULL DEFAULT 0,
+        copias INTEGER NOT NULL DEFAULT 0,
+        ultima_fecha TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS app_flag (
+        clave TEXT PRIMARY KEY NOT NULL,
+        valor TEXT NOT NULL
+      );
+      PRAGMA user_version = 7;
     `);
   }
 }
@@ -535,4 +578,162 @@ export async function rememberFields(
       [clave, valor.trim(), updatedAt],
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Favoritos (§4.4 acción "Favorito") — solo en el dispositivo, desnormalizados
+// ---------------------------------------------------------------------------
+
+/** Favorito tal y como se guarda/lee (snapshot desnormalizado + fecha de alta). */
+export interface Favorito extends InfraccionSnapshot {
+  createdAt: string;
+}
+
+interface SnapshotRow {
+  infraccion_id: string;
+  titulo_corto: string;
+  gravedad: string;
+  norma_codigo: string;
+  articulo_numero: string;
+  importe_eur: number | null;
+}
+
+function rowToSnapshot(r: SnapshotRow): InfraccionSnapshot {
+  return {
+    infraccionId: r.infraccion_id,
+    tituloCorto: r.titulo_corto,
+    gravedad: r.gravedad as Gravedad,
+    normaCodigo: r.norma_codigo,
+    articuloNumero: r.articulo_numero,
+    importeEur: r.importe_eur,
+  };
+}
+
+/** Lista los favoritos del dispositivo, el más reciente primero. */
+export async function listFavoritos(): Promise<Favorito[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<SnapshotRow & { created_at: string }>(
+    'SELECT * FROM favorito ORDER BY created_at DESC',
+  );
+  return rows.map((r) => ({ ...rowToSnapshot(r), createdAt: r.created_at }));
+}
+
+/** Conjunto de ids de infracción marcados como favoritos (para pintar el estado del icono). */
+export async function listFavoritoIds(): Promise<string[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{ infraccion_id: string }>('SELECT infraccion_id FROM favorito');
+  return rows.map((r) => r.infraccion_id);
+}
+
+/** Guarda (upsert) un favorito. `createdAt` lo inyecta el llamante para poder testear. */
+export async function addFavorito(snap: InfraccionSnapshot, createdAt: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO favorito
+       (infraccion_id, titulo_corto, gravedad, norma_codigo, articulo_numero, importe_eur, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(infraccion_id) DO UPDATE SET
+       titulo_corto = excluded.titulo_corto,
+       gravedad = excluded.gravedad,
+       norma_codigo = excluded.norma_codigo,
+       articulo_numero = excluded.articulo_numero,
+       importe_eur = excluded.importe_eur`,
+    [
+      snap.infraccionId,
+      snap.tituloCorto,
+      snap.gravedad,
+      snap.normaCodigo,
+      snap.articuloNumero,
+      snap.importeEur,
+      createdAt,
+    ],
+  );
+}
+
+/** Quita un favorito del dispositivo. */
+export async function removeFavorito(infraccionId: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM favorito WHERE infraccion_id = ?', [infraccionId]);
+}
+
+// ---------------------------------------------------------------------------
+// "Tus más usadas" (§4.2 / §6.2) — contador local ANÓNIMO por infracción
+// ---------------------------------------------------------------------------
+
+/** Registra un uso de una infracción: consulta de ficha o copia de boletín. Anónimo y local. */
+export async function recordUso(
+  snap: InfraccionSnapshot,
+  tipo: 'consulta' | 'copia',
+  fecha: string,
+): Promise<void> {
+  const db = await openUserDb();
+  const consultas = tipo === 'consulta' ? 1 : 0;
+  const copias = tipo === 'copia' ? 1 : 0;
+  await db.runAsync(
+    `INSERT INTO uso_infraccion
+       (infraccion_id, titulo_corto, gravedad, norma_codigo, articulo_numero, importe_eur,
+        consultas, copias, ultima_fecha)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(infraccion_id) DO UPDATE SET
+       titulo_corto = excluded.titulo_corto,
+       gravedad = excluded.gravedad,
+       norma_codigo = excluded.norma_codigo,
+       articulo_numero = excluded.articulo_numero,
+       importe_eur = excluded.importe_eur,
+       consultas = consultas + excluded.consultas,
+       copias = copias + excluded.copias,
+       ultima_fecha = excluded.ultima_fecha`,
+    [
+      snap.infraccionId,
+      snap.tituloCorto,
+      snap.gravedad,
+      snap.normaCodigo,
+      snap.articuloNumero,
+      snap.importeEur,
+      consultas,
+      copias,
+      fecha,
+    ],
+  );
+}
+
+/** Lee todos los contadores de uso (el ranking se calcula aparte, en `masUsadas.ts`, puro). */
+export async function listUsos(): Promise<UsoInfraccion[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<
+    SnapshotRow & { consultas: number; copias: number; ultima_fecha: string }
+  >('SELECT * FROM uso_infraccion');
+  return rows.map((r) => ({
+    ...rowToSnapshot(r),
+    consultas: r.consultas,
+    copias: r.copias,
+    ultimaFecha: r.ultima_fecha,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Banderas locales de la app (clave/valor) — p. ej. "novedades vistas hasta"
+// ---------------------------------------------------------------------------
+
+/** Clave de bandera: hasta qué fecha ISO se han visto las novedades (§4.13). */
+export const FLAG_NOVEDADES_VISTAS_HASTA = 'novedades_vistas_hasta';
+
+/** Lee una bandera local, o `null` si no existe. */
+export async function getAppFlag(clave: string): Promise<string | null> {
+  const db = await openUserDb();
+  const row = await db.getFirstAsync<{ valor: string }>(
+    'SELECT valor FROM app_flag WHERE clave = ?',
+    [clave],
+  );
+  return row?.valor ?? null;
+}
+
+/** Guarda (upsert) una bandera local. */
+export async function setAppFlag(clave: string, valor: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO app_flag (clave, valor) VALUES (?, ?)
+     ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor`,
+    [clave, valor],
+  );
 }

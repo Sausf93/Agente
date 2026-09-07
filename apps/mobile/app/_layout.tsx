@@ -57,6 +57,14 @@ export default function RootLayout() {
           options={{ headerShown: true, title: 'Sugerencias', presentation: 'card' }}
         />
         <Stack.Screen
+          name="favoritos"
+          options={{ headerShown: true, title: 'Tus favoritas', presentation: 'card' }}
+        />
+        <Stack.Screen
+          name="novedades"
+          options={{ headerShown: true, title: 'Novedades', presentation: 'card' }}
+        />
+        <Stack.Screen
           name="documento/[plantillaId]"
           options={{ headerShown: true, title: 'Documento', presentation: 'card' }}
         />

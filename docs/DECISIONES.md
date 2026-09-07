@@ -459,6 +459,51 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   la víctima); escudo opcional subido por el agente desde su galería; edición de plantillas desde el
   panel y su viaje en el paquete de contenido; y un botón "Copiar texto" del documento.
 
+## ADR-018 · Inicio: favoritos, "tus más usadas" y novedades, todo local
+
+- **Estado:** aceptada (implementada en `apps/mobile/src/features/inicio`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** el Inicio (§4.2) era solo el buscador. Faltaban las secciones que fidelizan y dan
+  sensación de "app viva": accesos rápidos, tarjeta de turno, **Tus favoritas**, **Tus más
+  usadas** y **aviso de novedades**. Debe funcionar offline, en Expo Go y con el sistema visual v2.
+
+### Decisiones
+
+1. **El Inicio es la propia pestaña Buscar.** Bajo el buscador, cuando NO hay consulta, se pinta
+   `HomeInicio` con las secciones EN EL ORDEN de §4.2 (accesos rápidos → tarjeta de turno → Tus
+   favoritas → Tus más usadas → aviso de novedades); al escribir, la pantalla pasa a resultados.
+   Se conserva el nombre de pestaña "Buscar" (ADR-003) para no crear una sexta pestaña.
+2. **Favoritos LOCALES y DESNORMALIZADOS** (`user.db`, migración `user_version = 7`, tabla
+   `favorito`). La acción vive en la ficha (§4.4, estrella: color + relleno, dos señales). Se
+   guardan título/gravedad/norma/importe **desnormalizados** (como los marcadores, ADR-016) para
+   pintar la lista sin abrir el paquete y para **sobrevivir a un cambio de versión de contenido**.
+   Store propio (`favoritosStore`) compartido entre ficha, sección de Inicio y lista completa
+   (`/favoritos`).
+3. **"Tus más usadas" = contador LOCAL y ANÓNIMO** (`uso_infraccion`, misma migración). Se cuenta
+   por infracción cuántas veces se **consulta** la ficha y cuántas se **copia** el boletín, sin
+   `usuario_id` ni identificador de dispositivo (§6.2). El **ranking es una función PURA y
+   testeada** (`masUsadas.ts`): la copia pesa 3 consultas (señal más fuerte de uso real en la
+   calle); desempata la fecha y luego el id (estable). El agregado "más usadas EN TU CUERPO"
+   (entre usuarios) es de SERVIDOR y queda para cuando exista backend; en v1 es "tus más usadas".
+4. **Novedades desde el paquete** (`novedad`, que ya viaja en `content.db`). La pantalla
+   `/novedades` lista fecha + resumen; al abrirla marca todo como VISTO guardando la fecha máxima
+   en `app_flag` (`novedades_vistas_hasta`, misma migración). El **aviso (badge)** de Inicio sale
+   de comparar las fechas con esa marca; la **detección de nuevas es pura y testeada**
+   (`novedades.ts`). Si el seed no trae novedades, estado vacío con gracia.
+5. **Nada de red ni datos de terceros.** Contadores y favoritos son anónimos y locales (ADR-001);
+   compatible con Expo Go (cero dependencias nuevas). La consulta de `novedad` reutiliza el patrón
+   `SqlRunner` (probado con `node:sqlite` contra el `.db` real, como buscador/normas).
+
+### Consecuencias
+
+- `lint`, `typecheck` y `test` en verde (mobile 132 tests; +23 nuevos) y `expo export --platform
+  ios` compila (3185 módulos). Nueva migración `user_version = 7` (favorito, uso_infraccion,
+  app_flag): los datos del usuario sobreviven a la actualización (ADR-010).
+- **Pendiente / siguiente iteración:** accesos rápidos **configurables** por el usuario (hoy es una
+  lista por defecto de términos de calle); "más usadas EN TU CUERPO" agregado (servidor);
+  favorito de ARTÍCULO además de infracción (§4.4 permite ambos); `Novedad` con norma/artículos
+  concretos y enlace directo cuando el pipeline los emita; notificación push de novedades (§4.13).
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
