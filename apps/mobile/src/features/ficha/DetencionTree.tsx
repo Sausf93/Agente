@@ -2,7 +2,14 @@ import { useMemo, useState } from 'react';
 import { Pressable, Switch, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
-import { ShieldAlert, ShieldCheck, ShieldX } from 'lucide-react-native';
+import {
+  ChevronDown,
+  ChevronUp,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldX,
+  SlidersHorizontal,
+} from 'lucide-react-native';
 import {
   evaluarDetencion,
   type EntradaDetencionNormalizada,
@@ -50,6 +57,10 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
   const reduceMotion = useReduceMotion();
   const base = useMemo(() => parseReglaDetencion(regla), [regla]);
   const [entrada, setEntrada] = useState<EntradaDetencionNormalizada | null>(base);
+  // Los controles para afinar el caso van PLEGADOS: en la calle el agente quiere LEER la
+  // orientación y actuar, no ir tocando toggles. Solo despliega quien quiera modelar un caso
+  // concreto (otra gravedad, sin domicilio, etc.).
+  const [mostrarAfinar, setMostrarAfinar] = useState(false);
 
   if (!base || !entrada) return null;
 
@@ -77,98 +88,15 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
   return (
     <View style={{ gap: t.spacing.sm }}>
       <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
-        Valorar la detención
+        Detención: qué procede
       </Text>
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-        Esto no decide por ti: marca las circunstancias de ESTE caso y la app te orienta según la
-        LECrim. La orientación se recalcula al momento; la valoración final es tuya y del juez.
+        Orientación para este caso según la LECrim. Léela y valórala; la decisión final es tuya y
+        del juez. Si tu caso es distinto, puedes afinarlo abajo.
       </Text>
 
-      {/* Gravedad del delito: cambia radicalmente la orientación (art. 33 CP). Un delito leve casi
-          nunca lleva detención (art. 495); uno más grave sí puede. El agente elige el caso real. */}
-      <View style={{ gap: t.spacing.xs }}>
-        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
-          Gravedad del delito
-        </Text>
-        <View style={{ flexDirection: 'row', gap: t.spacing.xs }}>
-          {GRAVEDAD_OPCIONES.map((op) => {
-            const activo = entrada.gravedadCp === op.valor;
-            return (
-              <Pressable
-                key={op.valor}
-                accessibilityRole="button"
-                accessibilityState={{ selected: activo }}
-                accessibilityLabel={op.etiqueta}
-                onPress={() => elegirGravedad(op.valor)}
-                style={{
-                  flex: 1,
-                  minHeight: t.touch.min,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: t.spacing.xs,
-                  paddingHorizontal: t.spacing.xs,
-                  borderRadius: t.radius.md,
-                  borderWidth: 1,
-                  borderColor: activo ? t.color.accent : t.color.border,
-                  backgroundColor: activo ? t.color.accentWeak : t.color.surface,
-                }}
-              >
-                <Text
-                  style={{
-                    color: activo ? t.color.accent : t.color.textPrimary,
-                    ...t.typography.scale.caption,
-                    textAlign: 'center',
-                  }}
-                >
-                  {op.etiqueta}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-          La gravedad de la pena (art. 33 CP) cambia la orientación. Ojo: en el hurto, hasta 400 € es
-          leve; más de 400 €, menos grave.
-        </Text>
-      </View>
-
-      {/* Toggles por circunstancia (cada uno alimenta el motor en vivo). */}
-      <Card>
-        {CIRCUNSTANCIAS_DETENCION.map((c, i) => (
-          <View
-            key={c.campo}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: t.spacing.md,
-              minHeight: t.touch.min,
-              paddingVertical: t.spacing.xs,
-              borderTopWidth: i === 0 ? 0 : 1,
-              borderTopColor: t.color.border,
-            }}
-          >
-            <View style={{ flex: 1, gap: 2 }}>
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
-                {c.etiqueta}
-              </Text>
-              <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-                {c.ayuda}
-              </Text>
-            </View>
-            <Switch
-              accessibilityLabel={c.etiqueta}
-              accessibilityHint={c.ayuda}
-              value={Boolean(entrada[c.campo])}
-              onValueChange={(v) => alternar(c.campo, v)}
-              trackColor={{ true: t.color.accent, false: t.color.surfaceAlt }}
-              thumbColor={t.color.surface}
-              ios_backgroundColor={t.color.surfaceAlt}
-            />
-          </View>
-        ))}
-      </Card>
-
-      {/* Resultado orientativo: COLOR + TEXTO (nunca solo color) + motivo + fuentes + pie. */}
+      {/* RESULTADO PRIMERO: el agente LEE la orientación y actúa. Color + texto (nunca solo color)
+          + motivo + fuentes + pie de responsabilidad. */}
       <Animated.View
         // Fundido suave al recalcular (clave por orientación). Se desactiva con reduce-motion.
         key={resultado.orientacion}
@@ -183,8 +111,8 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
-          <Icono size={22} color={tono.accent} strokeWidth={2.2} />
-          <Text style={{ color: tono.accent, ...t.typography.scale.bodyStrong }}>
+          <Icono size={24} color={tono.accent} strokeWidth={2.2} />
+          <Text style={{ color: tono.accent, ...t.typography.scale.titleM }}>
             {visual.etiqueta}
           </Text>
         </View>
@@ -225,6 +153,125 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
           accessibilityHint="Abre los derechos del detenido en varios idiomas para leérselos"
           onPress={() => router.push('/derechos')}
         />
+      ) : null}
+
+      {/* AFINAR EL CASO: plegado por defecto. Solo lo abre quien quiera modelar otra gravedad o
+          circunstancias concretas. En la calle se lee el resultado de arriba y punto. */}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: mostrarAfinar }}
+        accessibilityLabel="Afinar el caso"
+        onPress={() => {
+          hapticSelection();
+          setMostrarAfinar((v) => !v);
+        }}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: t.spacing.sm,
+          minHeight: t.touch.min,
+          paddingVertical: t.spacing.xs,
+        }}
+      >
+        <SlidersHorizontal size={18} color={t.color.textSecondary} strokeWidth={2} />
+        <Text style={{ flex: 1, color: t.color.textSecondary, ...t.typography.scale.label }}>
+          {mostrarAfinar ? 'Ocultar el detalle del caso' : 'Afinar el caso (otra gravedad, circunstancias)'}
+        </Text>
+        {mostrarAfinar ? (
+          <ChevronUp size={18} color={t.color.textTertiary} strokeWidth={2} />
+        ) : (
+          <ChevronDown size={18} color={t.color.textTertiary} strokeWidth={2} />
+        )}
+      </Pressable>
+
+      {mostrarAfinar ? (
+        <View style={{ gap: t.spacing.sm }}>
+          {/* Gravedad del delito: cambia radicalmente la orientación (art. 33 CP). */}
+          <View style={{ gap: t.spacing.xs }}>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+              Gravedad del delito
+            </Text>
+            <View style={{ flexDirection: 'row', gap: t.spacing.xs }}>
+              {GRAVEDAD_OPCIONES.map((op) => {
+                const activo = entrada.gravedadCp === op.valor;
+                return (
+                  <Pressable
+                    key={op.valor}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: activo }}
+                    accessibilityLabel={op.etiqueta}
+                    onPress={() => elegirGravedad(op.valor)}
+                    style={{
+                      flex: 1,
+                      minHeight: t.touch.min,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: t.spacing.xs,
+                      paddingHorizontal: t.spacing.xs,
+                      borderRadius: t.radius.md,
+                      borderWidth: 1,
+                      borderColor: activo ? t.color.accent : t.color.border,
+                      backgroundColor: activo ? t.color.accentWeak : t.color.surface,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: activo ? t.color.accent : t.color.textPrimary,
+                        ...t.typography.scale.caption,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {op.etiqueta}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+              La gravedad de la pena (art. 33 CP) cambia la orientación. Ojo: en el hurto, hasta
+              400 € es leve; más de 400 €, menos grave.
+            </Text>
+          </View>
+
+          {/* Circunstancias que observa el agente (cada una alimenta el motor en vivo). */}
+          <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+            Marca lo que observes en este caso:
+          </Text>
+          <Card>
+            {CIRCUNSTANCIAS_DETENCION.map((c, i) => (
+              <View
+                key={c.campo}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: t.spacing.md,
+                  minHeight: t.touch.min,
+                  paddingVertical: t.spacing.xs,
+                  borderTopWidth: i === 0 ? 0 : 1,
+                  borderTopColor: t.color.border,
+                }}
+              >
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+                    {c.etiqueta}
+                  </Text>
+                  <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+                    {c.ayuda}
+                  </Text>
+                </View>
+                <Switch
+                  accessibilityLabel={c.etiqueta}
+                  accessibilityHint={c.ayuda}
+                  value={Boolean(entrada[c.campo])}
+                  onValueChange={(v) => alternar(c.campo, v)}
+                  trackColor={{ true: t.color.accent, false: t.color.surfaceAlt }}
+                  thumbColor={t.color.surface}
+                  ios_backgroundColor={t.color.surfaceAlt}
+                />
+              </View>
+            ))}
+          </Card>
+        </View>
       ) : null}
     </View>
   );
