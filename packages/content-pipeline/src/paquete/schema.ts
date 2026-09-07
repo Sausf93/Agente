@@ -107,6 +107,22 @@ CREATE TABLE IF NOT EXISTS novedad (
   fecha           TEXT NOT NULL
 );
 
+-- Tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico (INTCF + Acuerdo Sala 2ª TS
+-- 19/10/2001). Todo ORIENTATIVO; la calificación es judicial. pendiente_revision + nota_revision
+-- viajan igual que en la tabla infraccion: el pipeline NO publica cifras como verificadas.
+CREATE TABLE IF NOT EXISTS sustancia (
+  id                       TEXT PRIMARY KEY,
+  nombre                   TEXT NOT NULL,
+  aliases                  TEXT NOT NULL DEFAULT '[]',  -- JSON: string[] (jerga de calle)
+  umbral_consumo_diario_mg REAL NOT NULL,               -- mg de sustancia / día (orientativo)
+  umbral_acopio_g          REAL NOT NULL,               -- g de acopio consumo propio (≈ diario × 5)
+  notas_pureza             TEXT NOT NULL,
+  indicadores_trafico      TEXT NOT NULL DEFAULT '[]',  -- JSON: string[]
+  fuente                   TEXT NOT NULL,
+  pendiente_revision       INTEGER NOT NULL DEFAULT 1,  -- 1 = pendiente (nada se autopublica)
+  nota_revision            TEXT NOT NULL DEFAULT ''
+);
+
 -- Buscador offline (sección 4.3 y 7.1). Una fila por infracción; el ranking lo aplica la app.
 CREATE VIRTUAL TABLE IF NOT EXISTS busqueda USING fts5(
   titulo_corto,

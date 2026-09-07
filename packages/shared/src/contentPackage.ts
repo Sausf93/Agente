@@ -35,6 +35,8 @@ export const TABLAS = {
   /** Metadatos del paquete: 1 sola fila (schema_version, content_version, fecha, hash…). */
   meta: 'meta',
   novedad: 'novedad',
+  /** Tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico. */
+  sustancia: 'sustancia',
 } as const;
 
 /**

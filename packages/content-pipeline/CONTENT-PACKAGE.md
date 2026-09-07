@@ -110,6 +110,23 @@ los parsea con los esquemas Zod de shared (`Competencia`, `VarianteBoletin`…).
 
 `id`, `content_version`, `norma_id?`, `articulos` (JSON `string[]`), `resumen`, `fecha`.
 
+### `sustancia` — tabla de sustancias (§4.7), umbrales orientativos consumo/tráfico
+
+`id`, `nombre`, `aliases` (JSON `string[]`, jerga de calle), `umbral_consumo_diario_mg` (REAL,
+mg/día orientativo), `umbral_acopio_g` (REAL, g de acopio para consumo propio ≈ consumo diario
+× 5 días), `notas_pureza`, `indicadores_trafico` (JSON `string[]`), `fuente`,
+**`pendiente_revision`** (INTEGER `1|0`; en el seed SIEMPRE `1`), **`nota_revision`** (qué
+confirmar). Modelo Zod: `Sustancia` de `@agente/shared`.
+
+> **Orientativo y sensible.** Los umbrales ayudan a distinguir "probable consumo propio"
+> (posible infracción administrativa, LO 4/2015 art. 36.16) de "indicios de tráfico" (posible
+> delito, art. 368 CP). Fuente: tablas del **INTCF** (dosis de consumo diario) y el **Acuerdo de
+> la Sala 2ª del TS de 19/10/2001** y jurisprudencia posterior (acopio ≈ consumo diario × 5). La
+> calificación final es **judicial** (`PIE_SUSTANCIAS` de shared). La app **debe** mostrar el
+> distintivo "pendiente de revisión" mientras `pendiente_revision = 1`; estas cifras NO salen
+> "verificadas" al dispositivo hasta la revisión humana (revisor-juridico). Orientación
+> consumo/tráfico por cantidad: helper `orientarSustancia()` de shared.
+
 ### `busqueda` (FTS5, virtual)
 
 Columnas EN ORDEN (`FTS_COLUMNAS`): `titulo_corto`, `texto_boletin`, `sinonimos`,

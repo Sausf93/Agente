@@ -6,6 +6,7 @@ import {
   validarMinimosPublicacion,
   type Articulo,
   type Norma,
+  type Sustancia,
 } from '@agente/shared';
 import { DatabaseSync } from './sqlite.js';
 import { DDL, SCHEMA_VERSION } from './schema.js';
@@ -48,6 +49,8 @@ export interface ResumenBuild {
   sinonimos: number;
   consecuencias: number;
   pendientesRevision: number;
+  /** Sustancias de la tabla §4.7 empaquetadas. */
+  sustancias: number;
 }
 
 export interface ResultadoBuild {
@@ -179,6 +182,29 @@ function insertarInfracciones(
   }
 }
 
+function insertarSustancias(db: DatabaseSync, sustancias: Sustancia[]): void {
+  const stmt = db.prepare(
+    `INSERT INTO sustancia (
+       id, nombre, aliases, umbral_consumo_diario_mg, umbral_acopio_g, notas_pureza,
+       indicadores_trafico, fuente, pendiente_revision, nota_revision
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  );
+  for (const s of sustancias) {
+    stmt.run(
+      s.id,
+      s.nombre,
+      JSON.stringify(s.aliases),
+      s.umbralConsumoDiarioMg,
+      s.umbralAcopioG,
+      s.notasPureza,
+      JSON.stringify(s.indicadoresTrafico),
+      s.fuente,
+      s.pendienteRevision ? 1 : 0,
+      s.notaRevision,
+    );
+  }
+}
+
 function insertarMeta(
   db: DatabaseSync,
   entradas: Record<string, string>,
@@ -232,6 +258,7 @@ export function construirPaquete(
     insertarNormas(db, contenido.normas);
     insertarArticulos(db, contenido.articulos);
     insertarInfracciones(db, contenido.infracciones, articuloPorId, codigoNormaPorId);
+    insertarSustancias(db, contenido.sustancias ?? []);
     insertarMeta(db, {
       schema_version: String(SCHEMA_VERSION),
       content_version: opciones.version,
@@ -289,6 +316,7 @@ export function construirPaquete(
       sinonimos,
       consecuencias,
       pendientesRevision,
+      sustancias: contenido.sustancias?.length ?? 0,
     },
   };
 }

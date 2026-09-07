@@ -20,6 +20,7 @@ import { BoeClient } from '../sources/boe/client.js';
 import { parseNormaConsolidada } from '../parsers/boe-xml/parse.js';
 import { SEED_TRAFICO } from '../seed/traficoSeed.js';
 import { SEED_PENAL } from '../seed/penalSeed.js';
+import { SUSTANCIAS_SEED } from '../seed/sustanciasSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
 
@@ -49,8 +50,10 @@ async function cargarRgc(offline: boolean): Promise<{ textoXml: string; metaXml:
 
 async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaquetar> {
   const rgc = CATALOGO_TRAFICO.RGC!;
-  // Seed base: tráfico + penal (comparten la norma CP; `combinarSeeds` la deduplica).
-  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
+  // Seed base: tráfico + penal (comparten la norma CP; `combinarSeeds` la deduplica) + la tabla
+  // de sustancias (§4.7), que viaja como un "seed" más que solo aporta `sustancias`.
+  const seedSustancias = { normas: [], articulos: [], infracciones: [], sustancias: SUSTANCIAS_SEED };
+  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL, seedSustancias);
   try {
     const { textoXml, metaXml } = await cargarRgc(offline);
     const parseada = parseNormaConsolidada(textoXml, metaXml, rgc);
@@ -80,7 +83,8 @@ async function main(): Promise<void> {
       resumen:
         'Carga inicial: infracciones de tráfico (seed de calle + RGC) y primeros delitos ' +
         'penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de ' +
-        'detención según LECrim.',
+        'detención según LECrim. Añadida la tabla de sustancias (§4.7): umbrales orientativos ' +
+        'consumo/tráfico (INTCF + Acuerdo Sala 2ª TS 19/10/2001), pendientes de revisión.',
     },
   });
 
@@ -100,6 +104,7 @@ async function main(): Promise<void> {
     `  Infracciones:  ${resumen.infracciones} (${resumen.pendientesRevision} pendientes de revisión)`,
     `  Sinónimos:     ${resumen.sinonimos}`,
     `  Consecuencias: ${resumen.consecuencias}`,
+    `  Sustancias:    ${resumen.sustancias} (tabla §4.7, pendientes de revisión)`,
     '══════════════════════════════════════════════════════════════',
   ];
   console.log(lineas.join('\n'));

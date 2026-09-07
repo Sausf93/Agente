@@ -36,3 +36,6 @@ export { enriquecerConNorma } from './paquete/combinar.js';
 // Seed de infracciones de tráfico "de calle".
 export { SEED_TRAFICO, NORMAS_SEED, ARTICULOS_SEED, INFRACCIONES_SEED } from './seed/traficoSeed.js';
 export type { SeedContenido, InfraccionSeed } from './seed/traficoSeed.js';
+
+// Tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico.
+export { SUSTANCIAS_SEED } from './seed/sustanciasSeed.js';
