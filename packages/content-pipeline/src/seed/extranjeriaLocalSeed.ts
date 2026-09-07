@@ -246,8 +246,8 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     articulo: ART_PPP_13,
     tituloCorto: 'Perro peligroso (PPP) sin licencia ni registro',
     gravedad: 'muy_grave',
-    // Ley 50/1999 art. 13.5.c: muy graves, de 1.502,54 a 15.025,30 €. Se fija el mínimo del tramo.
-    importeEur: 1502.54,
+    // Ley 50/1999 art. 13.5: muy graves, de 2.404,06 a 15.025,30 €. Se fija el mínimo del tramo.
+    importeEur: 2404.06,
     importeReducidoEur: null,
     textoBoletin:
       'Tener un animal potencialmente peligroso (perro de raza o características de PPP) careciendo ' +
@@ -277,7 +277,7 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     marcoImporte: 'animales',
     notaRevision:
       'A VERIFICAR importe y clasificación: carecer de licencia o de inscripción registral del PPP ' +
-      'es MUY GRAVE (Ley 50/1999 art. 13.1.b), multa de 1.502,54 a 15.025,30 € (art. 13.5.c); el seed ' +
+      'es MUY GRAVE (Ley 50/1999 art. 13.1), multa de 2.404,06 a 15.025,30 € (art. 13.5); el seed ' +
       'fija el mínimo del tramo. La lista de razas y el desarrollo están en el RD 287/2002. Muchas ' +
       'competencias sancionadoras y matices los fija la ORDENANZA MUNICIPAL y la normativa autonómica ' +
       '(incluida la Ley 7/2023 de bienestar animal). Confirmar con el revisor jurídico antes de publicar.',
@@ -287,8 +287,8 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     articulo: ART_PPP_13,
     tituloCorto: 'Perro peligroso (PPP) sin bozal o suelto en vía pública',
     gravedad: 'grave',
-    // Ley 50/1999 art. 13.5.b: graves, de 150,25 a 1.502,53 €. Se fija el mínimo del tramo.
-    importeEur: 150.25,
+    // Ley 50/1999 art. 13.5: graves, de 300,52 a 2.404,05 €. Se fija el mínimo del tramo.
+    importeEur: 300.52,
     importeReducidoEur: null,
     textoBoletin:
       'Llevar un animal potencialmente peligroso por lugares públicos sin bozal, sin correa no ' +
@@ -308,7 +308,7 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     marcoImporte: 'animales',
     notaRevision:
       'A VERIFICAR importe y clasificación: llevar el PPP sin bozal/correa o suelto en la vía pública ' +
-      'es GRAVE (Ley 50/1999 art. 13.2), multa de 150,25 a 1.502,53 € (art. 13.5.b); el seed fija el ' +
+      'es GRAVE (Ley 50/1999 art. 13.2), multa de 300,52 a 2.404,05 € (art. 13.5); el seed fija el ' +
       'mínimo del tramo. Las medidas concretas (bozal, correa ≤ 2 m no extensible, un animal por ' +
       'persona) y las cuantías las suele detallar la ORDENANZA MUNICIPAL. Confirmar con el revisor jurídico.',
   }),

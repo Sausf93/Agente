@@ -193,18 +193,18 @@ describe('validarImporte: bordes EXACTOS de rango (seguridad ciudadana, LO 4/201
 });
 
 describe('validarImporte (transporte, LOTT art. 143)', () => {
-  it('acepta el mínimo del tramo muy grave del tacógrafo (1.001 €)', () => {
+  it('acepta el mínimo del tramo muy grave del tacógrafo (2.001 €)', () => {
     expect(
       validarImporte(
-        infraccion({ gravedad: 'muy_grave', importeEur: 1001, importeReducidoEur: null }),
+        infraccion({ gravedad: 'muy_grave', importeEur: 2001, importeReducidoEur: null }),
         'transporte',
       ),
     ).toEqual([]);
   });
 
-  it('rechaza un importe por encima de 4.000 €', () => {
+  it('rechaza un importe por encima de 6.000 €', () => {
     const problemas = validarImporte(
-      infraccion({ gravedad: 'muy_grave', importeEur: 5000, importeReducidoEur: null }),
+      infraccion({ gravedad: 'muy_grave', importeEur: 6500, importeReducidoEur: null }),
       'transporte',
     );
     expect(problemas).toHaveLength(1);
@@ -232,27 +232,27 @@ describe('validarImporte (extranjería, LO 4/2000 art. 55.1)', () => {
 });
 
 describe('validarImporte (animales peligrosos, Ley 50/1999 art. 13.5)', () => {
-  it('acepta un PPP sin licencia como muy grave (1.502,54 €)', () => {
+  it('acepta un PPP sin licencia como muy grave (2.404,06 €)', () => {
     expect(
       validarImporte(
-        infraccion({ gravedad: 'muy_grave', importeEur: 1502.54, importeReducidoEur: null }),
+        infraccion({ gravedad: 'muy_grave', importeEur: 2404.06, importeReducidoEur: null }),
         'animales',
       ),
     ).toEqual([]);
   });
 
-  it('acepta un PPP sin bozal como grave (150,25 €)', () => {
+  it('acepta un PPP sin bozal como grave (300,52 €)', () => {
     expect(
       validarImporte(
-        infraccion({ gravedad: 'grave', importeEur: 150.25, importeReducidoEur: null }),
+        infraccion({ gravedad: 'grave', importeEur: 300.52, importeReducidoEur: null }),
         'animales',
       ),
     ).toEqual([]);
   });
 
-  it('rechaza una muy grave por debajo del tramo (150 €)', () => {
+  it('rechaza una muy grave por debajo del tramo (2.000 €)', () => {
     const problemas = validarImporte(
-      infraccion({ gravedad: 'muy_grave', importeEur: 150, importeReducidoEur: null }),
+      infraccion({ gravedad: 'muy_grave', importeEur: 2000, importeReducidoEur: null }),
       'animales',
     );
     expect(problemas).toHaveLength(1);

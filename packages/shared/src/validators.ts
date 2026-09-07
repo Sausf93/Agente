@@ -68,7 +68,7 @@ export const RANGO_IMPORTE_ALCOHOL_DROGAS = { min: 500, max: 1_000 } as const;
  * que se modela con un rango único graduable en lugar de un valor fijo. Fuente: LOTT
  * (BOE-A-1987-17803) art. 143. Marcar "a verificar" ante cambios (la Ley 13/2021 reformó el cuadro).
  */
-export const RANGO_IMPORTE_TRANSPORTE = { min: 100, max: 4_000 } as const;
+export const RANGO_IMPORTE_TRANSPORTE = { min: 100, max: 6_000 } as const;
 
 /**
  * Rangos de importe de EXTRANJERÍA (LO 4/2000, art. 55.1). La estancia irregular y demás
@@ -91,9 +91,12 @@ export const RANGOS_IMPORTE_EXTRANJERIA = {
  * o endurecer; marcar "a verificar".
  */
 export const RANGOS_IMPORTE_ANIMALES = {
-  leve: { min: 60.1, max: 150.25 },
-  grave: { min: 150.25, max: 1_502.53 },
-  muy_grave: { min: 1_502.54, max: 15_025.3 },
+  // Ley 50/1999 art. 13.5 (BOE-A-1999-24419): leve 150,25–300,51 · grave 300,52–2.404,05 ·
+  // muy grave 2.404,06–15.025,30. (Los rangos anteriores estaban mal y dejaban pasar importes
+  // por debajo del mínimo legal; corregido tras revisión jurídica.)
+  leve: { min: 150.25, max: 300.51 },
+  grave: { min: 300.52, max: 2_404.05 },
+  muy_grave: { min: 2_404.06, max: 15_025.3 },
 } as const;
 
 /**

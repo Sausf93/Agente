@@ -1079,7 +1079,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     tituloCorto: 'Manipulación del tacógrafo o exceso de tiempos',
     gravedad: 'muy_grave',
     // LOTT art. 143: tramo muy grave (referencia mínima 1.001 €); a verificar el importe exacto.
-    importeEur: 1001,
+    importeEur: 2001,
     importeReducidoEur: null,
     puntos: null,
     textoBoletin:

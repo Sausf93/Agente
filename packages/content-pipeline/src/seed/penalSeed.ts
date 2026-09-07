@@ -418,9 +418,12 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     id: 'del-atentado-agente',
     articulo: ART_CP_550,
     tituloCorto: 'Atentado a agente de la autoridad',
-    // Atentado contra agente (art. 550.2/551): prisión de 1 a 4 años → MENOS GRAVE (≤ 5 años).
+    // Atentado a AGENTE (art. 550.2, "demás casos"): prisión de 6 meses a 3 años → MENOS GRAVE.
+    // (La pena de 1 a 4 años y multa del 550.2 es para el atentado contra AUTORIDAD, no agente.)
     gravedadCp: 'menos_grave',
-    penaTexto: 'Prisión de 1 a 4 años y multa (atentado a agente de la autoridad, arts. 550-551 CP)',
+    penaTexto:
+      'Prisión de 6 meses a 3 años (atentado a agente de la autoridad, art. 550.2 CP); en su mitad ' +
+      'superior si concurre agravante del art. 551 (armas u objetos peligrosos)',
     textoBoletin:
       'Agredir a un agente de la autoridad, o emplear intimidación grave o violencia contra él, ' +
       'cuando se halla en el ejercicio de sus funciones o con ocasión de ellas (art. 550 CP). Si la ' +
@@ -440,9 +443,10 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'me ha agredido',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y el subtipo: atentado del art. 550 CP contra agente de la ' +
-      'autoridad → prisión de 1 a 4 años (art. 550.2), con agravantes del art. 551 (armas, objetos ' +
-      'peligrosos) → MENOS GRAVE. Distinguir de la resistencia/desobediencia grave (art. 556 CP, ' +
+      'A VERIFICAR el subtipo: atentado del art. 550 CP a AGENTE de la autoridad → prisión de 6 meses ' +
+      'a 3 años (art. 550.2, "demás casos"); la pena de 1 a 4 años y multa es para el atentado a ' +
+      'AUTORIDAD. Agravante del art. 551 (armas, objetos peligrosos) → mitad superior. MENOS GRAVE. ' +
+      'Distinguir de la resistencia/desobediencia grave (art. 556 CP, ' +
       'prisión de 3 meses a 1 año) y de la infracción administrativa del art. 36.6 LO 4/2015 (sin ' +
       'violencia/intimidación grave). Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
