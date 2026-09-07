@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  agruparNormasPorBloque,
   esResumenOrientativo,
   estadoCambio,
   filtrarArticulos,
+  normaRelevantePara,
   numeroSortKey,
   ordenarArticulos,
+  parseCuerpos,
   type ArticuloResumen,
+  type NormaResumen,
 } from './normas';
 
 /** Construye un `ArticuloResumen` de prueba con lo mínimo (haystack se calcula si no se pasa). */
@@ -131,5 +135,48 @@ describe('estadoCambio', () => {
     expect(estadoCambio(null, ref)).toBeNull();
     expect(estadoCambio('2026-06-06T00:00:00.000Z', null)).toBeNull();
     expect(estadoCambio('no-fecha', ref)).toBeNull();
+  });
+});
+
+describe('filtrado por cuerpo y bloques', () => {
+  it('parseCuerpos: JSON válido → array de cuerpos válidos; descarta desconocidos', () => {
+    expect(parseCuerpos('["guardia_civil","policia_local"]')).toEqual([
+      'guardia_civil',
+      'policia_local',
+    ]);
+    expect(parseCuerpos('["guardia_civil","marcianos"]')).toEqual(['guardia_civil']);
+  });
+
+  it('parseCuerpos: nulo, vacío o JSON roto → [] (nunca lanza)', () => {
+    expect(parseCuerpos(null)).toEqual([]);
+    expect(parseCuerpos('')).toEqual([]);
+    expect(parseCuerpos('{no es array}')).toEqual([]);
+    expect(parseCuerpos('"texto"')).toEqual([]);
+  });
+
+  it('normaRelevantePara: sin cuerpo en perfil o norma sin etiquetar → siempre relevante', () => {
+    expect(normaRelevantePara(['guardia_civil'], null)).toBe(true);
+    expect(normaRelevantePara([], 'policia_nacional')).toBe(true);
+  });
+
+  it('normaRelevantePara: con etiqueta, relevante solo si incluye al cuerpo del agente', () => {
+    expect(normaRelevantePara(['guardia_civil', 'policia_local'], 'guardia_civil')).toBe(true);
+    expect(normaRelevantePara(['guardia_civil', 'policia_local'], 'policia_nacional')).toBe(false);
+  });
+
+  it('agruparNormasPorBloque: agrupa por bloque, respeta el orden y omite vacíos', () => {
+    const norma = (codigo: string): NormaResumen => ({
+      id: `n-${codigo}`,
+      codigo,
+      titulo: codigo,
+      tipo: 'ley',
+      ambito: 'estatal',
+      urlBoe: null,
+      numArticulos: 1,
+      cuerpos: [],
+    });
+    const secciones = agruparNormasPorBloque([norma('CP'), norma('RGC'), norma('LOSC')]);
+    expect(secciones.map((s) => s.bloque)).toEqual(['trafico', 'penal', 'seguridad']);
+    expect(secciones[0]?.data.map((n) => n.codigo)).toEqual(['RGC']);
   });
 });

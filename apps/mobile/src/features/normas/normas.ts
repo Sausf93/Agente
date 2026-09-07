@@ -1,4 +1,4 @@
-import { normalizarBusqueda, type Ambito, type TipoNorma } from '@agente/shared';
+import { Cuerpo, normalizarBusqueda, type Ambito, type TipoNorma } from '@agente/shared';
 import type { SqlRunner } from '@/db/sqlRunner';
 
 /**
@@ -26,6 +26,12 @@ export interface NormaResumen {
   ambito: Ambito;
   urlBoe: string | null;
   numArticulos: number;
+  /**
+   * Cuerpos que consultan esta norma habitualmente (relevancia, NO restricción de acceso).
+   * Sale del campo `cuerpos` del paquete; array VACÍO = norma sin etiquetar = relevante para
+   * todos. Sirve para filtrar la lista de Normas por el cuerpo del agente.
+   */
+  cuerpos: Cuerpo[];
 }
 
 /** Artículo para la lista dentro de una norma (§4.5, nivel 2). */
@@ -71,6 +77,8 @@ interface FilaNorma {
   ambito: Ambito;
   url_boe: string | null;
   num_articulos: number;
+  /** JSON array de `Cuerpo` (columna `cuerpos TEXT NOT NULL DEFAULT '[]'`). */
+  cuerpos: string;
 }
 
 interface FilaArticuloLista {
@@ -182,6 +190,92 @@ export function estadoCambio(
 }
 
 // ---------------------------------------------------------------------------
+// Cuerpos y bloques (filtrado por cuerpo del agente + agrupación de la lista)
+// ---------------------------------------------------------------------------
+
+const CUERPOS_VALIDOS: ReadonlySet<string> = new Set(Cuerpo.options);
+
+/**
+ * Parsea el JSON de la columna `cuerpos` a un array de `Cuerpo` VÁLIDOS (descarta valores
+ * desconocidos y tolera JSON roto o nulo devolviendo `[]`). Pura y defensiva: nunca lanza, de
+ * modo que un paquete con datos inesperados no rompe la lista de Normas.
+ */
+export function parseCuerpos(raw: string | null | undefined): Cuerpo[] {
+  if (!raw) return [];
+  let valor: unknown;
+  try {
+    valor = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(valor)) return [];
+  return valor.filter((c): c is Cuerpo => typeof c === 'string' && CUERPOS_VALIDOS.has(c));
+}
+
+/**
+ * Decide si una norma es RELEVANTE para el cuerpo del agente (filtro "Solo mi cuerpo", §4.5):
+ *  - Sin cuerpo en el perfil (`null`) → todas son relevantes (arranque neutro).
+ *  - Norma sin etiquetar (`cuerpos` vacío) → relevante para todos (conservador, no oculta nada).
+ *  - En otro caso, relevante si su lista de cuerpos incluye el del agente.
+ * Pura y testeable.
+ */
+export function normaRelevantePara(cuerpos: readonly Cuerpo[], cuerpo: Cuerpo | null): boolean {
+  if (!cuerpo) return true;
+  if (cuerpos.length === 0) return true;
+  return cuerpos.includes(cuerpo);
+}
+
+/** Bloque temático para agrupar la lista de Normas (mejora la lectura, §4.5). */
+export type BloqueNorma = 'trafico' | 'penal' | 'seguridad' | 'otras';
+
+/** Etiqueta legible de cada bloque (cabecera de sección). */
+export const BLOQUE_LABEL: Record<BloqueNorma, string> = {
+  trafico: 'Tráfico y seguridad vial',
+  penal: 'Penal y procesal',
+  seguridad: 'Seguridad ciudadana',
+  otras: 'Otras normas',
+};
+
+/** Orden de presentación de los bloques (los más consultados primero). */
+export const BLOQUE_ORDEN: readonly BloqueNorma[] = ['trafico', 'penal', 'seguridad', 'otras'];
+
+/** Mapa código de norma → bloque. Lo desconocido cae en 'otras' (no se pierde ninguna norma). */
+const BLOQUE_POR_CODIGO: Record<string, BloqueNorma> = {
+  RGC: 'trafico',
+  LSV: 'trafico',
+  RGV: 'trafico',
+  LRCSCVM: 'trafico',
+  CP: 'penal',
+  LECrim: 'penal',
+  LOSC: 'seguridad',
+};
+
+/** Bloque temático de una norma por su código. Fallback conservador: 'otras'. */
+export function bloqueDeNorma(codigo: string): BloqueNorma {
+  return BLOQUE_POR_CODIGO[codigo] ?? 'otras';
+}
+
+/** Sección de normas de un mismo bloque, lista para pintar en `SectionList`. */
+export interface SeccionNormas {
+  bloque: BloqueNorma;
+  titulo: string;
+  data: NormaResumen[];
+}
+
+/**
+ * Agrupa las normas por bloque temático respetando el orden de `BLOQUE_ORDEN` y, dentro de cada
+ * bloque, el orden de entrada (que ya llega estatal→autonómico→municipal y por código). Omite los
+ * bloques vacíos. Pura y determinista.
+ */
+export function agruparNormasPorBloque(normas: readonly NormaResumen[]): SeccionNormas[] {
+  return BLOQUE_ORDEN.map((bloque) => ({
+    bloque,
+    titulo: BLOQUE_LABEL[bloque],
+    data: normas.filter((n) => bloqueDeNorma(n.codigo) === bloque),
+  })).filter((s) => s.data.length > 0);
+}
+
+// ---------------------------------------------------------------------------
 // Consultas al paquete (usan SqlRunner; combinan SQL con las funciones puras)
 // ---------------------------------------------------------------------------
 
@@ -191,7 +285,7 @@ export function estadoCambio(
  */
 export async function listarNormas(runner: SqlRunner): Promise<NormaResumen[]> {
   const filas = await runner.getAll<FilaNorma>(
-    `SELECT n.id, n.codigo, n.titulo, n.tipo, n.ambito, n.url_boe,
+    `SELECT n.id, n.codigo, n.titulo, n.tipo, n.ambito, n.url_boe, n.cuerpos,
             (SELECT COUNT(*) FROM articulo a
               WHERE a.norma_id = n.id AND a.valid_to IS NULL) AS num_articulos
        FROM norma n
@@ -210,6 +304,7 @@ export async function listarNormas(runner: SqlRunner): Promise<NormaResumen[]> {
     ambito: f.ambito,
     urlBoe: f.url_boe,
     numArticulos: f.num_articulos,
+    cuerpos: parseCuerpos(f.cuerpos),
   }));
 }
 
@@ -291,3 +386,13 @@ export const NORMA_AMBITO_LABEL: Record<Ambito, string> = {
   autonomico: 'Autonómico',
   municipal: 'Municipal',
 };
+
+/** "784 artículos" / "1 artículo" — recuento con plural correcto para la fila de norma. */
+export function articulosLabel(n: number): string {
+  return `${n.toLocaleString('es-ES')} ${n === 1 ? 'artículo' : 'artículos'}`;
+}
+
+/** "3 normas más" / "1 norma más" — texto del pie que revela lo oculto por el filtro de cuerpo. */
+export function normasOcultasLabel(n: number): string {
+  return `${n} ${n === 1 ? 'norma más' : 'normas más'} de otros cuerpos`;
+}

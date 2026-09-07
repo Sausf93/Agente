@@ -46,6 +46,12 @@ suite('normas contra el paquete real', () => {
     const rgc = normas.find((n) => n.codigo === 'RGC');
     expect(rgc?.numArticulos).toBeGreaterThan(200);
     expect(rgc?.urlBoe).toMatch(/boe\.es/);
+    // El campo `cuerpos` viaja desde el paquete: el RGC (tráfico) NO incluye a la Policía Nacional,
+    // pero sí a la Guardia Civil; el Código Penal (penal) es relevante para todos los cuerpos.
+    expect(rgc?.cuerpos).toContain('guardia_civil');
+    expect(rgc?.cuerpos).not.toContain('policia_nacional');
+    const cp = normas.find((n) => n.codigo === 'CP');
+    expect(cp?.cuerpos).toContain('policia_nacional');
   });
 
   it('listarArticulos del RGC viene ordenado y con la marca de resumen', async () => {
