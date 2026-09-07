@@ -116,6 +116,19 @@ export type TipoEventoUso = z.infer<typeof TipoEventoUso>;
 export const TipoFeedback = z.enum(['sugerencia', 'error_contenido', 'error_tecnico']);
 export type TipoFeedback = z.infer<typeof TipoFeedback>;
 
+/**
+ * Estado del ciclo de vida de una sugerencia/reporte (sección 4.15). Lo ve el socio en
+ * "Mis sugerencias": `enviada` = registrada por el socio (recién creada); `en_estudio` =
+ * el equipo la está valorando; `aplicada` = ya está en la app; `descartada` = no se hará
+ * (con motivo en `respuesta`).
+ *
+ * IMPORTANTE (ADR-001/011): hoy NO hay backend. El estado se gestiona SOLO en el
+ * dispositivo. La transición remota (que el equipo mueva el estado y conteste) llegará con
+ * Supabase (Fase 5); este enum deja el terreno preparado sin implementar red.
+ */
+export const EstadoFeedback = z.enum(['enviada', 'en_estudio', 'aplicada', 'descartada']);
+export type EstadoFeedback = z.infer<typeof EstadoFeedback>;
+
 /** Tipos de plantilla de documento (sección 4.8). */
 export const TipoPlantilla = z.enum([
   'boletin_denuncia',

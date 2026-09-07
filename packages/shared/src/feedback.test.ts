@@ -67,6 +67,28 @@ describe('Feedback (esquema)', () => {
     expect(parsed.contexto).toEqual({ pantalla: null, articuloId: null, infraccionId: null });
   });
 
+  it('nace con estado "enviada" y respuesta nula por defecto', () => {
+    const { estado: _s, respuesta: _r, ...sinDefaults } = feedback();
+    const parsed = Feedback.parse(sinDefaults);
+    expect(parsed.estado).toBe('enviada');
+    expect(parsed.respuesta).toBeNull();
+  });
+
+  it('acepta los cuatro estados del ciclo de vida', () => {
+    for (const estado of ['enviada', 'en_estudio', 'aplicada', 'descartada'] as const) {
+      expect(() => Feedback.parse(feedback({ estado }))).not.toThrow();
+    }
+  });
+
+  it('rechaza un estado desconocido', () => {
+    expect(() => Feedback.parse(feedback({ estado: 'archivada' }))).toThrow();
+  });
+
+  it('conserva la respuesta del equipo cuando existe', () => {
+    const parsed = Feedback.parse(feedback({ respuesta: 'Gracias, lo aplicamos en la 0.2.' }));
+    expect(parsed.respuesta).toBe('Gracias, lo aplicamos en la 0.2.');
+  });
+
   it('conserva el contexto de una ficha (gancho reportar error)', () => {
     const parsed = Feedback.parse(
       feedback({

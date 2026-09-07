@@ -9,14 +9,13 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { ContextoFeedback, Feedback, TipoFeedback } from '@agente/shared';
+import { ChevronRight, MessageSquareText } from 'lucide-react-native';
+import type { ContextoFeedback, TipoFeedback } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
-import type { Theme } from '@/ui/theme';
-import { Badge } from '@/ui/components/Badge';
 import { Banner } from '@/ui/components/Banner';
 import { Button } from '@/ui/components/Button';
-import { Card } from '@/ui/components/Card';
 import { TIPO_FEEDBACK_LABEL } from './serialize';
 import { useFeedbackStore } from './store';
 
@@ -50,12 +49,12 @@ const TIPO_FEEDBACK_CORTO: Record<TipoFeedback, string> = {
 export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenProps) {
   const t = useAppTheme();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const items = useFeedbackStore((s) => s.items);
   const load = useFeedbackStore((s) => s.load);
   const add = useFeedbackStore((s) => s.add);
   const sendPending = useFeedbackStore((s) => s.sendPending);
-  const remove = useFeedbackStore((s) => s.remove);
 
   const [tipo, setTipo] = useState<TipoFeedback>(tipoInicial ?? 'sugerencia');
   const [texto, setTexto] = useState('');
@@ -72,9 +71,15 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
     if (!puedeGuardar) return;
     setGuardando(true);
     try {
+      // PRIMERO se REGISTRA en el dispositivo (queda en "Mis sugerencias" con estado). El envío a
+      // los fundadores es un paso aparte y opcional: nunca bloquea el registro.
       await add({ tipo, texto: texto.trim(), contexto: contextoInicial });
       setTexto('');
       setTipo(tipoInicial ?? 'sugerencia');
+      Alert.alert(
+        'Guardada',
+        'Tu aportación ha quedado registrada en "Mis sugerencias". Podrás seguir su estado y ver nuestra respuesta ahí.',
+      );
     } catch {
       Alert.alert('No se pudo guardar', 'Inténtalo de nuevo.');
     } finally {
@@ -91,13 +96,6 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
     } catch {
       Alert.alert('No se pudo abrir el correo', 'Prueba a compartirlo por otra vía.');
     }
-  }
-
-  function onBorrar(fb: Feedback) {
-    Alert.alert('Borrar aportación', '¿Seguro que quieres borrarla de este dispositivo?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Borrar', style: 'destructive', onPress: () => void remove(fb.id) },
-    ]);
   }
 
   return (
@@ -213,22 +211,51 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
           accessibilityHint="Guarda la aportación en este dispositivo"
         />
 
-        <View style={{ gap: t.spacing.sm, marginTop: t.spacing.sm }}>
-          <Text
-            accessibilityRole="header"
-            style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}
+        {/* Acceso a "Mis sugerencias": el registro de todo lo enviado, con su estado y la
+            respuesta del equipo. La lista completa vive en su propia pantalla. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={
+            items.length > 0
+              ? `Mis sugerencias, ${items.length} guardadas`
+              : 'Mis sugerencias'
+          }
+          accessibilityHint="Abre el registro de tus aportaciones con su estado"
+          onPress={() => router.push('/mis-sugerencias')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: t.spacing.md,
+            minHeight: t.touch.min + 8,
+            borderRadius: t.radius.md,
+            borderWidth: 1,
+            borderColor: t.color.border,
+            backgroundColor: t.color.surface,
+            padding: t.spacing.md,
+          }}
+        >
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: t.radius.md,
+              backgroundColor: t.color.accentWeak,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            Mis aportaciones
-          </Text>
-
-          {items.length === 0 ? (
-            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-              Aún no has guardado ninguna.
+            <MessageSquareText size={22} color={t.color.accent} strokeWidth={2} />
+          </View>
+          <View style={{ flex: 1, gap: t.spacing.xxs }}>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}>
+              Mis sugerencias{items.length > 0 ? ` (${items.length})` : ''}
             </Text>
-          ) : (
-            items.map((fb) => <TarjetaFeedback key={fb.id} t={t} fb={fb} onBorrar={onBorrar} />)
-          )}
-        </View>
+            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+              Mira su estado y nuestra respuesta.
+            </Text>
+          </View>
+          <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
+        </Pressable>
 
         {pendientes.length > 0 && (
           <Button
@@ -240,36 +267,5 @@ export function FeedbackScreen({ tipoInicial, contextoInicial }: FeedbackScreenP
         )}
       </ScrollView>
     </KeyboardAvoidingView>
-  );
-}
-
-function TarjetaFeedback({
-  t,
-  fb,
-  onBorrar,
-}: {
-  t: Theme;
-  fb: Feedback;
-  onBorrar: (fb: Feedback) => void;
-}) {
-  return (
-    <Card>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-          {TIPO_FEEDBACK_LABEL[fb.tipo]}
-        </Text>
-        <Badge label={fb.enviado ? 'Enviado' : 'Pendiente'} tone={fb.enviado ? 'success' : 'info'} />
-      </View>
-      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>{fb.texto}</Text>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Borrar esta aportación"
-        onPress={() => onBorrar(fb)}
-        hitSlop={8}
-        style={{ minHeight: t.touch.min, justifyContent: 'center' }}
-      >
-        <Text style={{ color: t.color.danger, ...t.typography.scale.caption }}>Borrar</Text>
-      </Pressable>
-    </Card>
   );
 }

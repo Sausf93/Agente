@@ -1,6 +1,6 @@
 import { Linking, Platform, Share } from 'react-native';
 import type { Feedback } from '@agente/shared';
-import { composeEmailBody } from './serialize';
+import { composeEmailBody, FOUNDERS_EMAIL } from './serialize';
 
 /**
  * ENVÍO del feedback a los fundadores DESDE EL DISPOSITIVO (no hay backend).
@@ -16,10 +16,11 @@ import { composeEmailBody } from './serialize';
  */
 
 /**
- * Correo de los fundadores para recibir el feedback de la beta.
- * TODO(fundadores): confirmar la dirección definitiva antes de publicar la beta.
+ * Correo de los fundadores para recibir el feedback de la beta. La constante vive en el módulo
+ * PURO `serialize.ts` (para poder testear que es un correo válido sin el runtime de RN) y se
+ * reexporta aquí, que es su punto de uso público (el `mailto:`).
  */
-export const FOUNDERS_EMAIL = 'beta@agente.app';
+export { FOUNDERS_EMAIL } from './serialize';
 
 export type SendResult = 'email' | 'share' | 'cancelled';
 

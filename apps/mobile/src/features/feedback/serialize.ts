@@ -1,4 +1,4 @@
-import { Feedback, type TipoFeedback } from '@agente/shared';
+import { Feedback, type EstadoFeedback, type TipoFeedback } from '@agente/shared';
 
 /**
  * Lógica PURA de la feature de feedback (sin runtime de React Native ni SQLite).
@@ -9,11 +9,30 @@ import { Feedback, type TipoFeedback } from '@agente/shared';
  * estas funciones con las APIs nativas. Ver ADR-010 (tests scoped a lógica pura).
  */
 
+/**
+ * Correo real de los fundadores para recibir el feedback de la beta. Vive en este módulo PURO
+ * (sin runtime de React Native) para poder testear que es un correo válido; `send.ts` lo
+ * reexporta y lo usa para componer el `mailto:`. Autorizado por el socio para la beta.
+ */
+export const FOUNDERS_EMAIL = 'saulodlsf@gmail.com';
+
 /** Etiquetas de tipo en español para la UI y el correo. */
 export const TIPO_FEEDBACK_LABEL: Record<TipoFeedback, string> = {
   sugerencia: 'Sugerencia',
   error_contenido: 'Error de contenido',
   error_tecnico: 'Error técnico',
+};
+
+/**
+ * Etiquetas de estado en español para "Mis sugerencias". El ciclo que ve el socio es
+ * propuesta → en estudio → aplicada (o descartada). `enviada` se muestra como "Enviada"
+ * (queda registrada en su móvil).
+ */
+export const ESTADO_FEEDBACK_LABEL: Record<EstadoFeedback, string> = {
+  enviada: 'Enviada',
+  en_estudio: 'En estudio',
+  aplicada: 'Aplicada',
+  descartada: 'Descartada',
 };
 
 /** Fila tal cual se guarda en la tabla `feedback` de la base local del usuario. */
@@ -29,6 +48,10 @@ export interface FeedbackRow {
   territorio: string | null;
   /** 0/1: SQLite no tiene booleano nativo. */
   enviado: number;
+  /** Estado del ciclo de vida (enviada | en_estudio | aplicada | descartada). */
+  estado: string;
+  /** Respuesta del equipo; NULL mientras no haya backend que la rellene (Fase 5). */
+  respuesta: string | null;
 }
 
 /** Serializa un `Feedback` de dominio a la fila de SQLite. */
@@ -44,6 +67,8 @@ export function feedbackToRow(fb: Feedback): FeedbackRow {
     cuerpo: fb.cuerpo,
     territorio: fb.territorio,
     enviado: fb.enviado ? 1 : 0,
+    estado: fb.estado,
+    respuesta: fb.respuesta,
   };
 }
 
@@ -63,6 +88,8 @@ export function rowToFeedback(row: FeedbackRow): Feedback {
     cuerpo: row.cuerpo,
     territorio: row.territorio,
     enviado: row.enviado === 1,
+    estado: row.estado,
+    respuesta: row.respuesta,
   });
 }
 
@@ -113,4 +140,26 @@ export function composeEmailBody(pendientes: Feedback[]): { subject: string; bod
   ].join('\n');
 
   return { subject, body };
+}
+
+// ---------------------------------------------------------------------------
+// Reducers PUROS del estado en memoria (los usa el store Zustand y se testean sin RN).
+// ---------------------------------------------------------------------------
+
+/** Marca como `enviado` (a los fundadores) las aportaciones cuyos ids se indican. Inmutable. */
+export function markItemsSent(items: Feedback[], ids: readonly string[]): Feedback[] {
+  const set = new Set(ids);
+  return items.map((fb) => (set.has(fb.id) ? { ...fb, enviado: true } : fb));
+}
+
+/**
+ * Cambia el `estado` de una aportación (gestión LOCAL, mientras no haya backend). Inmutable:
+ * devuelve una lista nueva y solo sustituye la fila afectada.
+ */
+export function setItemEstado(
+  items: Feedback[],
+  id: string,
+  estado: EstadoFeedback,
+): Feedback[] {
+  return items.map((fb) => (fb.id === id ? { ...fb, estado } : fb));
 }

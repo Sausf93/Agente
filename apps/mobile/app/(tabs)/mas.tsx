@@ -2,7 +2,13 @@ import type { ComponentType } from 'react';
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronRight, MessageSquarePlus, Settings, type LucideProps } from 'lucide-react-native';
+import {
+  ChevronRight,
+  MessageSquarePlus,
+  MessageSquareText,
+  Settings,
+  type LucideProps,
+} from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 
@@ -44,6 +50,14 @@ export default function MasScreen() {
             icon={MessageSquarePlus}
             titulo="Sugerencias / reportar problema"
             descripcion="Cuéntanos qué mejorarías o qué falla. Se guarda en tu móvil."
+          />
+        </Link>
+        <Link href="/mis-sugerencias" asChild>
+          <FilaMas
+            t={t}
+            icon={MessageSquareText}
+            titulo="Mis sugerencias"
+            descripcion="Lo que has enviado, con su estado y nuestra respuesta."
           />
         </Link>
       </View>

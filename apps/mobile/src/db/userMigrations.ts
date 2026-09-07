@@ -184,6 +184,22 @@ export const USER_DB_MIGRATIONS: readonly UserDbMigration[] = [
       ALTER TABLE cuadrante_config ADD COLUMN ancla_json TEXT;
     `,
   },
+  {
+    // FEEDBACK con ESTADO y RESPUESTA (petición del socio: que las sugerencias queden
+    // REGISTRADAS en la app con un estado, no que se pierdan en un correo). Migración ADITIVA
+    // sobre la tabla `feedback` de la v1:
+    //  - `estado`: ciclo de vida de la aportación (enviada → en_estudio → aplicada/descartada).
+    //    NOT NULL con DEFAULT constante 'enviada', así las filas antiguas quedan como 'enviada'.
+    //  - `respuesta`: texto del equipo que el socio ve en "Mis sugerencias" (NULL mientras no
+    //    haya backend). HOY el estado se gestiona SOLO en el dispositivo (ADR-001); el cambio de
+    //    estado remoto y la respuesta bidireccional llegarán con Supabase (Fase 5, ver ADR-011).
+    // Solo se ejecuta una vez (protegida por `user_version`): ADD COLUMN es seguro y no borra nada.
+    version: 9,
+    sql: `
+      ALTER TABLE feedback ADD COLUMN estado TEXT NOT NULL DEFAULT 'enviada';
+      ALTER TABLE feedback ADD COLUMN respuesta TEXT;
+    `,
+  },
 ];
 
 /** Versión de esquema objetivo de la base local (la mayor de las migraciones). */
