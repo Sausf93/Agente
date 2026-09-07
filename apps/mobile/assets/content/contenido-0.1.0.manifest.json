@@ -1,12 +1,12 @@
 {
   "version": "0.1.0",
-  "fecha": "2026-09-07T13:08:07.884Z",
+  "fecha": "2026-09-07T15:36:37.919Z",
   "schemaVersion": 1,
-  "hash": "8caa4470244e97d0f8609889a76c140d3ae13d5de4979775c6b0613693801f5b",
-  "tamanoBytes": 667648,
+  "hash": "b903430408a5b0242693826f5be5b5fb153599170dff15a0f73d8a2ad5d7e865",
+  "tamanoBytes": 266240,
   "algoritmoFirma": "ed25519",
   "firma": null,
   "changelog": {
-    "resumen": "Carga inicial: infracciones de tráfico (seed de calle + RGC) y primeros delitos penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de detención según LECrim."
+    "resumen": "Carga inicial: infracciones de tráfico (seed de calle + RGC), primeros delitos penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de detención según LECrim, e infracciones de seguridad ciudadana (LO 4/2015): desobediencia, negativa a identificarse, drogas en vía pública, armas prohibidas, desórdenes, falta de respeto, ocupación y reuniones no comunicadas."
   }
 }

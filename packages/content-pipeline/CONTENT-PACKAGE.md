@@ -35,7 +35,7 @@ tramos fijos de tráfico:
 | marco                      | rango                                              | uso                                                    |
 | -------------------------- | -------------------------------------------------- | ------------------------------------------------------ |
 | `trafico`                  | leve 0–100, grave 200, muy grave 500 (LSV art. 80) | infracciones de tráfico ordinarias                     |
-| `seguridad_ciudadana`      | por gravedad (LO 4/2015 art. 39)                   | seguridad ciudadana                                    |
+| `seguridad_ciudadana`      | leve 100–600, grave 601–30.000, muy grave 30.001–600.000 (LO 4/2015 art. 39) | seguridad ciudadana (LO 4/2015) |
 | `seguro_obligatorio`       | 601–3.005 € (LRCSCVM art. 3)                       | conducir sin seguro                                    |
 | `velocidad`                | 100–600 € (cuadro graduado LSV)                    | exceso de velocidad (importe/puntos por tramo de km/h) |
 | `alcohol_drogas`           | 500–1.000 € (cuadro DGT)                           | alcoholemia y drogas por vía administrativa            |
@@ -46,6 +46,12 @@ excede los topes fijos de `trafico` (una alcoholemia de 1.000 € o un exceso de
 pero no encajarían en `grave=200`/`muy_grave=500`). Se modelan como rango único graduable, igual
 que `seguro_obligatorio`. Los delitos (`tipo = 'penal'`, p. ej. negativa a la prueba, art. 383 CP)
 no llevan importe y `validarImporte` los ignora.
+
+El marco `seguridad_ciudadana` (LO 4/2015) valida por gravedad, pero la horquilla legal es
+amplísima (una grave va de 601 a 30.000 €). El seed fija como referencia el **extremo inferior**
+de cada categoría (grave = 601 €, leve = 100 €) y lo advierte en `nota_revision`; el importe
+efectivo lo gradúa la autoridad (art. 33). El pronto pago (procedimiento abreviado, **art. 54**
+LO 4/2015, no art. 85) reduce el 50 % en infracciones graves y leves → `importe_reducido_eur`.
 
 ## Versión de esquema
 
