@@ -48,7 +48,10 @@ describe('validarImporte (tráfico, LSV art. 80)', () => {
 
   it('no valida importe en delitos (vía penal)', () => {
     expect(
-      validarImporte(infraccion({ tipo: 'penal', gravedad: 'delito', importeEur: null }), 'trafico'),
+      validarImporte(
+        infraccion({ tipo: 'penal', gravedad: 'delito', importeEur: null }),
+        'trafico',
+      ),
     ).toEqual([]);
   });
 });
@@ -95,6 +98,54 @@ describe('validarImporte (seguro obligatorio, LRCSCVM art. 3)', () => {
       'seguro_obligatorio',
     );
     expect(problemas).toHaveLength(1);
+  });
+});
+
+describe('validarImporte (velocidad, cuadro graduado LSV)', () => {
+  it('acepta un importe dentro del rango 100–600 € (p. ej. 300 €)', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'grave', importeEur: 300, importeReducidoEur: 150 }),
+      'velocidad',
+    );
+    expect(problemas).toEqual([]);
+  });
+
+  it('rechaza un importe por encima de 600 €', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'grave', importeEur: 700, importeReducidoEur: null }),
+      'velocidad',
+    );
+    expect(problemas).toHaveLength(1);
+    expect(problemas[0]?.campo).toBe('importeEur');
+  });
+});
+
+describe('validarImporte (alcohol y drogas, cuadro DGT)', () => {
+  it('acepta 500 € (tramo bajo de alcohol)', () => {
+    expect(
+      validarImporte(
+        infraccion({ gravedad: 'muy_grave', importeEur: 500, importeReducidoEur: 250 }),
+        'alcohol_drogas',
+      ),
+    ).toEqual([]);
+  });
+
+  it('acepta 1.000 € (tramo alto / drogas)', () => {
+    expect(
+      validarImporte(
+        infraccion({ gravedad: 'muy_grave', importeEur: 1000, importeReducidoEur: 500 }),
+        'alcohol_drogas',
+      ),
+    ).toEqual([]);
+  });
+
+  it('rechaza un importe por encima de 1.000 €', () => {
+    const problemas = validarImporte(
+      infraccion({ gravedad: 'muy_grave', importeEur: 1500, importeReducidoEur: null }),
+      'alcohol_drogas',
+    );
+    expect(problemas).toHaveLength(1);
+    expect(problemas[0]?.campo).toBe('importeEur');
   });
 });
 
