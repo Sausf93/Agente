@@ -4,17 +4,21 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AlertTriangle, BookOpen, ChevronRight, SearchX, Sparkles } from 'lucide-react-native';
+import type { Cuerpo } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { SearchBar } from '@/ui/components/SearchBar';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { PressableScale } from '@/ui/components/PressableScale';
 import { SeverityChip } from '@/ui/components/SeverityChip';
+import { Badge } from '@/ui/components/Badge';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { Button } from '@/ui/components/Button';
 import { useReduceMotion } from '@/ui/motion';
 import { CONSECUENCIA_LABEL, formatEuros } from '@/features/ficha/format';
 import { HomeInicio } from '@/features/inicio/HomeInicio';
+import { accesosRapidosPara } from '@/features/inicio/accesosRapidos';
+import { useSettingsStore } from '@/store/settings';
 import { useBuscadorStore } from './store';
 import { useRecientesStore } from './recientesStore';
 import { resaltarCoincidencia } from './resaltar';
@@ -49,6 +53,10 @@ export function BuscadorScreen() {
   const setConsulta = useBuscadorStore((s) => s.setConsulta);
   const buscar = useBuscadorStore((s) => s.buscar);
   const registrarReciente = useRecientesStore((s) => s.registrar);
+  // Cuerpo y municipio del perfil: adaptan las sugerencias del estado vacío y el distintivo de
+  // ámbito de un resultado municipal (ordenanza del propio municipio del agente).
+  const cuerpo = useSettingsStore((s) => s.cuerpo);
+  const municipioNombre = useSettingsStore((s) => s.municipioNombre);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Autofoco solo en arranque en frío (sin texto previo). No se re-enfoca al volver de una ficha.
@@ -119,6 +127,7 @@ export function BuscadorScreen() {
               consulta={consulta}
               index={index}
               reduceMotion={reduceMotion}
+              municipioNombre={municipioNombre}
               onPress={abrirFicha}
             />
           )}
@@ -141,6 +150,7 @@ export function BuscadorScreen() {
               buscado={buscado}
               sinContenido={sinContenido}
               consulta={consulta}
+              cuerpo={cuerpo}
               hayArticulos={articulos.length > 0}
               onReportar={() => router.push('/feedback')}
             />
@@ -283,6 +293,7 @@ function FilaResultado({
   consulta,
   index,
   reduceMotion,
+  municipioNombre,
   onPress,
 }: {
   t: Theme;
@@ -290,11 +301,16 @@ function FilaResultado({
   consulta: string;
   index: number;
   reduceMotion: boolean;
+  municipioNombre: string | null;
   onPress: (id: string) => void;
 }) {
   const importe = formatEuros(item.importeEur);
   const segmentos = resaltarCoincidencia(item.tituloCorto, consulta);
   const delay = Math.min(index * STAGGER_MS, STAGGER_MAX_MS);
+  // Un resultado MUNICIPAL (ordenanza) se distingue de lo estatal con un distintivo de ámbito: el
+  // nombre del municipio del perfil (siempre el propio, por el filtro territorial) o "Municipal".
+  const esMunicipal = item.ambito === 'municipal';
+  const ambitoLabel = esMunicipal ? (municipioNombre ?? 'Municipal') : null;
 
   return (
     <Animated.View
@@ -334,9 +350,12 @@ function FilaResultado({
               </Text>
             ))}
           </Text>
-          <Text numberOfLines={1} style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-            {item.normaCodigo} art. {item.articuloNumero}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexWrap: 'wrap' }}>
+            <Text numberOfLines={1} style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+              {item.normaCodigo} art. {item.articuloNumero}
+            </Text>
+            {ambitoLabel ? <Badge label={ambitoLabel} tone="info" /> : null}
+          </View>
           {item.pista ? (
             <View
               style={{
@@ -389,12 +408,27 @@ function FilaResultado({
   );
 }
 
+/**
+ * Ejemplos de búsqueda ADAPTADOS AL CUERPO (§4.3): las sugerencias no deben oler a tráfico para
+ * quien no lo trabaja. Se toman de los accesos rápidos del cuerpo (fuente única), en formato de
+ * frase entrecomillada. Un token extra ("RGC 18"/"LOSC 16") recuerda que también se busca por artículo.
+ */
+function ejemplosBusquedaPara(cuerpo: Cuerpo | null): string {
+  const terminos = accesosRapidosPara(cuerpo)
+    .filter((a) => a.destino.tipo === 'buscar')
+    .slice(0, 3)
+    .map((a) => `"${a.label}"`);
+  const porArticulo = cuerpo === 'policia_nacional' ? '"LOSC 16"' : '"RGC 18"';
+  return `Prueba con ${terminos.join(', ')} o un artículo como ${porArticulo}.`;
+}
+
 function EstadoVacio({
   t,
   buscando,
   buscado,
   sinContenido,
   consulta,
+  cuerpo,
   hayArticulos,
   onReportar,
 }: {
@@ -403,6 +437,7 @@ function EstadoVacio({
   buscado: boolean;
   sinContenido: boolean;
   consulta: string;
+  cuerpo: Cuerpo | null;
   hayArticulos: boolean;
   onReportar: () => void;
 }) {
@@ -423,11 +458,12 @@ function EstadoVacio({
       'El buscador funciona en la app móvil (iOS/Android). En web todavía no está el paquete de contenido.';
   } else if (consulta.trim().length === 0) {
     titulo = 'Busca en el lenguaje de la calle';
-    detalle = 'Prueba con "faro roto", "sin seguro", "móvil" o un artículo como "RGC 18".';
+    detalle = ejemplosBusquedaPara(cuerpo);
   } else if (buscado) {
     titulo = 'Nada exacto para esto';
     detalle =
-      'No encontramos ninguna infracción ni artículo de la ley. Lo hemos anotado para mejorar el buscador.';
+      'No encontramos ninguna infracción ni artículo de la ley. Lo hemos anotado para mejorar el buscador. ' +
+      ejemplosBusquedaPara(cuerpo);
     sinResultados = true;
   } else {
     return null;

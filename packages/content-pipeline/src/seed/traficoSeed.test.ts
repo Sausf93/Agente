@@ -94,6 +94,20 @@ describe('SEED_TRAFICO: la negativa a la prueba es un delito (vía penal)', () =
     expect(detencion!.textoCorto.toLowerCase()).toMatch(/procede|puede/);
     expect(detencion!.textoCorto.toLowerCase()).not.toMatch(/\bdeten\b|\bdetén\b/);
   });
+
+  it('temeraria y negativa llevan la REGLA del motor de detención (árbol + "Leer derechos")', () => {
+    for (const id of ['inf-conduccion-temeraria', 'inf-negativa-prueba']) {
+      const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+      const det = item!.consecuencias.find((c) => c.tipo === 'detencion');
+      expect(det, id).toBeDefined();
+      // La regla la construye el helper compartido: sin ella la ficha no pintaba el árbol (regresión).
+      const regla = det!.regla as Record<string, unknown>;
+      expect(regla.motor, id).toBe('detencion');
+      expect(regla.gravedadCp, id).toBe('menos_grave');
+      expect(regla.escenarioBase, id).toBeDefined();
+      expect(regla.orientacionBase, id).toBe('procede');
+    }
+  });
 });
 
 describe('SEED_TRAFICO: alcohol y drogas usan su marco de importe propio', () => {

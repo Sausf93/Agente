@@ -36,7 +36,12 @@ export interface ConsecuenciaFicha {
  * la presencia de puntos). La derivación vive aquí (carga), no en la pantalla, para que sea pura
  * y testeable.
  */
-export type FichaKind = 'penal' | 'seguridad_ciudadana' | 'trafico' | 'administrativa';
+export type FichaKind =
+  | 'penal'
+  | 'seguridad_ciudadana'
+  | 'trafico'
+  | 'administrativa'
+  | 'extranjeria';
 
 /** Un tile de dato clave de la ficha (importe / pronto pago / puntos / tramo). */
 export interface TileFicha {
@@ -108,10 +113,15 @@ interface FilaConsecuencia {
 /**
  * Deriva el `FichaKind` a partir de los datos que ya trae el paquete. Reglas, en orden:
  *  1. Vía penal (o gravedad `delito`) → `penal` (manda la pena y la detención, no importes).
- *  2. Norma de seguridad ciudadana (LO 4/2015, código `LOSC`) → `seguridad_ciudadana` (sin puntos).
- *  3. Detrae puntos → `trafico` (solo el tráfico detrae puntos).
- *  4. Norma de tráfico por su código (LSV/RGC/RGV/LRCSCVM…) → `trafico`.
- *  5. Resto → `administrativa` (importe, sin puntos ni tramo).
+ *  2. Norma de EXTRANJERÍA (LO 4/2000, código `LOEX`) → `extranjeria`: la sanción real suele ser la
+ *     EXPULSIÓN, no la multa; NO se destaca el importe (501 €) como dato principal (ADR-004, §4.4).
+ *  3. Norma de seguridad ciudadana (LO 4/2015, código `LOSC`) → `seguridad_ciudadana` (sin puntos).
+ *  4. Detrae puntos → `trafico` (solo el tráfico detrae puntos).
+ *  5. Norma de tráfico por su código (LSV/RGC/RGV/LRCSCVM…) → `trafico`.
+ *  6. Resto → `administrativa` (importe, sin puntos ni tramo).
+ *
+ * (El `marcoImporte` del pipeline —`extranjeria`, `penal`…— no viaja en el paquete; aquí se DERIVA
+ * del código de norma, que sí viaja, para dar el mismo trato a la ficha jurídicamente delicada.)
  */
 export function fichaKindFrom(f: {
   tipo: TipoInfraccion;
@@ -120,6 +130,7 @@ export function fichaKindFrom(f: {
   normaCodigo: string;
 }): FichaKind {
   if (f.tipo === 'penal' || f.gravedad === 'delito') return 'penal';
+  if (/\bLOEX\b|extranjer/i.test(f.normaCodigo)) return 'extranjeria';
   if (/\bLOSC\b|seguridad ciudadana/i.test(f.normaCodigo)) return 'seguridad_ciudadana';
   if (f.puntos !== null) return 'trafico';
   if (/\bLSV\b|\bRGC\b|\bRGV\b|\bLRCSCVM\b|circulaci|tr[aá]fico/i.test(f.normaCodigo)) {
@@ -141,6 +152,9 @@ const TRAMO_LABEL: Partial<Record<Gravedad, string>> = {
  *  - `penal`: NINGUNO (usa el bloque "Marco penal", no tiles de tráfico).
  *  - `trafico`: importe* + pronto pago? + puntos?
  *  - `seguridad_ciudadana`: importe* + pronto pago? + tramo (cualitativo; NUNCA puntos).
+ *  - `extranjeria`: "Sanción: multa o expulsión" (cualitativo, MANDA) + multa mínima DE-ENFATIZADA.
+ *    La sanción real de la estancia irregular suele ser la expulsión, no la multa (§4.4, ADR-004);
+ *    por eso el importe NO va como tile de acento.
  *  - `administrativa`: importe* + pronto pago?
  *
  * `formatEuros` se inyecta para no acoplar este módulo (puro, testeable) al formato de la UI.
@@ -150,6 +164,15 @@ export function tilesFicha(
   formatEuros: (n: number | null) => string,
 ): TileFicha[] {
   if (ficha.fichaKind === 'penal') return [];
+  // Extranjería: el dato principal NO es el importe. Se muestra la naturaleza de la sanción (multa
+  // o expulsión) como tile que manda, y la multa mínima solo como referencia de-enfatizada.
+  if (ficha.fichaKind === 'extranjeria') {
+    const tiles: TileFicha[] = [{ etiqueta: 'Sanción', valor: 'Multa o expulsión' }];
+    if (ficha.importeEur !== null) {
+      tiles.push({ etiqueta: 'Multa desde', valor: formatEuros(ficha.importeEur) });
+    }
+    return tiles;
+  }
   const tiles: TileFicha[] = [];
   if (ficha.importeEur !== null) {
     tiles.push({ etiqueta: 'Importe', valor: formatEuros(ficha.importeEur), enfasis: true });
@@ -188,6 +211,7 @@ export type AccionOperativaKind =
   | 'deposito'
   | 'decomiso'
   | 'retirada'
+  | 'identificacion'
   | 'detencion';
 
 export interface AccionOperativa {
@@ -198,8 +222,11 @@ export interface AccionOperativa {
   detalle: string;
   /** Fuente (artículo) de la consecuencia que la origina; `null` en el estado positivo. */
   fuente: string | null;
-  /** Tono semántico FIJO: `coercitivo` (rojo) o `positivo` (verde). Nunca el acento por cuerpo. */
-  tono: 'coercitivo' | 'positivo';
+  /**
+   * Tono semántico FIJO (nunca el acento por cuerpo): `coercitivo` (rojo), `positivo` (verde) o
+   * `informativo` (azul) para la identificación por vía administrativa —ni "sigue" ni detención—.
+   */
+  tono: 'coercitivo' | 'positivo' | 'informativo';
 }
 
 /** Orden de prioridad: la medida más coercitiva manda sobre el resto si concurren varias. */
@@ -261,13 +288,37 @@ export function accionOperativaFrom(input: {
       };
     }
   }
+
   // Sin medida coercitiva: en un delito no forzamos "sigue" (sería falso); manda el bloque penal.
   if (input.fichaKind === 'penal') return null;
-  const sujeto = input.fichaKind === 'seguridad_ciudadana' ? 'La persona' : 'El vehículo';
+  // El sujeto es PERSONA cuando no hay vehículo de por medio (seguridad ciudadana, extranjería).
+  const sujetoPersona =
+    input.fichaKind === 'seguridad_ciudadana' || input.fichaKind === 'extranjeria';
+
+  // IDENTIFICACIÓN por vía administrativa (extranjería, art. 53.1.a / 61 LOEX): el mensaje CLAVE es
+  // que NO procede la detención PENAL por la mera estancia irregular. Solo aplica al SUJETO PERSONA
+  // (no a un caso de tráfico donde el sujeto es el vehículo, que sigue circulando).
+  const identificacion = input.consecuencias.find((c) => c.tipo === 'identificacion');
+  if (sujetoPersona && identificacion) {
+    return {
+      kind: 'identificacion',
+      titulo: 'Identificar · vía administrativa · NO detención penal',
+      detalle:
+        'Procede identificar y comprobar la documentación; la situación se tramita por vía ' +
+        'administrativa (multa o expulsión, art. 53.1.a LOEX). Cualquier internamiento cautelar lo ' +
+        'acuerda la autoridad competente con los requisitos del art. 61 LOEX.',
+      fuente: identificacion.fuente,
+      tono: 'informativo',
+    };
+  }
+
+  const sujeto = sujetoPersona ? 'La persona' : 'El vehículo';
   return {
     kind: 'sigue',
     titulo: `${sujeto} sigue · solo denuncia`,
-    detalle: 'Sin medida sobre el vehículo o la persona: únicamente se formula el boletín.',
+    detalle: sujetoPersona
+      ? 'Sin medida sobre la persona: únicamente se formula el boletín/denuncia.'
+      : 'Sin medida sobre el vehículo: únicamente se formula el boletín.',
     fuente: null,
     tono: 'positivo',
   };

@@ -559,6 +559,7 @@ const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
   deposito: Truck,
   decomiso: Ban,
   retirada: FileText,
+  identificacion: Fingerprint,
   detencion: Gavel,
 };
 
@@ -569,9 +570,20 @@ const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
  * (artículo) cuando la medida nace de una consecuencia.
  */
 function AccionOperativaBanner({ t, accion }: { t: Theme; accion: AccionOperativa }) {
-  const positivo = accion.tono === 'positivo';
-  const fg = positivo ? t.color.success : t.color.danger;
-  const bg = positivo ? t.color.successBg : t.color.dangerBg;
+  // Color semántico FIJO por tono: verde (sigue), azul (identificación administrativa) o rojo
+  // (medida coercitiva). Siempre color + texto + icono (nunca solo color, regla UI 2.4).
+  const fg =
+    accion.tono === 'positivo'
+      ? t.color.success
+      : accion.tono === 'informativo'
+        ? t.color.info
+        : t.color.danger;
+  const bg =
+    accion.tono === 'positivo'
+      ? t.color.successBg
+      : accion.tono === 'informativo'
+        ? t.color.infoBg
+        : t.color.dangerBg;
   const Icon = ACCION_ICON[accion.kind];
   const a11y = `Acción operativa: ${accion.titulo}. ${accion.detalle}${
     accion.fuente ? ` Fuente: ${accion.fuente}.` : ''

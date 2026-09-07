@@ -2,10 +2,12 @@ import {
   FTS_PESOS_BM25_ARTICULO_ORDENADOS,
   FTS_PESOS_BM25_ORDENADOS,
   normalizarBusqueda,
+  type Ambito,
   type Gravedad,
   type TipoConsecuencia,
 } from '@agente/shared';
 import type { SqlRunner } from '@/db/sqlRunner';
+import { filtroTerritorialSql } from '@/db/territorio';
 import { pistaConsecuencia, type PistaConsecuencia } from './resaltar';
 
 /**
@@ -31,6 +33,8 @@ export interface ResultadoBusqueda {
   /** Código de norma + nº de artículo, p. ej. "RGC 18". */
   normaCodigo: string;
   articuloNumero: string;
+  /** Ámbito de la infracción (estatal/autonómico/municipal): distingue una ordenanza de lo estatal. */
+  ambito: Ambito;
   /** `true` si entró por coincidencia EXACTA de sinónimo (se muestra primero). */
   porSinonimoExacto: boolean;
   /** Consecuencia determinante (grúa / inmovilización / detención) para el chip inline, o `null`. */
@@ -45,6 +49,7 @@ interface FilaInfraccion {
   importe_eur: number | null;
   norma_codigo: string;
   articulo_numero: string;
+  ambito: Ambito;
 }
 
 /**
@@ -149,20 +154,30 @@ export function extractoArticulo(texto: string, max: number = EXTRACTO_MAX): str
 export async function buscarInfracciones(
   runner: SqlRunner,
   consulta: string,
+  cadena: readonly string[] = [],
 ): Promise<ResultadoBusqueda[]> {
   const consultaNorm = normalizarBusqueda(consulta);
   if (consultaNorm.length === 0) return [];
 
-  // Paso 1: sinónimos EXACTOS (van siempre arriba).
+  // Filtro territorial (ADR-006/008): lo estatal (territorio_id NULL) siempre; lo municipal solo
+  // si su territorio está en la cadena del perfil. Evita que la ordenanza de un municipio salga a
+  // un agente de otro. Se compone sobre `i.territorio_id` en el lookup exacto Y en el FTS.
+  const filtroExacto = filtroTerritorialSql(cadena, 'i.territorio_id');
+
+  // Paso 1: sinónimos EXACTOS (van siempre arriba). Se une a `infraccion` para poder filtrar por
+  // territorio (el sinónimo no lleva territorio; lo lleva su infracción).
   const exactos = await runner.getAll<{ infraccion_id: string }>(
-    `SELECT DISTINCT infraccion_id
-       FROM sinonimo
-      WHERE termino_normalizado = ? AND infraccion_id IS NOT NULL`,
-    [consultaNorm],
+    `SELECT DISTINCT s.infraccion_id AS infraccion_id
+       FROM sinonimo s
+       JOIN infraccion i ON i.id = s.infraccion_id
+      WHERE s.termino_normalizado = ? AND s.infraccion_id IS NOT NULL
+        AND ${filtroExacto.sql}`,
+    [consultaNorm, ...filtroExacto.params],
   );
   const idsExactos = exactos.map((r) => r.infraccion_id);
 
-  // Paso 2: FTS5 ponderado (bm25 con los pesos del contrato).
+  // Paso 2: FTS5 ponderado (bm25 con los pesos del contrato), unido a `infraccion` para el filtro
+  // territorial (el FTS externo no guarda el territorio; lo aporta la fila de infracción).
   const pesos = FTS_PESOS_BM25_ORDENADOS.join(', ');
   const match = construirConsultaFts(consultaNorm);
   let idsFts: string[] = [];
@@ -171,10 +186,12 @@ export async function buscarInfracciones(
       const filas = await runner.getAll<{ infraccion_id: string; score: number }>(
         `SELECT b.infraccion_id AS infraccion_id, bm25(busqueda, ${pesos}) AS score
            FROM busqueda b
+           JOIN infraccion i ON i.id = b.infraccion_id
           WHERE busqueda MATCH ?
+            AND ${filtroExacto.sql}
           ORDER BY score
           LIMIT ?`,
-        [match, LIMITE_RESULTADOS],
+        [match, ...filtroExacto.params, LIMITE_RESULTADOS],
       );
       idsFts = filas.map((f) => f.infraccion_id);
     } catch {
@@ -189,7 +206,7 @@ export async function buscarInfracciones(
   // Hidratación: una sola consulta con IN (...); luego se reordena en JS según el ranking.
   const placeholders = orden.map(() => '?').join(', ');
   const filas = await runner.getAll<FilaInfraccion>(
-    `SELECT i.id AS infraccion_id, i.titulo_corto, i.gravedad, i.importe_eur,
+    `SELECT i.id AS infraccion_id, i.titulo_corto, i.gravedad, i.importe_eur, i.ambito,
             a.numero AS articulo_numero, n.codigo AS norma_codigo
        FROM infraccion i
        JOIN articulo a ON a.id = i.articulo_id
@@ -225,6 +242,7 @@ export async function buscarInfracciones(
       importeEur: f.importe_eur,
       normaCodigo: f.norma_codigo,
       articuloNumero: f.articulo_numero,
+      ambito: f.ambito,
       porSinonimoExacto: exactosSet.has(id),
       pista: pistaConsecuencia(tiposPorId.get(id) ?? []),
     });
@@ -243,11 +261,16 @@ export async function buscarArticulos(
   runner: SqlRunner,
   consulta: string,
   excluir: ReadonlySet<string> = new Set(),
+  cadena: readonly string[] = [],
 ): Promise<ResultadoArticulo[]> {
   const consultaNorm = normalizarBusqueda(consulta);
   const match = construirConsultaFts(consultaNorm);
   if (match.length === 0) return [];
 
+  // Filtro territorial (ADR-006/008): el articulado municipal (p. ej. la ordenanza de un municipio)
+  // solo se ve si su territorio está en la cadena. El artículo no lleva territorio propio; lo hereda
+  // de su norma, así que se filtra sobre `n.territorio_id` uniendo articulo→norma.
+  const filtro = filtroTerritorialSql(cadena, 'n.territorio_id');
   const pesos = FTS_PESOS_BM25_ARTICULO_ORDENADOS.join(', ');
   let filasFts: FilaArticuloFts[] = [];
   try {
@@ -255,11 +278,14 @@ export async function buscarArticulos(
       `SELECT b.articulo_id AS articulo_id, b.norma_codigo AS norma_codigo,
               bm25(busqueda_articulo, ${pesos}) AS score
          FROM busqueda_articulo b
+         JOIN articulo a ON a.id = b.articulo_id
+         JOIN norma    n ON n.id = a.norma_id
         WHERE busqueda_articulo MATCH ?
+          AND ${filtro.sql}
         ORDER BY score
         LIMIT ?`,
       // Pedimos margen (excluidos + límite) para poder descartar y aun así llenar la sección.
-      [match, LIMITE_ARTICULOS + excluir.size],
+      [match, ...filtro.params, LIMITE_ARTICULOS + excluir.size],
     );
   } catch {
     return []; // MATCH inválido: la búsqueda de infracciones sigue funcionando aparte.
@@ -305,12 +331,13 @@ export async function buscarArticulos(
 export async function buscarTodo(
   runner: SqlRunner,
   consulta: string,
+  cadena: readonly string[] = [],
 ): Promise<ResultadosBusqueda> {
-  const infracciones = await buscarInfracciones(runner, consulta);
+  const infracciones = await buscarInfracciones(runner, consulta, cadena);
   const excluir = new Set(
     infracciones.map((r) => `${r.normaCodigo}::${r.articuloNumero}`),
   );
-  const articulos = await buscarArticulos(runner, consulta, new Set());
+  const articulos = await buscarArticulos(runner, consulta, new Set(), cadena);
   // Descarta artículos que ya se muestran como fuente de una infracción (misma norma+número).
   const filtrados = articulos.filter(
     (a) => !excluir.has(`${a.normaCodigo}::${a.numero}`),

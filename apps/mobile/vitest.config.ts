@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 /**
@@ -12,6 +13,11 @@ import { defineConfig } from 'vitest/config';
  * para una fase posterior (React Native Testing Library / Maestro). Ver ADR-010.
  */
 export default defineConfig({
+  // El alias `@` → `src` (mismo que tsconfig `paths` y el module-resolver de Babel) permite que los
+  // módulos bajo prueba usen imports de VALOR `@/...` (p. ej. `@/db/territorio`), no solo de tipo.
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   test: {
     include: ['src/**/*.test.ts'],
     environment: 'node',

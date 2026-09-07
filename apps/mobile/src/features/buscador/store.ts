@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { normalizarBusqueda } from '@agente/shared';
 import { getContentRunner } from '@/db/contentDb';
+import { cadenaTerritorialDe } from '@/db/territorio';
 import { recordSearchMiss } from '@/db/userDb';
 import { hapticWarning } from '@/ui/haptics';
+import { useSettingsStore } from '@/store/settings';
 import { buscarTodo, type ResultadoArticulo, type ResultadoBusqueda } from './search';
 
 /**
@@ -60,7 +62,11 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
         if (token === runToken) set({ sinContenido: true, buscando: false, buscado: true });
         return;
       }
-      const { infracciones, articulos } = await buscarTodo(runner, termino);
+      // Cadena territorial del perfil (ADR-006/008): la ordenanza municipal solo la ve el agente de
+      // ese municipio; el resto solo ve lo estatal. Se lee del perfil de ajustes en el momento de
+      // buscar (no viaja a ningún servidor; todo es local).
+      const cadena = cadenaTerritorialDe(useSettingsStore.getState());
+      const { infracciones, articulos } = await buscarTodo(runner, termino, cadena);
       if (token !== runToken) return; // llegó tarde: hay una búsqueda más nueva
       set({
         resultados: infracciones,

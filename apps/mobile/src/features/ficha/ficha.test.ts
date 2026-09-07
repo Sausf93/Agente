@@ -79,6 +79,12 @@ describe('fichaKindFrom', () => {
       fichaKindFrom({ tipo: 'administrativa', gravedad: 'leve', puntos: null, normaCodigo: 'ORD-MUNI' }),
     ).toBe('administrativa');
   });
+
+  it('la LO 4/2000 (código LOEX) es `extranjeria` (no se destaca el importe)', () => {
+    expect(
+      fichaKindFrom({ tipo: 'administrativa', gravedad: 'grave', puntos: null, normaCodigo: 'LOEX' }),
+    ).toBe('extranjeria');
+  });
 });
 
 describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
@@ -141,6 +147,23 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
     });
     expect(ficha.fichaKind).toBe('administrativa');
     expect(tilesFicha(ficha, formatEuros).map((x) => x.etiqueta)).toEqual(['Importe']);
+  });
+
+  it('extranjería: la sanción (multa o expulsión) MANDA y el importe NO se destaca (sin énfasis)', () => {
+    const ficha = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'grave',
+      normaCodigo: 'LOEX',
+      importeEur: 501,
+      importeReducidoEur: null,
+      puntos: null,
+    });
+    expect(ficha.fichaKind).toBe('extranjeria');
+    const tiles = tilesFicha(ficha, formatEuros);
+    expect(tiles.map((x) => x.etiqueta)).toEqual(['Sanción', 'Multa desde']);
+    expect(tiles[0]).toMatchObject({ valor: 'Multa o expulsión' });
+    // El importe (501 €) va DE-ENFATIZADO: nunca como tile de acento (enfasis).
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
   });
 });
 
@@ -215,5 +238,31 @@ describe('accionOperativaFrom — qué hace el agente con el vehículo/persona',
     expect(a?.kind).toBe('detencion');
     expect(a?.titulo).toContain('detención');
     expect(a?.tono).toBe('coercitivo');
+  });
+
+  it('extranjería con identificación: "Identificar · vía administrativa · NO detención penal" (informativo), NUNCA "el vehículo sigue"', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'extranjeria',
+      consecuencias: cons('identificacion'),
+    });
+    expect(a?.kind).toBe('identificacion');
+    expect(a?.tono).toBe('informativo');
+    expect(a?.titulo).toMatch(/NO detención penal/);
+    expect(a?.titulo).not.toMatch(/veh[íi]culo/i);
+    expect(a?.fuente).toBe('art. X (identificacion)');
+  });
+
+  it('extranjería SIN medida: el sujeto es la PERSONA, no el vehículo', () => {
+    const a = accionOperativaFrom({ fichaKind: 'extranjeria', consecuencias: [] });
+    expect(a?.kind).toBe('sigue');
+    expect(a?.titulo).toMatch(/^La persona sigue/);
+  });
+
+  it('en un delito, una detención concurrente manda sobre la identificación', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'penal',
+      consecuencias: cons('identificacion', 'detencion'),
+    });
+    expect(a?.kind).toBe('detencion');
   });
 });

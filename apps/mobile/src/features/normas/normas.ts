@@ -1,5 +1,6 @@
 import { Cuerpo, normalizarBusqueda, type Ambito, type TipoNorma } from '@agente/shared';
 import type { SqlRunner } from '@/db/sqlRunner';
+import { filtroTerritorialSql } from '@/db/territorio';
 
 /**
  * NÚCLEO de la pestaña NORMAS (§4.5), agnóstico del motor SQLite.
@@ -282,24 +283,9 @@ export function agruparNormasPorBloque(normas: readonly NormaResumen[]): Seccion
 // Filtro territorial (capa por territorio, ADR-006/008): estatal + cadena del perfil
 // ---------------------------------------------------------------------------
 
-/**
- * Construye la cláusula SQL que filtra el contenido por la CADENA TERRITORIAL del perfil
- * (`[ccaaId, provinciaId, municipioId]`, sin nulos). Lo estatal (`territorio_id IS NULL`) es
- * SIEMPRE visible; lo autonómico/municipal solo si su territorio está en la cadena. Con cadena
- * vacía (perfil sin territorio), solo lo estatal. Pura y determinista → cubierta por tests.
- *
- * Devuelve el fragmento sin `WHERE` y sus parámetros, para poder componerlo en distintas consultas
- * (la de normas y, a futuro, la del buscador). El caller antepone `WHERE`/`AND` según convenga.
- */
-export function filtroTerritorialSql(
-  cadena: readonly string[],
-  columna: string,
-): { sql: string; params: string[] } {
-  const ids = cadena.filter((id) => id.length > 0);
-  if (ids.length === 0) return { sql: `${columna} IS NULL`, params: [] };
-  const placeholders = ids.map(() => '?').join(', ');
-  return { sql: `(${columna} IS NULL OR ${columna} IN (${placeholders}))`, params: [...ids] };
-}
+// `filtroTerritorialSql` vive ahora en `@/db/territorio` (fuente única, reutilizada también por el
+// Buscador §4.3). Se re-exporta aquí para no romper los imports existentes de la pestaña Normas.
+export { cadenaTerritorialDe, filtroTerritorialSql } from '@/db/territorio';
 
 // ---------------------------------------------------------------------------
 // Consultas al paquete (usan SqlRunner; combinan SQL con las funciones puras)

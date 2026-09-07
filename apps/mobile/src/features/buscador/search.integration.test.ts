@@ -160,3 +160,42 @@ suite('buscador en dos niveles: infracciones + artículos de la ley', () => {
     expect(articulos).toEqual([]);
   });
 });
+
+/**
+ * Filtro TERRITORIAL del buscador (ADR-006/008): la ordenanza municipal de un municipio (piloto:
+ * Santa Cruz de Tenerife) solo debe salir al agente de ESE municipio. Un agente de otro municipio
+ * (o sin territorio) solo ve lo estatal. Cubre el mismo contrato que Normas, ahora en Buscar.
+ */
+suite('buscador: filtro territorial de la ordenanza municipal', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  /** Cadena territorial de un Policía Local de Santa Cruz de Tenerife (Canarias). */
+  const CADENA_SCTF = ['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife'];
+  /** Cadena de un Local de otro municipio (no debe ver la ordenanza ajena). */
+  const CADENA_OTRO_MUNICIPIO = ['es-ccaa-05', 'es-prov-38', 'mun-la-laguna'];
+
+  it('un agente de OTRO municipio NO ve la ordenanza de SCTF ("perro suelto")', async () => {
+    const { infracciones } = await buscarTodo(runner, 'perro suelto', CADENA_OTRO_MUNICIPIO);
+    expect(infracciones.every((r) => !r.infraccionId.startsWith('ord-sctf-'))).toBe(true);
+  });
+
+  it('sin territorio (perfil neutro) tampoco ve la ordenanza municipal', async () => {
+    const infracciones = await buscarInfracciones(runner, 'perro suelto');
+    expect(infracciones.every((r) => !r.infraccionId.startsWith('ord-sctf-'))).toBe(true);
+  });
+
+  it('un Local de SCTF SÍ ve su ordenanza ("perro suelto" → ord-sctf-perro-suelto)', async () => {
+    const { infracciones } = await buscarTodo(runner, 'perro suelto', CADENA_SCTF);
+    expect(infracciones.map((r) => r.infraccionId)).toContain('ord-sctf-perro-suelto');
+  });
+
+  it('el articulado municipal de SCTF tampoco fuga a otro municipio', async () => {
+    const propios = await buscarArticulos(runner, 'animales vía pública', new Set(), CADENA_SCTF);
+    const ajenos = await buscarArticulos(runner, 'animales vía pública', new Set(), CADENA_OTRO_MUNICIPIO);
+    // El artículo de la ordenanza de animales (norma municipal de SCTF) solo aparece para SCTF.
+    const esMunicipalSctf = (id: string): boolean => id.startsWith('OM-SCTF-');
+    expect(ajenos.every((a) => !esMunicipalSctf(a.articuloId))).toBe(true);
+    // (No exigimos que aparezca para SCTF: depende del ranking FTS; sí que NUNCA aparezca al ajeno.)
+    void propios;
+  });
+});

@@ -12,6 +12,7 @@ import {
   type Sustancia,
 } from '@agente/shared';
 import { hashTexto } from '../parsers/boe-xml/hash.js';
+import { reglaDetencion } from './detencion.js';
 
 /**
  * SEED de infracciones de tráfico "de calle" (Fase 1, sección 8 de la especificación).
@@ -468,7 +469,13 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     Consecuencia.parse({
       id: `${input.id}:cons-${i}`,
       tipo: c.tipo,
-      regla: {},
+      // La consecuencia de DETENCIÓN lleva la `regla` del motor (mismo helper que el seed penal),
+      // para que la ficha pinte el árbol interactivo y el botón "Leer derechos". Sin gravedad penal
+      // no se puede modelar el árbol → cae a `{}` (no debería ocurrir en un delito bien sembrado).
+      regla:
+        c.tipo === 'detencion' && input.gravedadPenal
+          ? reglaDetencion(input.gravedadPenal)
+          : {},
       textoCorto: c.textoCorto,
       fuente: c.fuente,
       infraccionId: input.id,
@@ -990,6 +997,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     importeEur: null,
     importeReducidoEur: null,
     puntos: null,
+    // Art. 383 CP: prisión de 6 meses a 1 año → MENOS GRAVE (art. 33 CP). La gravedad penal alimenta
+    // el motor de detención (mismo que el seed penal) para que la ficha pinte el árbol y "Leer derechos".
+    penaTexto: 'Prisión de 6 meses a 1 año y privación del derecho a conducir de 1 a 4 años (art. 383 CP)',
+    gravedadPenal: 'menos_grave',
     textoBoletin:
       'Negarse, requerido por el agente, a someterse a las pruebas legalmente establecidas de ' +
       'detección de alcohol o de presencia de drogas. Es un delito autónomo del art. 383 CP, ' +
@@ -1081,7 +1092,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_140,
     tituloCorto: 'Manipulación del tacógrafo o exceso de tiempos',
     gravedad: 'muy_grave',
-    // LOTT art. 143: tramo muy grave (referencia mínima 1.001 €); a verificar el importe exacto.
+    // LOTT art. 143: tramo muy grave (referencia 2.001 €); a verificar el importe exacto.
     importeEur: 2001,
     importeReducidoEur: null,
     puntos: null,
@@ -1116,8 +1127,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     marcoImporte: 'transporte',
     notaRevision:
       'A VERIFICAR el importe y la clasificación exactos: la LOTT (art. 140/143, reformada por la ' +
-      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija 1.001 € ' +
-      'como referencia mínima del tramo, pendiente de confirmar contra el texto consolidado y su ' +
+      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija 2.001 € ' +
+      'como referencia del tramo, pendiente de confirmar contra el texto consolidado y su ' +
       'reglamento (RD 1211/1990). A VERIFICAR además la frontera penal: la manipulación puede ser ' +
       'delito de falsedad (arts. 390/395 CP), lo que abriría la vía penal. No detrae puntos DGT. ' +
       'Consúltese el artículo para el importe efectivo. Revisar con el revisor jurídico.',

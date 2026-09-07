@@ -75,21 +75,23 @@ describe('SEED_ORDENANZAS: calidad de contenido (§8.3)', () => {
 });
 
 describe('SEED_ORDENANZAS: cobertura de lo más usado por un Local', () => {
-  it('siembra VMP/patinete, zona azul, animales y ruido', () => {
+  it('siembra VMP/patinete, animales y ruido', () => {
     expect(porId('ord-sctf-vmp-acera')).toBeDefined();
-    expect(porId('ord-sctf-zona-azul')).toBeDefined();
     expect(porId('ord-sctf-perro-suelto')).toBeDefined();
     expect(porId('ord-sctf-ruido-convivencia')).toBeDefined();
   });
 
-  it('la zona azul avisa de que su implantación/cuantía está por confirmar (2026)', () => {
-    const za = porId('ord-sctf-zona-azul')!;
-    expect(za.notaRevision.toLowerCase()).toContain('2026');
-    expect(za.notaRevision.toLowerCase()).toMatch(/orientativ/);
+  it('la ZONA AZUL se ha retirado del piloto (no operativa en 2026; importe sin fuente)', () => {
+    // El revisor jurídico retiró `ord-sctf-zona-azul`: la zona azul aún no está operativa en Santa
+    // Cruz y sus 60/30 € eran una cifra sin fuente sobre una norma inexistente.
+    expect(porId('ord-sctf-zona-azul')).toBeUndefined();
+    const terminos = SEED_ORDENANZAS.infracciones.flatMap((i) => i.sinonimos.map((s) => s.termino));
+    expect(terminos).not.toContain('zona azul tenerife');
   });
 
-  it('los sinónimos de la zona azul incluyen "zona azul tenerife" (búsqueda de calle)', () => {
-    const za = porId('ord-sctf-zona-azul')!;
-    expect(za.sinonimos.map((s) => s.termino)).toContain('zona azul tenerife');
+  it('el ruido/convivencia es LEVE (300 € queda por debajo del mínimo del tramo grave del ruido)', () => {
+    const ruido = porId('ord-sctf-ruido-convivencia')!;
+    expect(ruido.infraccion.gravedad).toBe('leve');
+    expect(ruido.infraccion.importeEur).toBe(300);
   });
 });

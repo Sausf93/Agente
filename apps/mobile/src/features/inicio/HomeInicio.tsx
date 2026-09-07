@@ -46,7 +46,7 @@ import { useCuadranteStore } from '@/features/cuadrante/store';
 import type { Favorito } from '@/db/userDb';
 import { useRecientesStore } from '@/features/buscador/recientesStore';
 import { useSettingsStore } from '@/store/settings';
-import { accesosRapidosPara } from './accesosRapidos';
+import { accesosRapidosPara, type AccesoDestino } from './accesosRapidos';
 import { useFavoritosStore } from './favoritosStore';
 import { useInicioStore } from './inicioStore';
 import type { InfraccionSnapshot, UsoInfraccion } from './masUsadas';
@@ -123,6 +123,18 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
     }, [cargarFavoritos, cargarInicio, cargarRecientes, cuadranteLoaded, cargarCuadrante]),
   );
 
+  // Cada acceso rápido actúa según su DESTINO: `buscar` teclea en el buscador; `ruta` abre una
+  // pantalla directa (p. ej. "Leer derechos" → /derechos). Así ningún acceso de cabecera intenta
+  // una búsqueda que devolvería "nada exacto".
+  const irAAcceso = useCallback(
+    (destino: AccesoDestino) => {
+      hapticSelection();
+      if (destino.tipo === 'ruta') router.push(destino.valor);
+      else onQuickSearch(destino.valor);
+    },
+    [router, onQuickSearch],
+  );
+
   return (
     <ScrollView
       style={{ flex: 1 }}
@@ -134,7 +146,7 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <AccesosRapidos t={t} cuerpo={cuerpo} onQuickSearch={onQuickSearch} />
+      <AccesosRapidos t={t} cuerpo={cuerpo} onAcceso={irAAcceso} />
 
       {recientes.length > 0 ? (
         <Recientes t={t} recientes={recientes} onQuickSearch={onQuickSearch} />
@@ -191,27 +203,26 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
 function AccesosRapidos({
   t,
   cuerpo,
-  onQuickSearch,
+  onAcceso,
 }: {
   t: Theme;
   cuerpo: Cuerpo | null;
-  onQuickSearch: (term: string) => void;
+  onAcceso: (destino: AccesoDestino) => void;
 }) {
-  const terminos = accesosRapidosPara(cuerpo);
+  const accesos = accesosRapidosPara(cuerpo);
   return (
     <View style={{ gap: t.spacing.sm }}>
       <TituloSeccion t={t} titulo="Accesos rápidos" />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
-        {terminos.map((termino) => {
-          const Icon = ACCESO_ICON[termino] ?? Search;
+        {accesos.map((acceso) => {
+          const Icon = ACCESO_ICON[acceso.label] ?? Search;
+          const esRuta = acceso.destino.tipo === 'ruta';
           return (
           <PressableScale
-            key={termino}
-            accessibilityLabel={`Buscar ${termino}`}
-            onPress={() => {
-              hapticSelection();
-              onQuickSearch(termino);
-            }}
+            key={acceso.label}
+            accessibilityRole="button"
+            accessibilityLabel={esRuta ? acceso.label : `Buscar ${acceso.label}`}
+            onPress={() => onAcceso(acceso.destino)}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -226,7 +237,9 @@ function AccesosRapidos({
             }}
           >
             <Icon size={16} color={t.color.textSecondary} strokeWidth={2} />
-            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{termino}</Text>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
+              {acceso.label}
+            </Text>
           </PressableScale>
           );
         })}

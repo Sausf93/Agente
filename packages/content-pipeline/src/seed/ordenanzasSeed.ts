@@ -95,7 +95,7 @@ export const NORMAS_ORDENANZAS_SEED: Norma[] = [
   normaMunicipal({
     id: ID_OM_CIRC,
     codigo: 'OM-CIRC-SCTF',
-    titulo: 'Ordenanza municipal de circulación (Santa Cruz de Tenerife)',
+    titulo: 'Ordenanza Municipal de Circulación y Movilidad (Santa Cruz de Tenerife)',
     url: URL_OM_CIRC,
   }),
   normaMunicipal({
@@ -149,17 +149,10 @@ const ART_CIRC_VMP = articuloSeed({
     'consúltese el texto consolidado en la sede electrónica del Ayuntamiento.',
 });
 
-const ART_CIRC_ESTAC = articuloSeed({
-  normaId: ID_OM_CIRC,
-  numero: 'EST',
-  titulo: 'Estacionamiento en zona de estacionamiento regulado (zona azul/ORA)',
-  texto:
-    'Regula el estacionamiento en las zonas de estacionamiento regulado del municipio (zona azul y ' +
-    'zona verde de residentes). Obliga a obtener y exhibir el título habilitante (ticket o ' +
-    'distintivo) durante el tiempo autorizado y prohíbe estacionar sin él o rebasando el tiempo ' +
-    'abonado. Resumen orientativo; consúltese la ordenanza y su ordenanza fiscal en la sede ' +
-    'electrónica del Ayuntamiento.',
-});
+// NOTA (revisor jurídico, 2026-09): la ZONA AZUL/ORA en Santa Cruz de Tenerife AÚN NO está
+// operativa (proyecto 2026-2028). Se retira su artículo y su ficha (`ord-sctf-zona-azul`) del
+// piloto: sus importes (60/30 €) eran una cifra sin fuente sobre una norma inexistente. Volverán
+// cuando el Ayuntamiento apruebe y ponga en vigor la ordenanza reguladora y su ordenanza fiscal.
 
 const ART_ANIM_VIA = articuloSeed({
   normaId: ID_OM_ANIM,
@@ -196,7 +189,6 @@ const ART_RUIDO_CONV = articuloSeed({
 
 export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
-  ART_CIRC_ESTAC,
   ART_ANIM_VIA,
   ART_ANIM_CENSO,
   ART_RUIDO_CONV,
@@ -324,35 +316,9 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'los MENORES de 16 en VMP (cita ~100 €). Confirmar el artículo exacto, el umbral de edad y la ' +
       'cuantía con el texto consolidado en la sede electrónica y con el revisor jurídico.',
   }),
-  construirInfraccion({
-    id: 'ord-sctf-zona-azul',
-    articulo: ART_CIRC_ESTAC,
-    tituloCorto: 'Zona azul: estacionar sin ticket o rebasando el tiempo',
-    gravedad: 'leve',
-    importeEur: 60,
-    importeReducidoEur: 30,
-    textoBoletin:
-      'Estacionar en una zona de estacionamiento regulado (zona azul) sin obtener y exhibir el título ' +
-      'habilitante, o permaneciendo estacionado una vez rebasado el tiempo abonado, incumpliendo la ' +
-      'ordenanza reguladora del estacionamiento.',
-    terminos: [
-      'zona azul',
-      'zona azul tenerife',
-      'zona azul santa cruz',
-      'ora',
-      'sin ticket zona azul',
-      'zona azul sin pagar',
-      'aparcar zona azul',
-      'estacionamiento regulado',
-      'tiempo excedido zona azul',
-    ],
-    notaRevision:
-      'A VERIFICAR con MÁXIMA cautela: Santa Cruz de Tenerife IMPLANTA el estacionamiento regulado ' +
-      '(zona azul/verde) a lo largo de 2026; a la fecha del seed puede NO estar plenamente en vigor. ' +
-      'La cuantía (importe base y pronto pago) la fija la ORDENANZA REGULADORA y su ordenanza fiscal; ' +
-      'los 60/30 € son ORIENTATIVOS de referencia, NO confirmados. Confirmar vigencia, artículo y ' +
-      'cuantía con la sede electrónica y el revisor jurídico ANTES de publicar.',
-  }),
+  // `ord-sctf-zona-azul` ELIMINADA (revisor jurídico, 2026-09): la zona azul aún no está operativa
+  // en Santa Cruz (proyecto 2026-2028) y sus 60/30 € eran una cifra sin fuente sobre una norma
+  // inexistente. Se reincorporará cuando el Ayuntamiento apruebe y ponga en vigor su ordenanza.
   construirInfraccion({
     id: 'ord-sctf-perro-suelto',
     articulo: ART_ANIM_VIA,
@@ -427,8 +393,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'ord-sctf-ruido-convivencia',
     articulo: ART_RUIDO_CONV,
+    // Reclasificada a LEVE (revisor jurídico, 2026-09): 300 € queda por debajo del mínimo del tramo
+    // GRAVE de la Ley del Ruido (Ley 37/2003), por lo que encaja como infracción LEVE de convivencia.
     tituloCorto: 'Ruido y molestias vecinales (música, escándalo)',
-    gravedad: 'grave',
+    gravedad: 'leve',
     importeEur: 300,
     importeReducidoEur: 150,
     textoBoletin:
@@ -448,9 +416,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: los ruidos molestos se sancionan por la Ordenanza de ruidos y ' +
-      'vibraciones (tramos leve/grave/muy grave). El importe (300/150 €) es ORIENTATIVO; confirmar ' +
-      'artículo, tramo y cuantía con el texto consolidado y el revisor jurídico. Puede requerir medición ' +
-      'sonométrica para acreditar el exceso.',
+      'vibraciones (tramos leve/grave/muy grave). Reclasificada a LEVE porque 300 € queda por debajo del ' +
+      'mínimo del tramo GRAVE de la Ley 37/2003 del Ruido; el importe (300/150 €) es ORIENTATIVO. ' +
+      'Confirmar artículo, tramo y cuantía con el texto consolidado y el revisor jurídico. Puede requerir ' +
+      'medición sonométrica para acreditar el exceso.',
   }),
 ];
 

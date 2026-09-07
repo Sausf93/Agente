@@ -6,12 +6,12 @@ import {
   Sinonimo,
   evaluarDetencion,
   textoConsecuenciaDetencion,
-  type EntradaDetencion,
   type EstadoRevision,
   type GravedadPenal,
   type MarcoImporte,
 } from '@agente/shared';
 import { hashTexto } from '../parsers/boe-xml/hash.js';
+import { escenarioBaseDetencion, reglaDetencion } from './detencion.js';
 import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
 
 /**
@@ -214,17 +214,6 @@ interface DelitoSeedInput {
   notaRevision: string;
 }
 
-/**
- * Escenario BASE con el que se materializa la consecuencia estática de la ficha: se asume el
- * caso más habitual en el que el agente se plantea la detención, el DELITO FLAGRANTE (art. 490),
- * con domicilio conocido (lo que solo cambia el resultado en el delito leve, art. 495). El árbol
- * interactivo de la app partirá de este escenario y dejará al agente activar/desactivar cada
- * circunstancia, alimentando el mismo `evaluarDetencion`.
- */
-function escenarioBase(gravedadCp: GravedadPenal): EntradaDetencion {
-  return { gravedadCp, flagrancia: true, domicilioConocido: true };
-}
-
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
   const infraccion = Infraccion.parse({
     id: input.id,
@@ -262,19 +251,14 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     }),
   );
 
-  // La consecuencia de detención SALE DEL MOTOR (una sola fuente de verdad para ficha y árbol).
-  const base = escenarioBase(input.gravedadCp);
-  const resultado = evaluarDetencion(base);
+  // La consecuencia de detención SALE DEL MOTOR (una sola fuente de verdad para ficha y árbol). La
+  // `regla` la construye el helper compartido `reglaDetencion` (mismo que usa el seed de tráfico).
+  const resultado = evaluarDetencion(escenarioBaseDetencion(input.gravedadCp));
   const consecuencia = Consecuencia.parse({
     id: `${input.id}:cons-detencion`,
     tipo: 'detencion',
     // `regla` guarda el escenario base y la orientación: el árbol interactivo lo rehidrata.
-    regla: {
-      motor: 'detencion',
-      gravedadCp: input.gravedadCp,
-      escenarioBase: base,
-      orientacionBase: resultado.orientacion,
-    },
+    regla: reglaDetencion(input.gravedadCp),
     textoCorto: textoConsecuenciaDetencion(resultado),
     fuente: [`CP art. ${input.articulo.numero}`, ...resultado.fuentes].join('; '),
     infraccionId: input.id,

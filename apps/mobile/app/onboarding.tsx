@@ -88,8 +88,9 @@ export default function OnboardingScreen() {
     };
   }, []);
 
+  // El municipio da acceso a su ordenanza para cualquier cuerpo que trabaje uno (Local y también
+  // autonómico, p. ej. Policía Canaria): por eso no se limita a `esLocal`.
   const municipioTieneOrdenanza =
-    esLocal &&
     municipio.trim().length > 0 &&
     municipiosConOrdenanza.has(slugMunicipio(municipio.trim()));
 
@@ -131,13 +132,16 @@ export default function OnboardingScreen() {
   async function terminar() {
     if (!puedeTerminar || cuerpo === null) return;
     const nombre = municipio.trim();
+    // Se persiste el municipio SIEMPRE que se teclee, no solo para Policía Local: un Policía
+    // Autonómico (p. ej. Policía Canaria en Tenerife) también trabaja un municipio y necesita su
+    // ordenanza en Normas y Buscar. Sin municipio tecleado → null (solo estatal/autonómico).
     await completeOnboarding({
       cuerpo,
       policiaAutonomica: esAutonomica ? autonomica : null,
       ccaaId: ccaaActual,
       provinciaId,
-      municipioId: esLocal && nombre ? slugMunicipio(nombre) : null,
-      municipioNombre: esLocal && nombre ? nombre : null,
+      municipioId: nombre ? slugMunicipio(nombre) : null,
+      municipioNombre: nombre ? nombre : null,
     });
     router.replace('/');
   }
@@ -427,10 +431,10 @@ function Paso2({
           }}
         />
         <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-          {!esLocal
-            ? 'Solo obligatorio para Policía Local.'
-            : municipioTieneOrdenanza
-              ? 'Obligatorio para Policía Local. ¡Tenemos tu ordenanza! La verás en Normas y Buscar.'
+          {municipioTieneOrdenanza
+            ? '¡Tenemos tu ordenanza! La verás en Normas y Buscar.'
+            : !esLocal
+              ? 'Solo obligatorio para Policía Local. Si trabajas un municipio, escríbelo para ver su ordenanza.'
               : 'Obligatorio para Policía Local. Si aún no está tu ordenanza, podrás solicitárnosla desde Normas para priorizarla.'}
         </Text>
       </View>
