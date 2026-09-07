@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GravedadPenal } from './enums.js';
+import { GravedadPenal, TramoEdadAutor } from './enums.js';
 
 /**
  * MOTOR DE REGLAS DE DETENCIÓN (LECrim) — sección 4.6 de la especificación.
@@ -28,6 +28,24 @@ export const PIE_DETENCION =
   'Orientación basada en LECrim; la valoración de los indicios y del riesgo corresponde al ' +
   'agente y, en su caso, a la autoridad judicial.';
 
+/**
+ * Pie de responsabilidad de la RAMA MENOR (LO 5/2000). Sustituye al `PIE_DETENCION` cuando la
+ * edad del autor abre el régimen penal del menor (§6 de la spec jurídica).
+ */
+export const PIE_DETENCION_MENOR =
+  'Orientación basada en la LECrim y en la LO 5/2000 (responsabilidad penal del menor); la ' +
+  'valoración de los indicios, del riesgo y del régimen aplicable corresponde al agente y, en su ' +
+  'caso, al Ministerio Fiscal de Menores y a la autoridad judicial.';
+
+/**
+ * Pie de responsabilidad de la RAMA EXTRANJERÍA (LO 4/2000). Sustituye al `PIE_DETENCION` cuando
+ * el hecho es solo migratorio/administrativo (§6 de la spec jurídica).
+ */
+export const PIE_EXTRANJERIA =
+  'Orientación basada en la LO 4/2000 (extranjería); la calificación del hecho, la sanción (multa ' +
+  'o expulsión) y el eventual internamiento corresponden al procedimiento administrativo y a la ' +
+  'autoridad judicial, no a una detención penal policial.';
+
 // --- Citas de artículos (fuente única de las referencias que devuelve el motor) -------------
 const ART_33_CP = 'CP art. 33'; // gravedad de la pena → leve / menos grave / grave
 const ART_490 = 'LECrim art. 490'; // flagrancia, intento, fuga, rebeldía
@@ -36,6 +54,20 @@ const ART_492_3 = 'LECrim art. 492.3'; // riesgo de incomparecencia
 const ART_492_4 = 'LECrim art. 492.4'; // indicios racionales de delito + de participación
 const ART_493 = 'LECrim art. 493'; // si no se detiene: identificar y dar cuenta al juzgado
 const ART_495 = 'LECrim art. 495'; // delito leve: no cabe detención salvo sin domicilio ni fianza
+
+// --- Citas de la RAMA MENOR (LO 5/2000, responsabilidad penal del menor) --------------------
+const ART_LORPM_1_1 = 'LO 5/2000 art. 1.1'; // ámbito 14-18: régimen penal del menor
+const ART_LORPM_3 = 'LO 5/2000 art. 3'; // menor de 14: inimputable, protección de menores
+const ART_LO_1_1996 = 'LO 1/1996'; // protección jurídica del menor
+const ART_LORPM_17 = 'LO 5/2000 art. 17'; // detención del menor: especialidades y garantías
+
+// --- Citas de la RAMA EXTRANJERÍA (LO 4/2000) -----------------------------------------------
+const ART_LOEX_53_1_A = 'LO 4/2000 art. 53.1.a'; // estancia irregular: infracción grave (no delito)
+const ART_LOEX_55_1 = 'art. 55.1'; // sanción de multa por tramos
+const ART_LOEX_57 = 'art. 57'; // expulsión (con preferencia en la estancia irregular)
+const ART_LOEX_58 = 'art. 58'; // efectos de la expulsión y prohibición de entrada
+const ART_LOEX_61 = 'art. 61'; // medidas cautelares del procedimiento
+const ART_LOEX_62 = 'art. 62'; // internamiento CIE: medida cautelar judicial
 
 /**
  * Resultado orientativo del árbol de detención.
@@ -46,8 +78,16 @@ const ART_495 = 'LECrim art. 495'; // delito leve: no cabe detención salvo sin 
  *    art. 495 (sin domicilio conocido ni fianza).
  *  - `no_procede_salvo`: por regla general no procede; procede identificar y dar cuenta al
  *    juzgado (art. 493). El `motivo` detalla qué requisito falta para que pudiera proceder.
+ *  - `no_detencion_penal`: el hecho NO encaja en el régimen penal de detención (autor menor de 14
+ *    años, inimputable; o estancia irregular, infracción administrativa). No hay "salvo": la vía
+ *    es la protección de menores (LO 5/2000) o el procedimiento de extranjería (LO 4/2000).
  */
-export const OrientacionDetencion = z.enum(['procede', 'puede_proceder', 'no_procede_salvo']);
+export const OrientacionDetencion = z.enum([
+  'procede',
+  'puede_proceder',
+  'no_procede_salvo',
+  'no_detencion_penal',
+]);
 export type OrientacionDetencion = z.infer<typeof OrientacionDetencion>;
 
 /**
@@ -76,6 +116,18 @@ export const EntradaDetencion = z.object({
   domicilioConocido: z.boolean().default(true),
   /** La persona prestaría fianza bastante (solo pesa en delito leve, art. 495). */
   prestariaFianza: z.boolean().default(false),
+  /**
+   * Tramo de edad del autor (LO 5/2000). Por defecto `adulto`: las fichas y los tests existentes
+   * que no lo informan siguen el árbol penal ordinario sin cambios. `menor_14` y `menor_14_17`
+   * activan las ramas del menor (§3-§4 de la spec jurídica).
+   */
+  edadAutor: TramoEdadAutor.default('adulto'),
+  /**
+   * Marca "solo hecho migratorio, sin ilícito penal" (LO 4/2000). Por defecto `false`. Es un
+   * discriminador de RAMA, no un agravante: la estancia irregular es infracción administrativa,
+   * no delito (art. 53.1.a). Si hay además un ilícito penal, NO se marca (se sigue el árbol penal).
+   */
+  soloHechoMigratorio: z.boolean().default(false),
 });
 export type EntradaDetencion = z.input<typeof EntradaDetencion>;
 /** Entrada ya normalizada (con los valores por defecto aplicados). */
@@ -91,8 +143,14 @@ export interface ResultadoDetencion {
   motivo: string;
   /** Artículos que sustentan la orientación (LECrim / art. 33 CP). Nunca vacío. */
   fuentes: string[];
-  /** Pie de responsabilidad fijo (`PIE_DETENCION`). */
+  /** Pie de responsabilidad: `PIE_DETENCION`, `PIE_DETENCION_MENOR` o `PIE_EXTRANJERIA` por rama. */
   pie: string;
+  /**
+   * Aviso DESTACADO de especialidades cuando interviene un menor (14-17: garantías del art. 17
+   * LO 5/2000; o menor en hecho migratorio: protección de menores / posible MENA). Ausente en el
+   * régimen ordinario de adultos. La UI lo pinta en un bloque propio bajo el resultado.
+   */
+  avisosMenor?: string;
 }
 
 /** Describe, en lenguaje natural, cuál(es) de las causas del art. 490 concurren. */
@@ -105,7 +163,105 @@ function describirCausa490(v: EntradaDetencionNormalizada): string {
 }
 
 /**
- * Evalúa el árbol de detención (LECrim) para un delito y unas circunstancias dadas.
+ * Aviso DESTACADO de las especialidades del régimen del menor 14-17 (art. 17 LO 5/2000). Texto
+ * literal de la spec jurídica (§4.2). Plazos «a verificar» por jurista antes de publicar.
+ */
+const AVISO_MENOR_14_17 =
+  'Régimen del menor (14-17 años): si se detiene, la detención policial no puede exceder de 24 ' +
+  'horas (art. 17.4 LO 5/2000, a verificar); custodia separada de los mayores (art. 17.3); ' +
+  'información inmediata y notificación a representantes legales y al Ministerio Fiscal de Menores ' +
+  '—no al juzgado de instrucción ordinario— (art. 17.1); puesta a disposición del Ministerio ' +
+  'Fiscal (art. 17.4-17.5). Si es extranjero, aviso a autoridades consulares.';
+
+/**
+ * Aviso DESTACADO cuando el hecho es solo migratorio y el autor es (o puede ser) menor: activa la
+ * protección de menores y el protocolo de menores extranjeros no acompañados (MENA). Orientativo.
+ */
+const AVISO_MENOR_MIGRATORIO =
+  'El autor es o puede ser menor de edad: además de la vía administrativa de extranjería, procede ' +
+  'activar la protección de menores y valorar el protocolo de menores extranjeros no acompañados ' +
+  '(MENA), con comunicación al Ministerio Fiscal de Menores (art. 3 LO 5/2000, en relación con la ' +
+  'LO 1/1996). La determinación de la minoría de edad corresponde a la autoridad.';
+
+/**
+ * RAMA A1 · Autor menor de 14 años (inimputable, art. 1.1 y 3 LO 5/2000). No hay detención penal:
+ * protección de menores. Texto literal de la spec jurídica (§4.1).
+ */
+function ramaMenor14(): ResultadoDetencion {
+  return {
+    orientacion: 'no_detencion_penal',
+    titulo: 'No procede la detención penal: autor menor de 14 años',
+    motivo:
+      'El autor es menor de catorce años y es penalmente inimputable (art. 1.1 y 3 LO 5/2000): no ' +
+      'se le aplica el régimen penal ni cabe detención penal. Procede su identificación con las ' +
+      'cautelas propias de un menor, la entrega a sus representantes legales o, en su defecto, la ' +
+      'puesta a disposición de la Entidad Pública de protección de menores, y la comunicación al ' +
+      'Ministerio Fiscal (art. 3 LO 5/2000, en relación con la LO 1/1996).',
+    fuentes: [ART_LORPM_1_1, ART_LORPM_3, ART_LO_1_1996],
+    pie: PIE_DETENCION_MENOR,
+  };
+}
+
+/**
+ * RAMA B1 · Solo hecho migratorio (estancia irregular, sin delito, LO 4/2000). No es detención
+ * penal: procedimiento administrativo de extranjería. Texto literal de la spec jurídica (§5.1). Si
+ * el autor es (o puede ser) menor, añade el aviso de protección de menores / posible MENA.
+ */
+function ramaSoloMigratorio(v: EntradaDetencionNormalizada): ResultadoDetencion {
+  const esMenor = v.edadAutor === 'menor_14' || v.edadAutor === 'menor_14_17';
+  return {
+    orientacion: 'no_detencion_penal',
+    titulo: 'No es detención penal: la estancia irregular es infracción administrativa',
+    motivo:
+      'La estancia irregular en España es una infracción administrativa grave, no un delito (art. ' +
+      '53.1.a LO 4/2000): no procede detención penal por ese motivo. Procede la identificación y, ' +
+      'en su caso, la incoación del procedimiento administrativo sancionador de extranjería, cuya ' +
+      'sanción puede ser multa (art. 55.1) o, con preferencia en la estancia irregular, la ' +
+      'expulsión (art. 57), con prohibición de entrada (art. 58). El posible internamiento en CIE ' +
+      'es una MEDIDA CAUTELAR que acuerda la autoridad judicial a instancia de la Administración ' +
+      '(arts. 61 y 62 LO 4/2000), no una detención penal policial.',
+    fuentes: [ART_LOEX_53_1_A, ART_LOEX_55_1, ART_LOEX_57, ART_LOEX_58, ART_LOEX_61, ART_LOEX_62],
+    pie: PIE_EXTRANJERIA,
+    ...(esMenor ? { avisosMenor: AVISO_MENOR_MIGRATORIO } : {}),
+  };
+}
+
+/**
+ * Evalúa el árbol de detención aplicando la PRECEDENCIA de la spec jurídica (§3): el primero que
+ * coincide gana.
+ *  1. `menor_14` → RAMA A1: no es detención penal (inimputable), protección de menores.
+ *  2. `soloHechoMigratorio` → RAMA B1: no es detención penal (vía administrativa de extranjería).
+ *  3. `menor_14_17` → árbol penal LECrim + OVERLAY de las especialidades del art. 17 LO 5/2000.
+ *  4. `adulto` (defecto) → árbol penal LECrim ordinario, SIN cambios.
+ */
+export function evaluarDetencion(entrada: EntradaDetencion): ResultadoDetencion {
+  const v = EntradaDetencion.parse(entrada);
+
+  // Precedencia §3.1: menor de 14 → inimputable, no hay detención penal.
+  if (v.edadAutor === 'menor_14') return ramaMenor14();
+
+  // Precedencia §3.2: solo hecho migratorio → vía administrativa de extranjería.
+  if (v.soloHechoMigratorio) return ramaSoloMigratorio(v);
+
+  // Precedencia §3.3-3.4: árbol penal LECrim (adulto o menor 14-17). El resultado base NO cambia.
+  const base = evaluarArbolPenal(v);
+
+  // Overlay del menor 14-17 (§4.2): mismo título/motivo/orientación, se AÑADEN garantías y fuente.
+  if (v.edadAutor === 'menor_14_17') {
+    return {
+      ...base,
+      fuentes: [...base.fuentes, ART_LORPM_17],
+      pie: PIE_DETENCION_MENOR,
+      avisosMenor: AVISO_MENOR_14_17,
+    };
+  }
+
+  return base;
+}
+
+/**
+ * Árbol de detención penal (LECrim) para un delito y unas circunstancias dadas. Régimen ordinario;
+ * las ramas de edad/extranjería se resuelven antes, en `evaluarDetencion`.
  *
  * Prioridad de las ramas:
  *  1. DELITO LEVE (art. 33 CP): el art. 495 rige POR ENCIMA del 490 → por regla general no cabe
@@ -116,9 +272,7 @@ function describirCausa490(v: EntradaDetencionNormalizada): string {
  *  4. En otro caso: no procede salvo que concurran esos requisitos; identificar y dar cuenta
  *     al juzgado (art. 493).
  */
-export function evaluarDetencion(entrada: EntradaDetencion): ResultadoDetencion {
-  const v = EntradaDetencion.parse(entrada);
-
+function evaluarArbolPenal(v: EntradaDetencionNormalizada): ResultadoDetencion {
   // --- Rama 1: DELITO LEVE (art. 495 rige por encima del 490) --------------------------------
   if (v.gravedadCp === 'leve') {
     const excepcion495 = !v.domicilioConocido && !v.prestariaFianza;

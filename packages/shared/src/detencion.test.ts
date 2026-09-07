@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   EntradaDetencion,
   PIE_DETENCION,
+  PIE_DETENCION_MENOR,
+  PIE_EXTRANJERIA,
   evaluarDetencion,
   textoConsecuenciaDetencion,
   type GravedadPenal,
@@ -187,6 +189,110 @@ describe('evaluarDetencion — valores por defecto de la entrada', () => {
   it('delito leve por defecto tiene domicilio conocido → no procede', () => {
     const r = evaluarDetencion({ gravedadCp: 'leve' });
     expect(r.orientacion).toBe('no_procede_salvo');
+  });
+});
+
+describe('evaluarDetencion — REGRESIÓN CERO: adulto por defecto = árbol penal actual', () => {
+  it('sin edadAutor ni soloHechoMigratorio, el resultado es idéntico a informarlos como adulto', () => {
+    const escenario: EntradaDetencion = { gravedadCp: 'menos_grave', flagrancia: true };
+    const sinCampos = evaluarDetencion(escenario);
+    const conAdulto = evaluarDetencion({
+      ...escenario,
+      edadAutor: 'adulto',
+      soloHechoMigratorio: false,
+    });
+    expect(sinCampos).toEqual(conAdulto);
+    // Y sigue sin avisos de menor (régimen ordinario).
+    expect(sinCampos.avisosMenor).toBeUndefined();
+    expect(sinCampos.pie).toBe(PIE_DETENCION);
+  });
+});
+
+describe('evaluarDetencion — RAMA A1: autor menor de 14 (inimputable, LO 5/2000)', () => {
+  it('no es detención penal, con protección de menores y sus fuentes', () => {
+    const r = evaluarDetencion({ gravedadCp: 'grave', flagrancia: true, edadAutor: 'menor_14' });
+    expect(r.orientacion).toBe('no_detencion_penal');
+    expect(r.titulo).toMatch(/menor de 14 años/);
+    expect(r.motivo).toMatch(/inimputable/);
+    expect(r.fuentes).toEqual(['LO 5/2000 art. 1.1', 'LO 5/2000 art. 3', 'LO 1/1996']);
+    expect(r.pie).toBe(PIE_DETENCION_MENOR);
+  });
+
+  it('precede a cualquier circunstancia penal (la edad cortocircuita el árbol)', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'grave',
+      flagrancia: true,
+      fugaORebeldia: true,
+      edadAutor: 'menor_14',
+    });
+    expect(r.orientacion).toBe('no_detencion_penal');
+    // No cita la LECrim del árbol penal.
+    expect(r.fuentes).not.toContain('LECrim art. 490');
+  });
+
+  it('precede incluso al hecho migratorio (§3.1 gana a §3.2)', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'leve',
+      edadAutor: 'menor_14',
+      soloHechoMigratorio: true,
+    });
+    expect(r.titulo).toMatch(/menor de 14 años/);
+    expect(r.fuentes).toContain('LO 5/2000 art. 3');
+  });
+});
+
+describe('evaluarDetencion — RAMA B1: solo hecho migratorio (extranjería, LO 4/2000)', () => {
+  it('no es detención penal, con vía administrativa y sus fuentes', () => {
+    const r = evaluarDetencion({ gravedadCp: 'grave', soloHechoMigratorio: true });
+    expect(r.orientacion).toBe('no_detencion_penal');
+    expect(r.titulo).toMatch(/infracción administrativa/);
+    expect(r.motivo).toMatch(/estancia irregular/);
+    expect(r.fuentes).toEqual([
+      'LO 4/2000 art. 53.1.a',
+      'art. 55.1',
+      'art. 57',
+      'art. 58',
+      'art. 61',
+      'art. 62',
+    ]);
+    expect(r.pie).toBe(PIE_EXTRANJERIA);
+    // Adulto: sin aviso de menor.
+    expect(r.avisosMenor).toBeUndefined();
+  });
+
+  it('menor 14-17 + solo migratorio → añade aviso de protección de menores / MENA', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'grave',
+      soloHechoMigratorio: true,
+      edadAutor: 'menor_14_17',
+    });
+    expect(r.orientacion).toBe('no_detencion_penal');
+    expect(r.avisosMenor).toMatch(/MENA/);
+    expect(r.avisosMenor).toMatch(/protección de menores/);
+    expect(r.pie).toBe(PIE_EXTRANJERIA);
+  });
+});
+
+describe('evaluarDetencion — RAMA A2: menor 14-17 (overlay del art. 17 LO 5/2000)', () => {
+  it('mantiene el título/motivo/orientación penal base y AÑADE garantías + fuente 17', () => {
+    const adulto = evaluarDetencion({ gravedadCp: 'grave', flagrancia: true });
+    const menor = evaluarDetencion({ gravedadCp: 'grave', flagrancia: true, edadAutor: 'menor_14_17' });
+    // El resultado base no se toca: misma orientación, título y motivo.
+    expect(menor.orientacion).toBe(adulto.orientacion);
+    expect(menor.titulo).toBe(adulto.titulo);
+    expect(menor.motivo).toBe(adulto.motivo);
+    // Overlay: fuente del art. 17 y aviso destacado del régimen del menor.
+    expect(menor.fuentes).toEqual([...adulto.fuentes, 'LO 5/2000 art. 17']);
+    expect(menor.avisosMenor).toMatch(/24 horas/);
+    expect(menor.avisosMenor).toMatch(/Ministerio Fiscal de Menores/);
+    expect(menor.pie).toBe(PIE_DETENCION_MENOR);
+  });
+
+  it('cuando el árbol penal no procede, sigue sin proceder pero con las garantías del menor', () => {
+    const r = evaluarDetencion({ gravedadCp: 'leve', edadAutor: 'menor_14_17' });
+    expect(r.orientacion).toBe('no_procede_salvo');
+    expect(r.avisosMenor).toMatch(/Régimen del menor/);
+    expect(r.fuentes).toContain('LO 5/2000 art. 17');
   });
 });
 

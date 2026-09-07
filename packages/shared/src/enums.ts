@@ -64,6 +64,15 @@ export type TipoConsecuencia = z.infer<typeof TipoConsecuencia>;
 export const GravedadPenal = z.enum(['leve', 'menos_grave', 'grave']);
 export type GravedadPenal = z.infer<typeof GravedadPenal>;
 
+/**
+ * Tramo de edad del autor, para el árbol de detención (LO 5/2000 responsabilidad penal del menor).
+ * `menor_14`: inimputable penalmente (art. 3 LO 5/2000) → protección de menores, no detención penal.
+ * `menor_14_17`: régimen penal del menor con especialidades del art. 17 LO 5/2000.
+ * `adulto`: régimen penal ordinario (defecto).
+ */
+export const TramoEdadAutor = z.enum(['menor_14', 'menor_14_17', 'adulto']);
+export type TramoEdadAutor = z.infer<typeof TramoEdadAutor>;
+
 /** Tipo de territorio en el catálogo (jerarquía INE). */
 export const TipoTerritorio = z.enum(['ccaa', 'provincia', 'municipio']);
 export type TipoTerritorio = z.infer<typeof TipoTerritorio>;

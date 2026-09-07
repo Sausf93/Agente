@@ -3,6 +3,7 @@ import { Pressable, Switch, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import {
+  AlertTriangle,
   ChevronDown,
   ChevronUp,
   ShieldAlert,
@@ -14,6 +15,7 @@ import {
   evaluarDetencion,
   type EntradaDetencionNormalizada,
   type GravedadPenal,
+  type TramoEdadAutor,
 } from '@agente/shared';
 
 /** Opciones del selector de gravedad de la pena (art. 33 CP), en orden ascendente. */
@@ -30,7 +32,10 @@ import { hapticSelection } from '@/ui/haptics';
 import { useReduceMotion } from '@/ui/motion';
 import {
   CIRCUNSTANCIAS_DETENCION,
+  MIGRATORIO_AYUDA,
+  MIGRATORIO_ETIQUETA,
   ORIENTACION_VISUAL,
+  TRAMOS_EDAD,
   parseReglaDetencion,
   type CampoCircunstancia,
   type TonoOrientacion,
@@ -83,6 +88,17 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
     if (entrada?.gravedadCp === g) return;
     hapticSelection();
     setEntrada((prev) => (prev ? { ...prev, gravedadCp: g } : prev));
+  }
+
+  function elegirEdad(edad: TramoEdadAutor) {
+    if (entrada?.edadAutor === edad) return;
+    hapticSelection();
+    setEntrada((prev) => (prev ? { ...prev, edadAutor: edad } : prev));
+  }
+
+  function alternarMigratorio(valor: boolean) {
+    hapticSelection();
+    setEntrada((prev) => (prev ? { ...prev, soloHechoMigratorio: valor } : prev));
   }
 
   return (
@@ -144,9 +160,37 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
         </Text>
       </Animated.View>
 
+      {/* AVISO DE MENOR destacado: especialidades del régimen del menor (art. 17 LO 5/2000) o
+          protección de menores / MENA en el hecho migratorio. Solo aparece cuando el motor lo da.
+          Color fijo de aviso (ámbar), con icono que refuerza el texto (nunca lo sustituye). */}
+      {resultado.avisosMenor ? (
+        <Animated.View
+          {...(reduceMotion ? {} : { entering: FadeIn.duration(t.motion.durFast) })}
+          style={{
+            flexDirection: 'row',
+            gap: t.spacing.sm,
+            borderRadius: t.radius.md,
+            borderWidth: 1,
+            borderColor: t.color.warning,
+            backgroundColor: t.color.warningBg,
+            padding: t.spacing.md,
+          }}
+        >
+          <AlertTriangle size={20} color={t.color.warning} strokeWidth={2.2} />
+          <View style={{ flex: 1, gap: t.spacing.xxs }}>
+            <Text style={{ color: t.color.warning, ...t.typography.scale.label }}>
+              Especialidades del menor
+            </Text>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+              {resultado.avisosMenor}
+            </Text>
+          </View>
+        </Animated.View>
+      ) : null}
+
       {/* Si la orientación es que la detención procede o puede proceder, ofrecer la lectura de
           derechos al detenido (art. 520, §4.11). Orientativo: el agente decide. */}
-      {resultado.orientacion !== 'no_procede_salvo' ? (
+      {resultado.orientacion === 'procede' || resultado.orientacion === 'puede_proceder' ? (
         <Button
           title="Leer derechos al detenido (art. 520)"
           variant="secondary"
@@ -186,6 +230,84 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
 
       {mostrarAfinar ? (
         <View style={{ gap: t.spacing.sm }}>
+          {/* EDAD del autor (3 tramos excluyentes, NO toggle): la edad puede cortocircuitar el
+              árbol penal (menor de 14 = inimputable; 14-17 = régimen del menor). §1.1. */}
+          <View style={{ gap: t.spacing.xs }}>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+              Edad del autor
+            </Text>
+            <View style={{ flexDirection: 'row', gap: t.spacing.xs }}>
+              {TRAMOS_EDAD.map((op) => {
+                const activo = entrada.edadAutor === op.valor;
+                return (
+                  <Pressable
+                    key={op.valor}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: activo }}
+                    accessibilityLabel={op.etiqueta}
+                    accessibilityHint={op.ayuda}
+                    onPress={() => elegirEdad(op.valor)}
+                    style={{
+                      flex: 1,
+                      minHeight: t.touch.min,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: t.spacing.xs,
+                      paddingHorizontal: t.spacing.xs,
+                      borderRadius: t.radius.md,
+                      borderWidth: 1,
+                      borderColor: activo ? t.color.accent : t.color.border,
+                      backgroundColor: activo ? t.color.accentWeak : t.color.surface,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: activo ? t.color.accent : t.color.textPrimary,
+                        ...t.typography.scale.caption,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {op.etiqueta}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+              {TRAMOS_EDAD.find((op) => op.valor === entrada.edadAutor)?.ayuda}
+            </Text>
+          </View>
+
+          {/* Toggle "Solo estancia irregular (sin delito)" con AYUDA ANTI-ERROR (§1.2): es un
+              discriminador de rama (extranjería), NO un agravante. */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: t.spacing.md,
+              minHeight: t.touch.min,
+              paddingVertical: t.spacing.xs,
+            }}
+          >
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+                {MIGRATORIO_ETIQUETA}
+              </Text>
+              <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+                {MIGRATORIO_AYUDA}
+              </Text>
+            </View>
+            <Switch
+              accessibilityLabel={MIGRATORIO_ETIQUETA}
+              accessibilityHint={MIGRATORIO_AYUDA}
+              value={entrada.soloHechoMigratorio}
+              onValueChange={alternarMigratorio}
+              trackColor={{ true: t.color.accent, false: t.color.surfaceAlt }}
+              thumbColor={t.color.surface}
+              ios_backgroundColor={t.color.surfaceAlt}
+            />
+          </View>
+
           {/* Gravedad del delito: cambia radicalmente la orientación (art. 33 CP). */}
           <View style={{ gap: t.spacing.xs }}>
             <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
