@@ -17,13 +17,18 @@ import type { CampoPlantilla, PlantillaDoc } from './campos';
  * LENGUAJE ORIENTATIVO en lo sensible (§4.6): "procede según el precepto citado", nunca imperativo.
  */
 
-/** Campos comunes del ENCABEZADO neutro (cuerpo/unidad como texto que el agente rellena). */
+/**
+ * Campos de IDENTIDAD del agente (encabezado neutro): cuerpo, unidad y nº de TIP. Se `recordar`an
+ * entre documentos para no reescribirlos cada vez, y NUNCA son datos de terceros. La app no imprime
+ * escudos ni denominaciones oficiales por defecto (§4.8, §10).
+ */
 function campoCuerpo(): CampoPlantilla {
   return {
     clave: 'cuerpo',
     etiqueta: 'Cuerpo o dependencia',
     tipo: 'texto',
     esDatoTercero: false,
+    seccion: 'identidad',
     recordar: true,
     placeholder: 'Ej.: Unidad de Seguridad Ciudadana',
     hint: 'Texto libre. La app no imprime escudos ni denominaciones oficiales.',
@@ -33,11 +38,25 @@ function campoCuerpo(): CampoPlantilla {
 function campoUnidad(): CampoPlantilla {
   return {
     clave: 'unidad',
-    etiqueta: 'Unidad, puesto o número de agente',
+    etiqueta: 'Unidad o puesto',
     tipo: 'texto',
     esDatoTercero: false,
+    seccion: 'identidad',
     recordar: true,
     placeholder: 'Ej.: Puesto de …',
+  };
+}
+
+function campoTip(): CampoPlantilla {
+  return {
+    clave: 'numeroTip',
+    etiqueta: 'Nº de TIP o carné profesional',
+    tipo: 'texto',
+    esDatoTercero: false,
+    seccion: 'identidad',
+    recordar: true,
+    placeholder: 'Ej.: 12345',
+    hint: 'Es tu identificación como agente, no un dato de terceros. Se recuerda para la próxima.',
   };
 }
 
@@ -47,6 +66,7 @@ const campoFecha: CampoPlantilla = {
   etiqueta: 'Fecha',
   tipo: 'fecha',
   esDatoTercero: false,
+  seccion: 'servicio',
   placeholder: 'dd/mm/aaaa',
 };
 const campoHora: CampoPlantilla = {
@@ -54,6 +74,7 @@ const campoHora: CampoPlantilla = {
   etiqueta: 'Hora',
   tipo: 'hora',
   esDatoTercero: false,
+  seccion: 'servicio',
   placeholder: 'hh:mm',
 };
 const campoLugar: CampoPlantilla = {
@@ -61,6 +82,7 @@ const campoLugar: CampoPlantilla = {
   etiqueta: 'Lugar (vía, punto kilométrico, municipio)',
   tipo: 'texto',
   esDatoTercero: false,
+  seccion: 'servicio',
   placeholder: 'Ej.: A-7, PK 623, término de …',
   hint: 'El punto kilométrico se autocompletará desde el mapa en una versión posterior.',
 };
@@ -69,6 +91,7 @@ const campoObservaciones: CampoPlantilla = {
   etiqueta: 'Observaciones',
   tipo: 'multilinea',
   esDatoTercero: false,
+  seccion: 'servicio',
   placeholder: 'Detalles del hecho, testigos, diligencias practicadas…',
   hint: 'No incluyas más datos personales de los imprescindibles.',
 };
@@ -88,7 +111,7 @@ function campoDocumento(): CampoPlantilla {
 // ---------------------------------------------------------------------------
 const BOLETIN_MD = `# Boletín de denuncia administrativa
 
-**{{cuerpo}}** · {{unidad}}
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
 
 Nº de boletín: {{numeroBoletin}}
 
@@ -132,7 +155,8 @@ const boletinDenuncia: PlantillaDoc = {
   campos: [
     campoCuerpo(),
     campoUnidad(),
-    { clave: 'numeroBoletin', etiqueta: 'Nº de boletín', tipo: 'texto', esDatoTercero: false },
+    campoTip(),
+    { clave: 'numeroBoletin', etiqueta: 'Nº de boletín', tipo: 'texto', esDatoTercero: false, seccion: 'servicio' },
     campoFecha,
     campoHora,
     campoLugar,
@@ -161,13 +185,14 @@ const boletinDenuncia: PlantillaDoc = {
       etiqueta: 'Hecho denunciado',
       tipo: 'multilinea',
       esDatoTercero: false,
+      seccion: 'legal',
       placeholder: 'Descripción del hecho (se prerrellena desde la ficha).',
     },
-    { clave: 'norma', etiqueta: 'Norma', tipo: 'texto', esDatoTercero: false },
-    { clave: 'articulo', etiqueta: 'Artículo', tipo: 'texto', esDatoTercero: false },
-    { clave: 'gravedad', etiqueta: 'Calificación (gravedad)', tipo: 'texto', esDatoTercero: false },
-    { clave: 'importe', etiqueta: 'Importe de la sanción', tipo: 'texto', esDatoTercero: false },
-    { clave: 'puntos', etiqueta: 'Puntos a detraer', tipo: 'texto', esDatoTercero: false },
+    { clave: 'norma', etiqueta: 'Norma', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    { clave: 'articulo', etiqueta: 'Artículo', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    { clave: 'gravedad', etiqueta: 'Calificación (gravedad)', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    { clave: 'importe', etiqueta: 'Importe de la sanción', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    { clave: 'puntos', etiqueta: 'Puntos a detraer', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
     campoObservaciones,
   ],
 };
@@ -177,7 +202,7 @@ const boletinDenuncia: PlantillaDoc = {
 // ---------------------------------------------------------------------------
 const INMOVILIZACION_MD = `# Acta de inmovilización de vehículo
 
-**{{cuerpo}}** · {{unidad}}
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
 
 En **{{lugar}}**, a las **{{hora}}** horas del día **{{fecha}}**, se procede a la inmovilización del vehículo que se describe, al concurrir causa legal para ello.
 
@@ -216,6 +241,7 @@ const actaInmovilizacion: PlantillaDoc = {
   campos: [
     campoCuerpo(),
     campoUnidad(),
+    campoTip(),
     campoFecha,
     campoHora,
     campoLugar,
@@ -233,13 +259,15 @@ const actaInmovilizacion: PlantillaDoc = {
       etiqueta: 'Causa de la inmovilización',
       tipo: 'multilinea',
       esDatoTercero: false,
+      seccion: 'servicio',
     },
-    { clave: 'articulo', etiqueta: 'Precepto aplicable', tipo: 'texto', esDatoTercero: false },
+    { clave: 'articulo', etiqueta: 'Precepto aplicable', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
     {
       clave: 'deposito',
       etiqueta: 'Lugar de depósito o traslado',
       tipo: 'texto',
       esDatoTercero: false,
+      seccion: 'servicio',
     },
     campoObservaciones,
   ],
@@ -250,7 +278,7 @@ const actaInmovilizacion: PlantillaDoc = {
 // ---------------------------------------------------------------------------
 const IDENTIFICACION_MD = `# Diligencia de identificación
 
-**{{cuerpo}}** · {{unidad}}
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
 
 En **{{lugar}}**, a las **{{hora}}** horas del día **{{fecha}}**, se practica diligencia de identificación de la persona que se reseña, en el ejercicio de las funciones de indagación y prevención.
 
@@ -288,6 +316,7 @@ const diligenciaIdentificacion: PlantillaDoc = {
   campos: [
     campoCuerpo(),
     campoUnidad(),
+    campoTip(),
     campoFecha,
     campoHora,
     campoLugar,
@@ -306,13 +335,105 @@ const diligenciaIdentificacion: PlantillaDoc = {
       etiqueta: 'Motivo de la identificación',
       tipo: 'multilinea',
       esDatoTercero: false,
+      seccion: 'servicio',
     },
     {
       clave: 'amparo',
       etiqueta: 'Amparo legal',
       tipo: 'texto',
       esDatoTercero: false,
+      seccion: 'servicio',
       placeholder: 'Ej.: art. 16 LO 4/2015',
+    },
+    campoObservaciones,
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// 4. Acta de intervención de sustancias
+// ---------------------------------------------------------------------------
+const SUSTANCIAS_MD = `# Acta de intervención de sustancias
+
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
+
+En **{{lugar}}**, a las **{{hora}}** horas del día **{{fecha}}**, se procede a la intervención de las sustancias que se describen, a los efectos legales que correspondan.
+
+## Persona a la que se interviene
+
+- Nombre y apellidos: {{persona}}
+- Documento de identidad: {{documento}}
+
+## Sustancias intervenidas
+
+- Descripción y presunta naturaleza: {{sustancia}}
+- Cantidad o peso aproximado (bruto): {{cantidad}}
+- Nº de envoltorios o unidades: {{envoltorios}}
+
+Precepto aplicable: **{{articulo}}**.
+
+Lugar de depósito o remisión: {{deposito}}
+
+## Observaciones
+
+{{observaciones}}
+
+---
+
+Orientación: la naturaleza y el peso son provisionales, a expensas del análisis oficial; la intervención se ajustará a la normativa aplicable y a la valoración del agente y, en su caso, de la autoridad competente. Firma del agente actuante: __________
+`;
+
+const actaIntervencionSustancias: PlantillaDoc = {
+  id: 'seed-acta-intervencion-sustancias',
+  tipo: 'acta_intervencion_sustancias',
+  titulo: 'Acta de intervención de sustancias',
+  descripcion: 'Intervención de sustancias con su descripción, peso provisional y precepto.',
+  cuerpoAplicable: [],
+  version: 1,
+  markdownConVariables: SUSTANCIAS_MD,
+  campos: [
+    campoCuerpo(),
+    campoUnidad(),
+    campoTip(),
+    campoFecha,
+    campoHora,
+    campoLugar,
+    {
+      clave: 'persona',
+      etiqueta: 'Persona a la que se interviene (nombre y apellidos)',
+      tipo: 'texto',
+      esDatoTercero: true,
+    },
+    campoDocumento(),
+    {
+      clave: 'sustancia',
+      etiqueta: 'Descripción y presunta naturaleza',
+      tipo: 'multilinea',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: sustancia vegetal prensada, presuntamente hachís.',
+    },
+    {
+      clave: 'cantidad',
+      etiqueta: 'Cantidad o peso aproximado (bruto)',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: 12 g (peso de báscula de campo, provisional)',
+    },
+    {
+      clave: 'envoltorios',
+      etiqueta: 'Nº de envoltorios o unidades',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+    },
+    { clave: 'articulo', etiqueta: 'Precepto aplicable', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    {
+      clave: 'deposito',
+      etiqueta: 'Lugar de depósito o remisión',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
     },
     campoObservaciones,
   ],
@@ -322,6 +443,7 @@ const diligenciaIdentificacion: PlantillaDoc = {
 export const PLANTILLAS_SEED: PlantillaDoc[] = [
   boletinDenuncia,
   actaInmovilizacion,
+  actaIntervencionSustancias,
   diligenciaIdentificacion,
 ];
 
