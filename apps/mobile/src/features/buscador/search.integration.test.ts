@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SqlRunner } from '@/db/sqlRunner';
-import { buscarInfracciones } from './search';
+import { buscarArticulos, buscarInfracciones, buscarTodo } from './search';
 import { cargarFicha } from '../ficha/ficha';
 
 /**
@@ -14,9 +14,13 @@ import { cargarFicha } from '../ficha/ficha';
  * el pipeline para construirlo) a través de la MISMA interfaz `SqlRunner` que usa la app.
  *
  * Si el paquete no está generado, el test avisa y se salta (no rompe el CI en un checkout limpio):
- *   corepack pnpm -F @agente/content-pipeline build:content --offline
+ *   corepack pnpm -F @agente/content-pipeline build:content   # EN VIVO (BOE)
  *   cp packages/content-pipeline/output/contenido-0.1.0.sqlite \
  *      apps/mobile/assets/content/contenido-0.1.0.db
+ *
+ * Los tests del SEGUNDO NIVEL (artículos de la ley: "temeraria"→art. 380 CP, "alejamiento"→art.
+ * 468 CP) necesitan el paquete EN VIVO: el modo `--offline` solo trae el RGC (fixture) y no
+ * enriquece el Código Penal, así que esos casos no encontrarían el artículo.
  */
 
 // `node:sqlite` se carga con require nativo para evitar la transformación de vite-node
@@ -101,5 +105,58 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
 
   it('id inexistente → null', async () => {
     expect(await cargarFicha(runner, 'no-existe')).toBeNull();
+  });
+});
+
+/**
+ * Segundo nivel del buscador (§4.3): cobertura del ARTICULADO. El agente escribe un término
+ * legal SIN infracción curada ("temeraria", "alejamiento") y el buscador ya no dice "nada
+ * exacto": encuentra el artículo del BOE que viaja en el paquete. Las infracciones (la joya)
+ * siguen saliendo primero cuando existen.
+ */
+suite('buscador en dos niveles: infracciones + artículos de la ley', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  it('"hurto" sigue saliendo como INFRACCIÓN (del-hurto), la joya primero', async () => {
+    const { infracciones } = await buscarTodo(runner, 'hurto');
+    expect(infracciones.map((r) => r.infraccionId)).toContain('del-hurto');
+  });
+
+  it('"temeraria" (sin infracción curada) → artículo(s) de la ley, no "nada exacto"', async () => {
+    const { infracciones, articulos } = await buscarTodo(runner, 'temeraria');
+    // No hay infracción curada de conducción temeraria, pero el articulado la cubre.
+    expect(articulos.length).toBeGreaterThan(0);
+    // Debe aparecer el Código Penal (arts. 379-380 CP, conducción temeraria).
+    expect(articulos.some((a) => a.normaCodigo === 'CP')).toBe(true);
+    // Con o sin infracciones, el conjunto NO está vacío → la UI no muestra "nada exacto".
+    expect(infracciones.length + articulos.length).toBeGreaterThan(0);
+  });
+
+  it('"alejamiento" → quebrantamiento como infracción (sinónimo) y/o artículo del CP', async () => {
+    const { infracciones, articulos } = await buscarTodo(runner, 'alejamiento');
+    const idsInf = infracciones.map((r) => r.infraccionId);
+    const cubierto = idsInf.includes('del-quebrantamiento') || articulos.length > 0;
+    expect(cubierto).toBe(true);
+  });
+
+  it('"agresion" → lesiones como infracción (sinónimo de calle)', async () => {
+    const { infracciones } = await buscarTodo(runner, 'agresion');
+    expect(infracciones.map((r) => r.infraccionId)).toContain('del-lesiones');
+  });
+
+  it('buscarArticulos devuelve artículos con su código de norma, número y extracto', async () => {
+    const arts = await buscarArticulos(runner, 'temeraria');
+    expect(arts.length).toBeGreaterThan(0);
+    const a = arts[0]!;
+    expect(a.articuloId).toBeTruthy();
+    expect(a.normaCodigo).toBeTruthy();
+    expect(a.numero).toBeTruthy();
+    expect(a.extracto.length).toBeGreaterThan(0);
+  });
+
+  it('término sin sentido → sin infracciones y sin artículos (único caso de "nada exacto")', async () => {
+    const { infracciones, articulos } = await buscarTodo(runner, 'zzzzzz palabra inexistente');
+    expect(infracciones).toEqual([]);
+    expect(articulos).toEqual([]);
   });
 });

@@ -6,7 +6,8 @@ aquí y se sube `ESQUEMA_PAQUETE_VERSION` en `@agente/shared`.
 
 - Fuente única de constantes compartidas: `@agente/shared` →
   `ESQUEMA_PAQUETE_VERSION`, `TABLAS`, `FTS_COLUMNAS`, `FTS_TOKENIZER`, `FTS_PESOS_BM25`,
-  `FTS_PESOS_BM25_ORDENADOS`, `EstadoRevision`, `normalizarBusqueda()`.
+  `FTS_PESOS_BM25_ORDENADOS`, `FTS_COLUMNAS_ARTICULO`, `FTS_PESOS_BM25_ARTICULO(_ORDENADOS)`,
+  `EstadoRevision`, `normalizarBusqueda()`.
 - El paquete es **solo lectura** en el dispositivo. El FTS viene **precompilado** (la app no
   indexa; ADR-010, punto 5). Distribución firmada + **swap atómico** (ADR-010).
 
@@ -146,6 +147,20 @@ Columnas EN ORDEN (`FTS_COLUMNAS`): `titulo_corto`, `texto_boletin`, `sinonimos`
 (`unicode61 remove_diacritics 2`: pliega mayúsculas, tildes y ñ→n). Contenido insertado ya
 **normalizado** con `normalizarBusqueda`. Una fila por infracción.
 
+### `busqueda_articulo` (FTS5, virtual) — segundo nivel del buscador (§4.3)
+
+Cubre los términos legales SIN infracción curada ("temeraria", "alejamiento", "agresión")
+buscando en el ARTICULADO consolidado del BOE que ya viaja en el paquete. Columnas indexadas EN
+ORDEN (`FTS_COLUMNAS_ARTICULO`): `articulo_numero` (= `normalizarBusqueda("<código> <número>")`,
+p. ej. "cp 380"), `titulo`, `texto`; más `articulo_id` y `norma_codigo` **UNINDEXED** (recuperar
+la fila y pintar el código de norma). Mismo tokenizador y misma `normalizarBusqueda` que
+`busqueda`. **Una fila por artículo VIGENTE** (`valid_to IS NULL`). Es una tabla APARTE de
+`busqueda` para no mezclar el ranking de las infracciones (la joya) con el del articulado.
+
+> **Compatibilidad.** La tabla es ADITIVA: `ESQUEMA_PAQUETE_VERSION` sigue en `1`. Una app nueva
+> con un paquete viejo (sin esta tabla) degrada con elegancia — la consulta a `busqueda_articulo`
+> falla y se captura devolviendo lista vacía, sin romper la búsqueda de infracciones.
+
 ## Normalización
 
 `normalizarBusqueda(texto)` de shared: minúsculas, sin tildes (ni ñ), espacios colapsados. La
@@ -182,6 +197,24 @@ ORDER BY score;               -- ascendente: más negativo = más relevante
 
 Comprobado en tests: `"faro roto"`→`inf-alumbrado-deficiente`, `"sin seguro"`→`inf-sin-seguro`,
 `"móvil"`→`inf-movil-conduciendo` (tildes plegadas), `"rgc 18"`→`inf-movil-conduciendo`.
+
+### Segundo nivel: artículos de la ley (§4.3)
+
+Tras las infracciones, la app consulta `busqueda_articulo` (bm25 ponderado con
+`FTS_PESOS_BM25_ARTICULO_ORDENADOS`: `titulo=10, articulo_numero=6, texto=1`) y muestra una
+sección "En la ley" con los artículos coincidentes. Se descartan los artículos que ya son fuente
+de una infracción mostrada (misma norma+número). El estado "Nada exacto" solo aparece si no hay NI
+infracciones NI artículos.
+
+```sql
+SELECT b.articulo_id, b.norma_codigo, bm25(busqueda_articulo, 6, 10, 1) AS score
+FROM busqueda_articulo b
+WHERE busqueda_articulo MATCH :consultaPrefijos
+ORDER BY score;              -- ascendente: más negativo = más relevante
+```
+
+Comprobado en tests: `"temeraria"`→art. 380 CP (sin infracción curada), `"alejamiento"`→
+`del-quebrantamiento` + art. 468 CP, `"agresion"`→`del-lesiones`, `"hurto"`→`del-hurto`.
 
 ### Ejemplo — cargar una ficha (§4.4)
 

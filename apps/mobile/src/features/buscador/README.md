@@ -6,8 +6,11 @@ paquete de contenido SQLite que genera `@agente/content-pipeline`.
 ## Qué hay aquí
 
 - `search.ts` — núcleo del buscador (SQL + ranking), **agnóstico del motor** (solo depende de
-  `SqlRunner`). Ranking del contrato: **sinónimo exacto > FTS bm25 ponderado**. Normaliza la
-  consulta con `normalizarBusqueda` (misma función que usó el pipeline al indexar).
+  `SqlRunner`). Buscador en **dos niveles** (ADR-020): `buscarTodo` devuelve primero las
+  INFRACCIONES (sinónimo exacto > FTS `busqueda` bm25) y, debajo, los ARTÍCULOS de la ley
+  (`buscarArticulos` sobre el índice `busqueda_articulo`), para cubrir términos legales sin
+  infracción curada ("temeraria", "alejamiento"). Normaliza la consulta con `normalizarBusqueda`
+  (misma función que usó el pipeline al indexar).
 - `store.ts` / `BuscadorScreen.tsx` — estado (Zustand) y pantalla de la pestaña **Buscar** con
   `SearchBar`, debounce (~180 ms), lista de `ListRow` (título, gravedad color+texto, importe) y
   estados vacíos. Las búsquedas **sin resultado** se anotan en `userDb` (base para el diccionario
@@ -37,8 +40,10 @@ posterior; el **contrato de consulta ya es el definitivo**.
 ## Regenerar el paquete empaquetado
 
 ```bash
-# 1. Construir el paquete (offline usa el fixture del RGC; sin red)
-corepack pnpm -F @agente/content-pipeline build:content --offline
+# 1. Construir el paquete EN VIVO (BOE): trae el articulado completo, necesario para el segundo
+#    nivel del buscador (artículos). El modo --offline solo trae el RGC (fixture) y no sirve
+#    para probar "temeraria"/"alejamiento".
+corepack pnpm -F @agente/content-pipeline build:content
 
 # 2. Copiar el .sqlite a los assets de la app, con extensión .db
 cp packages/content-pipeline/output/contenido-0.1.0.sqlite \
@@ -60,6 +65,8 @@ Si cambia la versión de contenido, actualiza `BUNDLED_CONTENT_VERSION` y el `im
     - `"sin seguro"` → `inf-sin-seguro`, cuya ficha lleva **inmovilización** (orientativa + fuente).
     - `"móvil"` (tildes plegadas) → `inf-movil-conduciendo`.
     - `"rgc 18"` (por artículo) → `inf-movil-conduciendo`.
+    - **Segundo nivel (artículos):** `"temeraria"` → art. 380 CP (sin infracción curada),
+      `"alejamiento"` → `del-quebrantamiento` + art. 468 CP, `"agresion"` → `del-lesiones`.
 - **En dispositivo (Expo Go):** `corepack pnpm -F @agente/mobile start` y abrir en iOS/Android.
 
 ## Limitaciones conocidas

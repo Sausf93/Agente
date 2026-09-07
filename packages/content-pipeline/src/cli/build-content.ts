@@ -121,7 +121,7 @@ async function main(): Promise<void> {
     `  Tamaño:        ${(manifiesto.tamanoBytes / 1024).toFixed(1)} KiB`,
     '──────────────────────────────────────────────────────────────',
     `  Normas:        ${resumen.normas}`,
-    `  Artículos:     ${resumen.articulos}`,
+    `  Artículos:     ${resumen.articulos} (${resumen.articulosBuscables} buscables en la ley)`,
     `  Infracciones:  ${resumen.infracciones} (${resumen.pendientesRevision} pendientes de revisión)`,
     `  Sinónimos:     ${resumen.sinonimos}`,
     `  Consecuencias: ${resumen.consecuencias}`,
