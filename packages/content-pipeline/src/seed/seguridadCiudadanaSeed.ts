@@ -86,8 +86,9 @@ const ART_LOSC_16 = articuloLosc({
     'pueden realizar las comprobaciones precisas en la vía pública o en el lugar donde se hubiera hecho ' +
     'el requerimiento. Si la identificación no se logra por cualquier medio y resulta necesaria, se ' +
     'puede requerir a la persona que ACOMPAÑE a los agentes a las dependencias más próximas que cuenten ' +
-    'con medios para la identificación, por el TIEMPO IMPRESCINDIBLE (que no es una detención) y a los ' +
-    'solos efectos de identificarla. De esta actuación se extiende un LIBRO-REGISTRO/diligencia con ' +
+    'con medios para la identificación, por el TIEMPO IMPRESCINDIBLE, que en ningún caso podrá superar ' +
+    'las 6 horas (art. 16.2 LO 4/2015) —no es una detención— y a los solos efectos de identificarla. ' +
+    'De esta actuación se extiende un LIBRO-REGISTRO/diligencia con ' +
     'las causas, la identidad, el tiempo y las circunstancias. La negativa a identificarse o la ' +
     'alegación de datos falsos puede ser infracción del art. 36.6. Resumen orientativo; consúltese el ' +
     'texto consolidado en el BOE.',
@@ -322,7 +323,8 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'existan indicios de su participación en una infracción o cuando resulte necesario para prevenir ' +
       'un delito. REQUISITOS orientativos: motivo concreto, comprobaciones en el propio lugar y, solo ' +
       'si la identificación no se logra por otro medio y es necesaria, requerir que acompañe a las ' +
-      'dependencias por el TIEMPO IMPRESCINDIBLE y a los solos efectos de identificar. Este traslado ' +
+      'dependencias por el TIEMPO IMPRESCINDIBLE —que en ningún caso podrá superar las 6 horas ' +
+      '(art. 16.2 LO 4/2015)— y a los solos efectos de identificar. Este traslado ' +
       'NO es una detención: la persona no queda privada de libertad por un delito, no se le leen los ' +
       'derechos del detenido (art. 520 LECrim) y debe quedar constancia en el libro-registro/diligencia ' +
       '(causa, identidad, tiempo y circunstancias). Si la persona se niega a identificarse o aporta ' +
@@ -343,8 +345,9 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
         tipo: 'identificacion',
         textoCorto:
           'Procede requerir la identificación con un motivo concreto; el traslado a dependencias, ' +
-          'cuando sea imprescindible para identificar, es por el TIEMPO MÍNIMO y NO constituye ' +
-          'detención (no se leen los derechos del art. 520 LECrim). Levantar la diligencia/libro-registro.',
+          'cuando sea imprescindible para identificar, es por el TIEMPO MÍNIMO —que en ningún caso ' +
+          'podrá superar las 6 horas (art. 16.2 LO 4/2015)— y NO constituye detención (no se leen los ' +
+          'derechos del art. 520 LECrim). Levantar la diligencia/libro-registro.',
         fuente: 'LO 4/2015 art. 16',
       },
     ],
@@ -352,7 +355,8 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'ENTRADA CONSULTABLE, no infracción: el art. 16 LO 4/2015 regula la FACULTAD de identificación, ' +
       'no una sanción (por eso el marco es `no_sancionador` y no lleva importe). A VERIFICAR con el ' +
       'revisor jurídico: (i) los requisitos y límites del traslado a dependencias (tiempo ' +
-      'imprescindible, solo efectos de identificación, constancia en libro-registro), (ii) la ' +
+      'imprescindible, que en ningún caso podrá superar las 6 horas del art. 16.2 LO 4/2015, solo ' +
+      'efectos de identificación, constancia en libro-registro), (ii) la ' +
       'DIFERENCIA con la detención (art. 520 LECrim: no privación de libertad por delito, no lectura ' +
       'de derechos) y (iii) la presentación en la ficha de una entrada sin sanción (evitar que se ' +
       'muestre como un "tramo" sancionador). Confirmar redacción orientativa antes de publicar.',

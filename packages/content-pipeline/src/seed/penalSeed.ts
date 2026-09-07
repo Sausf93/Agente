@@ -208,13 +208,16 @@ const ART_CP_557 = articuloCp({
   numero: '557',
   titulo: 'Desórdenes públicos',
   texto:
-    'Castiga a quienes, actuando en grupo y con el fin de atentar contra la paz pública, alteren el ' +
-    'orden público causando lesiones a las personas, produciendo daños en las propiedades, ' +
-    'obstaculizando las vías públicas o los accesos de emergencia de forma peligrosa, o invadiendo ' +
-    'instalaciones o edificios. Existen tipos agravados (art. 557 bis: porte de armas, actos de ' +
-    'violencia con peligro para la vida, actuación en multitud que facilita la impunidad, etc.). La ' +
-    'alteración de menor entidad puede ser infracción administrativa (art. 36.1/36.3 LO 4/2015). ' +
-    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+    'Castiga (art. 557.1, redacción de la LO 14/2022) a quienes, actuando en grupo y con el fin de ' +
+    'atentar contra la paz pública, ejecuten actos de violencia o intimidación sobre las personas o ' +
+    'sobre las cosas, o amenacen con llevarlos a cabo: prisión de seis meses a tres años. La ' +
+    'modalidad AGRAVADA del art. 557.2 se aprecia cuando los hechos se cometen en el seno de una ' +
+    'multitud o grupo numeroso idóneo para afectar gravemente el orden público, o cuando el ' +
+    'culpable se prevalga de esa situación: prisión de tres a cinco años. Los tipos del art. 557 bis ' +
+    '(porte de armas u objetos peligrosos, actos de violencia con peligro para la vida o la ' +
+    'integridad, etc.) elevan la pena. La alteración de menor entidad puede ser infracción ' +
+    'administrativa (art. 36.1/36.3 LO 4/2015). Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
 });
 
 const ART_CP_556 = articuloCp({
@@ -281,6 +284,16 @@ interface DelitoSeedInput {
   textoBoletin: string;
   terminos: string[];
   notaRevision: string;
+  /**
+   * Consecuencias ADICIONALES a la detención (que la genera el motor). P. ej. la `proteccion` de la
+   * víctima en la violencia de género: orden de protección + valoración de riesgo, con su fuente.
+   * Orientativas; las acuerda la autoridad judicial.
+   */
+  consecuenciasExtra?: Array<{
+    tipo: Consecuencia['tipo'];
+    textoCorto: string;
+    fuente: string;
+  }>;
 }
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
@@ -334,10 +347,23 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     articuloId: null,
   });
 
+  // Consecuencias adicionales (p. ej. la protección de la víctima en violencia de género).
+  const consecuenciasExtra: Consecuencia[] = (input.consecuenciasExtra ?? []).map((c, i) =>
+    Consecuencia.parse({
+      id: `${input.id}:cons-${c.tipo}-${i}`,
+      tipo: c.tipo,
+      regla: {},
+      textoCorto: c.textoCorto,
+      fuente: c.fuente,
+      infraccionId: input.id,
+      articuloId: null,
+    }),
+  );
+
   return {
     infraccion,
     sinonimos,
-    consecuencias: [consecuencia],
+    consecuencias: [consecuencia, ...consecuenciasExtra],
     marcoImporte: 'penal' satisfies MarcoImporte,
     revision: 'pendiente_revision' satisfies EstadoRevision,
     notaRevision: input.notaRevision,
@@ -667,6 +693,24 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'maltratador',
       'pega a su pareja',
       'violencia en la pareja',
+      // Habitualidad (art. 173.2 CP): sinónimos para que el buscador la lleve también a esta ficha.
+      'violencia habitual',
+      'maltrato habitual',
+      '173.2',
+      'maltrato psicologico',
+    ],
+    // La PROTECCIÓN de la víctima sube DESTACADA (no enterrada en el texto): orden de protección y
+    // valoración policial del riesgo. Orientativa; la acuerda/ratifica la autoridad judicial.
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Procede valorar de forma PRIORITARIA las medidas de protección de la víctima: instar la ' +
+          'orden de protección (arts. 544 bis y 544 ter LECrim) y realizar la valoración policial del ' +
+          'riesgo (VPR, sistema VioGén), activando el seguimiento y los recursos asistenciales. Las ' +
+          'medidas cautelares las acuerda o ratifica la autoridad judicial.',
+        fuente: 'LECrim arts. 544 bis y 544 ter; VPR/VioGén',
+      },
     ],
     notaRevision:
       'CONTENIDO MUY SENSIBLE — a verificar con especial cuidado. DISTINGUIR los tipos: art. 153.1 ' +
@@ -685,18 +729,22 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     id: 'del-desordenes-publicos',
     articulo: ART_CP_557,
     tituloCorto: 'Desórdenes públicos',
-    // Art. 557 (actuar en grupo alterando la paz pública con violencia sobre personas/cosas):
-    // prisión de 6 meses a 3 años → MENOS GRAVE; agravados del art. 557 bis pueden elevarse.
+    // Art. 557.1 (redacción LO 14/2022): actuar en grupo y con el fin de atentar contra la paz
+    // pública ejecutando actos de violencia o intimidación → prisión de 6 meses a 3 años → MENOS
+    // GRAVE (base). La modalidad agravada por MULTITUD (art. 557.2) es prisión de 3 a 5 años → GRAVE.
     gravedadCp: 'menos_grave',
     penaTexto:
-      'Prisión de 6 meses a 3 años (desórdenes públicos en grupo, art. 557 CP); tipos agravados del ' +
-      'art. 557 bis (armas, peligro para la vida, etc.). A verificar',
+      'Prisión de 6 meses a 3 años (desórdenes públicos en grupo, art. 557.1 CP); modalidad agravada ' +
+      'por multitud idónea para afectar gravemente el orden público (art. 557.2): prisión de 3 a 5 ' +
+      'años. A verificar',
     textoBoletin:
-      'Actuar en grupo y con el fin de atentar contra la paz pública alterando el orden mediante ' +
-      'violencia sobre las personas o las cosas: causar lesiones, producir daños, obstaculizar de ' +
-      'forma peligrosa las vías o los accesos de emergencia, o invadir instalaciones o edificios ' +
-      '(art. 557 CP). La alteración de menor entidad, sin llegar a delito, puede ser infracción ' +
-      'administrativa (art. 36.1/36.3 LO 4/2015). La calificación final corresponde a la autoridad judicial.',
+      'Actuar en grupo y con el fin de atentar contra la paz pública ejecutando actos de violencia o ' +
+      'intimidación sobre las personas o sobre las cosas, o amenazar con llevarlos a cabo (art. 557.1 ' +
+      'CP). La modalidad AGRAVADA (art. 557.2 CP) se aprecia cuando los hechos se cometen en el seno ' +
+      'de una multitud o grupo numeroso idóneo para afectar gravemente el orden público, o cuando el ' +
+      'culpable se prevale de esa situación. La alteración de menor entidad, sin llegar a delito, ' +
+      'puede ser infracción administrativa (art. 36.1/36.3 LO 4/2015). La calificación final ' +
+      'corresponde a la autoridad judicial.',
     terminos: [
       'disturbios',
       'batalla campal',
@@ -708,13 +756,16 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'grupo violento en la calle',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y el encaje: desórdenes públicos del art. 557 CP → prisión de 6 ' +
-      'meses a 3 años → MENOS GRAVE; los tipos agravados del art. 557 bis (porte de armas u objetos ' +
-      'peligrosos, actos de violencia con peligro para la vida, aprovechar la multitud para asegurar ' +
-      'la impunidad, etc.) elevan la pena y podrían pasar a GRAVE, cambiando la rama de detención. ' +
-      'DISTINGUIR de la infracción administrativa de desórdenes (art. 36.1/36.3 LO 4/2015), que exige ' +
-      'alteración grave de la seguridad ciudadana SIN llegar a delito. Confirmar penas y encaje contra ' +
-      'el texto consolidado del CP con el revisor jurídico.',
+      'A VERIFICAR el marco de pena y el encaje (redacción vigente tras la LO 14/2022): el tipo BASE ' +
+      'del art. 557.1 CP (actuar en grupo con el fin de atentar contra la paz pública ejecutando ' +
+      'actos de violencia o intimidación) → prisión de 6 meses a 3 años → MENOS GRAVE; la modalidad ' +
+      'AGRAVADA del art. 557.2 (hechos cometidos en el seno de una multitud o grupo numeroso idóneo ' +
+      'para afectar gravemente el orden público, o prevaliéndose de ella) → prisión de 3 a 5 años → ' +
+      'GRAVE, lo que cambiaría la rama de detención. Los tipos del art. 557 bis (porte de armas u ' +
+      'objetos peligrosos, actos de violencia con peligro para la vida o la integridad) también ' +
+      'elevan la pena. DISTINGUIR de la infracción administrativa de desórdenes (art. 36.1/36.3 LO ' +
+      '4/2015), que exige alteración grave de la seguridad ciudadana SIN llegar a delito. Confirmar ' +
+      'penas y encaje contra el texto consolidado del CP con el revisor jurídico.',
   }),
   construirDelito({
     id: 'del-resistencia-desobediencia',

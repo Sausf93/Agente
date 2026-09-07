@@ -139,6 +139,25 @@ export function fichaKindFrom(f: {
   return 'administrativa';
 }
 
+/**
+ * Entrada CONSULTABLE que NO impone sanción (facultad/diligencia, no una infracción): p. ej. el
+ * REQUERIMIENTO de identificación del art. 16 LO 4/2015. Se DERIVA de los datos que ya viajan en el
+ * paquete —sin importe y sin puntos en una ficha administrativa/seguridad ciudadana—, porque el
+ * `marcoImporte`/`no_sancionador` del pipeline no llega hoy al dispositivo. A estas entradas NO se
+ * les pinta gravedad ni "tramo": mostrarían un tramo sancionador que no existe (regresión).
+ *
+ * (Se excluyen `penal` —tiene su propio marco— y `trafico`/`extranjeria`, que sí llevan importe.)
+ */
+export function esConsultableSinSancion(f: {
+  fichaKind: FichaKind;
+  importeEur: number | null;
+  puntos: number | null;
+}): boolean {
+  const marcoAdministrativo =
+    f.fichaKind === 'seguridad_ciudadana' || f.fichaKind === 'administrativa';
+  return marcoAdministrativo && f.importeEur === null && f.puntos === null;
+}
+
 /** Etiqueta cualitativa del TRAMO de seguridad ciudadana (art. 33/39 LO 4/2015), desde la gravedad. */
 const TRAMO_LABEL: Partial<Record<Gravedad, string>> = {
   leve: 'Leve',
@@ -164,6 +183,9 @@ export function tilesFicha(
   formatEuros: (n: number | null) => string,
 ): TileFicha[] {
   if (ficha.fichaKind === 'penal') return [];
+  // Entrada consultable sin sanción (p. ej. requerimiento de identificación art. 16): NINGÚN tile
+  // (ni importe ni tramo), para no simular una sanción/tramo que no existe.
+  if (esConsultableSinSancion(ficha)) return [];
   // Extranjería: el dato principal NO es el importe. Se muestra la naturaleza de la sanción (multa
   // o expulsión) como tile que manda, y la multa mínima solo como referencia de-enfatizada.
   if (ficha.fichaKind === 'extranjeria') {
@@ -295,18 +317,35 @@ export function accionOperativaFrom(input: {
   const sujetoPersona =
     input.fichaKind === 'seguridad_ciudadana' || input.fichaKind === 'extranjeria';
 
-  // IDENTIFICACIÓN por vía administrativa (extranjería, art. 53.1.a / 61 LOEX): el mensaje CLAVE es
-  // que NO procede la detención PENAL por la mera estancia irregular. Solo aplica al SUJETO PERSONA
-  // (no a un caso de tráfico donde el sujeto es el vehículo, que sigue circulando).
+  // IDENTIFICACIÓN por vía administrativa: mensaje CLAVE distinto según el MARCO (no mezclar). Solo
+  // aplica al SUJETO PERSONA (no a un caso de tráfico donde el sujeto es el vehículo, que sigue).
   const identificacion = input.consecuencias.find((c) => c.tipo === 'identificacion');
   if (sujetoPersona && identificacion) {
+    // EXTRANJERÍA (estancia irregular, arts. 53.1.a / 61 LOEX): lo CLAVE es que NO procede la
+    // detención PENAL por la mera situación irregular; se tramita por vía administrativa.
+    if (input.fichaKind === 'extranjeria') {
+      return {
+        kind: 'identificacion',
+        titulo: 'Identificar · vía administrativa · NO detención penal',
+        detalle:
+          'Procede identificar y comprobar la documentación; la situación se tramita por vía ' +
+          'administrativa (multa o expulsión, art. 53.1.a LOEX). Cualquier internamiento cautelar lo ' +
+          'acuerda la autoridad competente con los requisitos del art. 61 LOEX.',
+        fuente: identificacion.fuente,
+        tono: 'informativo',
+      };
+    }
+    // SEGURIDAD CIUDADANA (identificación del art. 16 LO 4/2015, negativa/desobediencia del 36.6):
+    // texto GENÉRICO y correcto del requerimiento. NO habla de expulsión/LOEX ni de detención penal
+    // (eso es solo extranjería): mezclarlos era una regresión.
     return {
       kind: 'identificacion',
-      titulo: 'Identificar · vía administrativa · NO detención penal',
+      titulo: 'Identificación / requerimiento · art. 16 LO 4/2015',
       detalle:
-        'Procede identificar y comprobar la documentación; la situación se tramita por vía ' +
-        'administrativa (multa o expulsión, art. 53.1.a LOEX). Cualquier internamiento cautelar lo ' +
-        'acuerda la autoridad competente con los requisitos del art. 61 LOEX.',
+        'Procede requerir la identificación con un motivo concreto y hacer las comprobaciones en el ' +
+        'lugar; solo si no se logra por otro medio y es necesaria, cabe el traslado a dependencias ' +
+        'por el tiempo imprescindible (en ningún caso más de 6 horas, art. 16.2), que NO es una ' +
+        'detención. La valoración final corresponde al agente.',
       fuente: identificacion.fuente,
       tono: 'informativo',
     };

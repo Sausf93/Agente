@@ -44,7 +44,11 @@ export type Gravedad = z.infer<typeof Gravedad>;
 export const TipoInfraccion = z.enum(['administrativa', 'penal']);
 export type TipoInfraccion = z.infer<typeof TipoInfraccion>;
 
-/** Tipos de consecuencia asociada a una infracción (capa de consecuencias, sección 4.6). */
+/**
+ * Tipos de consecuencia asociada a una infracción (capa de consecuencias, sección 4.6).
+ * `proteccion`: medidas de protección de la víctima (orden de protección, valoración de riesgo)
+ * que deben salir DESTACADAS en delitos como la violencia de género, no enterradas en el texto.
+ */
 export const TipoConsecuencia = z.enum([
   'detencion',
   'inmovilizacion',
@@ -52,6 +56,7 @@ export const TipoConsecuencia = z.enum([
   'decomiso',
   'retirada_permiso',
   'identificacion',
+  'proteccion',
 ]);
 export type TipoConsecuencia = z.infer<typeof TipoConsecuencia>;
 

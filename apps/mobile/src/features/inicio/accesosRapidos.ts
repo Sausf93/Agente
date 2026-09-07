@@ -50,8 +50,10 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   buscar('Robo'),
   // "Leer derechos" abre la pantalla de derechos del detenido (no es una búsqueda).
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
-  // "Identificación" busca un término que SÍ devuelve ficha (negativa a identificarse, art. 36.6 LOSC).
-  buscar('Identificación', 'no se identifica'),
+  // "Identificación" lleva a la ficha del REQUERIMIENTO de identificación (art. 16 LOSC), la
+  // consulta diaria de PN/GC/Local: 'identificacion' es el sinónimo que la devuelve primero (antes
+  // era 'no se identifica', que abría la NEGATIVA del art. 36.6, otra cosa distinta).
+  buscar('Identificación', 'identificacion'),
 ];
 
 /**

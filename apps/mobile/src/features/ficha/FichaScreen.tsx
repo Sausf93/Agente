@@ -18,6 +18,7 @@ import {
   Fingerprint,
   Gavel,
   Lock,
+  ShieldCheck,
   Truck,
   WifiOff,
   type LucideProps,
@@ -42,6 +43,7 @@ import type { InfraccionSnapshot } from '@/features/inicio/masUsadas';
 import {
   accionOperativaFrom,
   cargarFicha,
+  esConsultableSinSancion,
   tilesFicha,
   type AccionOperativa,
   type AccionOperativaKind,
@@ -206,6 +208,9 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
 
   const pendiente = ficha.estadoRevision === 'pendiente_revision';
   const esPenal = ficha.fichaKind === 'penal';
+  // Entrada CONSULTABLE que no sanciona (facultad/diligencia, p. ej. el requerimiento de
+  // identificación del art. 16 LOSC): sin chip de gravedad ni tile de tramo (no hay sanción).
+  const consultable = esConsultableSinSancion(ficha);
   const copia = COPIA[ficha.tipo];
   // Tiles adaptativos (solo con valor; ninguno en un delito → usa el "Marco penal").
   const tiles = tilesFicha(ficha, formatEuros);
@@ -217,8 +222,13 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   });
   // La DETENCIÓN se separa del resto: en un delito sube arriba (leer-primero), no va enterrada.
   const consecuenciaDetencion = ficha.consecuencias.find((c) => c.tipo === 'detencion') ?? null;
+  // La PROTECCIÓN de la víctima (violencia de género) también sube DESTACADA junto a la detención:
+  // no debe quedar enterrada entre "otras consecuencias".
+  const consecuenciaProteccion = ficha.consecuencias.find((c) => c.tipo === 'proteccion') ?? null;
+  // En un delito, detención y protección suben arriba (leer-primero); en una ficha NO penal, la
+  // protección se queda en la lista normal (no hay bloque penal donde destacarla).
   const otrasConsecuencias = esPenal
-    ? ficha.consecuencias.filter((c) => c.tipo !== 'detencion')
+    ? ficha.consecuencias.filter((c) => c.tipo !== 'detencion' && c.tipo !== 'proteccion')
     : ficha.consecuencias;
 
   return (
@@ -250,6 +260,13 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, alignItems: 'center' }}>
           {esPenal ? (
             <PenalChip t={t} />
+          ) : consultable ? (
+            // Entrada sin sanción: NO se pinta gravedad ni tramo (no existen); solo la vía y un
+            // distintivo neutro "Consulta · sin sanción" para que quede claro que no es una multa.
+            <>
+              <Badge label="Consulta · sin sanción" tone="neutral" />
+              <Badge label={TIPO_LABEL[ficha.tipo]} tone="neutral" />
+            </>
           ) : (
             <>
               <SeverityChip gravedad={ficha.gravedad as Gravedad} />
@@ -272,6 +289,12 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           {/* 4b. DETENCIÓN, leer-primero y ARRIBA: en un delito, "qué procede" es LA decisión. */}
           {consecuenciaDetencion ? (
             <DetencionTree regla={consecuenciaDetencion.regla} />
+          ) : null}
+
+          {/* 4c. PROTECCIÓN de la víctima (violencia de género), DESTACADA junto a la detención:
+              orden de protección + valoración de riesgo. La acuerda la autoridad judicial. */}
+          {consecuenciaProteccion ? (
+            <ProteccionBanner t={t} consecuencia={consecuenciaProteccion} />
           ) : null}
         </>
       ) : tiles.length > 0 ? (
@@ -724,6 +747,7 @@ const CONSECUENCIA_ICON: Record<TipoConsecuencia, ComponentType<LucideProps>> = 
   decomiso: Ban,
   retirada_permiso: FileText,
   identificacion: Fingerprint,
+  proteccion: ShieldCheck,
 };
 
 /**
@@ -784,6 +808,70 @@ function FilaConsecuencia({
         </Text>
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
           Fuente: {fuente}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/**
+ * BANNER de PROTECCIÓN de la víctima (violencia de género): sube DESTACADO junto a la detención en
+ * lugar de quedar enterrado en el texto del boletín. Orden de protección (arts. 544 bis/ter LECrim)
+ * y valoración policial del riesgo (VPR/VioGén). Tono INFORMATIVO (no coercitivo): la medida la
+ * ACUERDA la autoridad judicial; el agente la propone/documenta. Color fijo (info), no el acento.
+ */
+function ProteccionBanner({
+  t,
+  consecuencia,
+}: {
+  t: Theme;
+  consecuencia: { textoCorto: string; fuente: string };
+}) {
+  return (
+    <View
+      accessible
+      accessibilityLabel={`Protección de la víctima: ${consecuencia.textoCorto}. Fuente: ${consecuencia.fuente}.`}
+      style={{
+        flexDirection: 'row',
+        gap: t.spacing.md,
+        borderRadius: t.radius.md,
+        borderWidth: 1.5,
+        borderColor: t.color.info,
+        backgroundColor: t.color.infoBg,
+        padding: t.spacing.md,
+      }}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: t.radius.md,
+          backgroundColor: t.color.surface,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <ShieldCheck size={22} color={t.color.info} strokeWidth={2.2} />
+      </View>
+      <View style={{ flex: 1, gap: t.spacing.xxs }}>
+        <Text
+          accessibilityElementsHidden
+          style={{ color: t.color.info, ...t.typography.scale.bodyStrong }}
+        >
+          Protección de la víctima
+        </Text>
+        <Text
+          accessibilityElementsHidden
+          maxFontSizeMultiplier={1.6}
+          style={{ color: t.color.textPrimary, ...t.typography.scale.body }}
+        >
+          {consecuencia.textoCorto}
+        </Text>
+        <Text
+          accessibilityElementsHidden
+          style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}
+        >
+          Fuente: {consecuencia.fuente}
         </Text>
       </View>
     </View>

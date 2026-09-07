@@ -49,9 +49,12 @@ describe('destinos de los accesos rápidos', () => {
     expect(leer?.destino).toEqual({ tipo: 'ruta', valor: '/derechos' });
   });
 
-  it('"Identificación" busca un término que SÍ devuelve resultado (no la etiqueta literal)', () => {
+  it('"Identificación" lleva al requerimiento del art. 16 (término "identificacion", no la negativa)', () => {
     const ident = ACCESOS_POLICIA_NACIONAL.find((a) => a.label === 'Identificación');
-    expect(ident?.destino).toEqual({ tipo: 'buscar', valor: 'no se identifica' });
+    // 'identificacion' devuelve la ficha del requerimiento (art. 16 LOSC); 'no se identifica' abría
+    // la NEGATIVA (art. 36.6), que es otra cosa. No debe volver a apuntar a la negativa.
+    expect(ident?.destino).toEqual({ tipo: 'buscar', valor: 'identificacion' });
+    expect(ident?.destino).not.toEqual({ tipo: 'buscar', valor: 'no se identifica' });
   });
 
   it('los accesos de tráfico buscan por su propia etiqueta', () => {

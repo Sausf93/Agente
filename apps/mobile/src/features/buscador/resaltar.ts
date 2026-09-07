@@ -57,6 +57,7 @@ export function resaltarCoincidencia(texto: string, consulta: string): SegmentoR
  */
 const PRIORIDAD: TipoConsecuencia[] = [
   'detencion',
+  'proteccion',
   'inmovilizacion',
   'deposito',
   'retirada_permiso',

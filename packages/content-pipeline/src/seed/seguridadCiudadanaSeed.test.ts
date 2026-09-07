@@ -85,6 +85,10 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     expect(cons!.fuente).toMatch(/art\. 16/);
     // Diferencia con la detención: no se leen los derechos del art. 520 LECrim.
     expect(ident!.infraccion.textoBoletin).toMatch(/520|no es una detenci/i);
+    // Tope del art. 16.2: el traslado a dependencias no puede superar las 6 horas.
+    expect(ident!.infraccion.textoBoletin).toMatch(/6 horas/);
+    expect(cons!.textoCorto).toMatch(/6 horas/);
+    expect(ident!.notaRevision).toMatch(/6 horas/);
   });
 });
 

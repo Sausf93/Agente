@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { TipoConsecuencia } from '@agente/shared';
-import { accionOperativaFrom, fichaKindFrom, tilesFicha, type FichaInfraccion } from './ficha';
+import {
+  accionOperativaFrom,
+  esConsultableSinSancion,
+  fichaKindFrom,
+  tilesFicha,
+  type FichaInfraccion,
+} from './ficha';
 import { formatEuros } from './format';
 
 /**
@@ -264,5 +270,69 @@ describe('accionOperativaFrom — qué hace el agente con el vehículo/persona',
       consecuencias: cons('identificacion', 'detencion'),
     });
     expect(a?.kind).toBe('detencion');
+  });
+
+  // REGRESIÓN (ronda validadores): el texto de EXTRANJERÍA (LOEX/expulsión) NO debe salir en una
+  // ficha de seguridad ciudadana con consecuencia `identificacion` (art. 16 LOSC).
+  it('identificación de seguridad ciudadana (art. 16 LOSC): NO menciona LOEX ni expulsión', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'seguridad_ciudadana',
+      consecuencias: [{ tipo: 'identificacion', fuente: 'LO 4/2015 art. 16' }],
+    });
+    expect(a?.kind).toBe('identificacion');
+    expect(a?.tono).toBe('informativo');
+    const texto = `${a?.titulo} ${a?.detalle}`;
+    expect(texto).not.toMatch(/LOEX/i);
+    expect(texto).not.toMatch(/expulsi[oó]n/i);
+    expect(texto).not.toMatch(/detenci[oó]n penal/i);
+    expect(texto).toMatch(/art\. 16/i);
+  });
+
+  // La extranjería SÍ conserva su mensaje clave (LOEX / vía administrativa / no detención penal).
+  it('identificación de extranjería mantiene el mensaje LOEX (no se rompe)', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'extranjeria',
+      consecuencias: [{ tipo: 'identificacion', fuente: 'LO 4/2000 art. 53' }],
+    });
+    expect(`${a?.titulo} ${a?.detalle}`).toMatch(/LOEX/);
+  });
+});
+
+describe('esConsultableSinSancion — entrada que NO impone sanción (art. 16 LOSC)', () => {
+  it('seguridad ciudadana sin importe ni puntos: es consultable → sin tiles (ni tramo)', () => {
+    const ficha = fichaDe({
+      fichaKind: 'seguridad_ciudadana',
+      gravedad: 'leve',
+      importeEur: null,
+      importeReducidoEur: null,
+      puntos: null,
+    });
+    expect(esConsultableSinSancion(ficha)).toBe(true);
+    // No pinta "Tramo" ni ningún otro tile: no hay sanción que mostrar.
+    expect(tilesFicha(ficha, formatEuros)).toEqual([]);
+  });
+
+  it('seguridad ciudadana CON importe (una sanción real) NO es consultable y sí pinta tramo', () => {
+    const ficha = fichaDe({
+      fichaKind: 'seguridad_ciudadana',
+      gravedad: 'grave',
+      importeEur: 601,
+      importeReducidoEur: 300.5,
+      puntos: null,
+    });
+    expect(esConsultableSinSancion(ficha)).toBe(false);
+    expect(tilesFicha(ficha, formatEuros).some((x) => x.etiqueta === 'Tramo')).toBe(true);
+  });
+
+  it('un delito (marco penal) nunca se trata como consultable', () => {
+    const ficha = fichaDe({
+      fichaKind: 'penal',
+      tipo: 'penal',
+      gravedad: 'delito',
+      importeEur: null,
+      importeReducidoEur: null,
+      puntos: null,
+    });
+    expect(esConsultableSinSancion(ficha)).toBe(false);
   });
 });

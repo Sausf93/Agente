@@ -122,6 +122,43 @@ describe('SEED_PENAL: fichas nuevas para la Policía Nacional (VG, orden públic
     expect(vg!.notaRevision).toMatch(/153\.1/);
     expect(vg!.notaRevision).toMatch(/173\.2/);
   });
+
+  it('violencia de género: consecuencia `proteccion` DESTACADA (orden de protección + valoración de riesgo)', () => {
+    const vg = porId('del-violencia-genero');
+    expect(vg).toBeDefined();
+    const prot = vg!.consecuencias.find((c) => c.tipo === 'proteccion');
+    expect(prot, 'debe existir una consecuencia proteccion').toBeDefined();
+    // Fuente en la LECrim (arts. 544 bis/ter) y valoración de riesgo (VPR/VioGén).
+    expect(prot!.fuente).toMatch(/544/);
+    expect(prot!.textoCorto.toLowerCase()).toMatch(/protecci/);
+    expect(prot!.textoCorto.toLowerCase()).toMatch(/viogen|vpr|riesgo/);
+    // Orientativa: la acuerda o ratifica la autoridad judicial (no imperativo).
+    expect(prot!.textoCorto.toLowerCase()).toMatch(/procede|puede/);
+    expect(prot!.textoCorto.toLowerCase()).toMatch(/autoridad judicial/);
+  });
+
+  it('violencia de género: sinónimos de habitualidad (173.2) para el buscador', () => {
+    const vg = porId('del-violencia-genero');
+    const terminos = vg!.sinonimos.map((s) => s.termino);
+    expect(terminos).toContain('violencia habitual');
+    expect(terminos).toContain('173.2');
+  });
+
+  it('desórdenes públicos (art. 557): redacción vigente (LO 14/2022) con violencia o intimidación y agravado por multitud', () => {
+    const des = porId('del-desordenes-publicos');
+    expect(des).toBeDefined();
+    const texto = des!.infraccion.textoBoletin.toLowerCase();
+    // Redacción vigente: "actos de violencia o intimidación" (no la redacción pre-reforma).
+    expect(texto).toMatch(/violencia o intimidaci[oó]n/);
+    // Base menos grave (art. 557.1) y modalidad agravada por multitud (art. 557.2).
+    expect(texto).toMatch(/557\.1/);
+    expect(texto).toMatch(/557\.2/);
+    expect(des!.infraccion.gravedadPenal).toBe('menos_grave');
+    // El artículo del CP también refleja la redacción vigente.
+    const art557 = SEED_PENAL.articulos.find((a) => a.numero === '557')!;
+    expect(art557.texto.toLowerCase()).toMatch(/violencia o intimidaci[oó]n/);
+    expect(art557.texto).toMatch(/tres a cinco años/);
+  });
 });
 
 describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
