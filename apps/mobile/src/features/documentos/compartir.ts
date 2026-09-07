@@ -11,15 +11,20 @@ import * as Sharing from 'expo-sharing';
 export type CompartirResultado = 'compartido' | 'no-disponible';
 
 /**
- * Abre la hoja de compartir nativa con el PDF adjunto. Es la vía recomendada para "enviar a mi
- * correo" (Mail aparece en la hoja con el PDF ya adjunto) y para guardarlo en Archivos.
+ * Abre la hoja de compartir nativa con el PDF adjunto. Es la vía recomendada tanto para
+ * "enviarme a mi correo" (Mail aparece en la hoja con el PDF ya adjunto) como para guardarlo en
+ * Archivos, mandarlo por WhatsApp/AirDrop o imprimirlo. `dialogTitle` permite adaptar el título de
+ * la hoja al gesto que hizo el agente (p. ej. "Enviarme a mi correo").
  */
-export async function compartirPdf(uri: string): Promise<CompartirResultado> {
+export async function compartirPdf(
+  uri: string,
+  dialogTitle = 'Compartir o enviar documento',
+): Promise<CompartirResultado> {
   if (!(await Sharing.isAvailableAsync())) return 'no-disponible';
   await Sharing.shareAsync(uri, {
     mimeType: 'application/pdf',
     UTI: 'com.adobe.pdf',
-    dialogTitle: 'Compartir o enviar documento',
+    dialogTitle,
   });
   return 'compartido';
 }

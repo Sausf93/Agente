@@ -38,6 +38,18 @@ describe('valoresIniciales', () => {
     expect(v.importe).toBe('200 €');
   });
 
+  it('el documento nace de la ficha: el bloque legal (hecho, gravedad, puntos) llega relleno', () => {
+    const v = valoresIniciales(
+      boletin,
+      {},
+      { hecho: 'Circular a 150 km/h', gravedad: 'Muy grave', puntos: '6' },
+      AHORA,
+    );
+    expect(v.hecho).toBe('Circular a 150 km/h');
+    expect(v.gravedad).toBe('Muy grave');
+    expect(v.puntos).toBe('6');
+  });
+
   it('NUNCA prerrellena datos de terceros, ni desde prefill ni desde recordado', () => {
     const v = valoresIniciales(
       boletin,
@@ -52,14 +64,25 @@ describe('valoresIniciales', () => {
 });
 
 describe('valoresRecordables', () => {
-  it('devuelve solo los campos del agente marcados recordar (cuerpo, unidad)', () => {
+  it('devuelve solo los campos del agente marcados recordar (cuerpo, unidad, nº TIP)', () => {
     const boletin = plantillaPorId('seed-boletin-denuncia')!;
     const recordables = valoresRecordables(boletin, {
       cuerpo: 'Unidad Y',
       unidad: 'Puesto X',
+      numeroTip: '12345',
       lugar: 'Calle Mayor',
       matricula: '1234ABC',
     });
-    expect(recordables).toEqual({ cuerpo: 'Unidad Y', unidad: 'Puesto X' });
+    expect(recordables).toEqual({ cuerpo: 'Unidad Y', unidad: 'Puesto X', numeroTip: '12345' });
+  });
+
+  it('nunca recuerda datos de terceros aunque llegue el nº TIP del agente', () => {
+    const boletin = plantillaPorId('seed-boletin-denuncia')!;
+    const recordables = valoresRecordables(boletin, {
+      numeroTip: '99999',
+      denunciado: 'Fulano',
+      documento: '00000000X',
+    });
+    expect(recordables).toEqual({ numeroTip: '99999' });
   });
 });

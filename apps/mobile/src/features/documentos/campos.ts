@@ -13,6 +13,22 @@ import type { Plantilla, TipoPlantilla } from '@agente/shared';
 /** Cómo se edita un campo en el formulario. */
 export type TipoCampo = 'texto' | 'multilinea' | 'fecha' | 'hora';
 
+/**
+ * SECCIÓN visual del campo. La app agrupa los huecos por lo que significan para el agente, no por
+ * el orden en que aparecen en el Markdown:
+ *
+ * - `legal`: lo rellena LA APP desde la infracción (norma, artículo, texto/hecho, importe, puntos,
+ *   gravedad). El agente NO lo reescribe; se muestra arriba en el bloque "Ya rellenado por la app".
+ * - `identidad`: datos del agente que se REPITEN (cuerpo, unidad, nº TIP, instructor). Se recuerdan
+ *   (`recordar`) para no teclearlos cada vez. Nunca son datos de terceros.
+ * - `servicio`: lo específico que el agente pone al momento (fecha, hora, lugar/PK y los campos
+ *   propios de cada acta: causa, motivo…).
+ *
+ * Los campos con `esDatoTercero` van SIEMPRE a su sección aparte con el aviso de privacidad, al
+ * margen de esta categoría.
+ */
+export type CampoSeccion = 'legal' | 'identidad' | 'servicio';
+
 /** Descriptor de un hueco `{{clave}}` de la plantilla. */
 export interface CampoPlantilla {
   /** Clave de la variable en el Markdown (`{{clave}}`). */
@@ -26,12 +42,22 @@ export interface CampoPlantilla {
    */
   esDatoTercero: boolean;
   /**
+   * Sección visual del campo (ver `CampoSeccion`). Si se omite, se trata como `servicio`. Los
+   * datos de terceros se agrupan aparte ignorando esta categoría.
+   */
+  seccion?: CampoSeccion;
+  /**
    * Se RECUERDA entre documentos (solo campos del agente, no de terceros): p. ej. su unidad.
    * Ahorra reescribir lo mismo cada vez (pilar "ahorra trabajo de oficina").
    */
   recordar?: boolean;
   placeholder?: string;
   hint?: string;
+}
+
+/** Sección efectiva de un campo (los terceros se resuelven aparte en la UI). */
+export function seccionDe(campo: CampoPlantilla): CampoSeccion {
+  return campo.seccion ?? 'servicio';
 }
 
 /** Plantilla lista para usar en la app: el modelo de dominio + los descriptores de sus campos. */

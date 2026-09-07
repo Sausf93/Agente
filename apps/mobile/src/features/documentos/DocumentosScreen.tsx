@@ -8,14 +8,45 @@ import { ListRow } from '@/ui/components/ListRow';
 import { PLANTILLAS_SEED } from './plantillasSeed';
 
 /**
- * Pestaña DOCUMENTOS (§4.8): lista de plantillas que el agente rellena y convierte en PDF EN EL
- * DISPOSITIVO. Pilar "ahorra trabajo de oficina". Todo es offline y local-first: nada de lo que
- * se teclea aquí (ni el PDF resultante) sale del teléfono.
+ * Pestaña DOCUMENTOS (§4.8), pensada como "mis actas": el catálogo de actas/plantillas que el
+ * agente puede generar como PDF EN EL DISPOSITIVO. Cada fila dice para qué sirve. Todo es offline
+ * y local-first: nada de lo que se teclea aquí (ni el PDF resultante) sale del teléfono.
+ *
+ * La vía más rápida NO es esta pantalla en frío, sino nacer de una consulta: desde la ficha de una
+ * infracción, "Generar documento" abre el mismo formulario con lo legal ya relleno. Aquí se entra
+ * cuando el agente quiere un acta que no parte de una infracción concreta.
  */
+
+/** Una entrada del catálogo: casi todas abren una plantilla; alguna enruta a otra pantalla. */
+interface EntradaCatalogo {
+  titulo: string;
+  /** Frase de "para qué sirve" (una línea). */
+  paraQue: string;
+  /** Ruta a la que navega la fila. */
+  destino: string;
+}
+
+/** Frase de para-qué-sirve para la lectura de derechos (vive en su propia pantalla, §4.11). */
+const LECTURA_DERECHOS: EntradaCatalogo = {
+  titulo: 'Lectura de derechos (art. 520 LECrim)',
+  paraQue: 'Leer los derechos del detenido en varios idiomas, para leerlos en voz alta.',
+  destino: '/derechos',
+};
+
 export function DocumentosScreen() {
   const t = useAppTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+
+  // Catálogo: las plantillas del seed + la lectura de derechos (que reusa su pantalla propia).
+  const catalogo: EntradaCatalogo[] = [
+    ...PLANTILLAS_SEED.map((p) => ({
+      titulo: p.titulo,
+      paraQue: p.descripcion,
+      destino: `/documento/${p.id}`,
+    })),
+    LECTURA_DERECHOS,
+  ];
 
   return (
     <ScrollView
@@ -37,26 +68,30 @@ export function DocumentosScreen() {
           </Text>
         </View>
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-          Rellena una plantilla y genera el PDF en tu móvil. El texto legal ya viene hecho: tú solo
-          pones fecha, lugar y lo específico.
+          Elige un acta y genera el PDF en tu móvil. El texto legal ya viene hecho: tú pones fecha,
+          lugar y lo específico.
         </Text>
       </View>
 
-      <View style={{ paddingHorizontal: t.spacing.base }}>
-        <Banner tone="info" title="Solo en este dispositivo">
+      <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md }}>
+        <Banner tone="info" title="Lo más rápido: desde la infracción">
+          Abre una infracción en Buscar o Normas y pulsa "Generar documento": el boletín llega con
+          norma, artículo, importe y texto ya rellenos. Aquí empiezas de cero cuando lo necesites.
+        </Banner>
+        <Banner tone="warning" title="Solo en este dispositivo">
           Las matrículas, nombres y DNI que escribas viven únicamente en tu teléfono. Ni esos datos
           ni el PDF se envían a ningún servidor.
         </Banner>
       </View>
 
       <View>
-        {PLANTILLAS_SEED.map((p) => (
+        {catalogo.map((e) => (
           <ListRow
-            key={p.id}
-            title={p.titulo}
-            subtitle={p.descripcion}
+            key={e.destino}
+            title={e.titulo}
+            subtitle={e.paraQue}
             accessibilityHint="Abre el formulario para rellenar y generar el PDF"
-            onPress={() => router.push(`/documento/${p.id}`)}
+            onPress={() => router.push(e.destino)}
           />
         ))}
       </View>

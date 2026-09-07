@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { extraerVariables, renderPlantilla } from '@agente/shared';
+import { seccionDe } from './campos';
 import { PLANTILLAS_SEED, plantillaPorId, validarSeed } from './plantillasSeed';
 
 describe('seed de plantillas', () => {
@@ -53,6 +54,7 @@ describe('seed de plantillas', () => {
     const { camposFaltantes } = renderPlantilla(p.markdownConVariables, {
       cuerpo: 'Unidad X',
       unidad: 'Puesto Y',
+      numeroTip: '12345',
       fecha: '07/09/2026',
       hora: '10:30',
       lugar: 'Calle Mayor',
@@ -62,5 +64,44 @@ describe('seed de plantillas', () => {
     });
     // Los datos de tercero (nombre, documento, nacimiento, nacionalidad, domicilio) quedan a rellenar.
     expect(camposFaltantes).toEqual(['nombre', 'documento', 'nacimiento', 'nacionalidad', 'domicilio']);
+  });
+
+  it('toda plantilla trae los tres campos de identidad del agente (cuerpo, unidad, nº TIP)', () => {
+    for (const p of PLANTILLAS_SEED) {
+      for (const clave of ['cuerpo', 'unidad', 'numeroTip']) {
+        const campo = p.campos.find((c) => c.clave === clave);
+        expect(campo, `${p.id}.${clave}`).toBeDefined();
+        expect(seccionDe(campo!), `${p.id}.${clave}`).toBe('identidad');
+        expect(campo!.recordar, `${p.id}.${clave}`).toBe(true);
+        expect(campo!.esDatoTercero, `${p.id}.${clave}`).toBe(false);
+      }
+    }
+  });
+
+  it('ningún campo de la sección legal es dato de tercero (lo rellena la app, no el agente)', () => {
+    for (const p of PLANTILLAS_SEED) {
+      for (const campo of p.campos) {
+        if (seccionDe(campo) === 'legal') {
+          expect(campo.esDatoTercero, `${p.id}.${campo.clave}`).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('el boletín agrupa lo legal que llega de la ficha en la sección legal', () => {
+    const boletin = plantillaPorId('seed-boletin-denuncia')!;
+    for (const clave of ['norma', 'articulo', 'gravedad', 'importe', 'puntos', 'hecho']) {
+      const campo = boletin.campos.find((c) => c.clave === clave);
+      expect(seccionDe(campo!), clave).toBe('legal');
+    }
+  });
+
+  it('incluye el acta de intervención de sustancias con su precepto en la sección legal', () => {
+    const p = plantillaPorId('seed-acta-intervencion-sustancias');
+    expect(p?.tipo).toBe('acta_intervencion_sustancias');
+    const persona = p!.campos.find((c) => c.clave === 'persona');
+    expect(persona?.esDatoTercero).toBe(true); // nombre de la persona = dato de tercero
+    const articulo = p!.campos.find((c) => c.clave === 'articulo');
+    expect(seccionDe(articulo!)).toBe('legal');
   });
 });

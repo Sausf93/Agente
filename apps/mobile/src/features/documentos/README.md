@@ -24,27 +24,44 @@ escudos ni denominaciones oficiales por defecto (§10, CLAUDE.md).
 | Fichero | Qué es | Puro/testeado |
 |---|---|---|
 | `@agente/shared` → `plantillas.ts` | Motor `renderPlantilla` / `extraerVariables` (variables `{{campo}}`, escape, campos faltantes) | Sí (`plantillas.test.ts`) |
-| `plantillasSeed.ts` | Seed de 3 plantillas (`boletin_denuncia`, `acta_inmovilizacion`, `diligencia_identificacion`) + descriptores de campo | Sí (`plantillasSeed.test.ts`) |
-| `campos.ts` | Tipo `CampoPlantilla` / `PlantillaDoc` (metadatos de formulario) | — |
+| `plantillasSeed.ts` | Seed de 4 plantillas (`boletin_denuncia`, `acta_inmovilizacion`, `acta_intervencion_sustancias`, `diligencia_identificacion`) + descriptores de campo | Sí (`plantillasSeed.test.ts`) |
+| `campos.ts` | Tipo `CampoPlantilla` / `PlantillaDoc` + `CampoSeccion`/`seccionDe` (metadatos de formulario) | — |
 | `iniciales.ts` | Valores iniciales del formulario (precedencia prefill > recordado > fecha/hora; terceros nunca) | Sí (`iniciales.test.ts`) |
 | `html.ts` | Markdown → HTML de imprenta + `buildDocumentHtml` + `nombreArchivoSeguro` (con **escape**) | Sí (`html.test.ts`) |
 | `generarPdf.ts` | `expo-print` (HTML → PDF) + renombrado a nombre legible | No (efectos) |
-| `compartir.ts` | `expo-sharing` (hoja de compartir con el PDF) + `mailto` (texto) | No (efectos) |
-| `DocumentosScreen.tsx` | Lista de plantillas (pestaña) | No (UI) |
-| `RellenarScreen.tsx` | Formulario + generar/compartir/enviar | No (UI) |
+| `compartir.ts` | `expo-sharing` (hoja de compartir con el PDF, con título adaptable) + `mailto` (texto) | No (efectos) |
+| `DocumentosScreen.tsx` | Catálogo de actas ("mis actas") + fila a Lectura de derechos | No (UI) |
+| `RellenarScreen.tsx` | Formulario por secciones + generar + enviar/compartir | No (UI) |
+
+## El documento NACE de la consulta
+
+La vía principal es la **ficha** → "Generar documento": abre el boletín con **todo lo legal ya
+relleno** (norma, artículo, texto/hecho, importe, puntos, gravedad — solo campos del agente, nada
+de terceros). El agente no reescribe esa parte. La pestaña Documentos es el catálogo de actas para
+cuando el documento **no** parte de una infracción.
+
+### Secciones del formulario (`CampoSeccion`)
+
+Los huecos se agrupan por lo que significan, no por su orden en el Markdown:
+
+- `legal` — lo rellena la app desde la infracción. Bloque "Ya rellenado por la app" (fondo tenido de
+  acento cuando llega prerrelleno). Editable solo si procede.
+- `identidad` — cuerpo, unidad y **nº de TIP**. Se `recordar`an en el dispositivo para no
+  reescribirlos. Nunca son datos de terceros.
+- `servicio` — fecha, hora, lugar/PK y lo propio de cada acta. Lo mínimo a mano, al final.
+- Los `esDatoTercero` van **siempre** a su sección aparte con el aviso fijo "Solo en este
+  dispositivo, no se envía".
 
 ## Flujo
 
-1. **Documentos** → elegir plantilla → `/documento/<plantillaId>`.
-2. `RellenarScreen` prerrellena fecha/hora (ahora) y los campos del agente recordados; los datos
-   de terceros empiezan vacíos.
+1. **Ficha** → "Generar documento" (con prefill legal) **o** **Documentos** → elegir acta.
+2. `RellenarScreen` agrupa por secciones, prerrellena fecha/hora y lo recordado; terceros vacíos.
 3. **Generar PDF**: `renderPlantilla` → `buildDocumentHtml` → `expo-print`. Se memorizan solo los
    campos del agente `recordar`. Si quedan huecos, se avisa (se imprimen como línea a rellenar).
-4. **Compartir o enviar**: hoja de compartir (Mail, WhatsApp, Archivos…) con el PDF adjunto, o
-   correo con la copia en texto. Todo desde el dispositivo.
-
-También se entra desde la **ficha** ("Generar documento"): abre el boletín con norma, artículo,
-importe, puntos, gravedad y hecho ya rellenos (solo campos del agente; nada de terceros).
+4. **Enviarme a mi correo** / **Compartir o imprimir**: la acción grande tras generar. Hoja de
+   compartir (Mail con el PDF adjunto, WhatsApp, Archivos, imprimir) con el título adaptado al
+   gesto. Atajo "solo el texto" vía `mailto`. La idea del socio: genera → te lo mandas/compartes →
+   lo imprimes en la oficina y pones la fecha y un par de datos a mano. Todo desde el dispositivo.
 
 ## Por qué el seed vive en la app (y no en el paquete de contenido)
 
