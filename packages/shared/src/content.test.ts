@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CUERPOS_TODOS, Norma } from './content.js';
+import { CUERPOS_TODOS, Infraccion, Norma } from './content.js';
 
 /**
  * Tests del esquema `Norma`, en concreto del campo `cuerpos` (relevancia por cuerpo, para
@@ -43,5 +43,49 @@ describe('Norma.cuerpos', () => {
     const a = Norma.parse(base);
     const b = Norma.parse(base);
     expect(a.cuerpos).not.toBe(b.cuerpos);
+  });
+});
+
+/**
+ * Tests de los campos penales de `Infraccion` (`penaTexto` + `gravedadPenal`): son los que
+ * alimentan el bloque "Marco penal" de la ficha adaptativa. Deben ser opcionales (una
+ * administrativa no los lleva) y aceptar un delito con su pena y su gravedad del art. 33 CP.
+ */
+describe('Infraccion — marco penal (penaTexto + gravedadPenal)', () => {
+  const base = {
+    id: 'del-hurto',
+    articuloId: 'art-234',
+    tituloCorto: 'Hurto',
+    tipo: 'penal' as const,
+    gravedad: 'delito' as const,
+    textoBoletin: 'Apoderamiento de cosas muebles ajenas…',
+    competencia: { cuerpos: [], via: 'ambas' as const },
+    ambito: 'estatal' as const,
+    validFrom: '2026-09-07T00:00:00.000Z',
+  };
+
+  it('por defecto (administrativa) penaTexto y gravedadPenal son null', () => {
+    const inf = Infraccion.parse({
+      ...base,
+      id: 'traf-movil',
+      tipo: 'administrativa',
+      gravedad: 'grave',
+    });
+    expect(inf.penaTexto).toBeNull();
+    expect(inf.gravedadPenal).toBeNull();
+  });
+
+  it('acepta un delito con su pena legible y su gravedad del art. 33 CP', () => {
+    const inf = Infraccion.parse({
+      ...base,
+      penaTexto: 'Prisión de 6 a 18 meses',
+      gravedadPenal: 'menos_grave',
+    });
+    expect(inf.penaTexto).toBe('Prisión de 6 a 18 meses');
+    expect(inf.gravedadPenal).toBe('menos_grave');
+  });
+
+  it('rechaza una gravedad penal fuera del art. 33 CP', () => {
+    expect(() => Infraccion.parse({ ...base, gravedadPenal: 'muy_grave' })).toThrow();
   });
 });

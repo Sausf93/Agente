@@ -63,6 +63,8 @@ CREATE TABLE IF NOT EXISTS infraccion (
   importe_eur           REAL,
   importe_reducido_eur  REAL,
   puntos                INTEGER,
+  pena_texto            TEXT,              -- pena legible del delito (vía penal); NULL en administrativas
+  gravedad_penal        TEXT,              -- leve|menos_grave|grave (art. 33 CP); NULL en administrativas
   texto_boletin         TEXT NOT NULL,
   variantes_boletin     TEXT NOT NULL DEFAULT '[]',  -- JSON: VarianteBoletin[]
   competencia           TEXT NOT NULL,               -- JSON: Competencia

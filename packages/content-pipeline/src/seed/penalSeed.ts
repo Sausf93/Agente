@@ -141,8 +141,14 @@ interface DelitoSeedInput {
   id: string;
   articulo: Articulo;
   tituloCorto: string;
-  /** Gravedad de la pena (art. 33 CP) que alimenta el motor de detención. */
+  /** Gravedad de la pena (art. 33 CP) que alimenta el motor de detención y el chip del marco penal. */
   gravedadCp: GravedadPenal;
+  /**
+   * Pena legible del delito (art. del CP) para el bloque "Marco penal" de la ficha, p. ej.
+   * "Prisión de 6 a 18 meses". Describe el ESCENARIO MODELADO (el más frecuente); la nota de
+   * revisión detalla las fronteras y los subtipos que la cambiarían. Orientativa, a verificar.
+   */
+  penaTexto: string;
   textoBoletin: string;
   terminos: string[];
   notaRevision: string;
@@ -170,6 +176,11 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     importeEur: null,
     importeReducidoEur: null,
     puntos: null,
+    // Marco penal (sustituye a importe/pronto pago/puntos en la ficha de un delito): pena legible
+    // + gravedad del art. 33 CP. `gravedadPenal` reutiliza la misma `gravedadCp` que alimenta el
+    // motor de detención → una sola fuente de verdad (el chip del marco y el árbol no se contradicen).
+    penaTexto: input.penaTexto,
+    gravedadPenal: input.gravedadCp,
     textoBoletin: input.textoBoletin,
     variantesBoletin: [],
     competencia: COMPETENCIA_PENAL,
@@ -228,6 +239,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Hurto',
     // Caso más frecuente en la calle: cuantía ≤ 400 € sin agravante → multa 1-3 meses → LEVE.
     gravedadCp: 'leve',
+    // Pena del caso modelado (delito leve, art. 234.2 CP). A partir de 400 € o con agravante del
+    // art. 235 pasa a menos grave (prisión de 6 a 18 meses) — ver notaRevision.
+    penaTexto: 'Multa de 1 a 3 meses (delito leve, hasta 400 €)',
     textoBoletin:
       'Apoderamiento de cosas muebles ajenas con ánimo de lucro y sin la voluntad de su dueño, ' +
       'sin fuerza en las cosas ni violencia o intimidación en las personas. Cuando la cuantía de ' +
@@ -257,6 +271,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Robo con violencia o intimidación',
     // Prisión de 2 a 5 años (art. 242.1); agravados ≤ 5 años → MENOS GRAVE (art. 33 CP).
     gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 2 a 5 años (art. 242.1 CP)',
     textoBoletin:
       'Apoderamiento de cosas muebles ajenas empleando violencia o intimidación sobre las personas ' +
       'para conseguirlas o asegurar la huida. La valoración de la violencia o intimidación y la ' +
@@ -283,6 +298,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Lesiones',
     // Art. 147.1 (requieren tratamiento): prisión 3 meses a 3 años o multa → MENOS GRAVE.
     gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 3 meses a 3 años o multa de 6 a 12 meses (art. 147.1 CP)',
     textoBoletin:
       'Causar a otra persona una lesión que, además de una primera asistencia facultativa, ' +
       'requiere objetivamente tratamiento médico o quirúrgico para su sanidad (art. 147.1 CP). La ' +
@@ -312,6 +328,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Quebrantamiento de orden de alejamiento',
     // Art. 468.2 (alejamiento en protección de víctima): prisión 6 meses a 1 año → MENOS GRAVE.
     gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 1 año (art. 468.2 CP)',
     textoBoletin:
       'Incumplir una pena o medida cautelar de alejamiento o de prohibición de comunicación ' +
       'impuesta para proteger a la víctima (art. 48 CP), acercándose a ella o comunicándose con ' +

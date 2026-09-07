@@ -121,9 +121,9 @@ function insertarInfracciones(
   const stmtInf = db.prepare(
     `INSERT INTO infraccion (
        id, articulo_id, codigo_dgt, titulo_corto, gravedad, tipo, importe_eur, importe_reducido_eur,
-       puntos, texto_boletin, variantes_boletin, competencia, ambito, territorio_id, desplaza_id,
-       origen, valid_from, valid_to, estado_revision, nota_revision
-     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       puntos, pena_texto, gravedad_penal, texto_boletin, variantes_boletin, competencia, ambito,
+       territorio_id, desplaza_id, origen, valid_from, valid_to, estado_revision, nota_revision
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
   const stmtSin = db.prepare(
     `INSERT INTO sinonimo (id, termino, termino_normalizado, peso, infraccion_id, articulo_id)
@@ -150,6 +150,8 @@ function insertarInfracciones(
       inf.importeEur,
       inf.importeReducidoEur,
       inf.puntos,
+      inf.penaTexto,
+      inf.gravedadPenal,
       inf.textoBoletin,
       JSON.stringify(inf.variantesBoletin),
       JSON.stringify(inf.competencia),

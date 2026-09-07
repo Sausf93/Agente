@@ -21,7 +21,7 @@ import {
   WifiOff,
   type LucideProps,
 } from 'lucide-react-native';
-import type { Gravedad, TipoConsecuencia, TipoInfraccion } from '@agente/shared';
+import type { Gravedad, GravedadPenal, TipoConsecuencia, TipoInfraccion } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { severityFromGravedad, severityMeta } from '@/ui/theme';
@@ -38,7 +38,7 @@ import { getContentRunner } from '@/db/contentDb';
 import { recordUso } from '@/db/userDb';
 import { FavoriteToggle } from '@/features/inicio/FavoriteToggle';
 import type { InfraccionSnapshot } from '@/features/inicio/masUsadas';
-import { cargarFicha, type FichaInfraccion } from './ficha';
+import { cargarFicha, tilesFicha, type FichaInfraccion, type TileFicha } from './ficha';
 import { DetencionTree } from './DetencionTree';
 import {
   CONSECUENCIA_LABEL,
@@ -63,6 +63,39 @@ export interface FichaScreenProps {
 const TIPO_LABEL: Record<TipoInfraccion, string> = {
   administrativa: 'Vía administrativa',
   penal: 'Vía penal',
+};
+
+/**
+ * El bloque de copia habla el idioma de la vía (D4 del rediseño): un delito NO se denuncia con
+ * "boletín", se documenta en atestado/diligencia. `plantillaId` es la plantilla que prerrellena
+ * "Generar documento"; hasta que exista una diligencia penal propia, la vía penal cae al boletín
+ * genérico con el hecho ya prerelleno (no bloquea).
+ */
+const COPIA: Record<TipoInfraccion, {
+  label: string;
+  copiar: string;
+  generar: string;
+  plantillaId: string;
+}> = {
+  administrativa: {
+    label: 'Texto para el boletín',
+    copiar: 'Copiar boletín',
+    generar: 'Generar boletín',
+    plantillaId: 'seed-boletin-denuncia',
+  },
+  penal: {
+    label: 'Texto para el atestado',
+    copiar: 'Copiar para el atestado',
+    generar: 'Generar diligencia',
+    plantillaId: 'seed-boletin-denuncia',
+  },
+};
+
+/** Etiqueta legible de la gravedad penal (art. 33 CP). Escala distinta a la gravedad administrativa. */
+const GRAVEDAD_PENAL_LABEL: Record<GravedadPenal, string> = {
+  leve: 'Leve',
+  menos_grave: 'Menos grave',
+  grave: 'Grave',
 };
 
 type EstadoCarga = 'cargando' | 'ok' | 'no-encontrada' | 'sin-contenido';
@@ -161,6 +194,15 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   }
 
   const pendiente = ficha.estadoRevision === 'pendiente_revision';
+  const esPenal = ficha.fichaKind === 'penal';
+  const copia = COPIA[ficha.tipo];
+  // Tiles adaptativos (solo con valor; ninguno en un delito → usa el "Marco penal").
+  const tiles = tilesFicha(ficha, formatEuros);
+  // La DETENCIÓN se separa del resto: en un delito sube arriba (leer-primero), no va enterrada.
+  const consecuenciaDetencion = ficha.consecuencias.find((c) => c.tipo === 'detencion') ?? null;
+  const otrasConsecuencias = esPenal
+    ? ficha.consecuencias.filter((c) => c.tipo !== 'detencion')
+    : ficha.consecuencias;
 
   return (
     <ScrollView
@@ -174,13 +216,10 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
       {/* El encabezado se adapta: un delito NO es una "infracción" administrativa. */}
       <Stack.Screen options={{ title: ficha.tipo === 'penal' ? 'Delito' : 'Infracción' }} />
 
-      {/* 1-3. Cabecera: título, norma+artículo, gravedad/tipo + distintivo de revisión. */}
+      {/* 1-3. Cabecera LEER-PRIMERO: TÍTULO grande primero, luego norma+artículo, luego las
+          insignias (D7). En un delito, UNA sola insignia penal "Delito · vía penal" (D6): sin
+          duplicar el chip de gravedad y el badge de vía, que decían casi lo mismo con dos rojos. */}
       <View style={{ gap: t.spacing.sm }}>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, alignItems: 'center' }}>
-          <SeverityChip gravedad={ficha.gravedad as Gravedad} />
-          <Badge label={TIPO_LABEL[ficha.tipo]} tone={ficha.tipo === 'penal' ? 'danger' : 'neutral'} />
-          {pendiente ? <Badge label="A verificar" tone="warning" /> : null}
-        </View>
         <Text
           accessibilityRole="header"
           maxFontSizeMultiplier={1.6}
@@ -191,24 +230,42 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.bodyStrong }}>
           {ficha.normaCodigo} · art. {ficha.articuloNumero}
         </Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, alignItems: 'center' }}>
+          {esPenal ? (
+            <PenalChip t={t} />
+          ) : (
+            <>
+              <SeverityChip gravedad={ficha.gravedad as Gravedad} />
+              <Badge label={TIPO_LABEL[ficha.tipo]} tone="neutral" />
+            </>
+          )}
+          {pendiente ? <Badge label="A verificar" tone="warning" /> : null}
+        </View>
       </View>
 
-      {/* 4. Importe / reducido (pronto pago) / puntos: TILES grandes, número "de refilón" (§7.2). */}
-      <View style={{ flexDirection: 'row', gap: t.spacing.sm }}>
-        {/* El IMPORTE manda: tile con énfasis de acento (el dato que el agente busca primero). */}
-        <Tile t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} enfasis />
-        <Tile
-          t={t}
-          etiqueta="Pronto pago"
-          valor={ficha.importeReducidoEur !== null ? formatEuros(ficha.importeReducidoEur) : '—'}
-        />
-        <Tile t={t} etiqueta="Puntos" valor={ficha.puntos !== null ? String(ficha.puntos) : '—'} />
-      </View>
+      {esPenal ? (
+        <>
+          {/* 4a. MARCO PENAL (sustituye a los tiles de tráfico): la PENA y la gravedad art. 33 CP. */}
+          <MarcoPenal t={t} penaTexto={ficha.penaTexto} gravedadPenal={ficha.gravedadPenal} />
 
-      {/* 5. Texto de boletín + "Copiar boletín" SOBRE EL PLIEGUE (ADR-004). */}
+          {/* 4b. DETENCIÓN, leer-primero y ARRIBA: en un delito, "qué procede" es LA decisión. */}
+          {consecuenciaDetencion ? (
+            <DetencionTree regla={consecuenciaDetencion.regla} />
+          ) : null}
+        </>
+      ) : tiles.length > 0 ? (
+        /* 4. Tiles de datos ADAPTATIVOS: solo los que tienen valor (nunca "—"). El importe manda. */
+        <View style={{ flexDirection: 'row', gap: t.spacing.sm }}>
+          {tiles.map((tile) => (
+            <Tile key={tile.etiqueta} t={t} tile={tile} solo={tiles.length === 1} />
+          ))}
+        </View>
+      ) : null}
+
+      {/* 5. Texto para boletín/atestado + copiar SOBRE EL PLIEGUE (ADR-004), idioma según la vía. */}
       <View style={{ gap: t.spacing.sm }}>
         <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
-          Texto para el boletín
+          {copia.label}
         </Text>
         <Card>
           <Text
@@ -255,6 +312,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
 
         <CopyBulletinButton
           texto={textoCopiable}
+          label={copia.copiar}
           onCopied={() => {
             // Copiar el boletín es la señal más fuerte de "uso real": pesa en "tus más usadas".
             if (snapshot) void recordUso(snapshot, 'copia', new Date().toISOString());
@@ -264,15 +322,16 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         {/* Acción "Favorito" (§4.4 punto 9): guardar/quitar de "Tus favoritas". */}
         {snapshot ? <FavoriteToggle snapshot={snapshot} /> : null}
 
-        {/* 9. Generar documento: prerrellena el boletín con norma, artículo, importe y hecho. */}
+        {/* 9. Generar documento: prerrellena la plantilla con norma, artículo, importe y hecho.
+            El título habla el idioma de la vía ("Generar boletín" / "Generar diligencia"). */}
         <Button
-          title="Generar documento"
+          title={copia.generar}
           variant="secondary"
           icon={FileDown}
-          accessibilityHint="Abre el boletín de denuncia con estos datos ya rellenos"
+          accessibilityHint="Abre el documento con estos datos ya rellenos"
           onPress={() => {
             const params: Record<string, string> = {
-              plantillaId: 'seed-boletin-denuncia',
+              plantillaId: copia.plantillaId,
               norma: ficha.normaCodigo,
               articulo: `art. ${ficha.articuloNumero}`,
               hecho: textoCopiable,
@@ -285,13 +344,14 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         />
       </View>
 
-      {/* 6. Consecuencias con su fuente (orientativas, §4.6). */}
-      {ficha.consecuencias.length > 0 ? (
+      {/* 6. Consecuencias con su fuente (orientativas, §4.6). En un delito, la detención ya se
+          pintó arriba (leer-primero): aquí van "Otras consecuencias" (decomiso, identificación…). */}
+      {otrasConsecuencias.length > 0 ? (
         <View style={{ gap: t.spacing.sm }}>
           <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
-            Consecuencias
+            {esPenal ? 'Otras consecuencias' : 'Consecuencias'}
           </Text>
-          {ficha.consecuencias.map((c, i) => (
+          {otrasConsecuencias.map((c, i) => (
             <View key={`${c.tipo}-${i}`} style={{ gap: t.spacing.sm }}>
               <FilaConsecuencia
                 t={t}
@@ -299,7 +359,8 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
                 textoCorto={c.textoCorto}
                 fuente={c.fuente}
               />
-              {/* Árbol de detención interactivo (§4.6): solo para la consecuencia `detencion`. */}
+              {/* Árbol de detención interactivo (§4.6): solo para la consecuencia `detencion`
+                  en fichas NO penales (en un delito ya va arriba, extraída del mapa). */}
               {c.tipo === 'detencion' ? <DetencionTree regla={c.regla} /> : null}
             </View>
           ))}
@@ -378,28 +439,20 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
 }
 
 /**
- * Tile de dato clave (importe / pronto pago / puntos): número grande y etiqueta pequeña (§7.2).
- *
- * `enfasis` marca el dato que el agente busca primero (el IMPORTE): borde y fondo de acento
- * sutiles para que "gane" sin romper la retícula. `acento` solo tiñe el número (pronto pago).
+ * Tile de dato clave (importe / pronto pago / puntos / tramo): número grande y etiqueta pequeña
+ * (§7.2). `enfasis` marca el dato que el agente busca primero (el IMPORTE): borde y fondo de
+ * acento sutiles para que "gane" sin romper la retícula. `solo` (cuando queda un único tile) evita
+ * que se estire a todo el ancho de una retícula de 3 columnas: ocupa un ancho cómodo y para.
  */
-function Tile({
-  t,
-  etiqueta,
-  valor,
-  acento = false,
-  enfasis = false,
-}: {
-  t: Theme;
-  etiqueta: string;
-  valor: string;
-  acento?: boolean;
-  enfasis?: boolean;
-}) {
+function Tile({ t, tile, solo = false }: { t: Theme; tile: TileFicha; solo?: boolean }) {
+  const enfasis = tile.enfasis ?? false;
   return (
     <View
       style={{
-        flex: 1,
+        flexGrow: solo ? 0 : 1,
+        flexShrink: 1,
+        flexBasis: solo ? 'auto' : 0,
+        minWidth: solo ? 140 : undefined,
         borderRadius: t.radius.md,
         borderWidth: enfasis ? 1.5 : 1,
         borderColor: enfasis ? t.color.accent : t.color.border,
@@ -414,14 +467,117 @@ function Tile({
         adjustsFontSizeToFit
         maxFontSizeMultiplier={1.4}
         style={{
-          color: enfasis || acento ? t.color.accent : t.color.textPrimary,
+          color: enfasis ? t.color.accent : t.color.textPrimary,
           ...t.typography.scale.displayL,
           fontVariant: ['tabular-nums'],
         }}
       >
-        {valor}
+        {tile.valor}
       </Text>
-      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+        {tile.etiqueta}
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * Insignia ÚNICA de un delito (D6): "Delito · vía penal" en la familia de color de gravedad
+ * `delito` (magenta, FIJA, no cambia con el cuerpo) + icono de balanza. Sustituye al par
+ * redundante SeverityChip "Delito" + Badge "Vía penal". Color + texto + icono (nunca canal único).
+ */
+function PenalChip({ t }: { t: Theme }) {
+  const c = t.severity.delito;
+  return (
+    <View
+      accessible
+      accessibilityLabel="Delito, vía penal"
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        gap: t.spacing.xs,
+        borderRadius: t.radius.pill,
+        backgroundColor: c.bg,
+        paddingHorizontal: t.spacing.sm,
+        paddingVertical: t.spacing.xxs,
+        minHeight: t.touch.chipHeight,
+      }}
+    >
+      <Gavel size={16} color={c.fg} strokeWidth={2.2} />
+      <Text
+        maxFontSizeMultiplier={1.6}
+        style={{ color: c.fg, ...t.typography.scale.caption, fontWeight: '700' }}
+      >
+        Delito · vía penal
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * MARCO PENAL (variante `penal`): sustituye a los tiles de tráfico (importe/puntos, que en un
+ * delito no existen). Muestra la PENA legible (art. del CP) en grande + un chip NEUTRO con la
+ * gravedad del art. 33 CP. El chip es neutro a propósito: la gravedad penal (leve/menos_grave/
+ * grave) es OTRA escala que la administrativa y no debe robar su familia de color. Si aún no hay
+ * pena en el contenido, se remite al artículo desplegable de abajo.
+ */
+function MarcoPenal({
+  t,
+  penaTexto,
+  gravedadPenal,
+}: {
+  t: Theme;
+  penaTexto: string | null;
+  gravedadPenal: GravedadPenal | null;
+}) {
+  return (
+    <View
+      style={{
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        borderColor: t.color.border,
+        backgroundColor: t.color.surfaceAlt,
+        padding: t.spacing.md,
+        gap: t.spacing.sm,
+      }}
+    >
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>Pena</Text>
+      {penaTexto ? (
+        <Text
+          maxFontSizeMultiplier={1.6}
+          style={{
+            color: t.color.textPrimary,
+            ...t.typography.scale.titleM,
+            fontVariant: ['tabular-nums'],
+          }}
+        >
+          {penaTexto}
+        </Text>
+      ) : (
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
+          Consulta la pena en el artículo, más abajo.
+        </Text>
+      )}
+      {gravedadPenal ? (
+        <View
+          style={{
+            alignSelf: 'flex-start',
+            borderRadius: t.radius.pill,
+            borderWidth: 1,
+            borderColor: t.color.border,
+            backgroundColor: t.color.surface,
+            paddingHorizontal: t.spacing.sm,
+            paddingVertical: t.spacing.xxs,
+            minHeight: t.touch.chipHeight,
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+            Gravedad penal: {GRAVEDAD_PENAL_LABEL[gravedadPenal]} · art. 33 CP
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }

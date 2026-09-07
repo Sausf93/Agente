@@ -132,6 +132,18 @@ export const Infraccion = z
     importeEur: z.number().nonnegative().nullable().default(null),
     importeReducidoEur: z.number().nonnegative().nullable().default(null),
     puntos: z.number().int().nonnegative().nullable().default(null),
+    /**
+     * Pena legible del delito (art. del CP), p. ej. "Prisión de 6 a 18 meses". Solo tiene
+     * sentido en la vía penal; `null` en administrativas. La ficha la muestra en el bloque
+     * "Marco penal" en vez de importe/pronto pago/puntos, que no existen en un delito.
+     */
+    penaTexto: z.string().min(1).nullable().default(null),
+    /**
+     * Gravedad penal según el art. 33 CP (leve/menos_grave/grave). Se expone aquí para pintar el
+     * chip del marco penal en la ficha sin abrir el árbol de detención. `null` en administrativas.
+     * NO es la misma escala que `gravedad` (leve/grave/muy_grave/delito), que es la administrativa.
+     */
+    gravedadPenal: GravedadPenal.nullable().default(null),
     /** Texto principal del boletín + variantes opcionales. */
     textoBoletin: z.string().min(1),
     variantesBoletin: z.array(VarianteBoletin).default([]),
