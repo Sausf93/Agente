@@ -114,6 +114,26 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
       PRAGMA user_version = 4;
     `);
   }
+
+  if (version < 5) {
+    // MARCADORES de artículos (§4.5): el agente guarda un artículo del articulado para volver a
+    // él. Local-first (ADR-001): viven SOLO en el dispositivo, separados del paquete de contenido
+    // (ADR-010, punto 4). Se DESNORMALIZAN el código de norma, el número y el título del artículo
+    // para poder pintar "mis marcadores" sin abrir el paquete y para que el marcador sobreviva a
+    // un cambio de versión de contenido (aunque el id de artículo cambie de forma).
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS marcador_articulo (
+        articulo_id TEXT PRIMARY KEY NOT NULL,
+        norma_id TEXT NOT NULL,
+        norma_codigo TEXT NOT NULL,
+        articulo_numero TEXT NOT NULL,
+        articulo_titulo TEXT,
+        created_at TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_marcador_created_at ON marcador_articulo (created_at DESC);
+      PRAGMA user_version = 5;
+    `);
+  }
 }
 
 /** Abre (una sola vez) la base local del usuario y aplica migraciones. */
@@ -380,4 +400,81 @@ export async function savePerfil(perfil: PerfilLocal, updatedAt: string): Promis
       updatedAt,
     ],
   );
+}
+
+// ---------------------------------------------------------------------------
+// Marcadores de artículos (§4.5) — solo en el dispositivo, separados del paquete
+// ---------------------------------------------------------------------------
+
+/** Marcador de un artículo tal y como se guarda/lee del dispositivo (datos desnormalizados). */
+export interface Marcador {
+  articuloId: string;
+  normaId: string;
+  normaCodigo: string;
+  articuloNumero: string;
+  articuloTitulo: string | null;
+  createdAt: string;
+}
+
+interface MarcadorRow {
+  articulo_id: string;
+  norma_id: string;
+  norma_codigo: string;
+  articulo_numero: string;
+  articulo_titulo: string | null;
+  created_at: string;
+}
+
+/** Lista los marcadores del dispositivo, el más reciente primero. */
+export async function listMarcadores(): Promise<Marcador[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<MarcadorRow>(
+    'SELECT * FROM marcador_articulo ORDER BY created_at DESC',
+  );
+  return rows.map((r) => ({
+    articuloId: r.articulo_id,
+    normaId: r.norma_id,
+    normaCodigo: r.norma_codigo,
+    articuloNumero: r.articulo_numero,
+    articuloTitulo: r.articulo_titulo,
+    createdAt: r.created_at,
+  }));
+}
+
+/** Devuelve el conjunto de ids de artículo marcados (para pintar el estado del icono). */
+export async function listMarcadorIds(): Promise<string[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{ articulo_id: string }>(
+    'SELECT articulo_id FROM marcador_articulo',
+  );
+  return rows.map((r) => r.articulo_id);
+}
+
+/** Guarda (upsert) un marcador. `createdAt` lo inyecta el llamante para poder testear. */
+export async function addMarcador(marcador: Omit<Marcador, 'createdAt'>, createdAt: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO marcador_articulo
+       (articulo_id, norma_id, norma_codigo, articulo_numero, articulo_titulo, created_at)
+     VALUES (?, ?, ?, ?, ?, ?)
+     ON CONFLICT(articulo_id) DO UPDATE SET
+       norma_id = excluded.norma_id,
+       norma_codigo = excluded.norma_codigo,
+       articulo_numero = excluded.articulo_numero,
+       articulo_titulo = excluded.articulo_titulo`,
+    [
+      marcador.articuloId,
+      marcador.normaId,
+      marcador.normaCodigo,
+      marcador.articuloNumero,
+      marcador.articuloTitulo,
+      createdAt,
+    ],
+  );
+}
+
+/** Borra un marcador del dispositivo. */
+export async function removeMarcador(articuloId: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM marcador_articulo WHERE articulo_id = ?', [articuloId]);
 }

@@ -365,6 +365,48 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
    + color de acento + trazo más grueso (2.4). Metáforas de objeto/acción, cero símbolos
    oficiales.
 
+## ADR-016 · Normas: navegación del articulado, Markdown propio y marcadores locales
+
+- **Estado:** aceptada (implementada en `apps/mobile/src/features/normas` y `src/ui/markdown`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** la pestaña Normas (§4.5) navega el articulado consolidado que ya viaja en el
+  paquete (`norma`, `articulo`). Debe funcionar offline, en Expo Go y con el sistema visual v2.
+
+### Decisiones
+
+1. **Navegación en stack anidado bajo la pestaña Normas** (Expo Router): lista de normas →
+   articulado de una norma → artículo, más "mis marcadores". La cabecera propia del stack aporta
+   el "atrás"; sus colores salen del tema (acento por cuerpo). Reusa el mismo patrón de consulta
+   que el buscador/ficha: núcleo agnóstico del motor sobre `SqlRunner` (`normas.ts`), testeado con
+   `node:sqlite` contra el `.db` real.
+2. **Render de Markdown PROPIO y mínimo** (`ui/markdown/parse.ts` + `Markdown.tsx`), sin añadir
+   dependencias. Motivo: evitar cualquier módulo que pueda romper Expo Go y mantener el control del
+   estilo (tokens del tema, cuerpo ≥16 pt, texto seleccionable). Cubre encabezados, listas, tablas
+   de tubería, citas, párrafos y énfasis en línea. El parser es **puro y testeado**; si en el
+   futuro aparece Markdown más rico del BOE, se amplía el parser o se reevalúa una librería
+   Expo Go-safe.
+3. **Ordenación de artículos por `articulo.orden`** (documental, lo fija el pipeline) y, a igualdad,
+   por número ascendente **numérico** (para que "18" vaya antes que "118"); las disposiciones sin
+   número van al final. Lógica pura `ordenarArticulos`/`numeroSortKey`.
+4. **Buscador dentro de la norma en memoria** (sin más consultas ni red): al cargar el articulado se
+   precalcula una cadena normalizada (número + título + texto) por artículo. Si la consulta empieza
+   por dígito, se filtra por **prefijo de número** (preciso: "18" no trae "118"); en otro caso, por
+   inclusión en el texto normalizado (tildes/ñ plegadas con `normalizarBusqueda`).
+5. **Indicador "cambió el dd/mm" a partir de `articulo.valid_from`**, comparado con la fecha del
+   paquete (`meta.fecha`) mediante `estadoCambio` (puro): `reciente` si entró en vigor dentro de una
+   ventana (~18 meses), `futuro` si aún no está en vigor, y **`null` cuando `valid_from` coincide con
+   la fecha del paquete** (artefacto del seed) para no marcar como "cambiado" todo el seed. Cuando el
+   pipeline genere `Novedad` con artículos concretos, se podrá afinar con esa señal + el diff.
+6. **Marcadores locales** (`user.db`, migración `user_version = 5`, tabla `marcador_articulo`),
+   local-first (ADR-001) y separados del paquete (ADR-010). Se **desnormalizan** código de norma,
+   número y título para pintar "mis marcadores" sin abrir el paquete y para sobrevivir a un cambio de
+   versión de contenido. La copia/sync entre dispositivos queda para cuando exista backend.
+
+- **Desviación consciente de §4.5:** en v1 se implementan **marcadores** pero NO las **notas
+  personales** por artículo (se pueden añadir sobre la misma tabla más adelante); tampoco el nivel
+  intermedio "capítulo" (el paquete no modela capítulos: la navegación es norma → artículo, con el
+  apartado localizable dentro del texto, coherente con la granularidad de `Articulo` de §6.1).
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
