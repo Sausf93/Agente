@@ -39,13 +39,27 @@ describe('parseReglaDetencion', () => {
 });
 
 describe('ORIENTACION_VISUAL', () => {
-  it('cubre las tres orientaciones del motor con etiqueta (nunca solo color)', () => {
-    const orientaciones: OrientacionDetencion[] = ['procede', 'puede_proceder', 'no_procede_salvo'];
+  it('cubre las cuatro orientaciones del motor con etiqueta (nunca solo color)', () => {
+    const orientaciones: OrientacionDetencion[] = [
+      'procede',
+      'puede_proceder',
+      'no_procede_salvo',
+      'no_detencion_penal',
+    ];
     for (const o of orientaciones) {
       const v = ORIENTACION_VISUAL[o];
       expect(v).toBeTruthy();
       expect(v.etiqueta.length).toBeGreaterThan(0);
     }
+  });
+
+  it('"No es detención penal" usa el tono informativo (azul), distinto del rojo noProcede', () => {
+    // Vía administrativa / protección de menores NO debe confundirse con "delito leve, ojo".
+    expect(ORIENTACION_VISUAL.no_detencion_penal.tono).toBe('info');
+    expect(ORIENTACION_VISUAL.no_procede_salvo.tono).toBe('noProcede');
+    expect(ORIENTACION_VISUAL.no_detencion_penal.tono).not.toBe(
+      ORIENTACION_VISUAL.no_procede_salvo.tono,
+    );
   });
 });
 

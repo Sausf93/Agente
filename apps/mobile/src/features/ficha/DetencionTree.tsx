@@ -15,6 +15,7 @@ import {
   evaluarDetencion,
   type EntradaDetencionNormalizada,
   type GravedadPenal,
+  type OrientacionDetencion,
   type TramoEdadAutor,
 } from '@agente/shared';
 
@@ -179,7 +180,7 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
           <AlertTriangle size={20} color={t.color.warning} strokeWidth={2.2} />
           <View style={{ flex: 1, gap: t.spacing.xxs }}>
             <Text style={{ color: t.color.warning, ...t.typography.scale.label }}>
-              Especialidades del menor
+              {tituloAvisoMenor(entrada.edadAutor, resultado.orientacion)}
             </Text>
             <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
               {resultado.avisosMenor}
@@ -219,7 +220,9 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
       >
         <SlidersHorizontal size={18} color={t.color.textSecondary} strokeWidth={2} />
         <Text style={{ flex: 1, color: t.color.textSecondary, ...t.typography.scale.label }}>
-          {mostrarAfinar ? 'Ocultar el detalle del caso' : 'Afinar el caso (otra gravedad, circunstancias)'}
+          {mostrarAfinar
+            ? 'Ocultar el detalle del caso'
+            : 'Afinar el caso (edad, extranjería, gravedad, circunstancias)'}
         </Text>
         {mostrarAfinar ? (
           <ChevronUp size={18} color={t.color.textTertiary} strokeWidth={2} />
@@ -350,8 +353,8 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
               })}
             </View>
             <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-              La gravedad de la pena (art. 33 CP) cambia la orientación. Ojo: en el hurto, hasta
-              400 € es leve; más de 400 €, menos grave.
+              La gravedad de la pena (art. 33 CP) cambia la orientación; elige la del delito que
+              valoras.
             </Text>
           </View>
 
@@ -399,7 +402,18 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
   );
 }
 
-/** Traduce el tono de la orientación a los colores semánticos del tema (verde/ámbar/rojo). */
+/**
+ * Título del bloque destacado del menor, según la rama: no siempre son "especialidades". Con
+ * autor menor de 14 el contenido es "qué procede" (acción operativa); con 14-17 penal son las
+ * garantías del art. 17; en el hecho migratorio, la vía de protección de menores.
+ */
+function tituloAvisoMenor(edadAutor: TramoEdadAutor, orientacion: OrientacionDetencion): string {
+  if (edadAutor === 'menor_14') return 'Menor de 14 · qué procede';
+  if (orientacion === 'no_detencion_penal') return 'Menor de edad · protección';
+  return 'Especialidades del menor (14-17)';
+}
+
+/** Traduce el tono de la orientación a los colores semánticos del tema (verde/ámbar/rojo/azul). */
 function tonoColores(t: Theme, tono: TonoOrientacion): { accent: string; bg: string } {
   switch (tono) {
     case 'procede':
@@ -408,5 +422,7 @@ function tonoColores(t: Theme, tono: TonoOrientacion): { accent: string; bg: str
       return { accent: t.color.warning, bg: t.color.warningBg };
     case 'noProcede':
       return { accent: t.color.danger, bg: t.color.dangerBg };
+    case 'info':
+      return { accent: t.color.info, bg: t.color.infoBg };
   }
 }

@@ -120,8 +120,12 @@ export const MIGRATORIO_AYUDA =
   'Si además hay un ilícito penal (resistencia, quebrantar prohibición de entrada, documentación ' +
   'falsa…), NO lo marques: se sigue el árbol penal.';
 
-/** Tono visual (color + texto) de cada orientación. Nunca solo color: cada tono lleva etiqueta. */
-export type TonoOrientacion = 'procede' | 'puede' | 'noProcede';
+/**
+ * Tono visual (color + texto) de cada orientación. Nunca solo color: cada tono lleva etiqueta.
+ * `info` (azul informativo) es para "No es detención penal": de un vistazo se distingue de
+ * `noProcede` (rojo, "delito leve, ojo") que sí es materia penal. No toca los colores de gravedad.
+ */
+export type TonoOrientacion = 'procede' | 'puede' | 'noProcede' | 'info';
 
 export interface OrientacionVisual {
   tono: TonoOrientacion;
@@ -135,7 +139,7 @@ export const ORIENTACION_VISUAL: Record<OrientacionDetencion, OrientacionVisual>
   procede: { tono: 'procede', etiqueta: 'Procede', icono: 'shield-check' },
   puede_proceder: { tono: 'puede', etiqueta: 'Puede proceder', icono: 'shield-alert' },
   no_procede_salvo: { tono: 'noProcede', etiqueta: 'No procede salvo…', icono: 'shield-x' },
-  no_detencion_penal: { tono: 'noProcede', etiqueta: 'No es detención penal', icono: 'shield-x' },
+  no_detencion_penal: { tono: 'info', etiqueta: 'No es detención penal', icono: 'shield-x' },
 };
 
 /**

@@ -218,6 +218,28 @@ describe('evaluarDetencion — RAMA A1: autor menor de 14 (inimputable, LO 5/200
     expect(r.pie).toBe(PIE_DETENCION_MENOR);
   });
 
+  it('lleva su bloque destacado (avisosMenor) con la ACCIÓN operativa "qué procede"', () => {
+    const r = evaluarDetencion({ gravedadCp: 'grave', flagrancia: true, edadAutor: 'menor_14' });
+    expect(r.avisosMenor).toBeDefined();
+    expect(r.avisosMenor).toMatch(/Qué procede/);
+    expect(r.avisosMenor).toMatch(/representantes legales|Entidad Pública/);
+    expect(r.avisosMenor).toMatch(/Ministerio Fiscal/);
+    // Sin hecho migratorio, no menciona MENA.
+    expect(r.avisosMenor).not.toMatch(/MENA/);
+  });
+
+  it('menor de 14 + solo migratorio → el aviso añade la mención MENA (§3.1 gana, sigue A1)', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'grave',
+      edadAutor: 'menor_14',
+      soloHechoMigratorio: true,
+    });
+    expect(r.orientacion).toBe('no_detencion_penal');
+    expect(r.titulo).toMatch(/menor de 14 años/);
+    expect(r.avisosMenor).toMatch(/Qué procede/);
+    expect(r.avisosMenor).toMatch(/MENA/);
+  });
+
   it('precede a cualquier circunstancia penal (la edad cortocircuita el árbol)', () => {
     const r = evaluarDetencion({
       gravedadCp: 'grave',
@@ -249,15 +271,28 @@ describe('evaluarDetencion — RAMA B1: solo hecho migratorio (extranjería, LO 
     expect(r.motivo).toMatch(/estancia irregular/);
     expect(r.fuentes).toEqual([
       'LO 4/2000 art. 53.1.a',
-      'art. 55.1',
-      'art. 57',
-      'art. 58',
-      'art. 61',
-      'art. 62',
+      'LO 4/2000 art. 55.1',
+      'LO 4/2000 art. 57',
+      'LO 4/2000 art. 58',
+      'LO 4/2000 art. 61',
+      'LO 4/2000 art. 62',
     ]);
+    // Todos los chips de extranjería llevan el prefijo de la ley (no solo el primero).
+    for (const f of r.fuentes) expect(f).toMatch(/^LO 4\/2000 art\./);
     expect(r.pie).toBe(PIE_EXTRANJERIA);
     // Adulto: sin aviso de menor.
     expect(r.avisosMenor).toBeUndefined();
+  });
+
+  it('aclara la detención cautelar del art. 61 (a verificar) y la separa del CIE (art. 62)', () => {
+    const r = evaluarDetencion({ gravedadCp: 'grave', soloHechoMigratorio: true });
+    // Cautelar para incoar/ejecutar la expulsión: que el agente no lea "no puede retener".
+    expect(r.motivo).toMatch(/cautelar/i);
+    expect(r.motivo).toMatch(/art\. 61/);
+    expect(r.motivo).toMatch(/a verificar/);
+    // El CIE (art. 62, judicial) queda separado.
+    expect(r.motivo).toMatch(/CIE/);
+    expect(r.motivo).toMatch(/art\. 62/);
   });
 
   it('menor 14-17 + solo migratorio → añade aviso de protección de menores / MENA', () => {

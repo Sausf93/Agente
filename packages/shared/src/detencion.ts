@@ -63,11 +63,11 @@ const ART_LORPM_17 = 'LO 5/2000 art. 17'; // detención del menor: especialidade
 
 // --- Citas de la RAMA EXTRANJERÍA (LO 4/2000) -----------------------------------------------
 const ART_LOEX_53_1_A = 'LO 4/2000 art. 53.1.a'; // estancia irregular: infracción grave (no delito)
-const ART_LOEX_55_1 = 'art. 55.1'; // sanción de multa por tramos
-const ART_LOEX_57 = 'art. 57'; // expulsión (con preferencia en la estancia irregular)
-const ART_LOEX_58 = 'art. 58'; // efectos de la expulsión y prohibición de entrada
-const ART_LOEX_61 = 'art. 61'; // medidas cautelares del procedimiento
-const ART_LOEX_62 = 'art. 62'; // internamiento CIE: medida cautelar judicial
+const ART_LOEX_55_1 = 'LO 4/2000 art. 55.1'; // sanción de multa por tramos
+const ART_LOEX_57 = 'LO 4/2000 art. 57'; // expulsión (con preferencia en la estancia irregular)
+const ART_LOEX_58 = 'LO 4/2000 art. 58'; // efectos de la expulsión y prohibición de entrada
+const ART_LOEX_61 = 'LO 4/2000 art. 61'; // detención cautelar / medidas cautelares del procedimiento
+const ART_LOEX_62 = 'LO 4/2000 art. 62'; // internamiento CIE: medida cautelar judicial
 
 /**
  * Resultado orientativo del árbol de detención.
@@ -184,10 +184,29 @@ const AVISO_MENOR_MIGRATORIO =
   'LO 1/1996). La determinación de la minoría de edad corresponde a la autoridad.';
 
 /**
- * RAMA A1 · Autor menor de 14 años (inimputable, art. 1.1 y 3 LO 5/2000). No hay detención penal:
- * protección de menores. Texto literal de la spec jurídica (§4.1).
+ * Aviso DESTACADO de la ACCIÓN operativa cuando el autor es menor de 14 (§4.1). Espeja el bloque
+ * destacado del 14-17: en vez de "salvo…", dice de un vistazo QUÉ PROCEDE con un inimputable.
  */
-function ramaMenor14(): ResultadoDetencion {
+const AVISO_MENOR_14 =
+  'Qué procede: identificar con cautelas de menor; entrega a representantes legales o Entidad ' +
+  'Pública de protección de menores; comunicación al Ministerio Fiscal (art. 3 LO 5/2000).';
+
+/**
+ * Coletilla MENA que se AÑADE al aviso del menor de 14 cuando, además, el hecho es solo migratorio
+ * (posible menor extranjero no acompañado). La minoría de edad la determina la autoridad.
+ */
+const AVISO_MENOR_14_MENA =
+  ' Posible menor extranjero no acompañado (MENA): valorar el protocolo MENA; la determinación de ' +
+  'la minoría de edad corresponde a la autoridad.';
+
+/**
+ * RAMA A1 · Autor menor de 14 años (inimputable, art. 1.1 y 3 LO 5/2000). No hay detención penal:
+ * protección de menores. Texto literal de la spec jurídica (§4.1). Puebla `avisosMenor` con la
+ * ACCIÓN operativa (mismo bloque destacado que el 14-17) y, si además el hecho es solo migratorio,
+ * añade la mención MENA.
+ */
+function ramaMenor14(v: EntradaDetencionNormalizada): ResultadoDetencion {
+  const avisosMenor = v.soloHechoMigratorio ? AVISO_MENOR_14 + AVISO_MENOR_14_MENA : AVISO_MENOR_14;
   return {
     orientacion: 'no_detencion_penal',
     titulo: 'No procede la detención penal: autor menor de 14 años',
@@ -199,6 +218,7 @@ function ramaMenor14(): ResultadoDetencion {
       'Ministerio Fiscal (art. 3 LO 5/2000, en relación con la LO 1/1996).',
     fuentes: [ART_LORPM_1_1, ART_LORPM_3, ART_LO_1_1996],
     pie: PIE_DETENCION_MENOR,
+    avisosMenor,
   };
 }
 
@@ -217,9 +237,12 @@ function ramaSoloMigratorio(v: EntradaDetencionNormalizada): ResultadoDetencion 
       '53.1.a LO 4/2000): no procede detención penal por ese motivo. Procede la identificación y, ' +
       'en su caso, la incoación del procedimiento administrativo sancionador de extranjería, cuya ' +
       'sanción puede ser multa (art. 55.1) o, con preferencia en la estancia irregular, la ' +
-      'expulsión (art. 57), con prohibición de entrada (art. 58). El posible internamiento en CIE ' +
-      'es una MEDIDA CAUTELAR que acuerda la autoridad judicial a instancia de la Administración ' +
-      '(arts. 61 y 62 LO 4/2000), no una detención penal policial.',
+      'expulsión (art. 57), con prohibición de entrada (art. 58). Aunque no es una detención ' +
+      'penal, cabe (a verificar) la DETENCIÓN CAUTELAR a efectos de incoar o ejecutar la ' +
+      'expulsión (art. 61 LO 4/2000), con límites temporales y control judicial: no equivale a ' +
+      '"no se puede retener". El internamiento en CIE es una medida cautelar DISTINTA, que acuerda ' +
+      'la autoridad judicial a instancia de la Administración (art. 62 LO 4/2000), no una ' +
+      'detención penal policial.',
     fuentes: [ART_LOEX_53_1_A, ART_LOEX_55_1, ART_LOEX_57, ART_LOEX_58, ART_LOEX_61, ART_LOEX_62],
     pie: PIE_EXTRANJERIA,
     ...(esMenor ? { avisosMenor: AVISO_MENOR_MIGRATORIO } : {}),
@@ -238,7 +261,7 @@ export function evaluarDetencion(entrada: EntradaDetencion): ResultadoDetencion 
   const v = EntradaDetencion.parse(entrada);
 
   // Precedencia §3.1: menor de 14 → inimputable, no hay detención penal.
-  if (v.edadAutor === 'menor_14') return ramaMenor14();
+  if (v.edadAutor === 'menor_14') return ramaMenor14(v);
 
   // Precedencia §3.2: solo hecho migratorio → vía administrativa de extranjería.
   if (v.soloHechoMigratorio) return ramaSoloMigratorio(v);
