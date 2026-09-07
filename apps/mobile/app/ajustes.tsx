@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   CCAA_DE_AUTONOMICA,
@@ -13,6 +13,7 @@ import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { Banner } from '@/ui/components/Banner';
 import { SelectField, type SelectOption } from '@/ui/components/SelectField';
+import { hapticSelection } from '@/ui/haptics';
 import { useSettingsStore, type ThemePreference } from '@/store/settings';
 
 /**
@@ -51,9 +52,11 @@ export default function AjustesScreen() {
   const provinciaId = useSettingsStore((s) => s.provinciaId);
   const municipioNombre = useSettingsStore((s) => s.municipioNombre);
   const tema = useSettingsStore((s) => s.tema);
+  const hapticsEnabled = useSettingsStore((s) => s.hapticsEnabled);
   const setCuerpo = useSettingsStore((s) => s.setCuerpo);
   const setTerritorio = useSettingsStore((s) => s.setTerritorio);
   const setThemePreference = useSettingsStore((s) => s.setThemePreference);
+  const setHapticsEnabled = useSettingsStore((s) => s.setHapticsEnabled);
 
   const esAutonomica = cuerpo === 'policia_autonomica';
   const esLocal = cuerpo === 'policia_local';
@@ -118,6 +121,35 @@ export default function AjustesScreen() {
           <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
             "Sistema" sigue el ajuste de tu teléfono (oscuro de noche).
           </Text>
+        </View>
+
+        {/* Vibración (feedback háptico). Al activarla, un toque de confirmación (P0-1). */}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: t.spacing.md,
+            minHeight: t.touch.min,
+          }}
+        >
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>Vibración</Text>
+            <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+              Feedback al copiar, marcar favoritos y cambiar de pestaña.
+            </Text>
+          </View>
+          <Switch
+            accessibilityLabel="Vibración"
+            value={hapticsEnabled}
+            onValueChange={(v) => {
+              setHapticsEnabled(v);
+              if (v) hapticSelection(); // confirma con un toque al activarla
+            }}
+            trackColor={{ true: t.color.accent, false: t.color.surfaceAlt }}
+            thumbColor={t.color.surface}
+            ios_backgroundColor={t.color.surfaceAlt}
+          />
         </View>
       </View>
 

@@ -26,5 +26,11 @@
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.11.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-native-reanimated": "4.5.1",
+      "react-native-worklets": "0.10.4"
+    }
   }
 }

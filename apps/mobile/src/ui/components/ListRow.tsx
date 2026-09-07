@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
+import { PressableScale } from './PressableScale';
 
 /**
  * Fila de lista PULSABLE (cola de componentes §4.2.5): resultados de búsqueda, hubs, listados.
@@ -33,12 +34,12 @@ export function ListRow({
 }: ListRowProps) {
   const t = useAppTheme();
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}
       onPress={onPress}
-      style={({ pressed }) => ({
+      style={{
         flexDirection: 'row',
         alignItems: 'center',
         gap: t.spacing.md,
@@ -47,8 +48,8 @@ export function ListRow({
         paddingHorizontal: t.spacing.base,
         borderBottomWidth: 1,
         borderBottomColor: t.color.border,
-        backgroundColor: pressed ? t.color.surfaceAlt : t.color.surface,
-      })}
+        backgroundColor: t.color.surface,
+      }}
     >
       <View style={{ flex: 1, gap: t.spacing.xxs }}>
         <Text
@@ -76,6 +77,6 @@ export function ListRow({
         ) : null}
       </View>
       {right ? <View style={{ alignItems: 'flex-end', gap: t.spacing.xxs }}>{right}</View> : null}
-    </Pressable>
+    </PressableScale>
   );
 }

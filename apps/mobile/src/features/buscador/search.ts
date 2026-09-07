@@ -2,8 +2,10 @@ import {
   FTS_PESOS_BM25_ORDENADOS,
   normalizarBusqueda,
   type Gravedad,
+  type TipoConsecuencia,
 } from '@agente/shared';
 import type { SqlRunner } from '@/db/sqlRunner';
+import { pistaConsecuencia, type PistaConsecuencia } from './resaltar';
 
 /**
  * NÚCLEO del buscador offline (§4.3), agnóstico del motor SQLite.
@@ -30,6 +32,8 @@ export interface ResultadoBusqueda {
   articuloNumero: string;
   /** `true` si entró por coincidencia EXACTA de sinónimo (se muestra primero). */
   porSinonimoExacto: boolean;
+  /** Consecuencia determinante (grúa / inmovilización / detención) para el chip inline, o `null`. */
+  pista: PistaConsecuencia | null;
 }
 
 /** Fila cruda de la hidratación (nombres de columna del paquete). */
@@ -133,6 +137,20 @@ export async function buscarInfracciones(
     orden,
   );
 
+  // Consecuencias determinantes: una consulta agrupada por infracción para el chip inline (§6.2).
+  const consecuencias = await runner.getAll<{ infraccion_id: string; tipo: TipoConsecuencia }>(
+    `SELECT infraccion_id, tipo
+       FROM consecuencia
+      WHERE infraccion_id IN (${placeholders})`,
+    orden,
+  );
+  const tiposPorId = new Map<string, TipoConsecuencia[]>();
+  for (const c of consecuencias) {
+    const lista = tiposPorId.get(c.infraccion_id) ?? [];
+    lista.push(c.tipo);
+    tiposPorId.set(c.infraccion_id, lista);
+  }
+
   const porId = new Map(filas.map((f) => [f.infraccion_id, f]));
   const exactosSet = new Set(idsExactos);
   const resultados: ResultadoBusqueda[] = [];
@@ -147,6 +165,7 @@ export async function buscarInfracciones(
       normaCodigo: f.norma_codigo,
       articuloNumero: f.articulo_numero,
       porSinonimoExacto: exactosSet.has(id),
+      pista: pistaConsecuencia(tiposPorId.get(id) ?? []),
     });
   }
   return resultados;

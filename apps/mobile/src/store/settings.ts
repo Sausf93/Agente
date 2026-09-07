@@ -1,11 +1,16 @@
 import { create } from 'zustand';
 import type { Cuerpo, PoliciaAutonomica } from '@agente/shared';
 import {
+  getAppFlag,
   loadPerfil,
   savePerfil,
+  setAppFlag,
   type PerfilLocal,
   type ThemePreference,
 } from '@/db/userDb';
+
+/** Clave de bandera local para el toggle "Vibración" de Ajustes (persistente, ADR-010). */
+const FLAG_HAPTICS = 'haptics_enabled';
 
 /**
  * Estado del PERFIL y los AJUSTES locales (ADR-001: todo vive en el dispositivo, sin login).
@@ -83,11 +88,13 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   hapticsEnabled: true,
 
   hydrate: async () => {
-    const perfil = await loadPerfil();
+    const [perfil, hapticsFlag] = await Promise.all([loadPerfil(), getAppFlag(FLAG_HAPTICS)]);
+    // La háptica está activada por defecto; solo se apaga si el agente lo guardó explícitamente.
+    const hapticsEnabled = hapticsFlag !== '0';
     if (perfil) {
-      set({ ...perfil, loaded: true });
+      set({ ...perfil, hapticsEnabled, loaded: true });
     } else {
-      set({ loaded: true });
+      set({ hapticsEnabled, loaded: true });
     }
   },
 
@@ -96,7 +103,10 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     await savePerfil(perfilDe(get()), new Date().toISOString());
   },
 
-  setHapticsEnabled: (hapticsEnabled) => set({ hapticsEnabled }),
+  setHapticsEnabled: (hapticsEnabled) => {
+    set({ hapticsEnabled });
+    void setAppFlag(FLAG_HAPTICS, hapticsEnabled ? '1' : '0');
+  },
 
   setCuerpo: async (cuerpo, policiaAutonomica = null) => {
     set({ cuerpo, policiaAutonomica: cuerpo === 'policia_autonomica' ? policiaAutonomica : null });

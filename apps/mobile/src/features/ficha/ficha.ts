@@ -22,6 +22,8 @@ export interface ConsecuenciaFicha {
   tipo: TipoConsecuencia;
   textoCorto: string;
   fuente: string;
+  /** Regla estructurada (JSON del paquete). En `detencion` alimenta el árbol interactivo (§4.6). */
+  regla: Record<string, unknown> | null;
 }
 
 export interface FichaInfraccion {
@@ -73,6 +75,17 @@ interface FilaConsecuencia {
   tipo: TipoConsecuencia;
   texto_corto: string;
   fuente: string;
+  regla: string;
+}
+
+/** Parseo tolerante del JSON de `regla` de una consecuencia (defensivo ante contenido inesperado). */
+function parseRegla(json: string): Record<string, unknown> | null {
+  try {
+    const obj = JSON.parse(json);
+    return obj && typeof obj === 'object' ? (obj as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Parseo tolerante del JSON de competencia (defensivo ante contenido inesperado). */
@@ -116,7 +129,7 @@ export async function cargarFicha(
   if (!fila) return null;
 
   const consecuencias = await runner.getAll<FilaConsecuencia>(
-    `SELECT tipo, texto_corto, fuente
+    `SELECT tipo, texto_corto, fuente, regla
        FROM consecuencia
       WHERE infraccion_id = ?`,
     [infraccionId],
@@ -148,6 +161,7 @@ export async function cargarFicha(
       tipo: c.tipo,
       textoCorto: c.texto_corto,
       fuente: c.fuente,
+      regla: parseRegla(c.regla),
     })),
     actualizadoEn: meta?.valor ?? null,
   };

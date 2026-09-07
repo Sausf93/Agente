@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { normalizarBusqueda } from '@agente/shared';
 import { getContentRunner } from '@/db/contentDb';
 import { recordSearchMiss } from '@/db/userDb';
+import { hapticWarning } from '@/ui/haptics';
 import { buscarInfracciones, type ResultadoBusqueda } from './search';
 
 /**
@@ -29,6 +30,8 @@ interface BuscadorState {
 }
 
 let runToken = 0;
+/** Último término (normalizado) que terminó en 0 resultados: evita repetir el háptico de aviso. */
+let ultimoTerminoSinResultado: string | null = null;
 
 export const useBuscadorStore = create<BuscadorState>((set) => ({
   consulta: '',
@@ -56,8 +59,16 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
       const resultados = await buscarInfracciones(runner, termino);
       if (token !== runToken) return; // llegó tarde: hay una búsqueda más nueva
       set({ resultados, buscando: false, buscado: true, sinContenido: false });
+      const norm = normalizarBusqueda(termino);
       if (resultados.length === 0) {
-        void recordSearchMiss(normalizarBusqueda(termino));
+        void recordSearchMiss(norm);
+        // Aviso háptico (esencial) de "nada exacto", UNA sola vez por término (P0-1).
+        if (ultimoTerminoSinResultado !== norm) {
+          ultimoTerminoSinResultado = norm;
+          hapticWarning();
+        }
+      } else {
+        ultimoTerminoSinResultado = null;
       }
     } catch {
       if (token === runToken) set({ resultados: [], buscando: false, buscado: true });

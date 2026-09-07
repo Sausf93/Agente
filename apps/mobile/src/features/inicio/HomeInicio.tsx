@@ -13,7 +13,9 @@ import type { Theme } from '@/ui/theme';
 import { Badge } from '@/ui/components/Badge';
 import { Card } from '@/ui/components/Card';
 import { ListRow } from '@/ui/components/ListRow';
+import { PressableScale } from '@/ui/components/PressableScale';
 import { SeverityChip } from '@/ui/components/SeverityChip';
+import { hapticSelection } from '@/ui/haptics';
 import { formatEuros } from '@/features/ficha/format';
 import { colorServicio, SERVICIO_LABEL } from '@/features/cuadrante/servicioVisual';
 import { useCuadranteStore } from '@/features/cuadrante/store';
@@ -141,23 +143,25 @@ function AccesosRapidos({ t, onQuickSearch }: { t: Theme; onQuickSearch: (term: 
       <TituloSeccion t={t} titulo="Accesos rápidos" />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
         {ACCESOS_RAPIDOS.map((term) => (
-          <Pressable
+          <PressableScale
             key={term}
-            accessibilityRole="button"
             accessibilityLabel={`Buscar ${term}`}
-            onPress={() => onQuickSearch(term)}
-            style={({ pressed }) => ({
+            onPress={() => {
+              hapticSelection();
+              onQuickSearch(term);
+            }}
+            style={{
               minHeight: t.touch.min,
               justifyContent: 'center',
               borderRadius: t.radius.pill,
               borderWidth: 1,
               borderColor: t.color.border,
-              backgroundColor: pressed ? t.color.surfaceAlt : t.color.surface,
+              backgroundColor: t.color.surface,
               paddingHorizontal: t.spacing.base,
-            })}
+            }}
           >
             <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{term}</Text>
-          </Pressable>
+          </PressableScale>
         ))}
       </View>
     </View>
@@ -187,7 +191,7 @@ function TarjetaTurno({
 }) {
   if (!cuadrante) {
     return (
-      <Pressable accessibilityRole="button" accessibilityLabel="Configurar tu cuadrante" onPress={onConfigurar}>
+      <PressableScale accessibilityLabel="Configurar tu cuadrante" onPress={onConfigurar}>
         <Card>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.md }}>
             <CalendarClock size={24} color={t.color.accent} strokeWidth={2} />
@@ -202,7 +206,7 @@ function TarjetaTurno({
             <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
           </View>
         </Card>
-      </Pressable>
+      </PressableScale>
     );
   }
 
@@ -285,8 +289,7 @@ function AvisoNovedades({
 }) {
   const hayNuevas = nuevas > 0;
   return (
-    <Pressable
-      accessibilityRole="button"
+    <PressableScale
       accessibilityLabel={
         hayNuevas ? `Novedades normativas, ${nuevas} sin leer` : 'Novedades normativas'
       }
@@ -319,7 +322,7 @@ function AvisoNovedades({
           <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
         )}
       </Card>
-    </Pressable>
+    </PressableScale>
   );
 }
 
