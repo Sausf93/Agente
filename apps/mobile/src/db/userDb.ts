@@ -1,6 +1,13 @@
 import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
-import type { Feedback } from '@agente/shared';
+import type { Cuadrante, DiaCuadrante, Feedback } from '@agente/shared';
 import { feedbackToRow, rowToFeedback, type FeedbackRow } from '@/features/feedback/serialize';
+import {
+  configToRow,
+  ensamblarCuadrante,
+  excepcionToRow,
+  type CuadranteConfigRow,
+  type CuadranteExcepcionRow,
+} from '@/features/cuadrante/serialize';
 
 /**
  * Base de datos LOCAL DEL USUARIO (lectura/escritura), separada del paquete de
@@ -53,6 +60,36 @@ async function migrate(db: SQLiteDatabase): Promise<void> {
         ultima_fecha TEXT NOT NULL
       );
       PRAGMA user_version = 2;
+    `);
+  }
+
+  if (version < 3) {
+    // CUADRANTE en DOS CAPAS separadas (perspectivas §8, ADR-010): la config (patrón,
+    // inicio de ciclo, jornada, franja, festivos) en una única fila; y las EXCEPCIONES
+    // manuales, una fila por fecha. Editar un día toca SOLO su fila y cambiar el patrón
+    // NUNCA borra las excepciones → no se pierde el trabajo del agente (el fallo de SPPLB).
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS cuadrante_config (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        patron_json TEXT NOT NULL,
+        inicio_ciclo TEXT NOT NULL,
+        jornada_ref_h REAL NOT NULL,
+        computo_anual_ref_h REAL,
+        franja_inicio TEXT NOT NULL,
+        franja_fin TEXT NOT NULL,
+        festivos_extra_json TEXT NOT NULL DEFAULT '[]',
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS cuadrante_excepcion (
+        fecha TEXT PRIMARY KEY NOT NULL,
+        servicio TEXT NOT NULL,
+        hora_inicio TEXT,
+        hora_fin TEXT,
+        nota TEXT,
+        alarma_min INTEGER,
+        editado_el TEXT NOT NULL
+      );
+      PRAGMA user_version = 3;
     `);
   }
 }
@@ -158,4 +195,88 @@ export async function listSearchMisses(): Promise<SearchMiss[]> {
     veces: r.veces,
     ultimaFecha: r.ultima_fecha,
   }));
+}
+
+// ---------------------------------------------------------------------------
+// Cuadrante (sección 4.9) — dos capas: config (1 fila) + excepciones (1 fila/fecha)
+// ---------------------------------------------------------------------------
+
+/**
+ * Carga el cuadrante del dispositivo, o `null` si aún no está configurado. Reensambla
+ * config + excepciones y valida con Zod (fuente única). Las excepciones corruptas se
+ * descartan una a una: nunca tumban el cuadrante entero (proteger el activo de retención).
+ */
+export async function loadCuadrante(): Promise<Cuadrante | null> {
+  const db = await openUserDb();
+  const config = await db.getFirstAsync<CuadranteConfigRow>(
+    'SELECT * FROM cuadrante_config WHERE id = 1',
+  );
+  if (!config) return null;
+  const excepciones = await db.getAllAsync<CuadranteExcepcionRow>(
+    'SELECT * FROM cuadrante_excepcion ORDER BY fecha ASC',
+  );
+  return ensamblarCuadrante(config, excepciones);
+}
+
+/**
+ * Guarda la CONFIG del cuadrante (patrón, inicio, jornada, franja, festivos) de forma
+ * ATÓMICA. NO toca la tabla de excepciones: cambiar el patrón conserva las ediciones
+ * manuales (excepciones sagradas). `updatedAt` lo inyecta el llamante para poder testear.
+ */
+export async function saveCuadranteConfig(cuadrante: Cuadrante, updatedAt: string): Promise<void> {
+  const db = await openUserDb();
+  const row = configToRow(cuadrante, updatedAt);
+  await db.runAsync(
+    `INSERT INTO cuadrante_config
+       (id, patron_json, inicio_ciclo, jornada_ref_h, computo_anual_ref_h,
+        franja_inicio, franja_fin, festivos_extra_json, updated_at)
+     VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       patron_json = excluded.patron_json,
+       inicio_ciclo = excluded.inicio_ciclo,
+       jornada_ref_h = excluded.jornada_ref_h,
+       computo_anual_ref_h = excluded.computo_anual_ref_h,
+       franja_inicio = excluded.franja_inicio,
+       franja_fin = excluded.franja_fin,
+       festivos_extra_json = excluded.festivos_extra_json,
+       updated_at = excluded.updated_at`,
+    [
+      row.patron_json,
+      row.inicio_ciclo,
+      row.jornada_ref_h,
+      row.computo_anual_ref_h,
+      row.franja_inicio,
+      row.franja_fin,
+      row.festivos_extra_json,
+      row.updated_at,
+    ],
+  );
+}
+
+/**
+ * Inserta o actualiza UNA excepción manual (edición de un día). Toca solo su fila:
+ * es la operación más frecuente del cuadrante y la que debe ser indestructible.
+ */
+export async function upsertExcepcion(dia: DiaCuadrante): Promise<void> {
+  const db = await openUserDb();
+  const row = excepcionToRow(dia);
+  await db.runAsync(
+    `INSERT INTO cuadrante_excepcion
+       (fecha, servicio, hora_inicio, hora_fin, nota, alarma_min, editado_el)
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(fecha) DO UPDATE SET
+       servicio = excluded.servicio,
+       hora_inicio = excluded.hora_inicio,
+       hora_fin = excluded.hora_fin,
+       nota = excluded.nota,
+       alarma_min = excluded.alarma_min,
+       editado_el = excluded.editado_el`,
+    [row.fecha, row.servicio, row.hora_inicio, row.hora_fin, row.nota, row.alarma_min, row.editado_el],
+  );
+}
+
+/** Borra la excepción de una fecha (el día vuelve a proyectarse desde el patrón). */
+export async function deleteExcepcion(fecha: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM cuadrante_excepcion WHERE fecha = ?', [fecha]);
 }

@@ -9,6 +9,7 @@ export * from './enums.js';
 export * from './content.js';
 export * from './contentPackage.js';
 export * from './user.js';
+export * from './cuadrante.js';
 export * from './feedback.js';
 export * from './territorio.js';
 export * from './validators.js';

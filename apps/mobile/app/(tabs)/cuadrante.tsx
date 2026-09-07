@@ -1,10 +1,5 @@
-import { PlaceholderScreen } from '@/ui/PlaceholderScreen';
+import { CuadranteScreen } from '@/features/cuadrante/CuadranteScreen';
 
-export default function CuadranteScreen() {
-  return (
-    <PlaceholderScreen
-      title="Cuadrante"
-      hint="Turnos con patrón + excepciones manuales y contador de horas. No se borra."
-    />
-  );
+export default function CuadranteRoute() {
+  return <CuadranteScreen />;
 }
