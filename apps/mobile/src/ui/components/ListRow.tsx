@@ -14,6 +14,8 @@ import { PressableScale } from './PressableScale';
 export interface ListRowProps {
   title: string;
   subtitle?: string;
+  /** Nodo a la IZQUIERDA (pastilla-icono o monograma), patrón del hub "Más". */
+  leading?: ReactNode;
   /** Nodo a la derecha (chip de gravedad, importe…). */
   right?: ReactNode;
   /** Metadato bajo el título (norma+artículo, etc.). */
@@ -26,6 +28,7 @@ export interface ListRowProps {
 export function ListRow({
   title,
   subtitle,
+  leading,
   right,
   meta,
   onPress,
@@ -51,6 +54,7 @@ export function ListRow({
         backgroundColor: t.color.surface,
       }}
     >
+      {leading ? <View>{leading}</View> : null}
       <View style={{ flex: 1, gap: t.spacing.xxs }}>
         <Text
           numberOfLines={2}

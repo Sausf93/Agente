@@ -7,6 +7,7 @@ import { AlertTriangle, SearchX, Sparkles } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { SearchBar } from '@/ui/components/SearchBar';
+import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { PressableScale } from '@/ui/components/PressableScale';
 import { SeverityChip } from '@/ui/components/SeverityChip';
 import { SkeletonRows } from '@/ui/components/Skeleton';
@@ -15,6 +16,7 @@ import { useReduceMotion } from '@/ui/motion';
 import { CONSECUENCIA_LABEL, formatEuros } from '@/features/ficha/format';
 import { HomeInicio } from '@/features/inicio/HomeInicio';
 import { useBuscadorStore } from './store';
+import { useRecientesStore } from './recientesStore';
 import { resaltarCoincidencia } from './resaltar';
 import type { ResultadoBusqueda } from './search';
 
@@ -45,6 +47,7 @@ export function BuscadorScreen() {
   const sinContenido = useBuscadorStore((s) => s.sinContenido);
   const setConsulta = useBuscadorStore((s) => s.setConsulta);
   const buscar = useBuscadorStore((s) => s.buscar);
+  const registrarReciente = useRecientesStore((s) => s.registrar);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Autofoco solo en arranque en frío (sin texto previo). No se re-enfoca al volver de una ficha.
@@ -62,6 +65,9 @@ export function BuscadorScreen() {
   }, [consulta, buscar]);
 
   function abrirFicha(id: string) {
+    // Abrir una ficha desde un resultado marca la búsqueda como "útil": se recuerda el término tal
+    // cual para poder repetirlo (§6.1). Con el buscador vacío (favoritas/más usadas) es un no-op.
+    registrarReciente(consulta);
     router.push(`/ficha/${id}`);
   }
 
@@ -74,27 +80,15 @@ export function BuscadorScreen() {
   const enInicio = consulta.trim().length === 0;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: t.color.bg,
-        paddingTop: insets.top + t.spacing.md,
-      }}
-    >
-      <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md }}>
-        <Text
-          accessibilityRole="header"
-          style={{ color: t.color.textPrimary, ...t.typography.scale.titleXL }}
-        >
-          Buscar
-        </Text>
+    <View style={{ flex: 1, backgroundColor: t.color.bg }}>
+      <ScreenHeader title="Buscar">
         <SearchBar
           value={consulta}
           onChangeText={setConsulta}
           autoFocus={autoFocusInicial}
           onMicPress={avisoVoz}
         />
-      </View>
+      </ScreenHeader>
 
       {enInicio ? (
         <HomeInicio

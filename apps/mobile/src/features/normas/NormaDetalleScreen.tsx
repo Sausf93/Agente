@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { SearchX } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { Badge } from '@/ui/components/Badge';
 import { ListRow } from '@/ui/components/ListRow';
 import { SearchBar } from '@/ui/components/SearchBar';
+import { SkeletonLine, SkeletonRows } from '@/ui/components/Skeleton';
 import { BookmarkToggle } from './BookmarkToggle';
 import { getContentRunner } from '@/db/contentDb';
 import { useMarcadoresStore } from './marcadoresStore';
@@ -67,10 +68,14 @@ export function NormaDetalleScreen({ normaId }: { normaId: string }) {
   const titulo = norma?.codigo ?? 'Norma';
 
   if (estado === 'cargando') {
+    // Esqueleto del articulado en vez de un spinner que "salta" (P1-10).
     return (
-      <View style={{ flex: 1, backgroundColor: t.color.bg, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: t.color.bg }}>
         <Stack.Screen options={{ title: titulo }} />
-        <ActivityIndicator color={t.color.accent} />
+        <View style={{ padding: t.spacing.base }}>
+          <SkeletonLine width="70%" height={18} />
+        </View>
+        <SkeletonRows count={8} />
       </View>
     );
   }

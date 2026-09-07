@@ -1,7 +1,21 @@
 import { useCallback, type ComponentType, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Bell, CalendarClock, ChevronRight, Sparkles, Star, type LucideProps } from 'lucide-react-native';
+import {
+  Bell,
+  CalendarClock,
+  CalendarX,
+  ChevronRight,
+  Lightbulb,
+  RotateCcw,
+  ShieldOff,
+  Smartphone,
+  Sparkles,
+  Star,
+  TrafficCone,
+  Wine,
+  type LucideProps,
+} from 'lucide-react-native';
 import {
   proyectarDia,
   resumenHorasMes,
@@ -20,6 +34,7 @@ import { formatEuros } from '@/features/ficha/format';
 import { colorServicio, SERVICIO_LABEL } from '@/features/cuadrante/servicioVisual';
 import { useCuadranteStore } from '@/features/cuadrante/store';
 import type { Favorito } from '@/db/userDb';
+import { useRecientesStore } from '@/features/buscador/recientesStore';
 import { useFavoritosStore } from './favoritosStore';
 import { useInicioStore } from './inicioStore';
 import type { InfraccionSnapshot, UsoInfraccion } from './masUsadas';
@@ -41,16 +56,18 @@ export interface HomeInicioProps {
 }
 
 /** Accesos rápidos por defecto (§4.2). Términos de calle que el buscador resuelve por sinónimo. */
-const ACCESOS_RAPIDOS = [
-  'Sin seguro',
-  'Móvil',
-  'Faro roto',
-  'Alcoholemia',
-  'Sin ITV',
-  'Semáforo rojo',
-] as const;
+const ACCESOS_RAPIDOS: { termino: string; icon: ComponentType<LucideProps> }[] = [
+  { termino: 'Sin seguro', icon: ShieldOff },
+  { termino: 'Móvil', icon: Smartphone },
+  { termino: 'Faro roto', icon: Lightbulb },
+  { termino: 'Alcoholemia', icon: Wine },
+  { termino: 'Sin ITV', icon: CalendarX },
+  { termino: 'Semáforo rojo', icon: TrafficCone },
+];
 
 const TOP_FAVORITAS = 3;
+/** Cuántos términos recientes se muestran junto a "Repetir última". */
+const TOP_RECIENTES = 3;
 
 export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeInicioProps) {
   const t = useAppTheme();
@@ -67,13 +84,17 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
   const cuadranteLoaded = useCuadranteStore((s) => s.loaded);
   const cargarCuadrante = useCuadranteStore((s) => s.load);
 
+  const recientes = useRecientesStore((s) => s.recientes);
+  const cargarRecientes = useRecientesStore((s) => s.cargar);
+
   // Al enfocar Inicio, refrescar lo local (favoritos y contadores cambian mientras se usa la app).
   useFocusEffect(
     useCallback(() => {
       void cargarFavoritos();
       void cargarInicio();
+      void cargarRecientes();
       if (!cuadranteLoaded) void cargarCuadrante();
-    }, [cargarFavoritos, cargarInicio, cuadranteLoaded, cargarCuadrante]),
+    }, [cargarFavoritos, cargarInicio, cargarRecientes, cuadranteLoaded, cargarCuadrante]),
   );
 
   return (
@@ -88,6 +109,10 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
       keyboardShouldPersistTaps="handled"
     >
       <AccesosRapidos t={t} onQuickSearch={onQuickSearch} />
+
+      {recientes.length > 0 ? (
+        <Recientes t={t} recientes={recientes} onQuickSearch={onQuickSearch} />
+      ) : null}
 
       <TarjetaTurno t={t} cuadrante={cuadrante} onConfigurar={() => router.push('/cuadrante')} />
 
@@ -142,13 +167,88 @@ function AccesosRapidos({ t, onQuickSearch }: { t: Theme; onQuickSearch: (term: 
     <View style={{ gap: t.spacing.sm }}>
       <TituloSeccion t={t} titulo="Accesos rápidos" />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
-        {ACCESOS_RAPIDOS.map((term) => (
+        {ACCESOS_RAPIDOS.map(({ termino, icon: Icon }) => (
           <PressableScale
-            key={term}
-            accessibilityLabel={`Buscar ${term}`}
+            key={termino}
+            accessibilityLabel={`Buscar ${termino}`}
             onPress={() => {
               hapticSelection();
-              onQuickSearch(term);
+              onQuickSearch(termino);
+            }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: t.spacing.xs,
+              minHeight: t.touch.min,
+              justifyContent: 'center',
+              borderRadius: t.radius.pill,
+              borderWidth: 1,
+              borderColor: t.color.border,
+              backgroundColor: t.color.surfaceAlt,
+              paddingHorizontal: t.spacing.base,
+            }}
+          >
+            <Icon size={16} color={t.color.textSecondary} strokeWidth={2} />
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{termino}</Text>
+          </PressableScale>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Recientes (§6.1: "Repetir última / Recientes")
+// ---------------------------------------------------------------------------
+
+function Recientes({
+  t,
+  recientes,
+  onQuickSearch,
+}: {
+  t: Theme;
+  recientes: string[];
+  onQuickSearch: (term: string) => void;
+}) {
+  const ultima = recientes[0];
+  if (!ultima) return null;
+  // Junto a "Repetir última" mostramos los siguientes términos (sin repetir el primero).
+  const resto = recientes.slice(1, 1 + TOP_RECIENTES);
+  return (
+    <View style={{ gap: t.spacing.sm }}>
+      <TituloSeccion t={t} titulo="Recientes" />
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
+        <PressableScale
+          accessibilityLabel={`Repetir última búsqueda: ${ultima}`}
+          onPress={() => {
+            hapticSelection();
+            onQuickSearch(ultima);
+          }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: t.spacing.xs,
+            minHeight: t.touch.min,
+            justifyContent: 'center',
+            borderRadius: t.radius.pill,
+            borderWidth: 1,
+            borderColor: t.color.accent,
+            backgroundColor: t.color.accentWeak,
+            paddingHorizontal: t.spacing.base,
+          }}
+        >
+          <RotateCcw size={16} color={t.color.accent} strokeWidth={2.2} />
+          <Text style={{ color: t.color.accent, ...t.typography.scale.label }}>
+            Repetir última
+          </Text>
+        </PressableScale>
+        {resto.map((termino) => (
+          <PressableScale
+            key={termino}
+            accessibilityLabel={`Buscar ${termino}`}
+            onPress={() => {
+              hapticSelection();
+              onQuickSearch(termino);
             }}
             style={{
               minHeight: t.touch.min,
@@ -160,7 +260,9 @@ function AccesosRapidos({ t, onQuickSearch }: { t: Theme; onQuickSearch: (term: 
               paddingHorizontal: t.spacing.base,
             }}
           >
-            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{term}</Text>
+            <Text numberOfLines={1} style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
+              {termino}
+            </Text>
           </PressableScale>
         ))}
       </View>

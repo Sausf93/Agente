@@ -4,6 +4,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronRight, MessageSquarePlus, Settings, type LucideProps } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
+import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import type { Theme } from '@/ui/theme';
 
 /**
@@ -21,15 +22,13 @@ export default function MasScreen() {
     <ScrollView
       style={{ flex: 1, backgroundColor: t.color.bg }}
       contentContainerStyle={{
-        paddingTop: insets.top + t.spacing.xl,
         paddingBottom: insets.bottom + t.spacing.xxl,
-        paddingHorizontal: t.spacing.base,
         gap: t.spacing.md,
       }}
     >
-      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleXL }}>Más</Text>
+      <ScreenHeader title="Más" />
 
-      <View style={{ gap: t.spacing.sm, marginTop: t.spacing.sm }}>
+      <View style={{ gap: t.spacing.sm, paddingHorizontal: t.spacing.base }}>
         <Link href="/ajustes" asChild>
           <FilaMas
             t={t}
@@ -52,6 +51,7 @@ export default function MasScreen() {
         style={{
           color: t.color.textTertiary,
           marginTop: t.spacing.base,
+          paddingHorizontal: t.spacing.base,
           ...t.typography.scale.caption,
         }}
       >
