@@ -2,7 +2,8 @@
 
 > Documento de síntesis. Une la especificación (`ESPECIFICACION.md`, fuente de verdad) con el
 > análisis de siete perspectivas (`perspectivas/`) y las decisiones tomadas (`DECISIONES.md`).
-> Fecha: 2026-09-03. Estado: **Fase 0 — cimientos**.
+> Fecha: 2026-09-07. Estado: **Fase 1 completa (MVP de 5 pestañas) + Fase 2 contenido en marcha + Fase 3 cuadrante v3 en curso**.
+> El compañero (GC Tráfico) empezará a probar la app SOLO cuando esté cerca del producto final, no antes.
 
 ---
 
@@ -99,7 +100,7 @@ demuestra su actualización con fecha y fuente por norma.
 El orden prioriza que la beta tenga algo **útil de verdad** pronto y que el feedback llegue
 mientras se construye el resto. Cambios respecto a la spec marcados con ⚑.
 
-### Fase 0 · Cimientos *(en curso)*
+### Fase 0 · Cimientos *(completa)*
 - ✅ Monorepo pnpm con `apps/*` y `packages/*`.
 - ✅ `packages/shared`: esquemas Zod del modelo de datos + validadores de calidad + tests.
 - ✅ Documentación: especificación, perspectivas, decisiones, planificación.
@@ -111,25 +112,29 @@ mientras se construye el resto. Cambios respecto a la spec marcados con ⚑.
 - ⬜ Sentry (queda pendiente; llega con la primera feature que lo justifique).
 - ⚑ **Sin auth** en Fase 0 (antes E-02). Onboarding = perfil local (cuerpo/territorio).
 
-### Fase 1 · Consulta de tráfico *(la que engancha)*
-- Pipeline BOE para **LSV, RGC, RGV** + parseo del codificado DGT.
-- Paquete SQLite + descarga y verificación de firma en app.
-- **Buscador** FTS5 + sinónimos + ranking con jerga de calle + búsqueda por voz.
-- **Ficha completa**: importe/pronto pago/puntos, texto de boletín copiable con variantes,
+### Fase 1 · Consulta de tráfico *(completa — la que engancha)*
+- ✅ Pipeline BOE para el **RGC** (232 artículos consolidados en vivo) + seed de tráfico.
+- ✅ Paquete SQLite bundlado (`assets/content/contenido-0.1.0.db`) con swap atómico (firma stub Fase 1).
+- ✅ **Buscador** FTS5 + sinónimos + ranking con jerga de calle (voz diferida a dev build).
+- ✅ **Ficha completa**: importe/pronto pago/puntos, texto de boletín copiable,
   **consecuencia con fuente** (grúa/inmoviliza), fecha y fuente visibles.
-- Favoritos, "más usadas", novedades, evento anónimo de "búsqueda sin resultado".
-- **Entrega beta 1** a la unidad del cofundador (Guardia Civil de Tráfico, según marketing).
+- ✅ Favoritos, "más usadas", novedades, evento anónimo de "búsqueda sin resultado".
+- ✅ Betas 1–5 probadas internamente vía Expo Go + EAS Update (aún NO al cofundador).
 
-### Fase 2 · Resto de normativa y capa penal
-- LO 4/2015, Código Penal + **LECrim con árbol de detención** (orientativo, con fuente),
-  extranjería, menores, armas, animales, transportes, VMP.
-- Tabla de sustancias. Lectura de derechos multilingüe. Sección Vehículos.
-- **Entrega beta 2.**
+### Fase 2 · Resto de normativa y capa penal *(en marcha)*
+- ✅ **Capa penal**: hurto/robo/lesiones/quebrantamiento + **LECrim con árbol de detención**
+  (orientativo, con fuente) — motor `evaluarDetencion` con tests.
+- ✅ **LO 4/2015 seguridad ciudadana**: 10 infracciones (desobediencia, drogas en vía pública,
+  armas prohibidas, faltas de respeto, ocupación…). *(revisión jurídica en curso)*
+- ⬜ Tabla de sustancias (umbrales). Lectura de derechos multilingüe (art. 520). Sección Vehículos.
+- ⬜ Extranjería, menores, animales, transportes, VMP.
 
-### Fase 3 · Cuadrante *(en paralelo desde antes; es retención)*
-- Patrones por cuerpo (6+saliente+3, 7x7, locales), **excepciones manuales sagradas**,
-  festivos por territorio, contador de nocturnas/festivas, exceso sobre jornada configurable
-  (no 37,5 h genéricas — GC lo exige), export para cotejar nómina, backup opcional cifrado.
+### Fase 3 · Cuadrante *(en curso — es retención)*
+- ✅ Patrones por cuerpo, excepciones manuales, festivos, contador de nocturnas/festivas,
+  exceso sobre jornada configurable (no 37,5 h genéricas).
+- 🔄 **Arranque v3**: anclaje por **días seguidos** (offsetsCompatibles) sin ordinal imposible
+  ("¿primera o segunda mañana?"). En implementación por mobile-dev.
+- ⬜ Export para cotejar nómina, backup opcional cifrado.
 
 ### Fase 4 · Plantillas/PDF y mapa/PK
 - Motor de plantillas Markdown + variables, PDF en dispositivo, envío por correo nativo.
