@@ -71,6 +71,10 @@ export default function RootLayout() {
           name="documento/[plantillaId]"
           options={{ headerShown: true, title: 'Documento', presentation: 'card' }}
         />
+        <Stack.Screen
+          name="derechos"
+          options={{ headerShown: true, title: 'Lectura de derechos', presentation: 'card' }}
+        />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

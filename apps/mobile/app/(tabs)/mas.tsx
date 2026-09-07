@@ -2,7 +2,13 @@ import type { ComponentType } from 'react';
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronRight, MessageSquarePlus, Settings, type LucideProps } from 'lucide-react-native';
+import {
+  ChevronRight,
+  Languages,
+  MessageSquarePlus,
+  Settings,
+  type LucideProps,
+} from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 
@@ -38,6 +44,14 @@ export default function MasScreen() {
             descripcion="Cuerpo, territorio y tema (claro/oscuro)."
           />
         </Link>
+        <Link href="/derechos" asChild>
+          <FilaMas
+            t={t}
+            icon={Languages}
+            titulo="Lectura de derechos (art. 520)"
+            descripcion="Derechos del detenido en varios idiomas, para leérselos en el suyo."
+          />
+        </Link>
         <Link href="/feedback" asChild>
           <FilaMas
             t={t}
@@ -55,7 +69,7 @@ export default function MasScreen() {
           ...t.typography.scale.caption,
         }}
       >
-        Próximamente: mapa/PK, lectura de derechos, sustancias, vehículos y suscripción.
+        Próximamente: mapa/PK, sustancias, vehículos y suscripción.
       </Text>
     </ScrollView>
   );
