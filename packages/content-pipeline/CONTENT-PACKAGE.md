@@ -81,8 +81,10 @@ los parsea con los esquemas Zod de shared (`Competencia`, `VarianteBoletin`…).
 `url_boe?`, `fecha_consolidacion?` (`YYYY-MM-DD`, fuente BOE),
 `cuerpos` (JSON `Cuerpo[]`, relevancia por cuerpo para filtrar la lista de Normas; NO restringe
 el acceso, solo prioriza). Por defecto (norma sin etiquetar) = todos los cuerpos. Tráfico
-(RGC/LSV/RGV) = `guardia_civil, policia_local, policia_autonomica`; penal/procesal (CP, LECrim) y
-seguridad ciudadana (LO 4/2015) = todos.
+(RGC/LSV/RGV) = `guardia_civil, policia_local, policia_autonomica`; penal/procesal (CP, LECrim),
+seguridad ciudadana (LO 4/2015) y la normativa transversal de intervención —armas (RA, RD
+137/1993), extranjería (LOEX, LO 4/2000) y responsabilidad penal del menor (LORPM, LO 5/2000)—
+= todos.
 
 ### `articulo`
 
