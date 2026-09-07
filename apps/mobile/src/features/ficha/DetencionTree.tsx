@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Switch, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useRouter } from 'expo-router';
 import { ShieldAlert, ShieldCheck, ShieldX } from 'lucide-react-native';
 import {
   evaluarDetencion,
@@ -8,6 +9,7 @@ import {
 } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
+import { Button } from '@/ui/components/Button';
 import { Card } from '@/ui/components/Card';
 import { hapticSelection } from '@/ui/haptics';
 import { useReduceMotion } from '@/ui/motion';
@@ -36,6 +38,7 @@ export interface DetencionTreeProps {
 /** Devuelve el panel, o `null` si la regla no es un árbol de detención válido. */
 export function DetencionTree({ regla }: DetencionTreeProps) {
   const t = useAppTheme();
+  const router = useRouter();
   const reduceMotion = useReduceMotion();
   const base = useMemo(() => parseReglaDetencion(regla), [regla]);
   const [entrada, setEntrada] = useState<EntradaDetencionNormalizada | null>(base);
@@ -149,6 +152,17 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
           {resultado.pie}
         </Text>
       </Animated.View>
+
+      {/* Si la orientación es que la detención procede o puede proceder, ofrecer la lectura de
+          derechos al detenido (art. 520, §4.11). Orientativo: el agente decide. */}
+      {resultado.orientacion !== 'no_procede_salvo' ? (
+        <Button
+          title="Leer derechos al detenido (art. 520)"
+          variant="secondary"
+          accessibilityHint="Abre los derechos del detenido en varios idiomas para leérselos"
+          onPress={() => router.push('/derechos')}
+        />
+      ) : null}
     </View>
   );
 }

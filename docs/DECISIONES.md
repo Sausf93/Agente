@@ -504,6 +504,46 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   favorito de ARTÍCULO además de infracción (§4.4 permite ambos); `Novedad` con norma/artículos
   concretos y enlace directo cuando el pipeline los emita; notificación push de novedades (§4.13).
 
+## ADR-019 · Lectura de derechos (art. 520): contenido bundlado, fuera del paquete SQLite
+
+- **Estado:** aceptada (implementada en `apps/mobile/src/features/derechos`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** §4.11 pide el texto de los derechos del detenido (art. 520 LECrim) en varios
+  idiomas para leérselos a un detenido extranjero en el suyo. Debe funcionar OFFLINE y de forma
+  fiable desde el primer momento. El modelo de datos ya tiene un `TextoDerechos` en
+  `@agente/shared` pensado como fila de base de datos (id, idioma, texto, audioUrl) del paquete
+  servidor→dispositivo.
+
+### Decisiones
+
+1. **El texto va EMBEBIDO como recurso bundlado** (constante tipada en la app,
+   `features/derechos/derechos.ts`), NO en el paquete SQLite de contenido ni en
+   `@agente/shared`. Motivo: son textos legales estables y multilingües que deben estar SIEMPRE
+   disponibles sin depender de que haya un paquete descargado, y así no se toca el `.db` (que
+   evoluciona en paralelo). El tipo local `TextoDerechos` (apartados + estado de revisión) tiene
+   otra forma que el `TextoDerechos` de shared (fila de BD): por eso vive en la feature y no se
+   duplica el nombre en el modelo compartido.
+2. **Idiomas de esta entrega:** español, inglés, francés, alemán, árabe y rumano (los más
+   frecuentes en intervención). Estructura lista para ampliar con chino, ruso, portugués e
+   italiano (TODO en el código, §4.11).
+3. **Filosofía `pendiente_revision`:** el español es literal de la redacción vigente del
+   art. 520.2 LECrim (`revisado: true`); el resto son traducciones fieles marcadas
+   `revisado: false` con nota de que deben cotejarse con la versión oficial del Ministerio del
+   Interior antes de publicar. La UI muestra ese aviso.
+4. **Pantalla y enganche al flujo de detención:** selector de idioma por chips (háptico), texto
+   grande legible (RTL en árabe), botón "Copiar derechos" y aviso fijo orientativo (la valoración
+   final es del agente/juez). Se enlaza desde el árbol de detención de la ficha (§4.6) cuando la
+   orientación es que procede o puede proceder ("Leer derechos al detenido (art. 520)") y desde el
+   hub "Más", sin crear una sexta pestaña (ADR-003).
+
+### Consecuencias
+
+- `lint`, `-r typecheck` (3 "Done") y `-r test` en verde (mobile 175 tests, +15 nuevos de
+  `derechos.test.ts`) y `expo export --platform ios` compila (3645 módulos).
+- **Pendiente / siguiente iteración:** cotejar y marcar `revisado: true` las traducciones con la
+  fuente oficial; ampliar a chino/ruso/portugués/italiano; el art. 771 (información de derechos a
+  la víctima) del mismo §4.11; audio pregrabado por idioma (Fase 2/6).
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

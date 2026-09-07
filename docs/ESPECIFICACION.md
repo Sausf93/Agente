@@ -265,6 +265,17 @@ Para tráfico: inmovilización (art. 104 LSV), depósito (art. 105), retirada de
 - Art. 520 LECrim (detenido) y art. 771 (víctima) en: español, inglés, francés, alemán, árabe, rumano, chino, ruso, portugués, italiano. Traducciones revisadas (usar las oficiales del Ministerio del Interior cuando existan).
 - Fase 2: audio pregrabado por idioma.
 
+> **Estado v1 (ADR-019).** Implementada la **lectura de derechos del detenido (art. 520.2
+> LECrim)** en `apps/mobile/src/features/derechos`: selector de idioma por chips (háptico), texto
+> grande legible pensado para leer en voz alta (RTL en árabe), botón "Copiar derechos" y aviso
+> fijo orientativo. Se enlaza desde el árbol de detención de la ficha (§4.6, cuando procede/puede
+> proceder) y desde el hub "Más". Idiomas de esta entrega: **español, inglés, francés, alemán,
+> árabe y rumano**; el español va `revisado: true` (literal del art. 520.2) y el resto
+> `revisado: false` pendientes de cotejo con la versión oficial del Ministerio del Interior
+> (chino, ruso, portugués e italiano quedan como TODO). El texto es un **recurso bundlado** (no
+> viaja en el paquete SQLite) para estar SIEMPRE disponible offline. El art. **771** (víctima) y
+> el audio por idioma quedan para una iteración posterior.
+
 ## 4.12 Vehículos
 
 - Sección con enlaces curados: verificación de documentación, vehículos extranjeros, bases de datos de robados, guías de falsedad documental. Contenido heredado y depurado de SPPLB (son enlaces públicos), reorganizado por país y tipo de documento.
