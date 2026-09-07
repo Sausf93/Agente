@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, SectionList, Text, View } from 'react-native';
+import { Pressable, SectionList, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BookOpen, Bookmark, ChevronRight } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { Badge } from '@/ui/components/Badge';
 import { EmptyState } from '@/ui/components/EmptyState';
 import { ListRow } from '@/ui/components/ListRow';
+import { MonogramPill } from '@/ui/components/LeadingPill';
+import { SkeletonRows } from '@/ui/components/Skeleton';
 import { hapticSelection } from '@/ui/haptics';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
@@ -87,8 +89,8 @@ export function NormasListScreen() {
 
   if (estado === 'cargando') {
     return (
-      <View style={{ flex: 1, backgroundColor: t.color.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator color={t.color.accent} />
+      <View style={{ flex: 1, backgroundColor: t.color.bg, paddingTop: t.spacing.md }}>
+        <SkeletonRows count={7} />
       </View>
     );
   }
@@ -272,9 +274,9 @@ function FilaNorma({
 }) {
   return (
     <ListRow
-      title={item.codigo}
-      subtitle={item.titulo}
-      meta={`${NORMA_TIPO_LABEL[item.tipo]} · ${NORMA_AMBITO_LABEL[item.ambito]} · ${articulosLabel(item.numArticulos)}`}
+      title={item.titulo}
+      subtitle={`${NORMA_TIPO_LABEL[item.tipo]} · ${NORMA_AMBITO_LABEL[item.ambito]} · ${articulosLabel(item.numArticulos)}`}
+      leading={<MonogramPill label={item.codigo} />}
       accessibilityLabel={`${item.codigo}. ${item.titulo}. ${articulosLabel(item.numArticulos)}`}
       accessibilityHint="Abre el articulado de la norma"
       onPress={() => onPress(item.id)}
