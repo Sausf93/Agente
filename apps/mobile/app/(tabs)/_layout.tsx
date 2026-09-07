@@ -11,6 +11,7 @@ import {
 } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
+import { hapticSelection } from '@/ui/haptics';
 
 /**
  * Barra de pestañas inferior (ADR-003; sistema visual v2 §3): Buscar · Normas · Documentos ·
@@ -22,6 +23,10 @@ export default function TabsLayout() {
   const t = useAppTheme();
   return (
     <Tabs
+      screenListeners={{
+        // Háptico de selección al cambiar de pestaña (mejoras-usabilidad P0-1).
+        tabPress: () => hapticSelection(),
+      }}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: t.color.accent,

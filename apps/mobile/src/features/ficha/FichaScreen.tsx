@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Linking,
   Pressable,
   ScrollView,
@@ -9,6 +8,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { FileWarning, WifiOff } from 'lucide-react-native';
 import type { Gravedad, TipoInfraccion } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
@@ -17,13 +17,17 @@ import { Badge } from '@/ui/components/Badge';
 import { Banner } from '@/ui/components/Banner';
 import { Button } from '@/ui/components/Button';
 import { Card } from '@/ui/components/Card';
+import { EmptyState } from '@/ui/components/EmptyState';
 import { SeverityChip } from '@/ui/components/SeverityChip';
+import { SkeletonLine } from '@/ui/components/Skeleton';
 import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
+import { hapticAlert } from '@/ui/haptics';
 import { getContentRunner } from '@/db/contentDb';
 import { recordUso } from '@/db/userDb';
 import { FavoriteToggle } from '@/features/inicio/FavoriteToggle';
 import type { InfraccionSnapshot } from '@/features/inicio/masUsadas';
 import { cargarFicha, type FichaInfraccion } from './ficha';
+import { DetencionTree } from './DetencionTree';
 import {
   CONSECUENCIA_LABEL,
   formatCompetencia,
@@ -60,6 +64,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   const [ficha, setFicha] = useState<FichaInfraccion | null>(null);
   const [varianteIdx, setVarianteIdx] = useState<number | null>(null);
   const [articuloAbierto, setArticuloAbierto] = useState(false);
+  const alertaDisparada = useRef(false);
 
   useEffect(() => {
     let vivo = true;
@@ -112,33 +117,33 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
     void recordUso(snapshot, 'consulta', new Date().toISOString());
   }, [snapshot]);
 
+  // Alerta HÁPTICA (una sola vez) al abrir una ficha muy grave o delito (mapa háptico, 01-ux §4.6).
+  useEffect(() => {
+    if (estado !== 'ok' || !ficha || alertaDisparada.current) return;
+    if (ficha.gravedad === 'muy_grave' || ficha.gravedad === 'delito') {
+      alertaDisparada.current = true;
+      hapticAlert();
+    }
+  }, [estado, ficha]);
+
   if (estado === 'cargando') {
-    return (
-      <View style={{ flex: 1, backgroundColor: t.color.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator color={t.color.brand} />
-      </View>
-    );
+    return <FichaCargando t={t} insets={insets} />;
   }
 
   if (estado !== 'ok' || !ficha) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: t.color.bg,
-          padding: t.spacing.base,
-          paddingTop: insets.top + t.spacing.xl,
-          gap: t.spacing.sm,
-        }}
-      >
-        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
-          {estado === 'sin-contenido' ? 'Contenido no disponible' : 'No encontrada'}
-        </Text>
-        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-          {estado === 'sin-contenido'
-            ? 'La ficha necesita el paquete de contenido, disponible en la app móvil.'
-            : 'No hemos encontrado esta infracción en el contenido instalado.'}
-        </Text>
+      <View style={{ flex: 1, backgroundColor: t.color.bg, paddingTop: insets.top }}>
+        <EmptyState
+          icon={estado === 'sin-contenido' ? WifiOff : FileWarning}
+          title={estado === 'sin-contenido' ? 'Contenido no disponible' : 'No encontrada'}
+          message={
+            estado === 'sin-contenido'
+              ? 'La ficha necesita el paquete de contenido, disponible en la app móvil.'
+              : 'No hemos encontrado esta infracción en el contenido instalado.'
+          }
+          actionLabel="Volver"
+          onAction={() => router.back()}
+        />
       </View>
     );
   }
@@ -173,16 +178,17 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         </Text>
       </View>
 
-      {/* 4. Importe / reducido (pronto pago) / puntos. */}
-      <Card>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xl }}>
-          <Dato t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} />
-          {ficha.importeReducidoEur !== null ? (
-            <Dato t={t} etiqueta="Pronto pago" valor={formatEuros(ficha.importeReducidoEur)} acento />
-          ) : null}
-          <Dato t={t} etiqueta="Puntos" valor={ficha.puntos !== null ? String(ficha.puntos) : '—'} />
-        </View>
-      </Card>
+      {/* 4. Importe / reducido (pronto pago) / puntos: TILES grandes, número "de refilón" (§7.2). */}
+      <View style={{ flexDirection: 'row', gap: t.spacing.sm }}>
+        <Tile t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} />
+        <Tile
+          t={t}
+          etiqueta="Pronto pago"
+          valor={ficha.importeReducidoEur !== null ? formatEuros(ficha.importeReducidoEur) : '—'}
+          acento={ficha.importeReducidoEur !== null}
+        />
+        <Tile t={t} etiqueta="Puntos" valor={ficha.puntos !== null ? String(ficha.puntos) : '—'} />
+      </View>
 
       {/* 5. Texto de boletín + "Copiar boletín" SOBRE EL PLIEGUE (ADR-004). */}
       <View style={{ gap: t.spacing.sm }}>
@@ -213,14 +219,14 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
                     justifyContent: 'center',
                     borderRadius: t.radius.pill,
                     borderWidth: 1,
-                    borderColor: activo ? t.color.brand : t.color.border,
-                    backgroundColor: activo ? t.color.infoBg : t.color.surface,
+                    borderColor: activo ? t.color.accent : t.color.border,
+                    backgroundColor: activo ? t.color.accentWeak : t.color.surface,
                     paddingHorizontal: t.spacing.md,
                   }}
                 >
                   <Text
                     style={{
-                      color: activo ? t.color.brand : t.color.textSecondary,
+                      color: activo ? t.color.accent : t.color.textSecondary,
                       ...t.typography.scale.label,
                     }}
                   >
@@ -270,14 +276,18 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
             Consecuencias
           </Text>
           {ficha.consecuencias.map((c, i) => (
-            <Banner key={`${c.tipo}-${i}`} tone="warning" title={CONSECUENCIA_LABEL[c.tipo]}>
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
-                {c.textoCorto}
-              </Text>
-              <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-                Fuente: {c.fuente}
-              </Text>
-            </Banner>
+            <View key={`${c.tipo}-${i}`} style={{ gap: t.spacing.sm }}>
+              <Banner tone="warning" title={CONSECUENCIA_LABEL[c.tipo]}>
+                <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+                  {c.textoCorto}
+                </Text>
+                <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+                  Fuente: {c.fuente}
+                </Text>
+              </Banner>
+              {/* Árbol de detención interactivo (§4.6): solo para la consecuencia `detencion`. */}
+              {c.tipo === 'detencion' ? <DetencionTree regla={c.regla} /> : null}
+            </View>
           ))}
           <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
             Orientación con su fuente; la valoración final corresponde al agente y, en su caso, a
@@ -353,7 +363,8 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   );
 }
 
-function Dato({
+/** Tile de dato clave (importe / pronto pago / puntos): número grande y etiqueta pequeña (§7.2). */
+function Tile({
   t,
   etiqueta,
   valor,
@@ -365,17 +376,57 @@ function Dato({
   acento?: boolean;
 }) {
   return (
-    <View style={{ gap: t.spacing.xxs }}>
-      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
+    <View
+      style={{
+        flex: 1,
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        borderColor: t.color.border,
+        backgroundColor: t.color.surface,
+        paddingVertical: t.spacing.md,
+        paddingHorizontal: t.spacing.sm,
+        gap: t.spacing.xxs,
+      }}
+    >
       <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={1.4}
         style={{
           color: acento ? t.color.accent : t.color.textPrimary,
-          ...t.typography.scale.titleM,
+          ...t.typography.scale.displayL,
           fontVariant: ['tabular-nums'],
         }}
       >
         {valor}
       </Text>
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
+    </View>
+  );
+}
+
+/** Esqueleto de carga de la ficha: sustituye al spinner que "salta" (P1-10). */
+function FichaCargando({ t, insets }: { t: Theme; insets: { top: number } }) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: t.color.bg,
+        padding: t.spacing.base,
+        paddingTop: insets.top + t.spacing.xl,
+        gap: t.spacing.lg,
+      }}
+    >
+      <SkeletonLine width="40%" height={28} radius={t.radius.pill} />
+      <SkeletonLine width="80%" height={30} />
+      <SkeletonLine width="55%" height={16} />
+      <View style={{ flexDirection: 'row', gap: t.spacing.sm, marginTop: t.spacing.sm }}>
+        <SkeletonLine width="32%" height={72} radius={t.radius.md} />
+        <SkeletonLine width="32%" height={72} radius={t.radius.md} />
+        <SkeletonLine width="32%" height={72} radius={t.radius.md} />
+      </View>
+      <SkeletonLine width="100%" height={96} radius={t.radius.md} />
+      <SkeletonLine width="100%" height={54} radius={t.radius.md} />
     </View>
   );
 }

@@ -20,12 +20,15 @@ import {
   type PatronTurno,
   type TipoServicio,
 } from '@agente/shared';
+import type { ComponentType } from 'react';
+import { ChevronLeft, ChevronRight, type LucideProps } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { Badge } from '@/ui/components/Badge';
 import { Banner } from '@/ui/components/Banner';
 import { Button } from '@/ui/components/Button';
 import { Card } from '@/ui/components/Card';
+import { hapticSelection, hapticSuccess } from '@/ui/haptics';
 import {
   colorServicio,
   DIAS_SEMANA_ABREV,
@@ -152,13 +155,16 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
               accessibilityRole="button"
               accessibilityState={{ selected: activo }}
               accessibilityLabel={`${p.nombre}. ${SERVICIO_LABEL[p.secuencia[0] as TipoServicio]}…`}
-              onPress={() => setPatronIdx(i)}
+              onPress={() => {
+                hapticSelection();
+                setPatronIdx(i);
+              }}
               style={{
                 minHeight: t.touch.min,
                 borderRadius: t.radius.md,
                 borderWidth: activo ? 2 : 1,
-                borderColor: activo ? t.color.brand : t.color.border,
-                backgroundColor: activo ? t.color.infoBg : t.color.surface,
+                borderColor: activo ? t.color.accent : t.color.border,
+                backgroundColor: activo ? t.color.accentWeak : t.color.surface,
                 padding: t.spacing.md,
                 gap: t.spacing.xxs,
               }}
@@ -280,11 +286,11 @@ function VistaMes({
         <ResumenHoras t={t} resumen={resumen} />
 
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <FlechaMes t={t} etiqueta="Mes anterior" simbolo="‹" onPress={() => irMes(-1)} />
+          <FlechaMes t={t} etiqueta="Mes anterior" Icono={ChevronLeft} onPress={() => irMes(-1)} />
           <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
             {MESES[mes - 1]} {anio}
           </Text>
-          <FlechaMes t={t} etiqueta="Mes siguiente" simbolo="›" onPress={() => irMes(1)} />
+          <FlechaMes t={t} etiqueta="Mes siguiente" Icono={ChevronRight} onPress={() => irMes(1)} />
         </View>
 
         <View style={{ flexDirection: 'row', gap }}>
@@ -319,19 +325,22 @@ function VistaMes({
 function FlechaMes({
   t,
   etiqueta,
-  simbolo,
+  Icono,
   onPress,
 }: {
   t: Theme;
   etiqueta: string;
-  simbolo: string;
+  Icono: ComponentType<LucideProps>;
   onPress: () => void;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={etiqueta}
-      onPress={onPress}
+      onPress={() => {
+        hapticSelection();
+        onPress();
+      }}
       hitSlop={8}
       style={{
         width: t.touch.min,
@@ -344,7 +353,7 @@ function FlechaMes({
         justifyContent: 'center',
       }}
     >
-      <Text style={{ color: t.color.brand, fontSize: 24, lineHeight: 28 }}>{simbolo}</Text>
+      <Icono size={24} color={t.color.accent} strokeWidth={2.2} />
     </Pressable>
   );
 }
@@ -538,6 +547,7 @@ function EditorDia({ t, dia, onCerrar }: { t: Theme; dia: DiaProyectado; onCerra
         horaFin: horaFin.trim() === '' ? null : horaFin.trim(),
         nota: nota.trim() === '' ? null : nota.trim(),
       });
+      hapticSuccess(); // el día quedó guardado (edición manual sagrada)
       onCerrar();
     } catch {
       Alert.alert('No se pudo guardar', 'Revisa las horas (formato HH:MM).');
@@ -595,20 +605,23 @@ function EditorDia({ t, dia, onCerrar }: { t: Theme; dia: DiaProyectado; onCerra
                     accessibilityRole="button"
                     accessibilityLabel={SERVICIO_LABEL[s]}
                     accessibilityState={{ selected: activo }}
-                    onPress={() => setServicio(s)}
+                    onPress={() => {
+                      hapticSelection();
+                      setServicio(s);
+                    }}
                     style={{
                       minHeight: t.touch.chipHeight,
                       paddingHorizontal: t.spacing.md,
                       paddingVertical: t.spacing.sm,
                       borderRadius: t.radius.pill,
                       borderWidth: 1,
-                      borderColor: activo ? t.color.brand : t.color.border,
-                      backgroundColor: activo ? t.color.infoBg : t.color.surface,
+                      borderColor: activo ? t.color.accent : t.color.border,
+                      backgroundColor: activo ? t.color.accentWeak : t.color.surface,
                     }}
                   >
                     <Text
                       style={{
-                        color: activo ? t.color.brand : t.color.textSecondary,
+                        color: activo ? t.color.accent : t.color.textSecondary,
                         ...t.typography.scale.caption,
                         fontWeight: activo ? '700' : '600',
                       }}

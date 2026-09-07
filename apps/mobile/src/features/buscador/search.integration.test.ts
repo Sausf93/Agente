@@ -57,6 +57,8 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
   it('"sin seguro" → ficha con inmovilización', async () => {
     const res = await buscarInfracciones(runner, 'sin seguro');
     expect(res[0]?.infraccionId).toBe('inf-sin-seguro');
+    // La fila del buscador ya trae la pista de consecuencia determinante (chip inline, P0-4).
+    expect(res[0]?.pista).toEqual({ tipo: 'inmovilizacion', peligro: false });
 
     const ficha = await cargarFicha(runner, 'inf-sin-seguro');
     expect(ficha).not.toBeNull();

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -39,18 +40,20 @@ export default function RootLayout() {
   }, [loaded, onboarded, segments, router]);
 
   return (
-    <SafeAreaProvider>
-      <StatusBar style="auto" />
-      <Stack screenOptions={{ headerShown: false }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="onboarding" options={{ gestureEnabled: false, animation: 'fade' }} />
         <Stack.Screen
           name="ajustes"
           options={{ headerShown: true, title: 'Ajustes', presentation: 'card' }}
         />
+        {/* La ficha se presenta como modal: gesto de arrastrar hacia abajo para cerrarla (P1-9). */}
         <Stack.Screen
           name="ficha/[id]"
-          options={{ headerShown: true, title: 'Infracción', presentation: 'card' }}
+          options={{ headerShown: true, title: 'Infracción', presentation: 'modal', gestureEnabled: true }}
         />
         <Stack.Screen
           name="feedback"
@@ -68,7 +71,8 @@ export default function RootLayout() {
           name="documento/[plantillaId]"
           options={{ headerShown: true, title: 'Documento', presentation: 'card' }}
         />
-      </Stack>
-    </SafeAreaProvider>
+        </Stack>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

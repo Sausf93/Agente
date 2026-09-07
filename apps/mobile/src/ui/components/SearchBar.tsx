@@ -1,33 +1,76 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
-import { Search, X } from 'lucide-react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Mic, Search, X } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
+import { hapticSelection } from '@/ui/haptics';
+import { useReduceMotion } from '@/ui/motion';
 
 /**
- * Barra de búsqueda (02-ui.md §5.1, cola de componentes §4.2.3).
+ * Barra de búsqueda (02-ui.md §5.1) — el buscador ES el producto (mejoras-usabilidad P0-3).
  *
- * El buscador ES el producto: nace como primitiva, no dentro de la pantalla. Alto 56
- * (`touch.searchHeight`), foco con anillo de 2 pt (`focusRing`), y un botón "limpiar" de
- * 44×44 cuando hay texto. La lupa y el micrófono (dictado nativo, §4.3) son textuales hasta
- * que entre el set de iconos Lucide; el hueco y la a11y ya quedan preparados.
+ * Novedades de dinamismo:
+ *  - `autoFocus` en arranque en frío: el teclado ya sube y el cursor está listo (01-ux F2).
+ *  - PLACEHOLDER rotatorio con ejemplos "de calle" (fade cada ~3 s; estático con reduce-motion).
+ *  - Botón de MICRÓFONO visible (44×44). La voz llega en un dev build (P2-15): de momento avisa
+ *    "pronto" al pulsar, pero el hueco y la accesibilidad ya quedan listos.
+ *
+ * Alto 56 (`touch.searchHeight`), foco con anillo de 2 pt (`focusRing`) y botón "limpiar" 44×44.
  */
 export interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  /** Ejemplos que rotan como placeholder cuando el campo está vacío (01-ux §6.1). */
+  examples?: string[];
   onSubmit?: () => void;
   autoFocus?: boolean;
+  /** Acción del micrófono. Si no se pasa, el botón avisa de que la voz aún no está disponible. */
+  onMicPress?: () => void;
 }
+
+const EJEMPLOS_CALLE = ['faro roto', 'sin seguro', '0,60 mg', 'art. 36.6', 'móvil conduciendo'];
+const ROTACION_MS = 3000;
 
 export function SearchBar({
   value,
   onChangeText,
-  placeholder = 'Busca una infracción, artículo o palabra…',
+  placeholder,
+  examples = EJEMPLOS_CALLE,
   onSubmit,
   autoFocus = false,
+  onMicPress,
 }: SearchBarProps) {
   const t = useAppTheme();
+  const reduceMotion = useReduceMotion();
   const [focused, setFocused] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const phOpacity = useSharedValue(1);
+
+  const rotar = placeholder === undefined && value.length === 0 && examples.length > 1;
+
+  // Rotación del placeholder con fundido. Con reduce-motion se queda estático en el primero.
+  useEffect(() => {
+    if (!rotar || reduceMotion) return;
+    const id = setInterval(() => {
+      phOpacity.value = withTiming(0, { duration: t.motion.durFast }, () => {
+        phOpacity.value = withTiming(1, { duration: t.motion.durFast });
+      });
+      setIdx((i) => (i + 1) % examples.length);
+    }, ROTACION_MS);
+    return () => clearInterval(id);
+  }, [rotar, reduceMotion, examples.length, phOpacity, t.motion.durFast]);
+
+  const phStyle = useAnimatedStyle(() => ({ opacity: phOpacity.value }));
+
+  // Placeholder mostrado: fijo si viene por prop; si no, el ejemplo rotatorio actual.
+  const ejemploActual = examples[idx] ?? examples[0] ?? '';
+  const textoPlaceholder = placeholder ?? (reduceMotion ? examples[0] : ejemploActual) ?? '';
+
+  function onMic() {
+    hapticSelection();
+    onMicPress?.();
+  }
 
   return (
     <View
@@ -44,28 +87,48 @@ export function SearchBar({
       }}
     >
       <Search size={20} color={focused ? t.color.accent : t.color.textSecondary} strokeWidth={2} />
-      <TextInput
-        accessibilityLabel="Campo de búsqueda"
-        value={value}
-        onChangeText={onChangeText}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        onSubmitEditing={onSubmit}
-        placeholder={placeholder}
-        placeholderTextColor={t.color.textTertiary}
-        autoFocus={autoFocus}
-        autoCorrect={false}
-        autoCapitalize="none"
-        returnKeyType="search"
-        clearButtonMode="never"
-        maxFontSizeMultiplier={1.6}
-        style={{
-          flex: 1,
-          color: t.color.textPrimary,
-          paddingVertical: t.spacing.sm,
-          ...t.typography.scale.bodyL,
-        }}
-      />
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <TextInput
+          accessibilityLabel="Campo de búsqueda"
+          value={value}
+          onChangeText={onChangeText}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onSubmitEditing={onSubmit}
+          // Placeholder nativo vacío cuando rota: lo pinta el overlay animado de abajo.
+          placeholder={rotar ? '' : textoPlaceholder}
+          placeholderTextColor={t.color.textTertiary}
+          autoFocus={autoFocus}
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
+          clearButtonMode="never"
+          maxFontSizeMultiplier={1.6}
+          style={{
+            color: t.color.textPrimary,
+            paddingVertical: t.spacing.sm,
+            ...t.typography.scale.bodyL,
+          }}
+        />
+        {rotar ? (
+          <Animated.Text
+            numberOfLines={1}
+            style={[
+              {
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                color: t.color.textTertiary,
+                pointerEvents: 'none',
+                ...t.typography.scale.bodyL,
+              },
+              phStyle,
+            ]}
+          >
+            {textoPlaceholder}
+          </Animated.Text>
+        ) : null}
+      </View>
       {value.length > 0 ? (
         <Pressable
           accessibilityRole="button"
@@ -92,7 +155,24 @@ export function SearchBar({
             <X size={14} color={t.color.textSecondary} strokeWidth={2.4} />
           </View>
         </Pressable>
-      ) : null}
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Búsqueda por voz"
+          accessibilityHint="La búsqueda por voz llega en la próxima versión"
+          accessibilityState={{ disabled: true }}
+          onPress={onMic}
+          hitSlop={8}
+          style={{
+            minWidth: t.touch.min,
+            minHeight: t.touch.min,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Mic size={20} color={t.color.textTertiary} strokeWidth={2} />
+        </Pressable>
+      )}
     </View>
   );
 }

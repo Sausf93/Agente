@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Check } from 'lucide-react-native';
@@ -16,7 +16,9 @@ import type { Theme } from '@/ui/theme';
 import { accentByCuerpo, accentKeyFromCuerpo } from '@/ui/theme';
 import { Button } from '@/ui/components/Button';
 import { Banner } from '@/ui/components/Banner';
+import { PressableScale } from '@/ui/components/PressableScale';
 import { SelectField, type SelectOption } from '@/ui/components/SelectField';
+import { hapticSelection } from '@/ui/haptics';
 import { useSettingsStore } from '@/store/settings';
 
 /**
@@ -84,6 +86,7 @@ export default function OnboardingScreen() {
   const puedeTerminar = ccaaActual !== null && provinciaId !== null && municipioOk;
 
   function elegirCuerpo(c: Cuerpo) {
+    hapticSelection();
     // Al elegir, la app se tiñe al instante (setCuerpo actualiza el tema en caliente).
     void setCuerpoStore(c, c === 'policia_autonomica' ? autonomica : null);
     if (c !== 'policia_autonomica') {
@@ -94,6 +97,7 @@ export default function OnboardingScreen() {
   }
 
   function elegirAutonomica(a: PoliciaAutonomica) {
+    hapticSelection();
     void setCuerpoStore('policia_autonomica', a);
     setProvinciaId(null);
   }
@@ -289,8 +293,7 @@ function TarjetaCuerpo({
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      accessibilityRole="button"
+    <PressableScale
       accessibilityState={{ selected: activo }}
       accessibilityLabel={sub ? `${label}, ${sub}` : label}
       onPress={onPress}
@@ -314,7 +317,7 @@ function TarjetaCuerpo({
         ) : null}
       </View>
       {activo ? <Check size={22} color={t.color.accent} strokeWidth={2.4} /> : null}
-    </Pressable>
+    </PressableScale>
   );
 }
 

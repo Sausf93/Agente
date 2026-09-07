@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Pressable, Text } from 'react-native';
 import { Star } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
+import { hapticLight, hapticSelection } from '@/ui/haptics';
 import { useFavoritosStore } from './favoritosStore';
 import type { InfraccionSnapshot } from './masUsadas';
 
@@ -31,7 +32,12 @@ export function FavoriteToggle({ snapshot }: FavoriteToggleProps) {
       accessibilityRole="button"
       accessibilityLabel={favorita ? 'Quitar de favoritos' : 'Guardar en favoritos'}
       accessibilityState={{ selected: favorita }}
-      onPress={() => void alternar(snapshot)}
+      onPress={() => {
+        // Fijar = toque ligero; quitar = selección (mapa háptico, 01-ux §4.6).
+        if (favorita) hapticSelection();
+        else hapticLight();
+        void alternar(snapshot);
+      }}
       style={({ pressed }) => ({
         flexDirection: 'row',
         alignItems: 'center',
