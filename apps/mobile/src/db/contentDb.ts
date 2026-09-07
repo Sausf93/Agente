@@ -66,12 +66,18 @@ function ensureContentInstalled(): Promise<boolean> {
     const marker = new File(dir, CONTENT_VERSION_MARKER);
     const instalada = marker.exists ? marker.textSync().trim() : null;
 
-    if (!target.exists || instalada !== BUNDLED_CONTENT_VERSION) {
+    // Firma de instalación = versión + HASH del asset. El hash cambia SIEMPRE que cambia el
+    // contenido del `.db`, aunque no subamos el número de versión (durante la beta el contenido
+    // crece bajo la misma 0.1.0). Así el paquete del dispositivo se reemplaza cuando de verdad
+    // cambió el contenido, y no se queda con uno viejo (bug: "no salen los robos/hurto").
+    const firma = `${BUNDLED_CONTENT_VERSION}:${asset.hash ?? 'sin-hash'}`;
+
+    if (!target.exists || instalada !== firma) {
       if (target.exists) target.delete();
       new File(localUri).copy(target);
       if (marker.exists) marker.delete();
       marker.create();
-      marker.write(BUNDLED_CONTENT_VERSION);
+      marker.write(firma);
     }
     return true;
   })();
