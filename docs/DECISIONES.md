@@ -266,6 +266,24 @@ Registro de decisiones que se apartan o concretan la especificación. Cada una l
   cuando el proyecto crezca; añadir `format:check` como gate tras una normalización única;
   incorporar Sentry y el build de contenido a CI en Fase 1.
 
+## ADR-013 · Instalación pnpm "hoisted" para que Metro/Expo empaquete
+
+**Contexto.** Por defecto pnpm crea un árbol de `node_modules` aislado (symlinks). Metro (el
+bundler de Expo) no resuelve bien las dependencias transitivas de la runtime de Expo
+(`@expo/metro-runtime`, `whatwg-fetch`…) en ese árbol, y `expo export` fallaba en el entry de
+expo-router, antes del código de features. Es un problema de todo el monorepo, no de la app.
+
+**Decisión.** `.npmrc` con `node-linker=hoisted` (node_modules plano en la raíz del workspace),
+que es la recomendación oficial de Expo/React Native para monorepos con pnpm. Además, un
+`resolveRequest` acotado en `apps/mobile/metro.config.js` para resolver los imports ESM con
+extensión `.js` de `@agente/shared` (que se consume como fuente TypeScript): se reintenta la
+resolución sin extensión, que Metro sí mapea al `.ts`.
+
+**Consecuencias.** `expo export` compila (1210 módulos, incluido el asset del paquete de
+contenido `.db`), así que la app ya se puede correr en Expo Go / exportar. `lint`, `typecheck`
+y los 116 tests siguen en verde con el nuevo layout. Reconsiderar si en el futuro se prefiere
+publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
