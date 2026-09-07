@@ -1,4 +1,5 @@
 import { Linking } from 'react-native';
+import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
 /**
@@ -21,6 +22,22 @@ export async function compartirPdf(uri: string): Promise<CompartirResultado> {
     dialogTitle: 'Compartir o enviar documento',
   });
   return 'compartido';
+}
+
+/**
+ * Muestra el PDF recién generado AL INSTANTE, para que el primer toque en "Generar PDF" produzca
+ * algo visible (antes solo aparecían botones y el agente creía que "no hacía nada").
+ *
+ * Vía preferida: la hoja de compartir con el PDF, desde donde el agente lo ve, lo guarda en
+ * Archivos o lo envía por Mail/WhatsApp. Si el dispositivo no permite compartir (p. ej. web),
+ * cae a la vista de impresión nativa de `expo-print`, que también enseña el PDF y permite
+ * imprimir/guardar. Todo ocurre en el dispositivo; el PDF solo sale si el agente lo comparte.
+ */
+export async function mostrarPdf(uri: string, html: string): Promise<void> {
+  const resultado = await compartirPdf(uri);
+  if (resultado === 'no-disponible') {
+    await Print.printAsync({ html });
+  }
 }
 
 /**

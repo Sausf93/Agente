@@ -20,7 +20,7 @@ import { plantillaPorId } from './plantillasSeed';
 import { formatearFecha, formatearHora, valoresIniciales, valoresRecordables } from './iniciales';
 import { buildDocumentHtml } from './html';
 import { generarPdf } from './generarPdf';
-import { compartirPdf, enviarPorCorreo } from './compartir';
+import { compartirPdf, enviarPorCorreo, mostrarPdf } from './compartir';
 
 /**
  * Formulario de un DOCUMENTO (§4.8): el agente rellena los huecos de la plantilla y genera el PDF
@@ -98,6 +98,10 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
       setTextoPlano(texto);
       setFaltantes(camposFaltantes);
       setPdfUri(uri);
+      // El primer toque ya enseña el PDF: abrimos la vista para verlo/guardarlo/enviarlo. Los
+      // botones de abajo quedan para repetir la acción. Nada sale del móvil salvo que el agente
+      // lo comparta.
+      await mostrarPdf(uri, html);
     } catch {
       Alert.alert('No se pudo generar el PDF', 'Inténtalo de nuevo en un dispositivo (iOS/Android).');
     } finally {
