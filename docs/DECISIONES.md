@@ -284,6 +284,50 @@ contenido `.db`), así que la app ya se puede correr en Expo Go / exportar. `lin
 y los 116 tests siguen en verde con el nuevo layout. Reconsiderar si en el futuro se prefiere
 publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
 
+## ADR-014 · Cuadrante: dos capas, horas puras y festivos sembrados
+
+- **Estado:** aceptada (implementada en `packages/shared/src/cuadrante.ts` y
+  `apps/mobile/src/features/cuadrante`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** el cuadrante es el mayor punto de dolor del competidor (SPPLB pierde datos y
+  mezcla patrón con ediciones) y nuestro pilar de retención (perspectivas §8). Necesita ser
+  sólido, offline y sobrevivir a actualizaciones.
+
+### Decisiones
+
+1. **Modelo de dos capas, con excepciones SAGRADAS.** El calendario se PROYECTA al vuelo
+   desde `PatronTurno` + `inicioCiclo` (funciones puras `proyectarDia/Mes/Rango`). Solo se
+   guardan las EXCEPCIONES manuales (`DiaCuadrante`), que SIEMPRE ganan sobre el patrón y a las
+   que la regeneración (cambiar patrón, inicio o jornada) NUNCA pisa. Probado al 100 %.
+2. **Cálculo de horas puro y testeado** (`resumenHoras`): total, nocturnas (solape real con
+   una franja nocturna CONFIGURABLE que puede envolver la medianoche), festivas y fin de semana
+   (repartidas por la medianoche entre las dos fechas del turno), y **exceso sobre una jornada
+   de referencia configurable** (prorrateo `jornadaSemana × díasNaturales / 7`). No se fija
+   37,5 h como verdad: la GC y otros cuerpos usan otra jornada.
+3. **Definiciones de servicio por defecto** en bloques limpios de 8 h (mañana 06–14, tarde
+   14–22, noche 22–06) cuando el patrón no las especifica; el patrón o la excepción siempre
+   pueden sobrescribirlas. La disponibilidad/retén y las ausencias NO computan presencia.
+4. **Patrones predefinidos EDITABLES** como punto de partida (`PATRONES_PREDEFINIDOS`): GC
+   "6+saliente+3", PN "semana sí/semana no (7+7)", Local "rueda M/T/N semanal" y "oficina L-V".
+   Los turnos reales varían por unidad/municipio (Local no tiene patrón único): el usuario elige
+   el más cercano y ajusta días sueltos.
+5. **Festivos sembrados** (`FESTIVOS_NACIONALES_2026`): los nacionales van de serie; el agente
+   marca a mano los autonómicos y **locales** (las fiestas del pueblo, "dinero real" para el
+   Local). No hace falta una BD completa de festivos en v1.
+6. **Persistencia local atómica en dos tablas** (`user.db`, migración `user_version = 3`):
+   `cuadrante_config` (una fila) y `cuadrante_excepcion` (una fila por fecha). Editar un día
+   toca SOLO su fila (upsert) y cambiar el patrón NO borra excepciones → no se pierde nada.
+   Las filas corruptas se descartan una a una sin tumbar el cuadrante. La copia cifrada en
+   servidor (spec §4.9) queda para cuando exista backend (ADR-001/002).
+7. **UI compatible con Expo Go:** rejilla mensual propia (sin calendarios nativos), edición de
+   día en un `Modal` de React Native, resumen de horas SIEMPRE arriba. Todo con las primitivas
+   de `src/ui/components` y `useAppTheme` (cero colores sueltos); el turno nunca se comunica
+   solo con color (color + abreviatura de letra, regla 02-ui.md §5.7).
+
+- **Pendiente para la siguiente iteración:** alarmas (notificación local antes del servicio),
+  exportar mes a PDF/CSV, resumen anual y cómputo anual de referencia, edición por rango de días,
+  onboarding de patrón con previsualización, y la copia cifrada/sincronización entre dispositivos.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
