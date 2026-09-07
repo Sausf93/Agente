@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agente · Ficha — antes / después</title>
+<style>
+/* Boceto autocontenido. Modo OSCURO (por defecto de noche) + acento Guardia Civil (verde pino).
+   Tokens reales de theme.ts. Gravedad = colores FIJOS (no cambian con el cuerpo). Sin recursos de red. */
+:root{
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-pill:999px;
+  /* neutros oscuros */
+  --bg:#12151A;--surface:#1E232B;--surface-alt:#252B34;--border:#2C333D;
+  --text:#F2F4F7;--text-2:#98A1B0;--text-3:#6B7482;
+  /* acento GC oscuro */
+  --accent:#6FC79B;--accent-on:#0A0C10;--accent-weak:#1c2a24;
+  /* gravedad FIJA (oscuro) */
+  --grave-bg:#3A2410;--grave-fg:#FBC38A;--grave-solid:#F08A24;
+  --muy-bg:#3A1113;--muy-fg:#FBB0B3;--muy-solid:#F0555B;
+  --danger:#F0555B;--danger-bg:#3A1113;
+  --info-bg:#132338;--info-fg:#8FB0E6;
+  --success:#3FBE83;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d11;color:var(--text);font-family:var(--font);padding:28px 16px 48px}
+h1.page{font-size:20px;font-weight:700;text-align:center;margin:0 0 4px}
+p.sub{color:#8b93a1;text-align:center;margin:0 0 28px;font-size:14px}
+.row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.col{width:340px;max-width:100%}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);margin-bottom:10px}
+.tag.old{background:#2a2f37;color:#98A1B0}
+.tag.new{background:var(--accent-weak);color:var(--accent)}
+.phone{background:var(--bg);border:1px solid #262c35;border-radius:26px;padding:16px;min-height:640px}
+/* piezas */
+.title{font-size:26px;font-weight:700;line-height:1.15;margin:0}
+.title-sm{font-size:22px;font-weight:600;margin:0}
+.termino{color:var(--text-2);font-size:16px;margin:2px 0 0}
+.norma{color:var(--text-2);font-size:16px;font-weight:600;margin:6px 0 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);padding:5px 10px;font-size:14px;font-weight:700}
+.chip.grave{background:var(--grave-bg);color:var(--grave-fg)}
+.chip.tipo{background:var(--surface-alt);color:var(--text-2);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%}
+.tiles{display:flex;gap:8px;margin:14px 0}
+.tile{flex:1;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:12px 10px}
+.tile .big{font-size:30px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.tile .lab{font-size:13px;color:var(--text-2);margin-top:6px}
+.tile.importe{background:var(--accent-weak);border-color:var(--accent)}
+.tile.importe .big{color:var(--accent)}
+.card{border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:14px;margin:10px 0}
+.card.flat{box-shadow:none}
+.label{font-size:15px;font-weight:600;margin:14px 0 8px}
+.boletin{font-size:16px;line-height:1.5;color:var(--text)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:var(--r-md);font-size:16px;font-weight:600;background:var(--accent);color:var(--accent-on);margin-top:12px}
+.btn.old{background:#3a4750;color:#cfd6de}
+.actions2{display:flex;gap:8px;margin-top:8px}
+.btn-o{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:48px;border-radius:var(--r-md);border:1px solid var(--accent);color:var(--accent);font-size:15px;font-weight:600;background:transparent}
+/* consecuencia — ANTES: banners naranjas apilados */
+.banner-warn{background:var(--grave-bg);border-radius:var(--r-md);overflow:hidden;display:flex;margin:8px 0}
+.banner-warn .bar{width:3px;background:var(--grave-solid)}
+.banner-warn .body{padding:12px}
+.banner-warn .t{font-weight:600;font-size:16px}
+.banner-warn .s{color:var(--grave-fg);font-size:13px;margin-top:2px}
+/* consecuencia — DESPUÉS: fila-tarjeta neutra con icono */
+.cons{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:12px;margin:8px 0}
+.cons.coerc{border-color:var(--danger);background:var(--danger-bg)}
+.cons .ic{flex:none;width:38px;height:38px;border-radius:var(--r-sm);background:var(--surface-alt);display:flex;align-items:center;justify-content:center}
+.cons.coerc .ic{background:#4a1a1e}
+.cons .t{font-weight:600;font-size:16px}
+.cons .src{color:var(--text-2);font-size:13px;margin-top:2px}
+.foot{display:flex;align-items:center;gap:6px;color:var(--text-3);font-size:13px;margin-top:16px}
+.note{color:var(--text-3);font-size:12px;margin-top:14px;line-height:1.5}
+svg{display:block}
+.legend{max-width:720px;margin:26px auto 0;color:#8b93a1;font-size:13px;line-height:1.6}
+.legend b{color:#c9d1da}
+</style>
+</head>
+<body>
+<h1 class="page">Ficha de infracción — antes / después</h1>
+<p class="sub">Modo oscuro · acento Guardia Civil (verde). La gravedad mantiene su color fijo (naranja "grave").</p>
+
+<div class="row">
+  <!-- ================= ANTES ================= -->
+  <div class="col">
+    <span class="tag old">Antes · actual</span>
+    <div class="phone">
+      <!-- chips arriba, título después -->
+      <div class="chips">
+        <span class="chip grave"><span class="dot" style="background:var(--grave-solid)"></span>Grave</span>
+        <span class="chip tipo">Vía administrativa</span>
+      </div>
+      <h2 class="title">Circular sin seguro obligatorio</h2>
+      <p class="norma">LRCSCVM · art. 2</p>
+
+      <div class="tiles">
+        <div class="tile"><div class="big">1.500&nbsp;€</div><div class="lab">Importe</div></div>
+        <div class="tile"><div class="big">750&nbsp;€</div><div class="lab">Pronto pago</div></div>
+        <div class="tile"><div class="big">—</div><div class="lab">Puntos</div></div>
+      </div>
+
+      <div class="label">Texto para el boletín</div>
+      <div class="card flat"><div class="boletin">El vehículo reseñado circulaba por vía pública sin el seguro obligatorio de responsabilidad civil en vigor…</div></div>
+
+      <div class="btn old">Copiar boletín</div>
+      <div class="btn-o" style="margin-top:8px;width:100%">Guardar en favoritas</div>
+      <div class="btn-o" style="margin-top:8px;width:100%">Generar documento</div>
+
+      <div class="label">Consecuencias</div>
+      <div class="banner-warn"><div class="bar"></div><div class="body"><div class="t">Inmovilización</div><div class="s">Fuente: art. 3 LRCSCVM</div></div></div>
+      <div class="banner-warn"><div class="bar"></div><div class="body"><div class="t">Depósito del vehículo</div><div class="s">Fuente: art. 85 LSV</div></div></div>
+
+      <div class="note">Actualizado el 12/07/2026 · Fuente: LRCSCVM art. 2</div>
+    </div>
+  </div>
+
+  <!-- ================= DESPUÉS ================= -->
+  <div class="col">
+    <span class="tag new">Después · pulido</span>
+    <div class="phone" style="box-shadow:0 0 0 1px #202730">
+      <!-- título primero, chip con ICONO -->
+      <h2 class="title">Circular sin seguro obligatorio</h2>
+      <p class="termino">"sin seguro"</p>
+      <div class="chips">
+        <span class="chip grave">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--grave-fg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          Grave
+        </span>
+        <span class="chip tipo">Vía administrativa</span>
+      </div>
+      <p class="norma">LRCSCVM · art. 2</p>
+
+      <!-- importe destacado con acento -->
+      <div class="tiles">
+        <div class="tile importe"><div class="big">1.500&nbsp;€</div><div class="lab">Importe</div></div>
+        <div class="tile"><div class="big">750&nbsp;€</div><div class="lab">Pronto pago</div></div>
+        <div class="tile"><div class="big">—</div><div class="lab">Puntos</div></div>
+      </div>
+
+      <div class="label">Texto para el boletín</div>
+      <div class="card" style="box-shadow:0 2px 8px rgba(0,0,0,.35)"><div class="boletin">El vehículo reseñado circulaba por vía pública sin el seguro obligatorio de responsabilidad civil en vigor…</div></div>
+
+      <!-- primaria estrella + fila de 2 secundarias -->
+      <div class="btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-on)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar boletín
+      </div>
+      <div class="actions2">
+        <div class="btn-o">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z"/></svg>
+          Guardar
+        </div>
+        <div class="btn-o">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+          Documento
+        </div>
+      </div>
+
+      <div class="label">Consecuencias</div>
+      <!-- neutra con icono -->
+      <div class="cons">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><div class="t">Inmovilización</div><div class="src">art. 3 LRCSCVM</div></div>
+      </div>
+      <!-- coercitiva destaca en danger -->
+      <div class="cons coerc">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h5l1 5-2 2a14 14 0 0 0 6 6l2-2 5 1v5a2 2 0 0 1-2 2A18 18 0 0 1 3 5a2 2 0 0 1 0-2Z"/></svg></div>
+        <div><div class="t">Depósito del vehículo</div><div class="src">art. 85 LSV · procede según valoración del agente</div></div>
+      </div>
+
+      <div class="foot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg>
+        Actualizado el 12/07/2026 · Fuente: LRCSCVM art. 2
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <p><b>Qué cambia:</b> (1) título primero + el término de calle buscado en gris; (2) chip de gravedad con <b>icono</b>
+  (regla color+texto+icono, hoy incumplida); (3) tile de <b>importe</b> con fondo de acento para que mande sobre pronto pago/puntos;
+  (4) caja del boletín con <b>sombra sutil</b> (profundidad en claro/oscuro); (5) una primaria estrella + <b>dos secundarias con icono</b>
+  en fila, en vez de tres botones apilados; (6) consecuencias como <b>fila-tarjeta neutra con icono</b> (no un muro naranja), y la
+  <b>coercitiva destaca en rojo</b> con lenguaje orientativo; (7) pie de fuente con icono de "sello".</p>
+  <p>La gravedad sigue en su naranja fijo aunque el acento sea verde: nunca se confunden.</p>
+</div>
+</body>
+</html>

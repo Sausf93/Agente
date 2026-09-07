@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agente · Buscar (home) — antes / después</title>
+<style>
+/* Boceto autocontenido. Modo OSCURO + acento Policía Nacional (azul). Tokens reales. Sin red. */
+:root{
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-pill:999px;
+  --bg:#12151A;--surface:#1E232B;--surface-alt:#252B34;--border:#2C333D;
+  --text:#F2F4F7;--text-2:#98A1B0;--text-3:#6B7482;
+  /* acento PN oscuro (azul) */
+  --accent:#7FA4D6;--accent-on:#0A0C10;--accent-weak:#1a2130;
+  /* gravedad fija (oscuro) */
+  --leve-bg:#3A2E0A;--leve-fg:#F4D58A;--leve-solid:#E0A82E;
+  --grave-bg:#3A2410;--grave-fg:#FBC38A;--grave-solid:#F08A24;
+  --muy-bg:#3A1113;--muy-fg:#FBB0B3;--muy-solid:#F0555B;
+  --danger:#F0555B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d11;color:var(--text);font-family:var(--font);padding:28px 16px 48px}
+h1.page{font-size:20px;font-weight:700;text-align:center;margin:0 0 4px}
+p.sub{color:#8b93a1;text-align:center;margin:0 0 28px;font-size:14px}
+.row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.col{width:340px;max-width:100%}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);margin-bottom:10px}
+.tag.old{background:#2a2f37;color:#98A1B0}
+.tag.new{background:var(--accent-weak);color:var(--accent)}
+.phone{background:var(--bg);border:1px solid #262c35;border-radius:26px;padding:16px;min-height:660px}
+.h1{font-size:28px;font-weight:700;margin:0 0 12px}
+/* buscador */
+.search{display:flex;align-items:center;gap:10px;height:56px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);padding:0 14px;margin-bottom:20px}
+.search.focus{border:2px solid var(--accent);padding:0 13px}
+.search .ph{color:var(--text-3);font-size:18px;flex:1}
+.sect{font-size:15px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.6px;margin:0 0 10px}
+/* accesos rápidos ANTES: pills gris borde */
+.qa-old{display:flex;flex-wrap:wrap;gap:8px}
+.pill-old{border:1px solid var(--border);border-radius:var(--r-pill);padding:11px 16px;font-size:15px;font-weight:600;color:var(--text)}
+/* accesos DESPUÉS: fondo surface-alt + icono */
+.qa-new{display:flex;flex-wrap:wrap;gap:8px}
+.pill-new{display:inline-flex;align-items:center;gap:7px;background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-pill);padding:10px 14px;font-size:15px;font-weight:600}
+/* recientes / repetir */
+.recents{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.repetir{display:inline-flex;align-items:center;gap:7px;background:var(--accent-weak);color:var(--accent);border:1px solid var(--accent);border-radius:var(--r-pill);padding:9px 14px;font-size:15px;font-weight:700}
+.recent{color:var(--text-2);font-size:15px}
+/* tarjeta turno */
+.turno{position:relative;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:14px 14px 14px 20px;display:flex;justify-content:space-between;align-items:center;margin:18px 0;overflow:hidden}
+.turno.new{box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.turno .barra{position:absolute;left:0;top:0;bottom:0;width:5px;background:#5C6BC0}
+.turno .k{color:var(--text-2);font-size:13px}
+.badge-serv{display:inline-block;background:#2a2f4d;color:#B9C2F0;border-radius:var(--r-sm);padding:3px 9px;font-size:14px;font-weight:600;margin-top:4px}
+.turno .horas{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.turno.new .horas{color:var(--accent)}
+/* resultados */
+.res{display:flex;gap:12px;justify-content:space-between;padding:14px 4px;border-bottom:1px solid var(--border);align-items:flex-start}
+.res .ti{font-size:16px;font-weight:600}
+.res .hl{background:var(--accent-weak);color:var(--accent);font-weight:700;border-radius:4px;padding:0 2px}
+.res .meta{color:var(--text-2);font-size:13px;margin-top:3px}
+.res .pista{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--danger);border-radius:var(--r-pill);padding:2px 8px;font-size:12px;font-weight:600;color:var(--danger);margin-top:6px;background:var(--surface-alt)}
+.res .rt{text-align:right;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r-pill);padding:4px 9px;font-size:13px;font-weight:700}
+.chip.muy{background:var(--muy-bg);color:var(--muy-fg)}
+.imp{font-size:16px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
+.legend{max-width:720px;margin:26px auto 0;color:#8b93a1;font-size:13px;line-height:1.6}
+.legend b{color:#c9d1da}
+svg{display:block}
+</style>
+</head>
+<body>
+<h1 class="page">Buscar (home) — antes / después</h1>
+<p class="sub">Modo oscuro · acento Policía Nacional (azul). Estado de reposo (arriba) y un resultado en vivo (abajo, en el "después").</p>
+
+<div class="row">
+  <!-- ANTES -->
+  <div class="col">
+    <span class="tag old">Antes · actual</span>
+    <div class="phone">
+      <div class="h1">Buscar</div>
+      <div class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="ph">faro roto</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></div>
+
+      <div class="sect">Accesos rápidos</div>
+      <div class="qa-old">
+        <span class="pill-old">Sin seguro</span>
+        <span class="pill-old">Móvil</span>
+        <span class="pill-old">Faro roto</span>
+        <span class="pill-old">Alcoholemia</span>
+        <span class="pill-old">Sin ITV</span>
+        <span class="pill-old">Semáforo rojo</span>
+      </div>
+
+      <div class="turno">
+        <div>
+          <div class="k">Hoy</div>
+          <span class="badge-serv">Noche</span>
+        </div>
+        <div style="text-align:right"><div class="k">Este mes</div><div class="horas" style="font-size:22px">148 h</div></div>
+      </div>
+
+      <div class="sect" style="margin-top:6px">Tus favoritas</div>
+      <div class="res"><div><div class="ti">Tasa de alcohol 0,50 mg/l</div><div class="meta">LSV art. 20</div></div><div class="rt"><span class="chip muy">Muy grave</span><div class="imp">1.000 €</div></div></div>
+    </div>
+  </div>
+
+  <!-- DESPUÉS -->
+  <div class="col">
+    <span class="tag new">Después · pulido</span>
+    <div class="phone" style="box-shadow:0 0 0 1px #202730">
+      <div class="h1">Buscar</div>
+      <div class="search focus"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="ph">faro roto</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></div>
+
+      <!-- NUEVO: recientes + repetir última -->
+      <div class="sect">Recientes</div>
+      <div class="recents">
+        <span class="repetir"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Repetir última</span>
+        <span class="recent">Alcoholemia · Faro roto</span>
+      </div>
+
+      <div class="sect">Accesos rápidos</div>
+      <div class="qa-new">
+        <span class="pill-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.6 8.9a1 1 0 0 1-.7 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1 1 0 0 1 1.5 0C15.5 3.8 18 5 20 5a1 1 0 0 1 1 1z"/><path d="m2 2 20 20"/></svg>Sin seguro</span>
+        <span class="pill-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Móvil</span>
+        <span class="pill-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Faro roto</span>
+        <span class="pill-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"/><path d="M7 10h10"/><path d="M12 15v7"/><path d="M7 2h10l-1.5 8.5a3.5 3.5 0 0 1-7 0Z"/></svg>Alcoholemia</span>
+        <span class="pill-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg>Sin ITV</span>
+      </div>
+
+      <!-- turno con barra de color + horas en acento -->
+      <div class="turno new" style="margin-top:18px">
+        <div class="barra"></div>
+        <div>
+          <div class="k">Hoy</div>
+          <span class="badge-serv">Noche · 22–06</span>
+        </div>
+        <div style="text-align:right"><div class="k">Este mes</div><div class="horas">148 h</div></div>
+      </div>
+
+      <!-- resultado en vivo, con highlight, pista y chip -->
+      <div class="sect" style="margin-top:6px">Resultado en vivo</div>
+      <div class="res">
+        <div>
+          <div class="ti">Circular sin <span class="hl">seg</span>uro obligatorio</div>
+          <div class="meta">LRCSCVM art. 2</div>
+          <span class="pista"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Inmovilización</span>
+        </div>
+        <div class="rt"><span class="chip muy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muy-fg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Muy grave</span><div class="imp">1.500 €</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <p><b>Qué cambia:</b> (1) fila <b>"Recientes + Repetir última"</b> en acento (ahorra la búsqueda repetida, hoy no existe);
+  (2) accesos rápidos con <b>fondo e icono</b> en vez de pastillas de solo borde; (3) tarjeta de turno con <b>barra de color del
+  servicio</b> y las horas del mes en <b>acento</b>, para que el dato cante; (4) el chip de gravedad ya lleva <b>icono</b>. Las
+  filas de resultado ya son buenas hoy (resaltado del término, pista de consecuencia, importe) — solo se les suma el icono del chip.</p>
+</div>
+</body>
+</html>
