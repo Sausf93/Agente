@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { Banner } from '@/ui/components/Banner';
+import { SkeletonLine } from '@/ui/components/Skeleton';
 import { Markdown } from '@/ui/markdown/Markdown';
 import { formatFecha } from '@/features/ficha/format';
 import { getContentRunner } from '@/db/contentDb';
@@ -56,10 +57,26 @@ export function ArticuloScreen({ articuloId }: { articuloId: string }) {
   }, [articuloId]);
 
   if (estado === 'cargando') {
+    // Esqueleto de lectura (cabecera + párrafos) en vez de un spinner que "salta" (P1-10).
     return (
-      <View style={{ flex: 1, backgroundColor: t.color.bg, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: t.color.bg,
+          padding: t.spacing.base,
+          paddingTop: insets.top + t.spacing.base,
+          gap: t.spacing.md,
+        }}
+      >
         <Stack.Screen options={{ title: 'Artículo' }} />
-        <ActivityIndicator color={t.color.accent} />
+        <SkeletonLine width="45%" height={16} />
+        <SkeletonLine width="75%" height={24} />
+        <View style={{ gap: t.spacing.sm, marginTop: t.spacing.sm }}>
+          <SkeletonLine width="100%" height={14} />
+          <SkeletonLine width="96%" height={14} />
+          <SkeletonLine width="98%" height={14} />
+          <SkeletonLine width="60%" height={14} />
+        </View>
       </View>
     );
   }

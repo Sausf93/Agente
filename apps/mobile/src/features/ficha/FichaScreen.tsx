@@ -6,10 +6,22 @@ import {
   Text,
   View,
 } from 'react-native';
+import type { ComponentType } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { FileWarning, WifiOff } from 'lucide-react-native';
-import type { Gravedad, TipoInfraccion } from '@agente/shared';
+import {
+  Ban,
+  FileDown,
+  FileText,
+  FileWarning,
+  Fingerprint,
+  Gavel,
+  Lock,
+  Truck,
+  WifiOff,
+  type LucideProps,
+} from 'lucide-react-native';
+import type { Gravedad, TipoConsecuencia, TipoInfraccion } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { severityFromGravedad, severityMeta } from '@/ui/theme';
@@ -180,12 +192,12 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
 
       {/* 4. Importe / reducido (pronto pago) / puntos: TILES grandes, número "de refilón" (§7.2). */}
       <View style={{ flexDirection: 'row', gap: t.spacing.sm }}>
-        <Tile t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} />
+        {/* El IMPORTE manda: tile con énfasis de acento (el dato que el agente busca primero). */}
+        <Tile t={t} etiqueta="Importe" valor={formatEuros(ficha.importeEur)} enfasis />
         <Tile
           t={t}
           etiqueta="Pronto pago"
           valor={ficha.importeReducidoEur !== null ? formatEuros(ficha.importeReducidoEur) : '—'}
-          acento={ficha.importeReducidoEur !== null}
         />
         <Tile t={t} etiqueta="Puntos" valor={ficha.puntos !== null ? String(ficha.puntos) : '—'} />
       </View>
@@ -253,6 +265,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         <Button
           title="Generar documento"
           variant="secondary"
+          icon={FileDown}
           accessibilityHint="Abre el boletín de denuncia con estos datos ya rellenos"
           onPress={() => {
             const params: Record<string, string> = {
@@ -277,14 +290,12 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           </Text>
           {ficha.consecuencias.map((c, i) => (
             <View key={`${c.tipo}-${i}`} style={{ gap: t.spacing.sm }}>
-              <Banner tone="warning" title={CONSECUENCIA_LABEL[c.tipo]}>
-                <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
-                  {c.textoCorto}
-                </Text>
-                <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-                  Fuente: {c.fuente}
-                </Text>
-              </Banner>
+              <FilaConsecuencia
+                t={t}
+                tipo={c.tipo}
+                textoCorto={c.textoCorto}
+                fuente={c.fuente}
+              />
               {/* Árbol de detención interactivo (§4.6): solo para la consecuencia `detencion`. */}
               {c.tipo === 'detencion' ? <DetencionTree regla={c.regla} /> : null}
             </View>
@@ -363,26 +374,33 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   );
 }
 
-/** Tile de dato clave (importe / pronto pago / puntos): número grande y etiqueta pequeña (§7.2). */
+/**
+ * Tile de dato clave (importe / pronto pago / puntos): número grande y etiqueta pequeña (§7.2).
+ *
+ * `enfasis` marca el dato que el agente busca primero (el IMPORTE): borde y fondo de acento
+ * sutiles para que "gane" sin romper la retícula. `acento` solo tiñe el número (pronto pago).
+ */
 function Tile({
   t,
   etiqueta,
   valor,
   acento = false,
+  enfasis = false,
 }: {
   t: Theme;
   etiqueta: string;
   valor: string;
   acento?: boolean;
+  enfasis?: boolean;
 }) {
   return (
     <View
       style={{
         flex: 1,
         borderRadius: t.radius.md,
-        borderWidth: 1,
-        borderColor: t.color.border,
-        backgroundColor: t.color.surface,
+        borderWidth: enfasis ? 1.5 : 1,
+        borderColor: enfasis ? t.color.accent : t.color.border,
+        backgroundColor: enfasis ? t.color.accentWeak : t.color.surface,
         paddingVertical: t.spacing.md,
         paddingHorizontal: t.spacing.sm,
         gap: t.spacing.xxs,
@@ -393,7 +411,7 @@ function Tile({
         adjustsFontSizeToFit
         maxFontSizeMultiplier={1.4}
         style={{
-          color: acento ? t.color.accent : t.color.textPrimary,
+          color: enfasis || acento ? t.color.accent : t.color.textPrimary,
           ...t.typography.scale.displayL,
           fontVariant: ['tabular-nums'],
         }}
@@ -401,6 +419,85 @@ function Tile({
         {valor}
       </Text>
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
+    </View>
+  );
+}
+
+/**
+ * Icono por tipo de consecuencia. Neutros por defecto; solo la COERCITIVA (`detencion`) recibe un
+ * icono fuerte para que resalte de verdad (una detención pesa más que una grúa). No cambia el
+ * lenguaje orientativo ni los colores de gravedad (que son fijos): el color aquí es de acción, no
+ * de gravedad.
+ */
+const CONSECUENCIA_ICON: Record<TipoConsecuencia, ComponentType<LucideProps>> = {
+  detencion: Gavel,
+  inmovilizacion: Lock,
+  deposito: Truck,
+  decomiso: Ban,
+  retirada_permiso: FileText,
+  identificacion: Fingerprint,
+};
+
+/**
+ * Fila-tarjeta de una consecuencia (auditoría de pulido, ficha §ALTA). Sustituye el "muro de
+ * banners naranjas": superficie neutra con icono a la izquierda; solo la detención (coercitiva)
+ * usa color `danger` para destacar. Título + texto + fuente, con jerarquía clara.
+ */
+function FilaConsecuencia({
+  t,
+  tipo,
+  textoCorto,
+  fuente,
+}: {
+  t: Theme;
+  tipo: TipoConsecuencia;
+  textoCorto: string;
+  fuente: string;
+}) {
+  const Icon = CONSECUENCIA_ICON[tipo] ?? FileText;
+  const coercitiva = tipo === 'detencion';
+  const iconColor = coercitiva ? t.color.danger : t.color.textSecondary;
+  const iconBg = coercitiva ? t.color.dangerBg : t.color.surfaceAlt;
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        gap: t.spacing.md,
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        borderColor: coercitiva ? t.color.danger : t.color.border,
+        backgroundColor: t.color.surface,
+        padding: t.spacing.md,
+      }}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: t.radius.md,
+          backgroundColor: iconBg,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Icon size={22} color={iconColor} strokeWidth={2} />
+      </View>
+      <View style={{ flex: 1, gap: t.spacing.xxs }}>
+        <Text
+          style={{
+            color: coercitiva ? t.color.danger : t.color.textPrimary,
+            ...t.typography.scale.bodyStrong,
+          }}
+        >
+          {CONSECUENCIA_LABEL[tipo]}
+        </Text>
+        <Text maxFontSizeMultiplier={1.6} style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+          {textoCorto}
+        </Text>
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+          Fuente: {fuente}
+        </Text>
+      </View>
     </View>
   );
 }
