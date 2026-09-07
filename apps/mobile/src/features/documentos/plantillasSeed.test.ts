@@ -104,4 +104,43 @@ describe('seed de plantillas', () => {
     const articulo = p!.campos.find((c) => c.clave === 'articulo');
     expect(seccionDe(articulo!)).toBe('legal');
   });
+
+  it('el boletín incluye el segundo agente actuante (identidad, no se recuerda, no es tercero)', () => {
+    const boletin = plantillaPorId('seed-boletin-denuncia')!;
+    const segundo = boletin.campos.find((c) => c.clave === 'numeroTip2');
+    expect(segundo).toBeDefined();
+    expect(seccionDe(segundo!)).toBe('identidad');
+    expect(segundo!.esDatoTercero).toBe(false);
+    expect(segundo!.recordar).toBe(false); // cambia según el compañero de patrulla
+    expect(boletin.markdownConVariables).toContain('{{numeroTip2}}');
+  });
+
+  it('incluye el acta de prueba de alcoholemia con la segunda de contraste y el apercibimiento del art. 383', () => {
+    const p = plantillaPorId('seed-acta-prueba-alcoholemia');
+    expect(p?.tipo).toBe('acta_prueba_alcoholemia');
+    // Garantías clave del procedimiento en el texto.
+    expect(p!.markdownConVariables).toMatch(/[Ss]egunda prueba de contraste/);
+    expect(p!.markdownConVariables).toMatch(/an[áa]lisis de sangre/i);
+    expect(p!.markdownConVariables).toMatch(/art\. 383 CP/);
+    // El interesado y su documento son datos de tercero; los mg/l y el etilómetro, del agente.
+    const interesado = p!.campos.find((c) => c.clave === 'interesado');
+    expect(interesado?.esDatoTercero).toBe(true);
+    const resultado1 = p!.campos.find((c) => c.clave === 'resultado1');
+    expect(resultado1?.esDatoTercero).toBe(false);
+    const etilometro = p!.campos.find((c) => c.clave === 'etilometro');
+    expect(etilometro?.esDatoTercero).toBe(false);
+  });
+
+  it('incluye el acta de retirada/depósito por grúa con importe orientativo y aviso de datos de tercero', () => {
+    const p = plantillaPorId('seed-acta-deposito-grua');
+    expect(p?.tipo).toBe('acta_deposito_grua');
+    // Importe ORIENTATIVO y aviso de que los datos de tercero solo viven en el dispositivo.
+    expect(p!.markdownConVariables.toLowerCase()).toMatch(/orientativo/);
+    expect(p!.markdownConVariables.toLowerCase()).toMatch(/solo en este dispositivo|solo viven/);
+    const matricula = p!.campos.find((c) => c.clave === 'matricula');
+    expect(matricula?.esDatoTercero).toBe(true);
+    const importe = p!.campos.find((c) => c.clave === 'importe');
+    expect(seccionDe(importe!)).toBe('servicio');
+    expect(importe?.esDatoTercero).toBe(false);
+  });
 });

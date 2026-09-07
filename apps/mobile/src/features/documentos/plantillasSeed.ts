@@ -113,6 +113,8 @@ const BOLETIN_MD = `# Boletín de denuncia administrativa
 
 **{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
 
+Segundo agente actuante (TIP): {{numeroTip2}}
+
 Nº de boletín: {{numeroBoletin}}
 
 En **{{lugar}}**, siendo las **{{hora}}** horas del día **{{fecha}}**, por el agente actuante se formula la presente denuncia por los hechos que se describen.
@@ -156,6 +158,19 @@ const boletinDenuncia: PlantillaDoc = {
     campoCuerpo(),
     campoUnidad(),
     campoTip(),
+    // Segundo agente actuante: en la Guardia Civil se patrulla en pareja. Es identidad del
+    // compañero (no un dato de tercero), pero NO se recuerda: cambia según con quién se preste
+    // servicio (recordar:false, a diferencia del TIP propio).
+    {
+      clave: 'numeroTip2',
+      etiqueta: 'Nº de TIP del segundo agente actuante',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'identidad',
+      recordar: false,
+      placeholder: 'Opcional. Ej.: 67890',
+      hint: 'El compañero de patrulla. No se recuerda entre documentos.',
+    },
     { clave: 'numeroBoletin', etiqueta: 'Nº de boletín', tipo: 'texto', esDatoTercero: false, seccion: 'servicio' },
     campoFecha,
     campoHora,
@@ -439,10 +454,219 @@ const actaIntervencionSustancias: PlantillaDoc = {
   ],
 };
 
+// ---------------------------------------------------------------------------
+// 5. Acta de prueba de alcoholemia o drogas (Guardia Civil de Tráfico)
+// ---------------------------------------------------------------------------
+// Recoge las GARANTÍAS del procedimiento: identificación, primera prueba, segunda prueba de
+// contraste (~10 min), derecho del interesado a un análisis de sangre/contraste, y el
+// apercibimiento de que la NEGATIVA es delito (art. 383 CP). Los resultados en mg/l se acompañan
+// del nombre del interesado (dato de tercero): por eso el interesado y su documento van marcados.
+const PRUEBA_ALCOHOLEMIA_MD = `# Acta de prueba de alcoholemia o drogas
+
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
+
+En **{{lugar}}**, a las **{{hora}}** horas del día **{{fecha}}**, se practica la prueba de detección de alcohol o drogas al conductor que se reseña, con las garantías que se detallan.
+
+## Conductor sometido a la prueba
+
+- Nombre y apellidos: {{interesado}}
+- Documento de identidad: {{documento}}
+- Vehículo (matrícula): {{matricula}}
+
+## Instrumento de medición
+
+- Etilómetro (marca y modelo): {{etilometro}}
+- Nº de serie: {{numeroSerie}}
+
+## Desarrollo y garantías
+
+1. Se identifica al conductor y se le informa del motivo de la prueba.
+2. **Primera prueba** — resultado: **{{resultado1}}** mg/l en aire espirado.
+3. **Segunda prueba de contraste**, transcurridos unos diez minutos — resultado: **{{resultado2}}** mg/l.
+4. Se informa al interesado de su **derecho a un análisis de sangre u otro contraste** con cargo, en su caso, a quien resulte procedente: {{contraste}}
+5. Se le apercibe de que la **negativa** a someterse a las pruebas puede ser constitutiva de **delito (art. 383 CP)**.
+
+## Observaciones
+
+{{observaciones}}
+
+---
+
+Orientación: una tasa superior a 0,60 mg/l en aire espirado (1,2 g/l en sangre) o la influencia acreditada pueden ser constitutivas de delito (art. 379.2 CP); por debajo, la conducta es sanción administrativa (art. 14 LSV). Los resultados son provisionales a expensas del contraste que proceda; la valoración final corresponde al agente y, en su caso, a la autoridad judicial. Firma del agente actuante: __________
+`;
+
+const actaPruebaAlcoholemia: PlantillaDoc = {
+  id: 'seed-acta-prueba-alcoholemia',
+  tipo: 'acta_prueba_alcoholemia',
+  titulo: 'Acta de prueba de alcoholemia o drogas',
+  descripcion: 'Prueba de alcohol/drogas con la segunda de contraste, el derecho a análisis y las garantías.',
+  cuerpoAplicable: [],
+  version: 1,
+  markdownConVariables: PRUEBA_ALCOHOLEMIA_MD,
+  campos: [
+    campoCuerpo(),
+    campoUnidad(),
+    campoTip(),
+    campoFecha,
+    campoHora,
+    campoLugar,
+    {
+      clave: 'interesado',
+      etiqueta: 'Conductor sometido a la prueba (nombre y apellidos)',
+      tipo: 'texto',
+      esDatoTercero: true,
+    },
+    campoDocumento(),
+    { clave: 'matricula', etiqueta: 'Matrícula del vehículo', tipo: 'texto', esDatoTercero: true },
+    {
+      clave: 'etilometro',
+      etiqueta: 'Etilómetro (marca y modelo)',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: Dräger Alcotest 7110',
+    },
+    {
+      clave: 'numeroSerie',
+      etiqueta: 'Nº de serie del etilómetro',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      hint: 'Debe constar la vigencia de la verificación metrológica del aparato.',
+    },
+    {
+      clave: 'resultado1',
+      etiqueta: 'Resultado 1ª prueba (mg/l en aire espirado)',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: 0,68',
+    },
+    {
+      clave: 'resultado2',
+      etiqueta: 'Resultado 2ª prueba de contraste (mg/l)',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: 0,66 (transcurridos ~10 min)',
+    },
+    {
+      clave: 'contraste',
+      etiqueta: 'Análisis de sangre/contraste solicitado por el interesado',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: no lo solicita / solicita análisis de sangre',
+    },
+    campoObservaciones,
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// 6. Acta de retirada y depósito de vehículo (grúa)
+// ---------------------------------------------------------------------------
+// Cubre el paso inmovilización → retirada por grúa → depósito. El importe es ORIENTATIVO (lo fija
+// la ordenanza o tasa correspondiente). Los datos del vehículo y del titular/conductor son de
+// tercero y se recuerda en el pie que solo viven en el dispositivo.
+const DEPOSITO_GRUA_MD = `# Acta de retirada y depósito de vehículo
+
+**{{cuerpo}}** · {{unidad}} · TIP {{numeroTip}}
+
+En **{{lugar}}**, a las **{{hora}}** horas del día **{{fecha}}**, se procede a la retirada del vehículo que se describe mediante grúa y a su traslado a depósito, al concurrir causa legal para ello.
+
+## Vehículo
+
+- Matrícula: {{matricula}}
+- Marca y modelo: {{marcaModelo}}
+- Titular o conductor: {{conductor}}
+- Documento de identidad: {{documento}}
+
+## Causa de la retirada
+
+{{causa}}
+
+Precepto aplicable: **{{articulo}}**.
+
+## Retirada y depósito
+
+- Servicio de grúa: {{grua}}
+- Depósito de destino: {{deposito}}
+- Importe orientativo de la retirada/depósito: {{importe}}
+
+## Observaciones
+
+{{observaciones}}
+
+---
+
+Orientación: la retirada y el depósito proceden según el precepto citado; el importe es ORIENTATIVO y se ajustará a la tasa u ordenanza aplicable. Los datos del vehículo y de su titular/conductor son datos de terceros: viven SOLO en este dispositivo y no se envían a ningún servidor. Firma del agente actuante: __________
+`;
+
+const actaDepositoGrua: PlantillaDoc = {
+  id: 'seed-acta-deposito-grua',
+  tipo: 'acta_deposito_grua',
+  titulo: 'Acta de retirada y depósito de vehículo',
+  descripcion: 'Retirada por grúa y depósito del vehículo con la causa, el precepto y el importe orientativo.',
+  cuerpoAplicable: [],
+  version: 1,
+  markdownConVariables: DEPOSITO_GRUA_MD,
+  campos: [
+    campoCuerpo(),
+    campoUnidad(),
+    campoTip(),
+    campoFecha,
+    campoHora,
+    campoLugar,
+    { clave: 'matricula', etiqueta: 'Matrícula', tipo: 'texto', esDatoTercero: true },
+    { clave: 'marcaModelo', etiqueta: 'Marca y modelo', tipo: 'texto', esDatoTercero: true },
+    {
+      clave: 'conductor',
+      etiqueta: 'Titular o conductor (nombre y apellidos)',
+      tipo: 'texto',
+      esDatoTercero: true,
+    },
+    campoDocumento(),
+    {
+      clave: 'causa',
+      etiqueta: 'Causa de la retirada',
+      tipo: 'multilinea',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Ej.: vehículo inmovilizado sin subsanar la causa; obstaculiza la circulación…',
+    },
+    { clave: 'articulo', etiqueta: 'Precepto aplicable', tipo: 'texto', esDatoTercero: false, seccion: 'legal' },
+    {
+      clave: 'grua',
+      etiqueta: 'Servicio de grúa',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+    },
+    {
+      clave: 'deposito',
+      etiqueta: 'Depósito de destino',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+    },
+    {
+      clave: 'importe',
+      etiqueta: 'Importe orientativo de la retirada/depósito',
+      tipo: 'texto',
+      esDatoTercero: false,
+      seccion: 'servicio',
+      placeholder: 'Orientativo, según tasa u ordenanza aplicable.',
+    },
+    campoObservaciones,
+  ],
+};
+
 /** Catálogo de plantillas de la v1 (orden de presentación en la pestaña Documentos). */
 export const PLANTILLAS_SEED: PlantillaDoc[] = [
   boletinDenuncia,
   actaInmovilizacion,
+  actaPruebaAlcoholemia,
+  actaDepositoGrua,
   actaIntervencionSustancias,
   diligenciaIdentificacion,
 ];

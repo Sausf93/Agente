@@ -176,7 +176,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
     expect(new Set(artIds).size).toBe(artIds.length);
   });
 
-  it('conserva los artículos penales del CP (tráfico 380/383 + penal, incluidos VG 153/173, desórdenes 557, resistencia 556 y estafa 249)', () => {
+  it('conserva los artículos penales del CP (tráfico 379.2/380/383 + penal, incluidos VG 153/173, desórdenes 557, resistencia 556 y estafa 249)', () => {
     const numerosCp = combinado.articulos
       .filter((a) => a.normaId === 'BOE-A-1995-25444')
       .map((a) => a.numero)
@@ -192,6 +192,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '249',
       '263',
       '368',
+      '379.2',
       '380',
       '383',
       '468',

@@ -151,6 +151,8 @@ export const TipoPlantilla = z.enum([
   'diligencia_identificacion',
   'acta_lectura_derechos',
   'acta_informacion_victima',
+  'acta_prueba_alcoholemia',
+  'acta_deposito_grua',
 ]);
 export type TipoPlantilla = z.infer<typeof TipoPlantilla>;
 

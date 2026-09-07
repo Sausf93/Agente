@@ -300,6 +300,20 @@ const ART_CP_383 = articuloSeed({
     'o de la presencia de drogas. La valoración final corresponde a la autoridad judicial. Resumen orientativo.',
 });
 
+const ART_CP_379 = articuloSeed({
+  normaId: ID_CP,
+  numero: '379.2',
+  titulo: 'Conducción bajo los efectos del alcohol o de drogas (delito contra la seguridad vial)',
+  texto:
+    'Castiga como delito conducir un vehículo a motor o ciclomotor bajo la influencia de drogas ' +
+    'tóxicas, estupefacientes, sustancias psicotrópicas o de bebidas alcohólicas. EN TODO CASO se ' +
+    'considera delito conducir con una tasa de alcohol superior a 0,60 miligramos por litro en aire ' +
+    'espirado o superior a 1,2 gramos por litro en sangre. Por debajo de ese umbral, la conducción ' +
+    'con exceso de alcohol es sanción administrativa (art. 14 LSV), salvo que se acredite la ' +
+    'influencia en la conducción. Es la FRONTERA entre el boletín (administrativo) y el atestado ' +
+    '(penal). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_380 = articuloSeed({
   normaId: ID_CP,
   numero: '380',
@@ -377,6 +391,7 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_LSV_14,
   ART_LSV_77,
   ART_LOTT_140,
+  ART_CP_379,
   ART_CP_383,
   ART_CP_380,
 ];
@@ -820,6 +835,76 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'A VERIFICAR importe (1.000 €) y puntos (6) por mera presencia contra el cuadro DGT, y la ' +
       'frontera con el delito del art. 379.2 CP (exige acreditar la influencia en la conducción, ' +
       'según jurisprudencia reciente del TS). Revisar antes de publicar.',
+  }),
+  // --- Alcoholemia PENAL (art. 379.2 CP): la decisión "¿boletín o atestado?" -----------------
+  // Delito HERMANO de la infracción administrativa `inf-alcoholemia` (art. 14 LSV). Lo que los
+  // separa es la FRONTERA de 0,60 mg/l en aire (o la influencia acreditada): por encima es DELITO
+  // (atestado + posible detención), por debajo es sanción administrativa (boletín). Reutiliza el
+  // motor de detención (mismo helper `reglaDetencion`) igual que la negativa (art. 383) y la
+  // temeraria (art. 380), para que la ficha pinte el árbol interactivo y "Leer derechos".
+  construirInfraccion({
+    id: 'del-alcoholemia-penal',
+    articulo: ART_CP_379,
+    tituloCorto: 'Alcoholemia penal (delito)',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    // Art. 379.2 CP: prisión de 3 a 6 meses → MENOS GRAVE (art. 33.3 CP). Alimenta el motor de
+    // detención (mismo escenario flagrante que la negativa del art. 383): orientación "procede".
+    penaTexto:
+      'Prisión de 3 a 6 meses o multa de 6 a 12 meses o trabajos en beneficio de la comunidad de ' +
+      '31 a 90 días, y EN TODO CASO privación del derecho a conducir de más de 1 a 4 años (art. 379.2 CP)',
+    gravedadPenal: 'menos_grave',
+    textoBoletin:
+      'FRONTERA administrativo ↔ penal. Conducir con una tasa de alcohol superior a 0,60 mg/l en ' +
+      'aire espirado (o 1,2 g/l en sangre), o bajo la influencia acreditada de drogas o alcohol, es ' +
+      'DELITO contra la seguridad vial (art. 379.2 CP) → procede instruir ATESTADO. POR DEBAJO de ' +
+      '0,60 mg/l en aire, la conducción con exceso de alcohol es SANCIÓN ADMINISTRATIVA (art. 14 ' +
+      'LSV) → boletín (ver ficha "Conducir bajo los efectos del alcohol"). La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'alcoholemia penal',
+      'delito de alcoholemia',
+      '0.60',
+      '0,60',
+      'penal por alcohol',
+      'muy borracho al volante',
+      'conducir bajo los efectos de las drogas',
+      'delito contra la seguridad vial',
+      'atestado por alcohol',
+      'superar 0.60',
+      'delito por drogas al volante',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante procede valorar la detención conforme a los arts. 490 y 492 ' +
+          'LECrim; la valoración de los indicios, del riesgo y del aseguramiento de la prueba de ' +
+          'alcohol/drogas corresponde al agente y, en su caso, a la autoridad judicial.',
+        fuente: 'CP art. 379.2; LECrim arts. 490 y 492',
+      },
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la causa (art. 104 LSV), ' +
+          'salvo que se haga cargo otro conductor habilitado, y la intervención del permiso de conducción.',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'penal',
+    notaRevision:
+      'A VERIFICAR la pena y la FRONTERA administrativo↔penal contra el texto consolidado del CP: ' +
+      'delito del art. 379.2 CP → prisión de 3 a 6 meses o multa de 6 a 12 meses o trabajos en ' +
+      'beneficio de la comunidad de 31 a 90 días, y en todo caso privación del derecho a conducir de ' +
+      'más de 1 a 4 años → MENOS GRAVE (art. 33.3 CP). El umbral OBJETIVO es 0,60 mg/l en aire ' +
+      'espirado (1,2 g/l en sangre); por debajo, la conducción bajo la influencia de bebidas ' +
+      'alcohólicas también puede ser delito SI se acredita la influencia (indicios de la conducción). ' +
+      'Distinguir con claridad de la sanción administrativa del art. 14 LSV (`inf-alcoholemia`) y de ' +
+      'la NEGATIVA a la prueba (art. 383 CP, `inf-negativa-prueba`). Redacción de la detención a ' +
+      'validar por el revisor jurídico (§4.6, lenguaje NUNCA imperativo). No lleva importe (vía penal).',
   }),
   construirInfraccion({
     id: 'inf-estacionamiento-indebido',

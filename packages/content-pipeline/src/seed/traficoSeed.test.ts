@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 20 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(20);
+  it('siembra 21 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(21);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -95,8 +95,8 @@ describe('SEED_TRAFICO: la negativa a la prueba es un delito (vía penal)', () =
     expect(detencion!.textoCorto.toLowerCase()).not.toMatch(/\bdeten\b|\bdetén\b/);
   });
 
-  it('temeraria y negativa llevan la REGLA del motor de detención (árbol + "Leer derechos")', () => {
-    for (const id of ['inf-conduccion-temeraria', 'inf-negativa-prueba']) {
+  it('temeraria, negativa y alcoholemia penal llevan la REGLA del motor de detención (árbol + "Leer derechos")', () => {
+    for (const id of ['inf-conduccion-temeraria', 'inf-negativa-prueba', 'del-alcoholemia-penal']) {
       const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
       const det = item!.consecuencias.find((c) => c.tipo === 'detencion');
       expect(det, id).toBeDefined();
@@ -107,6 +107,44 @@ describe('SEED_TRAFICO: la negativa a la prueba es un delito (vía penal)', () =
       expect(regla.escenarioBase, id).toBeDefined();
       expect(regla.orientacionBase, id).toBe('procede');
     }
+  });
+});
+
+describe('SEED_TRAFICO: la alcoholemia PENAL marca la frontera boletín↔atestado', () => {
+  it('"alcoholemia penal" es delito, sin importe, con la frontera de 0,60 mg/l y detención orientativa', () => {
+    const penal = SEED_TRAFICO.infracciones.find(
+      (i) => i.infraccion.id === 'del-alcoholemia-penal',
+    );
+    expect(penal).toBeDefined();
+    expect(penal!.infraccion.tipo).toBe('penal');
+    expect(penal!.infraccion.gravedad).toBe('delito');
+    expect(penal!.infraccion.importeEur).toBeNull();
+    expect(penal!.marcoImporte).toBe('penal');
+    // La FRONTERA administrativo↔penal (0,60 mg/l) es el mensaje operativo clave y va en el boletín.
+    expect(penal!.infraccion.textoBoletin).toMatch(/0,60/);
+    expect(penal!.infraccion.textoBoletin.toLowerCase()).toMatch(/atestado/);
+    expect(penal!.infraccion.textoBoletin.toLowerCase()).toMatch(/administrativa|art\. 14 lsv/i);
+    // Cita el art. 379.2 CP y ofrece detención + inmovilización.
+    expect(penal!.infraccion.penaTexto).toMatch(/379\.2/);
+    const tipos = penal!.consecuencias.map((c) => c.tipo).sort();
+    expect(tipos).toEqual(['detencion', 'inmovilizacion']);
+    const detencion = penal!.consecuencias.find((c) => c.tipo === 'detencion');
+    // Lenguaje ORIENTATIVO, nunca imperativo (CLAUDE.md §4.6).
+    expect(detencion!.textoCorto.toLowerCase()).toMatch(/procede|puede/);
+    expect(detencion!.textoCorto.toLowerCase()).not.toMatch(/\bdeten\b|\bdetén\b/);
+    // Sinónimos de calle que debe entender el buscador (frontera 0,60).
+    const terminos = penal!.sinonimos.map((s) => s.termino);
+    expect(terminos).toContain('alcoholemia penal');
+    expect(terminos).toContain('0.60');
+  });
+
+  it('la alcoholemia penal cita el art. 379.2 CP como su artículo fuente del seed', () => {
+    const penal = SEED_TRAFICO.infracciones.find(
+      (i) => i.infraccion.id === 'del-alcoholemia-penal',
+    );
+    const articulo = SEED_TRAFICO.articulos.find((a) => a.id === penal!.infraccion.articuloId);
+    expect(articulo).toBeDefined();
+    expect(articulo!.numero).toBe('379.2');
   });
 });
 

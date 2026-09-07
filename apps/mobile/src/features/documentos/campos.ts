@@ -76,4 +76,6 @@ export const TIPO_PLANTILLA_LABEL: Record<TipoPlantilla, string> = {
   diligencia_identificacion: 'Diligencia de identificación',
   acta_lectura_derechos: 'Acta de lectura de derechos',
   acta_informacion_victima: 'Acta de información a la víctima',
+  acta_prueba_alcoholemia: 'Acta de prueba de alcoholemia o drogas',
+  acta_deposito_grua: 'Acta de retirada y depósito de vehículo',
 };
