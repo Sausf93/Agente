@@ -19,7 +19,8 @@ import { CATALOGO_TRAFICO } from '../catalogo.js';
 import { BoeClient } from '../sources/boe/client.js';
 import { parseNormaConsolidada } from '../parsers/boe-xml/parse.js';
 import { SEED_TRAFICO } from '../seed/traficoSeed.js';
-import { enriquecerConNorma } from '../paquete/combinar.js';
+import { SEED_PENAL } from '../seed/penalSeed.js';
+import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -48,20 +49,22 @@ async function cargarRgc(offline: boolean): Promise<{ textoXml: string; metaXml:
 
 async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaquetar> {
   const rgc = CATALOGO_TRAFICO.RGC!;
+  // Seed base: tráfico + penal (comparten la norma CP; `combinarSeeds` la deduplica).
+  const seed = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
   try {
     const { textoXml, metaXml } = await cargarRgc(offline);
     const parseada = parseNormaConsolidada(textoXml, metaXml, rgc);
     console.log(
       `[content:build] RGC enriquecido desde el BOE: ${parseada.articulos.length} artículos.`,
     );
-    return enriquecerConNorma(SEED_TRAFICO, parseada);
+    return enriquecerConNorma(seed, parseada);
   } catch (error) {
     console.warn(
       `[content:build] No se pudo enriquecer con el RGC (${
         error instanceof Error ? error.message : error
       }). Se construye solo con el seed.`,
     );
-    return SEED_TRAFICO;
+    return seed;
   }
 }
 
@@ -73,7 +76,12 @@ async function main(): Promise<void> {
   const resultado = construirPaquete(contenido, {
     rutaSalida,
     version: VERSION,
-    changelog: { resumen: 'Carga inicial de tráfico: seed de infracciones de calle + RGC.' },
+    changelog: {
+      resumen:
+        'Carga inicial: infracciones de tráfico (seed de calle + RGC) y primeros delitos ' +
+        'penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de ' +
+        'detención según LECrim.',
+    },
   });
 
   const { resumen, manifiesto } = resultado;

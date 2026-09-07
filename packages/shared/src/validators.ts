@@ -67,6 +67,8 @@ export const RANGO_IMPORTE_ALCOHOL_DROGAS = { min: 500, max: 1_000 } as const;
  * (sin tramos por gravedad), modelados aparte porque no encajan en los tramos fijos de tráfico.
  * `municipal` y `autonomico` no tienen un rango único (varía por ordenanza/comunidad):
  * solo se valida coherencia (presencia y reducido ≤ base) y queda para revisión a dos ojos.
+ * `penal` marca los DELITOS (vía penal): no llevan importe administrativo, `validarImporte`
+ * corta de inmediato para ellos (la pena la fija el Código Penal, no un rango de multa).
  */
 export type MarcoImporte =
   | 'trafico'
@@ -75,7 +77,8 @@ export type MarcoImporte =
   | 'velocidad'
   | 'alcohol_drogas'
   | 'municipal'
-  | 'autonomico';
+  | 'autonomico'
+  | 'penal';
 
 function validarCoherenciaImporte(
   infraccion: Pick<Infraccion, 'importeEur' | 'importeReducidoEur'>,

@@ -7,6 +7,7 @@
 
 export * from './enums.js';
 export * from './content.js';
+export * from './detencion.js';
 export * from './contentPackage.js';
 export * from './user.js';
 export * from './cuadrante.js';

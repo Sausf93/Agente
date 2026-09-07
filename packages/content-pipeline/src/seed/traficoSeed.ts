@@ -88,7 +88,7 @@ export const NORMAS_SEED: Norma[] = [
   Norma.parse({
     id: ID_CP,
     codigo: 'CP',
-    titulo: 'Código Penal (Ley Orgánica 10/1995) — delitos contra la seguridad vial',
+    titulo: 'Código Penal (Ley Orgánica 10/1995)',
     tipo: 'ley',
     ambito: 'estatal',
     urlBoe: urlBoe(ID_CP),
