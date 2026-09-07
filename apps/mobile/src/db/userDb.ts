@@ -1,5 +1,13 @@
 import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
-import type { Cuadrante, Cuerpo, DiaCuadrante, Feedback, Gravedad, PoliciaAutonomica } from '@agente/shared';
+import type {
+  Cuadrante,
+  Cuerpo,
+  DiaCuadrante,
+  EstadoFeedback,
+  Feedback,
+  Gravedad,
+  PoliciaAutonomica,
+} from '@agente/shared';
 import type { InfraccionSnapshot, UsoInfraccion } from '@/features/inicio/masUsadas';
 import { feedbackToRow, rowToFeedback, type FeedbackRow } from '@/features/feedback/serialize';
 import {
@@ -62,8 +70,9 @@ export async function insertFeedback(fb: Feedback): Promise<void> {
   const row = feedbackToRow(fb);
   await db.runAsync(
     `INSERT INTO feedback
-       (id, created_at, tipo, texto, contexto_json, app_version, platform, cuerpo, territorio, enviado)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, created_at, tipo, texto, contexto_json, app_version, platform, cuerpo, territorio,
+        enviado, estado, respuesta)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       row.id,
       row.created_at,
@@ -75,6 +84,8 @@ export async function insertFeedback(fb: Feedback): Promise<void> {
       row.cuerpo,
       row.territorio,
       row.enviado,
+      row.estado,
+      row.respuesta,
     ],
   );
 }
@@ -102,6 +113,16 @@ export async function markFeedbackSent(ids: string[]): Promise<void> {
   const db = await openUserDb();
   const placeholders = ids.map(() => '?').join(', ');
   await db.runAsync(`UPDATE feedback SET enviado = 1 WHERE id IN (${placeholders})`, ids);
+}
+
+/**
+ * Cambia el ESTADO de una aportación en el dispositivo. Gestión LOCAL: mientras no exista
+ * backend (ADR-001), el socio/equipo solo puede mover el estado en el propio móvil. La
+ * sincronización remota del estado (y de la `respuesta`) llegará con Supabase (Fase 5, ADR-011).
+ */
+export async function updateFeedbackEstado(id: string, estado: EstadoFeedback): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('UPDATE feedback SET estado = ? WHERE id = ?', [estado, id]);
 }
 
 /** Borra un feedback del dispositivo. */

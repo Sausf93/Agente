@@ -1,21 +1,47 @@
 # Feedback (sugerencias y reportes)
 
 Sugerencias y reportes del socio durante la beta. **Local-first, offline y anónimo**
-(ver `docs/DECISIONES.md`, ADR-011). Nada sale a un servidor: se guarda en el
-dispositivo y el propio socio decide cuándo mandárselo a los fundadores con el
-compositor nativo.
+(ver `docs/DECISIONES.md`, ADR-011). Nada sale a un servidor: cada aportación **queda
+registrada en el propio dispositivo con un ESTADO** (`enviada` → `en_estudio` →
+`aplicada`/`descartada`) y el socio decide cuándo mandársela a los fundadores con el
+compositor nativo. Ya **no se pierde en un correo**: vive en "Mis sugerencias".
+
+## Ciclo de vida y respuesta (petición del socio)
+
+- **Registro primero, envío después.** Al pulsar "Guardar" la aportación se persiste en
+  `user.db` (queda registrada). El envío a los fundadores es un paso **aparte y opcional**
+  que **nunca** bloquea el registro.
+- **Estado** (`EstadoFeedback` en `@agente/shared`): `enviada` (registrada por el socio),
+  `en_estudio`, `aplicada`, `descartada`. Chip de color + texto en "Mis sugerencias".
+- **Respuesta del equipo**: campo `respuesta` que el socio ve en el detalle, en el mismo
+  apartado.
+- ⚠️ **HOY NO hay backend.** El estado se gestiona **solo en local** (el socio puede
+  marcarlo en el detalle) y `respuesta` llega siempre vacía. **El cambio de estado remoto
+  y la respuesta bidireccional llegarán con Supabase (Fase 5)**; el esquema y la UI ya
+  dejan el terreno preparado sin hacer ninguna llamada de red.
 
 ## Piezas
 
-- `serialize.ts` — **lógica pura** (testeada con Vitest): mapeo fila SQLite ↔
-  `Feedback`, generación de id y el texto del correo (`composeEmailBody`). Sin RN.
-- `send.ts` — envío desde el dispositivo: `mailto:` vía `Linking` (Expo Go) y, si no
-  hay correo configurado, fallback a la hoja de compartir (`Share`). `FOUNDERS_EMAIL`
-  es la dirección de los fundadores (confirmar antes de publicar la beta).
-- `store.ts` — estado Zustand: carga, alta, envío del pendiente y borrado.
-- `FeedbackScreen.tsx` — UI (formulario + lista + aviso de privacidad + botón enviar).
-- `../../db/userDb.ts` — persistencia SQLite de la base **local del usuario**.
-- Ruta: `app/feedback.tsx` (fuera de las pestañas), abierta desde **Más**.
+- `serialize.ts` — **lógica pura** (testeada con Vitest): mapeo fila SQLite ↔ `Feedback`
+  (incluye `estado`/`respuesta`), etiquetas (`TIPO_/ESTADO_FEEDBACK_LABEL`), generación de
+  id, texto del correo (`composeEmailBody`), `FOUNDERS_EMAIL` y los reducers puros del
+  store (`markItemsSent`, `setItemEstado`). Sin RN.
+- `estadoUi.ts` — mapeo estado → tono del `Badge` (color + texto).
+- `send.ts` — envío desde el dispositivo: `mailto:` vía `Linking` (Expo Go) y, si no hay
+  correo configurado, fallback a la hoja de compartir (`Share`). Reexporta `FOUNDERS_EMAIL`.
+- `store.ts` — estado Zustand: carga, alta, envío del pendiente, `updateEstado` (local) y
+  borrado.
+- `FeedbackScreen.tsx` — UI de alta (formulario + aviso de privacidad) + acceso a "Mis
+  sugerencias" + botón de envío del pendiente.
+- `MisSugerenciasScreen.tsx` — lista del registro local con estado y fecha (reciente
+  primero), estado vacío amable y navegación al detalle.
+- `SugerenciaDetalleScreen.tsx` — texto completo + estado + respuesta del equipo (o aviso
+  de que aún no la hay) + gestión local del estado.
+- `../../db/userDb.ts` — persistencia SQLite de la base **local del usuario**
+  (`insertFeedback`, `listFeedback`, `updateFeedbackEstado`, `markFeedbackSent`,
+  `deleteFeedback`).
+- Rutas: `app/feedback.tsx` (alta), `app/mis-sugerencias.tsx` (lista) y
+  `app/sugerencia/[id].tsx` (detalle), fuera de las pestañas, abiertas desde **Más**.
 
 ## Decisión de persistencia: `expo-sqlite` (no un store efímero)
 
@@ -47,9 +73,13 @@ La ruta admite parámetros opcionales `tipo`, `articuloId`, `infraccionId`, `pan
 que prerrellenan el formulario (p. ej. `tipo=error_contenido&articuloId=...`). Aún no
 hay fichas; de momento se usa solo desde **Más**, pero el terreno queda listo.
 
-## Cuando exista Supabase (pendiente)
+## Cuando exista Supabase (Fase 5, pendiente)
 
 - Sincronización en segundo plano del feedback (campo `enviado` ya lo contempla) para no
   depender del correo manual.
-- Vista en el panel `apps/admin` para triar sugerencias y reportes por tipo/cuerpo.
+- **Cambio de estado remoto** (`enviada → en_estudio → aplicada/descartada`) y **respuesta
+  bidireccional**: el equipo mueve el `estado` y escribe `respuesta` desde `apps/admin`, y
+  el socio lo ve en "Mis sugerencias". El modelo (`estado`, `respuesta`) ya existe; solo
+  falta el transporte.
+- Vista en el panel `apps/admin` para triar sugerencias y reportes por tipo/cuerpo/estado.
 - Nada de esto cambia el modelo de `@agente/shared`: solo añade transporte.

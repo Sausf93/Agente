@@ -8,6 +8,7 @@ import {
   FlaskConical,
   Languages,
   MessageSquarePlus,
+  MessageSquareText,
   Settings,
   type LucideProps,
 } from 'lucide-react-native';
@@ -76,6 +77,14 @@ export default function MasScreen() {
             icon={MessageSquarePlus}
             titulo="Sugerencias / reportar problema"
             descripcion="Cuéntanos qué mejorarías o qué falla. Se guarda en tu móvil."
+          />
+        </Link>
+        <Link href="/mis-sugerencias" asChild>
+          <FilaMas
+            t={t}
+            icon={MessageSquareText}
+            titulo="Mis sugerencias"
+            descripcion="Lo que has enviado, con su estado y nuestra respuesta."
           />
         </Link>
       </View>

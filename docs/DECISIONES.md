@@ -222,10 +222,23 @@ Registro de decisiones que se apartan o concretan la especificación. Cada una l
      no identificativo (`cuerpo`, `territorio`).
   4. El modelo `Feedback` vive en `@agente/shared` (fuente única). El campo `enviado` deja el
      terreno preparado para una **sincronización futura** con Supabase, sin implementarla ahora.
-- **Consecuencias:** el socio puede reportar sin fricción y sin red; los fundadores reciben el
-  feedback por correo durante la beta. **Pendiente cuando exista Supabase:** sync en segundo plano
-  y vista de triaje en `apps/admin`. La lógica no-trivial (mapeo SQLite, texto del correo, id) es
-  pura y está testeada; el esquema tiene tests de validación/rechazo en `shared`.
+- **Ampliación (2026-09-07) · aportaciones REGISTRADAS con estado y respuesta:** a petición del
+  socio, cada aportación **queda registrada en la app con un ESTADO** en vez de perderse en el
+  correo. Se añaden al modelo `Feedback` el enum `EstadoFeedback`
+  (`enviada → en_estudio → aplicada → descartada`) y el campo `respuesta` (texto del equipo).
+  Migración **aditiva** `user_version = 9` (`ALTER TABLE feedback ADD COLUMN estado/respuesta`).
+  Nueva pantalla **"Mis sugerencias"** (lista con chip de estado + fecha) y su **detalle** (texto
+  completo + estado + respuesta o aviso de que aún no la hay). El flujo es **registro primero,
+  envío después** (el envío nunca bloquea el registro). `FOUNDERS_EMAIL` pasa a ser el correo real
+  del fundador (`saulodlsf@gmail.com`, autorizado para la beta). **Hoy sin backend:** el estado se
+  gestiona **solo en local** y `respuesta` llega vacía; **el cambio de estado remoto y la respuesta
+  bidireccional llegan con Supabase (Fase 5)**.
+- **Consecuencias:** el socio puede reportar sin fricción y sin red, y **sigue su aportación** en
+  "Mis sugerencias"; los fundadores reciben el feedback por correo durante la beta. **Pendiente
+  cuando exista Supabase:** sync en segundo plano, cambio de estado/respuesta desde `apps/admin` y
+  vista de triaje. La lógica no-trivial (mapeo SQLite, texto del correo, id, reducers del estado en
+  memoria) es pura y está testeada; el esquema y la migración tienen tests en `shared` y en la
+  integración de `user.db`.
 
 ## ADR-012 · Calidad automatizada: ESLint 9 (flat), Prettier y CI mínima
 

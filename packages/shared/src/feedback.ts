@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Cuerpo, Plataforma, TipoFeedback } from './enums.js';
+import { Cuerpo, EstadoFeedback, Plataforma, TipoFeedback } from './enums.js';
 
 /**
  * Modelo de FEEDBACK del socio (sugerencias y reportes) — sección 4.15.
@@ -57,8 +57,19 @@ export const Feedback = z.object({
   cuerpo: Cuerpo.nullable().default(null),
   /** Territorio del perfil como etiqueta/ccaaId no identificativa (nunca municipio+persona). */
   territorio: z.string().nullable().default(null),
-  /** true cuando el socio ya lo mandó a los fundadores desde el dispositivo. */
+  /** true cuando el socio ya lo mandó a los fundadores desde el dispositivo (correo/Share). */
   enviado: z.boolean().default(false),
+  /**
+   * Estado del ciclo de vida de la aportación (propuesta → en estudio → aplicada/descartada).
+   * Por ahora se marca SOLO en el dispositivo (no hay backend); nace como `enviada`.
+   */
+  estado: EstadoFeedback.default('enviada'),
+  /**
+   * Respuesta del equipo a la aportación, que el socio ve en el mismo apartado. Preparada para
+   * el futuro: HOY siempre es `null` porque no hay backend que la rellene; la respuesta
+   * bidireccional llegará con Supabase (Fase 5). Nunca contiene datos de terceros.
+   */
+  respuesta: z.string().nullable().default(null),
 });
 export type Feedback = z.infer<typeof Feedback>;
 

@@ -1,15 +1,21 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { create } from 'zustand';
-import { Feedback, type ContextoFeedback, type TipoFeedback } from '@agente/shared';
+import {
+  Feedback,
+  type ContextoFeedback,
+  type EstadoFeedback,
+  type TipoFeedback,
+} from '@agente/shared';
 import {
   deleteFeedback,
   insertFeedback,
   listFeedback,
   markFeedbackSent,
   openUserDb,
+  updateFeedbackEstado,
 } from '@/db/userDb';
-import { makeFeedbackId } from './serialize';
+import { makeFeedbackId, markItemsSent, setItemEstado } from './serialize';
 import { sendFeedbackToFounders, type SendResult } from './send';
 
 /**
@@ -37,6 +43,8 @@ interface FeedbackState {
   load: () => Promise<void>;
   add: (entrada: EntradaFeedback) => Promise<void>;
   sendPending: () => Promise<SendResult>;
+  /** Cambia el estado de una aportación (gestión LOCAL; sin backend todavía). */
+  updateEstado: (id: string, estado: EstadoFeedback) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
 
@@ -82,7 +90,11 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
       cuerpo: entrada.cuerpo ?? null,
       territorio: entrada.territorio ?? null,
       enviado: false,
+      estado: 'enviada',
+      respuesta: null,
     });
+    // PRIMERO se REGISTRA en el dispositivo (petición del socio: nada se pierde). El envío a los
+    // fundadores es un paso APARTE y opcional (`sendPending`), nunca bloquea este registro.
     await insertFeedback(fb);
     set({ items: [fb, ...get().items] });
   },
@@ -94,11 +106,14 @@ export const useFeedbackStore = create<FeedbackState>((set, get) => ({
     if (result !== 'cancelled') {
       const ids = pendientes.map((fb) => fb.id);
       await markFeedbackSent(ids);
-      set({
-        items: get().items.map((fb) => (ids.includes(fb.id) ? { ...fb, enviado: true } : fb)),
-      });
+      set({ items: markItemsSent(get().items, ids) });
     }
     return result;
+  },
+
+  updateEstado: async (id, estado) => {
+    await updateFeedbackEstado(id, estado);
+    set({ items: setItemEstado(get().items, id, estado) });
   },
 
   remove: async (id) => {

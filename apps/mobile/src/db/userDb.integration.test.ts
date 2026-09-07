@@ -120,6 +120,50 @@ describe('migraciones de user.db (idempotencia y no pérdida de datos)', () => {
     expect(fb.enviado).toBe(1);
     db.close();
   });
+
+  it('la migración v9 añade estado/respuesta al feedback y las filas previas quedan "enviada"', () => {
+    const db = new DatabaseSync(':memory:');
+    // Instalación con feedback ya guardado ANTES de la v9 (aplica hasta la v8).
+    for (const m of USER_DB_MIGRATIONS) {
+      if (m.version <= 8) db.exec(m.sql);
+    }
+    db.exec('PRAGMA user_version = 8;');
+    db.exec(`
+      INSERT INTO feedback (id, created_at, tipo, texto, contexto_json, app_version, platform, enviado)
+        VALUES ('previo', '2026-09-01T10:00:00.000Z', 'sugerencia', 'Modo noche en el mapa', '{}', '0.1.0', 'ios', 0);
+    `);
+
+    // Actualización de la app: se aplica la v9 (ADD COLUMN estado / respuesta).
+    migrar(db);
+    expect(versionDe(db)).toBe(USER_DB_SCHEMA_VERSION);
+
+    // La fila previa conserva su texto y hereda el DEFAULT de estado; respuesta NULL.
+    const fb = db
+      .prepare('SELECT texto, estado, respuesta FROM feedback WHERE id = ?')
+      .get('previo') as { texto: string; estado: string; respuesta: string | null };
+    expect(fb.texto).toContain('Modo noche');
+    expect(fb.estado).toBe('enviada');
+    expect(fb.respuesta).toBeNull();
+
+    // Y se puede insertar con estado/respuesta explícitos y actualizar el estado en local.
+    db.exec(`
+      INSERT INTO feedback
+        (id, created_at, tipo, texto, contexto_json, app_version, platform, enviado, estado, respuesta)
+        VALUES ('nuevo', '2026-09-02T10:00:00.000Z', 'sugerencia', 'Buscar por voz', '{}', '0.1.0', 'ios', 1, 'aplicada', 'Hecho');
+    `);
+    db.prepare('UPDATE feedback SET estado = ? WHERE id = ?').run('en_estudio', 'previo');
+    const actualizado = db.prepare('SELECT estado FROM feedback WHERE id = ?').get('previo') as {
+      estado: string;
+    };
+    expect(actualizado.estado).toBe('en_estudio');
+    const nuevo = db.prepare('SELECT estado, respuesta FROM feedback WHERE id = ?').get('nuevo') as {
+      estado: string;
+      respuesta: string;
+    };
+    expect(nuevo.estado).toBe('aplicada');
+    expect(nuevo.respuesta).toBe('Hecho');
+    db.close();
+  });
 });
 
 describe('cuadrante: las excepciones manuales son SAGRADAS (el fallo de SPPLB)', () => {
