@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { combinarRanking, construirConsultaFts } from './search';
+import { combinarRanking, construirConsultaFts, extractoArticulo } from './search';
 
 /**
  * Tests de LÓGICA PURA del buscador (sin SQLite): construcción de la expresión FTS y el
@@ -37,5 +37,22 @@ describe('combinarRanking', () => {
 
   it('sin resultados devuelve lista vacía', () => {
     expect(combinarRanking([], [])).toEqual([]);
+  });
+});
+
+describe('extractoArticulo', () => {
+  it('deja el texto corto tal cual (colapsa espacios y quita marcas markdown)', () => {
+    expect(extractoArticulo('  Castiga  el **hurto** de cosas ajenas. ')).toBe(
+      'Castiga el hurto de cosas ajenas.',
+    );
+  });
+
+  it('recorta el texto largo sin partir la última palabra y añade elipsis', () => {
+    const largo =
+      'Conducir con temeridad manifiesta y poner en concreto peligro la vida o la integridad de las personas se castiga conforme al Código Penal.';
+    const res = extractoArticulo(largo, 40);
+    expect(res.length).toBeLessThanOrEqual(41); // 40 + elipsis
+    expect(res.endsWith('…')).toBe(true);
+    expect(res).not.toMatch(/\s…$/); // no corta dejando un espacio antes de la elipsis
   });
 });

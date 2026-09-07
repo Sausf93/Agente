@@ -133,6 +133,19 @@ CREATE VIRTUAL TABLE IF NOT EXISTS busqueda USING fts5(
   infraccion_id UNINDEXED,
   tokenize = '${FTS_TOKENIZER}'
 );
+
+-- Buscador de ARTÍCULOS de la ley (§4.3, segundo nivel). Una fila por artículo vigente; cubre
+-- los términos legales SIN infracción curada ("temeraria", "alejamiento") buscando en el
+-- articulado consolidado del BOE. Mismo tokenizador/normalización que la tabla de infracciones.
+-- articulo_id y norma_codigo van UNINDEXED (recuperar la fila y pintar el código de norma).
+CREATE VIRTUAL TABLE IF NOT EXISTS busqueda_articulo USING fts5(
+  articulo_numero,
+  titulo,
+  texto,
+  articulo_id UNINDEXED,
+  norma_codigo UNINDEXED,
+  tokenize = '${FTS_TOKENIZER}'
+);
 `;
 
 /** Versión del esquema que escribe este pipeline (debe casar con la de shared). */

@@ -30,8 +30,14 @@ export const TABLAS = {
   infraccion: 'infraccion',
   sinonimo: 'sinonimo',
   consecuencia: 'consecuencia',
-  /** Tabla virtual FTS5 del buscador. */
+  /** Tabla virtual FTS5 del buscador de INFRACCIONES (la joya: importe + consecuencia). */
   busqueda: 'busqueda',
+  /**
+   * Tabla virtual FTS5 del buscador de ARTÍCULOS de la ley (segundo nivel del buscador, §4.3).
+   * Cubre términos legales sin infracción curada ("temeraria", "alejamiento") indexando el
+   * articulado consolidado del BOE que ya viaja en el paquete.
+   */
+  busquedaArticulo: 'busqueda_articulo',
   /** Metadatos del paquete: 1 sola fila (schema_version, content_version, fecha, hash…). */
   meta: 'meta',
   novedad: 'novedad',
@@ -75,6 +81,31 @@ export const FTS_PESOS_BM25 = {
 /** Pesos en el orden posicional que exige `bm25(tabla, w0, w1, w2, w3)`. */
 export const FTS_PESOS_BM25_ORDENADOS: readonly number[] = FTS_COLUMNAS.map(
   (c) => FTS_PESOS_BM25[c],
+);
+
+/**
+ * Columnas indexadas del FTS5 de ARTÍCULOS, EN ORDEN (§4.3, segundo nivel del buscador).
+ * `articulo_id` y `norma_codigo` van UNINDEXED (recuperar la fila y pintar el código de norma
+ * sin una segunda consulta). `articulo_numero` se indexa como "<código> <número>" normalizado
+ * para que "cp 380" case igual que en el buscador de infracciones.
+ */
+export const FTS_COLUMNAS_ARTICULO = ['articulo_numero', 'titulo', 'texto'] as const;
+export type FtsColumnaArticulo = (typeof FTS_COLUMNAS_ARTICULO)[number];
+
+/**
+ * Pesos de `bm25()` del FTS de artículos (mismo orden que `FTS_COLUMNAS_ARTICULO`). El título
+ * del artículo (p. ej. "Conducción temeraria") pesa más que el cuerpo del texto; el número
+ * permite localizar "CP 380". Menos negativo = peor, igual que en el FTS de infracciones.
+ */
+export const FTS_PESOS_BM25_ARTICULO = {
+  articulo_numero: 6,
+  titulo: 10,
+  texto: 1,
+} as const;
+
+/** Pesos del FTS de artículos en el orden posicional que exige `bm25(tabla, w0, w1, w2)`. */
+export const FTS_PESOS_BM25_ARTICULO_ORDENADOS: readonly number[] = FTS_COLUMNAS_ARTICULO.map(
+  (c) => FTS_PESOS_BM25_ARTICULO[c],
 );
 
 /**

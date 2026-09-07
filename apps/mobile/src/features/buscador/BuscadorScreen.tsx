@@ -3,7 +3,7 @@ import { Alert, FlatList, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { AlertTriangle, SearchX, Sparkles } from 'lucide-react-native';
+import { AlertTriangle, BookOpen, ChevronRight, SearchX, Sparkles } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { SearchBar } from '@/ui/components/SearchBar';
@@ -18,7 +18,7 @@ import { HomeInicio } from '@/features/inicio/HomeInicio';
 import { useBuscadorStore } from './store';
 import { useRecientesStore } from './recientesStore';
 import { resaltarCoincidencia } from './resaltar';
-import type { ResultadoBusqueda } from './search';
+import type { ResultadoArticulo, ResultadoBusqueda } from './search';
 
 /**
  * Pestaña BUSCAR (§4.3) — la home y el núcleo del producto.
@@ -42,6 +42,7 @@ export function BuscadorScreen() {
 
   const consulta = useBuscadorStore((s) => s.consulta);
   const resultados = useBuscadorStore((s) => s.resultados);
+  const articulos = useBuscadorStore((s) => s.articulos);
   const buscando = useBuscadorStore((s) => s.buscando);
   const buscado = useBuscadorStore((s) => s.buscado);
   const sinContenido = useBuscadorStore((s) => s.sinContenido);
@@ -69,6 +70,13 @@ export function BuscadorScreen() {
     // cual para poder repetirlo (§6.1). Con el buscador vacío (favoritas/más usadas) es un no-op.
     registrarReciente(consulta);
     router.push(`/ficha/${id}`);
+  }
+
+  function abrirArticulo(id: string) {
+    // Un artículo de la sección "En la ley" abre su pantalla en Normas (§4.5). Cuenta igual como
+    // búsqueda útil: se recuerda el término para repetirlo.
+    registrarReciente(consulta);
+    router.push(`/normas/articulo/${encodeURIComponent(id)}`);
   }
 
   function avisoVoz() {
@@ -114,6 +122,18 @@ export function BuscadorScreen() {
               onPress={abrirFicha}
             />
           )}
+          ListFooterComponent={
+            articulos.length > 0 ? (
+              <SeccionArticulos
+                t={t}
+                articulos={articulos}
+                consulta={consulta}
+                reduceMotion={reduceMotion}
+                hayInfracciones={resultados.length > 0}
+                onPress={abrirArticulo}
+              />
+            ) : null
+          }
           ListEmptyComponent={
             <EstadoVacio
               t={t}
@@ -121,12 +141,139 @@ export function BuscadorScreen() {
               buscado={buscado}
               sinContenido={sinContenido}
               consulta={consulta}
+              hayArticulos={articulos.length > 0}
               onReportar={() => router.push('/feedback')}
             />
           }
         />
       )}
     </View>
+  );
+}
+
+/** Cabecera + filas de la sección "En la ley" (§4.3, segundo nivel del buscador). */
+function SeccionArticulos({
+  t,
+  articulos,
+  consulta,
+  reduceMotion,
+  hayInfracciones,
+  onPress,
+}: {
+  t: Theme;
+  articulos: ResultadoArticulo[];
+  consulta: string;
+  reduceMotion: boolean;
+  hayInfracciones: boolean;
+  onPress: (id: string) => void;
+}) {
+  return (
+    <View style={{ marginTop: hayInfracciones ? t.spacing.lg : 0 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: t.spacing.sm,
+          paddingHorizontal: t.spacing.base,
+          paddingTop: t.spacing.sm,
+          paddingBottom: t.spacing.xs,
+        }}
+      >
+        <BookOpen size={16} color={t.color.textSecondary} strokeWidth={2} />
+        <Text
+          style={{
+            color: t.color.textSecondary,
+            ...t.typography.scale.caption,
+            fontWeight: '700',
+            textTransform: 'uppercase',
+            letterSpacing: 0.5,
+          }}
+        >
+          En la ley
+        </Text>
+      </View>
+      {articulos.map((item, index) => (
+        <FilaArticulo
+          key={item.articuloId}
+          t={t}
+          item={item}
+          consulta={consulta}
+          index={index}
+          reduceMotion={reduceMotion}
+          onPress={onPress}
+        />
+      ))}
+    </View>
+  );
+}
+
+function FilaArticulo({
+  t,
+  item,
+  consulta,
+  index,
+  reduceMotion,
+  onPress,
+}: {
+  t: Theme;
+  item: ResultadoArticulo;
+  consulta: string;
+  index: number;
+  reduceMotion: boolean;
+  onPress: (id: string) => void;
+}) {
+  const encabezado = item.titulo
+    ? `${item.normaCodigo} art. ${item.numero} · ${item.titulo}`
+    : `${item.normaCodigo} art. ${item.numero}`;
+  const segmentos = resaltarCoincidencia(encabezado, consulta);
+  const delay = Math.min(index * STAGGER_MS, STAGGER_MAX_MS);
+
+  return (
+    <Animated.View
+      {...(reduceMotion ? {} : { entering: FadeInDown.duration(t.motion.durBase).delay(delay) })}
+    >
+      <PressableScale
+        accessibilityLabel={encabezado}
+        accessibilityHint="Abre el texto del artículo en Normas"
+        onPress={() => onPress(item.articuloId)}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: t.spacing.md,
+          minHeight: t.touch.min + 8,
+          paddingVertical: t.spacing.md,
+          paddingHorizontal: t.spacing.base,
+          borderBottomWidth: 1,
+          borderBottomColor: t.color.border,
+          backgroundColor: t.color.surface,
+        }}
+      >
+        <View style={{ flex: 1, gap: t.spacing.xxs }}>
+          <Text numberOfLines={2} maxFontSizeMultiplier={1.6} style={t.typography.scale.bodyStrong}>
+            {segmentos.map((s, i) => (
+              <Text
+                key={i}
+                style={{
+                  color: s.match ? t.color.accent : t.color.textPrimary,
+                  ...(s.match
+                    ? { backgroundColor: t.color.accentWeak, fontWeight: '700' as const }
+                    : null),
+                }}
+              >
+                {s.texto}
+              </Text>
+            ))}
+          </Text>
+          <Text
+            numberOfLines={2}
+            style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}
+          >
+            {item.extracto}
+          </Text>
+        </View>
+        <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
+      </PressableScale>
+    </Animated.View>
   );
 }
 
@@ -248,6 +395,7 @@ function EstadoVacio({
   buscado,
   sinContenido,
   consulta,
+  hayArticulos,
   onReportar,
 }: {
   t: Theme;
@@ -255,8 +403,12 @@ function EstadoVacio({
   buscado: boolean;
   sinContenido: boolean;
   consulta: string;
+  hayArticulos: boolean;
   onReportar: () => void;
 }) {
+  // Si no hay infracciones pero SÍ artículos, no hay "vacío": lo pinta el footer "En la ley".
+  if (hayArticulos) return null;
+
   // Mientras busca con texto: SKELETON de filas en vez de un spinner que salta (P1-10).
   if (buscando && consulta.trim().length > 0) {
     return <SkeletonRows count={6} />;
@@ -274,7 +426,8 @@ function EstadoVacio({
     detalle = 'Prueba con "faro roto", "sin seguro", "móvil" o un artículo como "RGC 18".';
   } else if (buscado) {
     titulo = 'Nada exacto para esto';
-    detalle = 'No encontramos ninguna infracción. Lo hemos anotado para mejorar el buscador.';
+    detalle =
+      'No encontramos ninguna infracción ni artículo de la ley. Lo hemos anotado para mejorar el buscador.';
     sinResultados = true;
   } else {
     return null;

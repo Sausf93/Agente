@@ -51,6 +51,8 @@ export interface ResumenBuild {
   pendientesRevision: number;
   /** Sustancias de la tabla §4.7 empaquetadas. */
   sustancias: number;
+  /** Artículos VIGENTES indexados en el buscador de la ley (§4.3, segundo nivel). */
+  articulosBuscables: number;
 }
 
 export interface ResultadoBuild {
@@ -183,6 +185,35 @@ function insertarInfracciones(
   }
 }
 
+/**
+ * Puebla el índice FTS de ARTÍCULOS (§4.3, segundo nivel del buscador). Indexa cada artículo
+ * VIGENTE (`validTo == null`) con el mismo plegado (`normalizarBusqueda`) que la tabla de
+ * infracciones, para que "temerar*"/"alejam*" casen aunque no exista infracción curada. El
+ * número se indexa como "<código> <número>" (p. ej. "cp 380") y el código de norma viaja
+ * UNINDEXED para pintar la fila sin una segunda consulta.
+ */
+function insertarBusquedaArticulo(
+  db: DatabaseSync,
+  articulos: Articulo[],
+  codigoNormaPorId: Map<string, string>,
+): void {
+  const stmt = db.prepare(
+    `INSERT INTO busqueda_articulo (articulo_numero, titulo, texto, articulo_id, norma_codigo)
+     VALUES (?, ?, ?, ?, ?)`,
+  );
+  for (const a of articulos) {
+    if (a.validTo !== null) continue; // solo el articulado vigente entra al buscador
+    const codigo = codigoNormaPorId.get(a.normaId) ?? '';
+    stmt.run(
+      normalizarBusqueda(`${codigo} ${a.numero}`),
+      normalizarBusqueda(a.titulo ?? ''),
+      normalizarBusqueda(a.texto),
+      a.id,
+      codigo,
+    );
+  }
+}
+
 function insertarSustancias(db: DatabaseSync, sustancias: Sustancia[]): void {
   const stmt = db.prepare(
     `INSERT INTO sustancia (
@@ -259,6 +290,7 @@ export function construirPaquete(
     insertarNormas(db, contenido.normas);
     insertarArticulos(db, contenido.articulos);
     insertarInfracciones(db, contenido.infracciones, articuloPorId, codigoNormaPorId);
+    insertarBusquedaArticulo(db, contenido.articulos, codigoNormaPorId);
     insertarSustancias(db, contenido.sustancias ?? []);
     insertarMeta(db, {
       schema_version: String(SCHEMA_VERSION),
@@ -277,8 +309,9 @@ export function construirPaquete(
     );
     db.exec('COMMIT');
 
-    // Optimiza el índice FTS (mejora el tamaño y la consulta en el dispositivo).
+    // Optimiza los índices FTS (mejora el tamaño y la consulta en el dispositivo).
     db.exec(`INSERT INTO busqueda(busqueda) VALUES('optimize')`);
+    db.exec(`INSERT INTO busqueda_articulo(busqueda_articulo) VALUES('optimize')`);
   } catch (error) {
     try {
       db.exec('ROLLBACK');
@@ -318,6 +351,7 @@ export function construirPaquete(
       consecuencias,
       pendientesRevision,
       sustancias: contenido.sustancias?.length ?? 0,
+      articulosBuscables: contenido.articulos.filter((a) => a.validTo === null).length,
     },
   };
 }

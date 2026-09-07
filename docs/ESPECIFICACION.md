@@ -165,6 +165,14 @@ Inventario extraído de las fichas de App Store y Google Play y de las capturas 
 - Filtros: norma, gravedad, cuerpo, ámbito (estatal/autonómico/municipal).
 - Voz: dictado nativo (iOS Speech / Android SpeechRecognizer) que rellena el campo de búsqueda.
 
+> **Estado v1 (ADR-020).** Buscador en DOS NIVELES: primero las INFRACCIONES curadas (sinónimo
+> exacto + FTS `busqueda`: importe, consecuencia y boletín, la joya) y, debajo, una sección "En la
+> ley" con los ARTÍCULOS del BOE coincidentes (segundo índice FTS `busqueda_articulo`, 3.031
+> artículos vigentes). Así, un término legal sin infracción curada ("temeraria" → art. 380 CP,
+> "alejamiento" → art. 468 CP, "agresión") deja de caer en "Nada exacto": ese estado solo aparece
+> si no hay NI infracciones NI artículos. Tocar un artículo abre su texto en Normas (§4.5). Los
+> filtros por norma/gravedad y el desempate por popularidad quedan para una iteración posterior.
+
 ## 4.4 Ficha de infracción / artículo
 
 Campos mostrados en este orden:

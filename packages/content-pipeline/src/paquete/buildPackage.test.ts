@@ -136,6 +136,51 @@ describe('buscador FTS5: jerga de calle → infracción', () => {
   });
 });
 
+describe('buscador de ARTÍCULOS de la ley (§4.3, segundo nivel)', () => {
+  /** MATCH en el FTS de artículos con ranking bm25 (título > número > texto). */
+  function buscarArticuloFts(consulta: string): { numero: string; norma: string }[] {
+    // Prefijos por token, igual que `construirConsultaFts` de la app (búsqueda a medida que se teclea).
+    const match = normalizarBusqueda(consulta)
+      .split(/[^a-z0-9]+/)
+      .filter((tok) => tok.length > 0)
+      .map((tok) => `${tok}*`)
+      .join(' ');
+    const filas = db
+      .prepare(
+        `SELECT b.articulo_id AS id, b.norma_codigo AS norma,
+                bm25(busqueda_articulo, 6, 10, 1) AS score
+           FROM busqueda_articulo b
+          WHERE busqueda_articulo MATCH ? ORDER BY score`,
+      )
+      .all(match) as { id: string; norma: string; score: number }[];
+    return filas.map((f) => {
+      const a = db.prepare(`SELECT numero FROM articulo WHERE id = ?`).get(f.id) as {
+        numero: string;
+      };
+      return { numero: a.numero, norma: f.norma };
+    });
+  }
+
+  it('indexa un artículo VIGENTE por cada artículo del seed', () => {
+    const nArticulos = (db.prepare(`SELECT COUNT(*) AS n FROM articulo`).get() as { n: number }).n;
+    const nFts = (
+      db.prepare(`SELECT COUNT(*) AS n FROM busqueda_articulo`).get() as { n: number }
+    ).n;
+    expect(nFts).toBe(nArticulos);
+    expect(nFts).toBeGreaterThan(0);
+  });
+
+  it('encuentra un artículo por el código+número de norma ("rgc 18")', () => {
+    const res = buscarArticuloFts('rgc 18');
+    expect(res.some((r) => r.norma === 'RGC' && r.numero === '18')).toBe(true);
+  });
+
+  it('encuentra por PREFIJO de token en el texto (a medida que se teclea)', () => {
+    // El seed de tráfico habla de "circulación"/"conducción": el prefijo debe casar.
+    expect(buscarArticuloFts('conduc').length).toBeGreaterThan(0);
+  });
+});
+
 describe('validación de calidad (§8.3) al construir', () => {
   it('lanza si una infracción tiene el importe fuera del rango legal', () => {
     const alumbrado = SEED_TRAFICO.infracciones[0]!;

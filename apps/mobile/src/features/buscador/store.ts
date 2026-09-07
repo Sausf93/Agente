@@ -3,7 +3,7 @@ import { normalizarBusqueda } from '@agente/shared';
 import { getContentRunner } from '@/db/contentDb';
 import { recordSearchMiss } from '@/db/userDb';
 import { hapticWarning } from '@/ui/haptics';
-import { buscarInfracciones, type ResultadoBusqueda } from './search';
+import { buscarTodo, type ResultadoArticulo, type ResultadoBusqueda } from './search';
 
 /**
  * Estado de la pestaña BUSCAR (offline; el paquete de contenido vive en el dispositivo).
@@ -18,7 +18,10 @@ import { buscarInfracciones, type ResultadoBusqueda } from './search';
  */
 interface BuscadorState {
   consulta: string;
+  /** Infracciones curadas (la joya): se muestran primero. */
   resultados: ResultadoBusqueda[];
+  /** Artículos de la ley coincidentes (sección "En la ley", §4.3, segundo nivel). */
+  articulos: ResultadoArticulo[];
   buscando: boolean;
   /** `true` cuando ya se ejecutó al menos una búsqueda con término no vacío. */
   buscado: boolean;
@@ -36,6 +39,7 @@ let ultimoTerminoSinResultado: string | null = null;
 export const useBuscadorStore = create<BuscadorState>((set) => ({
   consulta: '',
   resultados: [],
+  articulos: [],
   buscando: false,
   buscado: false,
   sinContenido: false,
@@ -45,7 +49,7 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
   buscar: async (consulta) => {
     const termino = consulta.trim();
     if (termino.length === 0) {
-      set({ resultados: [], buscando: false, buscado: false });
+      set({ resultados: [], articulos: [], buscando: false, buscado: false });
       return;
     }
     const token = ++runToken;
@@ -56,11 +60,18 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
         if (token === runToken) set({ sinContenido: true, buscando: false, buscado: true });
         return;
       }
-      const resultados = await buscarInfracciones(runner, termino);
+      const { infracciones, articulos } = await buscarTodo(runner, termino);
       if (token !== runToken) return; // llegó tarde: hay una búsqueda más nueva
-      set({ resultados, buscando: false, buscado: true, sinContenido: false });
+      set({
+        resultados: infracciones,
+        articulos,
+        buscando: false,
+        buscado: true,
+        sinContenido: false,
+      });
       const norm = normalizarBusqueda(termino);
-      if (resultados.length === 0) {
+      // "Nada exacto" SOLO si no hay NI infracciones NI artículos (§4.3: con el articulado, raro).
+      if (infracciones.length === 0 && articulos.length === 0) {
         void recordSearchMiss(norm);
         // Aviso háptico (esencial) de "nada exacto", UNA sola vez por término (P0-1).
         if (ultimoTerminoSinResultado !== norm) {
@@ -71,9 +82,10 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
         ultimoTerminoSinResultado = null;
       }
     } catch {
-      if (token === runToken) set({ resultados: [], buscando: false, buscado: true });
+      if (token === runToken) set({ resultados: [], articulos: [], buscando: false, buscado: true });
     }
   },
 
-  limpiar: () => set({ consulta: '', resultados: [], buscando: false, buscado: false }),
+  limpiar: () =>
+    set({ consulta: '', resultados: [], articulos: [], buscando: false, buscado: false }),
 }));

@@ -557,6 +557,52 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   fuente oficial; ampliar a chino/ruso/portugués/italiano; el art. 771 (información de derechos a
   la víctima) del mismo §4.11; audio pregrabado por idioma (Fase 2/6).
 
+## ADR-020 · Buscador en dos niveles: infracciones curadas + articulado de la ley
+
+- **Estado:** aceptada (implementada en `content-pipeline` y `apps/mobile/src/features/buscador`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** feedback de calle. El buscador (§4.3) solo indexaba las ~29 infracciones curadas
+  (tabla FTS `busqueda`). Un término legal SIN infracción curada —"temeraria" (conducción
+  temeraria, art. 379-380 CP), "alejamiento" (quebrantamiento, art. 468 CP), "agresión"— caía en
+  "Nada exacto para esto" pese a que ese concepto SÍ está en el articulado (10 leyes, 3.031
+  artículos del BOE que ya viajan en el paquete). "Obvio que debería salir algo" fallaba.
+
+### Decisiones
+
+1. **Segundo índice FTS5 `busqueda_articulo`** en el paquete, APARTE de `busqueda` (infracciones),
+   para no ensuciar el ranking de la joya. Columnas indexadas: `articulo_numero`
+   (= `normalizarBusqueda("<código> <número>")`, p. ej. "cp 380"), `titulo`, `texto`; más
+   `articulo_id` y `norma_codigo` UNINDEXED para recuperar y pintar la fila. Mismo tokenizador
+   (`unicode61 remove_diacritics 2`) y misma `normalizarBusqueda` que infracciones, de modo que
+   "temerar*"/"alejam*" plieguen tildes/ñ igual. Se pobla con cada artículo VIGENTE
+   (`valid_to IS NULL`): 3.031 filas. Constantes en `@agente/shared`
+   (`FTS_COLUMNAS_ARTICULO`, `FTS_PESOS_BM25_ARTICULO(_ORDENADOS)`), fuente única app↔pipeline.
+2. **Búsqueda combinada (`buscarTodo`)**: primero las INFRACCIONES (sinónimo exacto + FTS, sin
+   cambios) y, debajo, una sección "En la ley" con los ARTÍCULOS coincidentes (bm25, título > número
+   > texto). Límites separados: 25 infracciones + 15 artículos. Se descartan los artículos que ya
+   son fuente de una infracción mostrada (misma norma+número) para no duplicar. El estado vacío
+   "Nada exacto" SOLO aparece si no hay NI infracciones NI artículos (mucho más raro); solo entonces
+   se registra la búsqueda sin resultado.
+3. **UI**: la sección "En la ley" (encabezado con icono) pinta filas de artículo (código + nº +
+   título + extracto de las primeras palabras); tocarlas abre `/normas/articulo/<id>` (§4.5).
+   Respeta sistema visual (resaltado del término, háptico, tema por cuerpo, toque ≥44pt).
+4. **Sinónimos de calle de alto valor** en los delitos existentes (todo `pendiente_revision`):
+   `del-lesiones` += "agresiones"; `del-quebrantamiento` += "alejamiento", "saltarse la orden"
+   (ya tenía "orden de alejamiento"). "temeraria" no tiene infracción curada: la cubre el art. 380
+   CP vía el buscador de artículos.
+
+### Consecuencias
+
+- El paquete pasa de ~4,9 MB a ~12,3 MB (el índice FTS del texto completo del articulado). Sigue
+  siendo un único `.sqlite` firmado y sustituido atómicamente (ADR-010); aceptable para offline.
+- `lint` limpio, `-r typecheck` (3 "Done") y `-r test` en verde: pipeline 92 tests
+  (+3 de `busqueda_articulo`), mobile 250 tests (+6 de búsqueda de artículos), shared 170.
+- Verificado contra el `.db` real: "hurto"→`del-hurto`; "temeraria"→art. 380 CP; "alejamiento"→
+  `del-quebrantamiento` + art. 468 CP; "agresion"→`del-lesiones`.
+- **Pendiente / siguiente iteración:** popularidad como desempate (EventoUso local); posibles
+  filtros por norma en la sección "En la ley"; y, cuando el pipeline emita títulos de artículo del
+  CP (hoy muchos van sin `titulo`), la fila mostrará el epígrafe además del extracto.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**
