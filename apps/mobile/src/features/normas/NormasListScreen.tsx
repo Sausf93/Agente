@@ -70,8 +70,14 @@ export function NormasListScreen() {
     };
   }, []);
 
-  // Sin cuerpo en el perfil no hay a quién filtrar: se ven todas y se oculta el control.
-  const filtrable = cuerpo !== null;
+  // El filtro por cuerpo solo aporta si REALMENTE hay normas que no son del cuerpo del agente
+  // (si no, "Solo mi cuerpo" y "Todas" darían la misma lista y el control confunde: p. ej. un
+  // Guardia Civil, para quien hoy todo el contenido es relevante). Solo entonces se muestra.
+  const hayOtrasNormas = useMemo(
+    () => cuerpo !== null && normas.some((n) => !normaRelevantePara(n.cuerpos, cuerpo)),
+    [normas, cuerpo],
+  );
+  const filtrable = cuerpo !== null && hayOtrasNormas;
   const soloMiCuerpo = filtrable && filtro === 'mio';
 
   const visibles = useMemo(

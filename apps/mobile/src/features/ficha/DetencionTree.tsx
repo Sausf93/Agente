@@ -1,12 +1,20 @@
 import { useMemo, useState } from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Pressable, Switch, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { ShieldAlert, ShieldCheck, ShieldX } from 'lucide-react-native';
 import {
   evaluarDetencion,
   type EntradaDetencionNormalizada,
+  type GravedadPenal,
 } from '@agente/shared';
+
+/** Opciones del selector de gravedad de la pena (art. 33 CP), en orden ascendente. */
+const GRAVEDAD_OPCIONES: readonly { valor: GravedadPenal; etiqueta: string }[] = [
+  { valor: 'leve', etiqueta: 'Leve' },
+  { valor: 'menos_grave', etiqueta: 'Menos grave' },
+  { valor: 'grave', etiqueta: 'Grave' },
+];
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
 import { Button } from '@/ui/components/Button';
@@ -60,14 +68,69 @@ export function DetencionTree({ regla }: DetencionTreeProps) {
     setEntrada((prev) => (prev ? { ...prev, [campo]: valor } : prev));
   }
 
+  function elegirGravedad(g: GravedadPenal) {
+    if (entrada?.gravedadCp === g) return;
+    hapticSelection();
+    setEntrada((prev) => (prev ? { ...prev, gravedadCp: g } : prev));
+  }
+
   return (
     <View style={{ gap: t.spacing.sm }}>
       <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
         Valorar la detención
       </Text>
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-        Marca lo que observes. La orientación se recalcula al momento.
+        Esto no decide por ti: marca las circunstancias de ESTE caso y la app te orienta según la
+        LECrim. La orientación se recalcula al momento; la valoración final es tuya y del juez.
       </Text>
+
+      {/* Gravedad del delito: cambia radicalmente la orientación (art. 33 CP). Un delito leve casi
+          nunca lleva detención (art. 495); uno más grave sí puede. El agente elige el caso real. */}
+      <View style={{ gap: t.spacing.xs }}>
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.body }}>
+          Gravedad del delito
+        </Text>
+        <View style={{ flexDirection: 'row', gap: t.spacing.xs }}>
+          {GRAVEDAD_OPCIONES.map((op) => {
+            const activo = entrada.gravedadCp === op.valor;
+            return (
+              <Pressable
+                key={op.valor}
+                accessibilityRole="button"
+                accessibilityState={{ selected: activo }}
+                accessibilityLabel={op.etiqueta}
+                onPress={() => elegirGravedad(op.valor)}
+                style={{
+                  flex: 1,
+                  minHeight: t.touch.min,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: t.spacing.xs,
+                  paddingHorizontal: t.spacing.xs,
+                  borderRadius: t.radius.md,
+                  borderWidth: 1,
+                  borderColor: activo ? t.color.accent : t.color.border,
+                  backgroundColor: activo ? t.color.accentWeak : t.color.surface,
+                }}
+              >
+                <Text
+                  style={{
+                    color: activo ? t.color.accent : t.color.textPrimary,
+                    ...t.typography.scale.caption,
+                    textAlign: 'center',
+                  }}
+                >
+                  {op.etiqueta}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+          La gravedad de la pena (art. 33 CP) cambia la orientación. Ojo: en el hurto, hasta 400 € es
+          leve; más de 400 €, menos grave.
+        </Text>
+      </View>
 
       {/* Toggles por circunstancia (cada uno alimenta el motor en vivo). */}
       <Card>
