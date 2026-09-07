@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Car,
   ChevronRight,
+  FlaskConical,
   Languages,
   MessageSquarePlus,
   Settings,
@@ -61,6 +62,14 @@ export default function MasScreen() {
             descripcion="Documentación, vehículos extranjeros, comprobaciones y falsedad documental."
           />
         </Link>
+        <Link href="/sustancias" asChild>
+          <FilaMas
+            t={t}
+            icon={FlaskConical}
+            titulo="Sustancias"
+            descripcion="Umbrales orientativos de consumo y tráfico, con orientador y fuente."
+          />
+        </Link>
         <Link href="/feedback" asChild>
           <FilaMas
             t={t}
@@ -78,7 +87,7 @@ export default function MasScreen() {
           ...t.typography.scale.caption,
         }}
       >
-        Próximamente: mapa/PK, sustancias y suscripción.
+        Próximamente: mapa/PK y suscripción.
       </Text>
     </ScrollView>
   );
