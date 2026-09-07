@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agente · Propuesta de rediseño visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   Agente — mockup de rediseño visual (una sola página, autocontenido).
+   Base neutra (tokens de theme.ts) + ACENTO POR CUERPO (sutil, no oficial).
+   Gravedad = colores FIJOS (semántica de seguridad). Selector arriba.
+   ========================================================================= */
+
+:root{
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+/* ---- Neutros por MODO (idénticos para todos los cuerpos) ---- */
+body[data-mode="light"]{
+  --bg:#F6F7F9; --surface:#FFFFFF; --surface-alt:#ECEEF2; --border:#DBDFE6;
+  --text:#1E232B; --text-2:#6B7482; --text-3:#98A1B0; --hairline:#DBDFE6;
+  --shadow:0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.04);
+  /* gravedad FIJA — claro */
+  --sev-leve-bg:#FFF4D6; --sev-leve-fg:#6B4E00; --sev-leve-solid:#B8860B;
+  --sev-grave-bg:#FFE7D1; --sev-grave-fg:#7A3B00; --sev-grave-solid:#C25E00;
+  --sev-muy-bg:#FCE0E1; --sev-muy-fg:#7A1418; --sev-muy-solid:#C1272D;
+  --sev-del-bg:#F7DBE8; --sev-del-fg:#5C0E33; --sev-del-solid:#8E1B4E;
+  --info-bg:#E4ECF9; --info-fg:#254A8F; --info-solid:#2E5AAC;
+  --warn-bg:#FDEBD8; --warn-fg:#7A3B00; --warn-solid:#C25E00;
+  --ok:#1E7F4F; --ok-bg:#DAF3E6;
+}
+body[data-mode="dark"]{
+  --bg:#12151A; --surface:#1E232B; --surface-alt:#252B34; --border:#2C333D;
+  --text:#F2F4F7; --text-2:#98A1B0; --text-3:#6B7482; --hairline:#2C333D;
+  --shadow:0 2px 10px rgba(0,0,0,.5), 0 12px 32px rgba(0,0,0,.35);
+  --sev-leve-bg:#3A2E0A; --sev-leve-fg:#F4D58A; --sev-leve-solid:#E0A82E;
+  --sev-grave-bg:#3A2410; --sev-grave-fg:#FBC38A; --sev-grave-solid:#F08A24;
+  --sev-muy-bg:#3A1113; --sev-muy-fg:#FBB0B3; --sev-muy-solid:#F0555B;
+  --sev-del-bg:#33101F; --sev-del-fg:#F2AFCC; --sev-del-solid:#D6558C;
+  --info-bg:#132338; --info-fg:#8FB0E6; --info-solid:#8FB0E6;
+  --warn-bg:#3A2410; --warn-fg:#F08A24; --warn-solid:#F08A24;
+  --ok:#3FBE83; --ok-bg:#0F2E20;
+}
+
+/* ---- ACENTO por CUERPO x MODO (sutil, personalización, NO institucional) ---- */
+/* Guardia Civil · verde pino desaturado */
+body[data-mode="light"][data-cuerpo="gc"]{ --accent:#2E6A4E; --accent-press:#245840; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="gc"]{  --accent:#6FC79B; --accent-press:#4FA97D; --accent-on:#0A0C10; }
+/* Policía Nacional · azul marino */
+body[data-mode="light"][data-cuerpo="pn"]{ --accent:#1F3A63; --accent-press:#172C4B; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="pn"]{  --accent:#7FA4D6; --accent-press:#4E79B5; --accent-on:#0A0C10; }
+/* Policía Local · azul claro (cerúleo, aún AA) */
+body[data-mode="light"][data-cuerpo="pl"]{ --accent:#0E6BA8; --accent-press:#0A5688; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="pl"]{  --accent:#6FBEE8; --accent-press:#2E9BD6; --accent-on:#0A0C10; }
+/* Autonómica · pizarra-teal neutro */
+body[data-mode="light"][data-cuerpo="aut"]{ --accent:#3E6B70; --accent-press:#325A5E; --accent-on:#FFFFFF; }
+body[data-mode="dark"][data-cuerpo="aut"]{  --accent:#7FB8BC; --accent-press:#4F9298; --accent-on:#0A0C10; }
+
+/* tinte débil del acento (píldora tab activa, fondos suaves) */
+:root{ --accent-weak: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+body[data-mode="dark"]{ --accent-weak: color-mix(in srgb, var(--accent) 22%, var(--surface)); }
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; }
+body{
+  font-family:var(--font); background:var(--page-bg,#0D1013); color:var(--text);
+  -webkit-font-smoothing:antialiased; padding:0 0 64px;
+}
+body[data-mode="light"]{ --page-bg:#E7EAF0; }
+body[data-mode="dark"]{ --page-bg:#0A0C10; }
+
+/* ---------- Barra de control (no forma parte de la app) ---------- */
+.toolbar{
+  position:sticky; top:0; z-index:50; display:flex; flex-wrap:wrap; gap:16px;
+  align-items:center; justify-content:center; padding:14px 20px;
+  background:rgba(10,12,16,.72); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08); color:#F2F4F7;
+}
+.toolbar .brand{ font-weight:700; font-size:16px; letter-spacing:.2px; margin-right:auto; display:flex; align-items:center; gap:9px; }
+.toolbar .brand .logo{ width:26px; height:26px; border-radius:8px; background:var(--accent); display:grid; place-items:center; color:var(--accent-on); font-weight:700; font-size:15px; }
+.seg{ display:inline-flex; background:rgba(255,255,255,.08); border-radius:var(--r-pill); padding:3px; gap:2px; }
+.seg button{
+  border:0; background:transparent; color:#C2C8D2; font-family:var(--font); font-weight:600;
+  font-size:13px; padding:7px 13px; border-radius:var(--r-pill); cursor:pointer; white-space:nowrap;
+}
+.seg button.on{ background:var(--accent); color:var(--accent-on); }
+.toolbar label{ font-size:12px; color:#98A1B0; margin-right:6px; text-transform:uppercase; letter-spacing:.6px; }
+.hint{ width:100%; text-align:center; font-size:12px; color:#98A1B0; }
+
+/* ---------- Lienzo de teléfonos ---------- */
+.canvas{ display:flex; flex-wrap:wrap; gap:34px 26px; justify-content:center; padding:36px 20px; max-width:1500px; margin:0 auto; }
+.screen{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+.screen .cap{ font-size:12.5px; color:#8892A0; font-weight:600; letter-spacing:.3px; }
+body[data-mode="light"] .screen .cap{ color:#5A6472; }
+
+.phone{
+  width:322px; height:696px; border-radius:40px; background:#000; padding:11px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45), 0 0 0 2px rgba(255,255,255,.06);
+  position:relative;
+}
+.phone .glass{
+  width:100%; height:100%; border-radius:30px; overflow:hidden; background:var(--bg);
+  display:flex; flex-direction:column; position:relative;
+}
+/* barra de estado + notch */
+.status{ height:34px; flex:0 0 34px; display:flex; align-items:center; justify-content:space-between; padding:0 20px 0 22px; font-size:12.5px; font-weight:600; color:var(--text); }
+.notch{ position:absolute; top:8px; left:50%; transform:translateX(-50%); width:104px; height:22px; background:#000; border-radius:0 0 16px 16px; z-index:5; }
+.status .dots{ display:flex; gap:5px; align-items:center; }
+.status svg{ width:16px; height:16px; }
+
+.body{ flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.scroll{ flex:1; overflow:hidden; padding:6px 16px 12px; }
+
+svg.i{ width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+svg.i.sm{ width:16px; height:16px; }
+svg.i.fill{ fill:currentColor; stroke:none; }
+
+/* ---------- Cabecera de app ---------- */
+.appbar{ display:flex; align-items:center; gap:12px; padding:8px 16px 10px; }
+.appbar .greet{ flex:1; }
+.appbar .greet b{ display:block; font-size:15px; font-weight:700; }
+.appbar .greet span{ font-size:12.5px; color:var(--text-2); }
+.iconbtn{ width:40px; height:40px; border-radius:var(--r-pill); background:var(--surface-alt); color:var(--text-2); display:grid; place-items:center; }
+
+/* ---------- Buscador ---------- */
+.searchbar{
+  display:flex; align-items:center; gap:10px; height:56px; padding:0 14px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+}
+.searchbar.focus{ border:2px solid var(--accent); padding:0 13px; box-shadow:var(--shadow); }
+.searchbar .ph{ flex:1; font-size:18px; color:var(--text-3); }
+.searchbar .ph.typed{ color:var(--text); }
+.searchbar .lupa{ color:var(--text-2); }
+.searchbar .mic{ width:40px; height:40px; border-radius:var(--r-pill); background:var(--accent-weak); color:var(--accent); display:grid; place-items:center; }
+.caret{ display:inline-block; width:2px; height:20px; background:var(--accent); vertical-align:-4px; margin-left:1px; animation:blink 1.1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+.sectionlbl{ font-size:12px; font-weight:700; letter-spacing:.8px; color:var(--text-3); text-transform:uppercase; margin:18px 2px 10px; display:flex; align-items:center; justify-content:space-between; }
+.chiprow{ display:flex; flex-wrap:wrap; gap:8px; }
+.qchip{ display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:var(--r-pill); background:var(--surface); border:1px solid var(--border); font-size:15px; font-weight:600; color:var(--text); }
+.qchip svg{ color:var(--accent); }
+.repeat{ display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-transform:none; letter-spacing:0; }
+
+.recents{ display:flex; flex-direction:column; }
+.recent{ display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--hairline); font-size:16px; }
+.recent .ic{ color:var(--text-3); }
+.recent:last-child{ border-bottom:0; }
+
+/* Tarjeta de turno */
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); }
+.shift{ padding:15px 16px; margin-top:8px; display:flex; align-items:center; gap:14px; }
+.shift .badge{ width:46px; height:46px; border-radius:var(--r-md); display:grid; place-items:center; background:color-mix(in srgb,#5C6BC0 18%,var(--surface)); color:#5C6BC0; }
+body[data-mode="dark"] .shift .badge{ color:#9AA6E8; }
+.shift .t b{ font-size:17px; }
+.shift .t span{ display:block; font-size:13px; color:var(--text-2); margin-top:1px; }
+.shift .hrs{ margin-left:auto; text-align:right; }
+.shift .hrs b{ font-size:24px; font-weight:700; font-variant-numeric:tabular-nums; }
+.shift .hrs span{ display:block; font-size:12px; color:var(--text-2); }
+
+/* ---------- Resultados de búsqueda ---------- */
+.result{ display:flex; gap:12px; padding:14px 4px; border-bottom:1px solid var(--hairline); }
+.result .dot{ width:8px; height:8px; border-radius:50%; margin-top:8px; flex:0 0 8px; }
+.result .main b{ font-size:17px; font-weight:600; }
+.result .main .mark{ background:color-mix(in srgb,var(--accent) 22%,transparent); border-radius:4px; padding:0 3px; }
+.result .meta{ font-size:13.5px; color:var(--text-2); margin-top:3px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.result .arrow{ margin-left:auto; align-self:center; color:var(--text-3); }
+
+/* pastillas de gravedad (FIJAS) */
+.sev{ display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 10px; border-radius:var(--r-pill); font-size:13px; font-weight:600; }
+.sev svg{ width:14px; height:14px; }
+.sev.leve{ background:var(--sev-leve-bg); color:var(--sev-leve-fg); }
+.sev.grave{ background:var(--sev-grave-bg); color:var(--sev-grave-fg); }
+.sev.muy{ background:var(--sev-muy-bg); color:var(--sev-muy-fg); }
+.sev.del{ background:var(--sev-del-bg); color:var(--sev-del-fg); }
+.pill-cons{ display:inline-flex; align-items:center; gap:5px; height:24px; padding:0 9px; border-radius:var(--r-pill); background:var(--surface-alt); color:var(--text-2); font-size:12.5px; font-weight:600; }
+
+/* ---------- Ficha ---------- */
+.fichahead{ display:flex; align-items:center; justify-content:space-between; padding:6px 4px 10px; }
+.fichahead .l{ display:flex; align-items:center; gap:10px; color:var(--text-2); font-weight:600; font-size:15px; }
+.fichahead .r{ display:flex; gap:6px; }
+.ficha-title{ font-size:23px; font-weight:700; line-height:1.2; padding:0 2px; }
+.ficha-sub{ font-size:14px; color:var(--text-2); padding:2px 2px 0; }
+.ficha-src{ font-size:13.5px; color:var(--text-2); padding:8px 2px 0; }
+.tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 4px; }
+.tile{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 10px; text-align:center; }
+.tile b{ font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; display:block; }
+.tile.accentnum b{ color:var(--accent); }
+.tile span{ font-size:12px; color:var(--text-2); }
+
+.btn-primary{
+  height:54px; border-radius:var(--r-md); background:var(--accent); color:var(--accent-on);
+  display:flex; align-items:center; justify-content:center; gap:10px; font-size:16px; font-weight:700;
+  box-shadow:var(--shadow); margin:12px 0;
+}
+.btn-primary.ok{ background:var(--ok); }
+.btn-outline{
+  height:50px; border-radius:var(--r-md); background:transparent; color:var(--accent);
+  border:1.5px solid var(--accent); display:flex; align-items:center; justify-content:center; gap:9px;
+  font-size:15px; font-weight:700;
+}
+.bulletin{ background:var(--surface-alt); border-radius:var(--r-md); padding:14px; font-size:17px; line-height:1.5; color:var(--text); }
+.segmented{ display:inline-flex; background:var(--surface-alt); border-radius:var(--r-md); padding:3px; gap:2px; margin-bottom:10px; }
+.segmented span{ font-size:13px; font-weight:600; padding:6px 12px; border-radius:9px; color:var(--text-2); }
+.segmented span.on{ background:var(--accent); color:var(--accent-on); }
+
+.cons{ display:flex; gap:12px; align-items:flex-start; padding:13px 14px; border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface); margin-top:10px; }
+.cons .ic{ width:36px; height:36px; border-radius:var(--r-sm); display:grid; place-items:center; background:var(--surface-alt); color:var(--text-2); flex:0 0 36px; }
+.cons.danger .ic{ background:var(--sev-muy-bg); color:var(--sev-muy-fg); }
+.cons .tx b{ font-size:16px; font-weight:600; }
+.cons .tx span{ display:block; font-size:13px; color:var(--text-2); margin-top:2px; }
+.cons .arrow{ margin-left:auto; color:var(--text-3); align-self:center; }
+
+.banner{ display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border-radius:var(--r-md); background:var(--info-bg); border-left:3px solid var(--info-solid); font-size:14px; color:var(--info-fg); margin-top:12px; }
+.banner.warn{ background:var(--warn-bg); border-left-color:var(--warn-solid); color:var(--warn-fg); }
+
+/* ---------- Cuadrante ---------- */
+.month-nav{ display:flex; align-items:center; justify-content:space-between; padding:6px 2px 12px; }
+.month-nav b{ font-size:19px; font-weight:700; }
+.month-nav .navbtns{ display:flex; gap:4px; }
+.summary{ display:flex; gap:8px; margin-bottom:14px; }
+.summary .s{ flex:1; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:10px 8px; text-align:center; }
+.summary .s b{ font-size:19px; font-weight:700; font-variant-numeric:tabular-nums; display:block; color:var(--accent); }
+.summary .s span{ font-size:11.5px; color:var(--text-2); }
+.weekhdr{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:5px; }
+.weekhdr span{ text-align:center; font-size:11px; font-weight:700; color:var(--text-3); }
+.grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+.cell{ aspect-ratio:1/1.08; border-radius:9px; background:var(--surface); border:1px solid var(--border); padding:5px 4px; display:flex; flex-direction:column; position:relative; }
+.cell .d{ font-size:11px; color:var(--text-2); font-variant-numeric:tabular-nums; }
+.cell .l{ margin-top:auto; align-self:center; font-size:15px; font-weight:700; }
+.cell.M{ background:color-mix(in srgb,#3FBE83 20%,var(--surface)); } .cell.M .l{ color:#1E7F4F; }
+.cell.T{ background:color-mix(in srgb,#E0A82E 22%,var(--surface)); } .cell.T .l{ color:#8a6408; }
+.cell.N{ background:color-mix(in srgb,#5C6BC0 22%,var(--surface)); } .cell.N .l{ color:#4351b0; }
+.cell.S{ background:var(--surface-alt); } .cell.S .l{ color:var(--text-2); }
+.cell.L .l{ color:var(--text-3); }
+body[data-mode="dark"] .cell.M .l{ color:#7fe0b0; }
+body[data-mode="dark"] .cell.T .l{ color:#f0c877; }
+body[data-mode="dark"] .cell.N .l{ color:#9aa6e8; }
+.cell.today{ border:2px solid var(--accent); }
+.cell .edit{ position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+.cell .fest{ position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:var(--sev-muy-solid); }
+.cell.fest .d{ color:var(--sev-muy-solid); font-weight:700; text-decoration:underline; }
+.legend{ display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:14px; font-size:12.5px; color:var(--text-2); }
+.legend i{ width:12px; height:12px; border-radius:4px; display:inline-block; vertical-align:-2px; margin-right:5px; }
+
+/* ---------- Barra inferior ---------- */
+.tabbar{ flex:0 0 62px; display:flex; border-top:1px solid var(--border); background:var(--surface); padding:6px 6px 0; }
+.tab{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding-top:4px; color:var(--text-2); }
+.tab .lbl{ font-size:11px; font-weight:600; }
+.tab.on{ color:var(--accent); }
+.tab.on .ico{ background:var(--accent-weak); }
+.tab .ico{ width:52px; height:30px; border-radius:var(--r-pill); display:grid; place-items:center; }
+.tab.on svg{ stroke-width:2.4; }
+
+/* ---------- Onboarding ---------- */
+.ob{ padding:30px 20px 20px; flex:1; display:flex; flex-direction:column; }
+.ob .progress{ display:flex; gap:6px; margin-bottom:26px; }
+.ob .progress i{ height:5px; border-radius:99px; background:var(--surface-alt); flex:1; }
+.ob .progress i.on{ background:var(--accent); }
+.ob h1{ font-size:25px; font-weight:700; line-height:1.2; margin:0 0 6px; }
+.ob p.lead{ font-size:15px; color:var(--text-2); margin:0 0 22px; line-height:1.45; }
+.cuerpos{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.cuerpo-card{ border:1.5px solid var(--border); border-radius:var(--r-lg); background:var(--surface); padding:16px 14px; display:flex; flex-direction:column; gap:10px; min-height:110px; }
+.cuerpo-card .swatch{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; color:#fff; }
+.cuerpo-card b{ font-size:15px; line-height:1.25; }
+.cuerpo-card.sel{ border:2px solid var(--accent); background:var(--accent-weak); }
+.sw-gc{ background:#2E6A4E; } .sw-pn{ background:#1F3A63; } .sw-pl{ background:#0E6BA8; } .sw-aut{ background:#3E6B70; }
+.field{ margin-bottom:14px; }
+.field label{ display:block; font-size:13px; font-weight:600; color:var(--text-2); margin-bottom:6px; }
+.select{ height:52px; border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface); display:flex; align-items:center; padding:0 14px; font-size:16px; font-weight:500; color:var(--text); }
+.select.filled{ border-color:var(--accent); }
+.select svg{ margin-left:auto; color:var(--text-3); }
+.geo{ display:flex; align-items:center; gap:10px; padding:14px; border-radius:var(--r-md); background:var(--accent-weak); color:var(--accent); font-size:14px; font-weight:600; margin-bottom:18px; }
+.noticia{ display:flex; gap:9px; align-items:flex-start; margin-top:auto; padding:12px 13px; border:1px dashed var(--border); border-radius:var(--r-md); font-size:12.5px; color:var(--text-2); line-height:1.4; }
+.ob-btn{ height:54px; border-radius:var(--r-md); background:var(--accent); color:var(--accent-on); display:flex; align-items:center; justify-content:center; gap:9px; font-size:16px; font-weight:700; margin-top:16px; }
+.muni-note{ font-size:12.5px; color:var(--text-2); margin:-6px 2px 14px; display:flex; gap:6px; align-items:center; }
+.muni-note svg{ color:var(--accent); }
+
+/* leyenda de colores por cuerpo (panel informativo abajo) */
+.palette-note{ max-width:1000px; margin:10px auto 40px; padding:0 20px; color:#B9C2CE; font-size:13px; line-height:1.6; }
+body[data-mode="light"] .palette-note{ color:#4A515D; }
+.palette-note h3{ color:var(--text); font-size:15px; margin:0 0 6px; }
+.swatches{ display:flex; flex-wrap:wrap; gap:14px; margin:12px 0; }
+.swatches .sw{ display:flex; align-items:center; gap:9px; font-size:12.5px; }
+.swatches .sw i{ width:26px; height:26px; border-radius:8px; display:inline-block; box-shadow:0 0 0 1px rgba(0,0,0,.15); }
+</style>
+</head>
+<body data-mode="dark" data-cuerpo="gc">
+
+<div class="toolbar">
+  <div class="brand"><span class="logo">A</span> Agente · rediseño visual</div>
+  <div><label>Cuerpo</label>
+    <span class="seg" id="segCuerpo">
+      <button data-c="gc" class="on">Guardia Civil</button>
+      <button data-c="pn">P. Nacional</button>
+      <button data-c="pl">P. Local</button>
+      <button data-c="aut">Autonómica</button>
+    </span>
+  </div>
+  <div><label>Tema</label>
+    <span class="seg" id="segMode">
+      <button data-m="light">Claro</button>
+      <button data-m="dark" class="on">Oscuro</button>
+    </span>
+  </div>
+  <div class="hint">El acento tiñe pestaña activa, botones, enlaces y detalles. La base es neutra y la gravedad (amarillo/naranja/rojo/vino) es <b>fija</b>. La app nunca aparenta ser oficial.</div>
+</div>
+
+<!-- Sprite de iconos estilo Lucide (trazo 2, redondeado) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8 4.5 4 4.5V19c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2V4.5c-4 0-6.5.5-8 2z"/><line x1="12" y1="6.5" x2="12" y2="21"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></symbol>
+  <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+  <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></symbol>
+  <symbol id="ic-chev-d" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 15H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.6l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 6.1h.09A1.65 1.65 0 0 0 10.6 4.6V4a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 5.6l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 21 9.09H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></symbol>
+  <symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24"><path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13.5"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></symbol>
+  <symbol id="ic-gavel" viewBox="0 0 24 24"><path d="M14 13l-3-3 5-5 3 3z"/><path d="M11.5 10.5 4 18l2 2 7.5-7.5"/><line x1="14" y1="21" x2="22" y2="21"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="ic-truck" viewBox="0 0 24 24"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h4l3 3v5h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="ic-repeat" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></symbol>
+  <symbol id="ic-wifi" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5 12a10 10 0 0 1 14 0"/><path d="M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="0.8" fill="currentColor"/></symbol>
+  <symbol id="ic-batt" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><rect x="4" y="9" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><line x1="22" y1="11" x2="22" y2="13"/></symbol>
+</svg>
+
+<div class="canvas">
+
+  <!-- 1. ONBOARDING · Cuerpo -->
+  <div class="screen">
+    <div class="cap">Onboarding · 1 de 2 · elegir cuerpo</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:47</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body"><div class="ob">
+        <div class="progress"><i class="on"></i><i></i></div>
+        <h1>¿A qué cuerpo perteneces?</h1>
+        <p class="lead">Personaliza el contenido y el color de la app. Podrás cambiarlo cuando quieras en Ajustes.</p>
+        <div class="cuerpos">
+          <div class="cuerpo-card sel ob-gc"><div class="swatch sw-gc"><svg class="i sm"><use href="#ic-check"/></svg></div><b>Guardia Civil</b></div>
+          <div class="cuerpo-card ob-pn"><div class="swatch sw-pn"></div><b>Policía Nacional</b></div>
+          <div class="cuerpo-card ob-pl"><div class="swatch sw-pl"></div><b>Policía Local</b></div>
+          <div class="cuerpo-card ob-aut"><div class="swatch sw-aut"></div><b>Policía Autonómica</b></div>
+        </div>
+        <div class="ob-btn">Continuar <svg class="i"><use href="#ic-chev-r"/></svg></div>
+        <div class="noticia"><svg class="i sm"><use href="#ic-info"/></svg><span><b>Agente</b> es una herramienta independiente. No es una aplicación oficial de ningún cuerpo ni está asociada a ellos.</span></div>
+      </div></div>
+    </div></div>
+  </div>
+
+  <!-- 2. ONBOARDING · Territorio -->
+  <div class="screen">
+    <div class="cap">Onboarding · 2 de 2 · territorio</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:47</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body"><div class="ob">
+        <div class="progress"><i class="on"></i><i class="on"></i></div>
+        <h1>¿Dónde trabajas?</h1>
+        <p class="lead">Así solo ves la normativa que te aplica: estatal, autonómica y local.</p>
+        <div class="geo"><svg class="i"><use href="#ic-pin"/></svg> Parece que estás en Murcia. ¿Es correcto?</div>
+        <div class="field"><label>Comunidad autónoma</label><div class="select filled">Región de Murcia <svg class="i"><use href="#ic-chev-d"/></svg></div></div>
+        <div class="field"><label>Provincia</label><div class="select filled">Murcia <svg class="i"><use href="#ic-chev-d"/></svg></div></div>
+        <div class="field muni-hide"><label>Municipio</label><div class="select">Selecciona tu municipio <svg class="i"><use href="#ic-chev-d"/></svg></div></div>
+        <div class="muni-note muni-hide"><svg class="i sm"><use href="#ic-info"/></svg> El municipio solo es obligatorio para Policía Local.</div>
+        <div class="ob-btn">Empezar a usar Agente <svg class="i"><use href="#ic-chev-r"/></svg></div>
+      </div></div>
+    </div></div>
+  </div>
+
+  <!-- 3. BUSCAR · reposo -->
+  <div class="screen">
+    <div class="cap">Buscar · pantalla de inicio (reposo)</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:47</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body">
+        <div class="appbar">
+          <div class="greet"><b>Hola, agente</b><span id="greetCuerpo">Guardia Civil · Murcia</span></div>
+          <div class="iconbtn"><svg class="i"><use href="#ic-settings"/></svg></div>
+        </div>
+        <div class="scroll">
+          <div class="searchbar"><svg class="i lupa"><use href="#ic-search"/></svg><span class="ph">faro roto, sin seguro, 0,60 mg…</span><span class="mic"><svg class="i"><use href="#ic-mic"/></svg></span></div>
+
+          <div class="sectionlbl">Recientes <span class="repeat"><svg class="i sm"><use href="#ic-repeat"/></svg> Repetir última</span></div>
+          <div class="recents">
+            <div class="recent"><svg class="i sm ic"><use href="#ic-clock"/></svg> Alumbrado deficiente</div>
+            <div class="recent"><svg class="i sm ic"><use href="#ic-clock"/></svg> Tasa de alcohol 0,50 mg/l</div>
+          </div>
+
+          <div class="sectionlbl">Accesos rápidos</div>
+          <div class="chiprow">
+            <span class="qchip"><svg class="i sm"><use href="#ic-alert"/></svg>Alcohol</span>
+            <span class="qchip"><svg class="i sm"><use href="#ic-lock"/></svg>Sin seguro</span>
+            <span class="qchip"><svg class="i sm"><use href="#ic-file"/></svg>Documentación</span>
+            <span class="qchip"><svg class="i sm"><use href="#ic-mic"/></svg>Móvil</span>
+            <span class="qchip"><svg class="i sm"><use href="#ic-truck"/></svg>ITV</span>
+          </div>
+
+          <div class="card shift">
+            <div class="badge"><svg class="i"><use href="#ic-clock"/></svg></div>
+            <div class="t"><b>Hoy · Noche</b><span>22:00 – 06:00</span></div>
+            <div class="hrs"><b>148 h</b><span>este mes</span></div>
+          </div>
+        </div>
+        <nav class="tabbar">
+          <div class="tab on"><span class="ico"><svg class="i"><use href="#ic-search"/></svg></span><span class="lbl">Buscar</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-book"/></svg></span><span class="lbl">Normas</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-file"/></svg></span><span class="lbl">Documentos</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-cal"/></svg></span><span class="lbl">Cuadrante</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-grid"/></svg></span><span class="lbl">Más</span></div>
+        </nav>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 4. BUSCAR · escribiendo -->
+  <div class="screen">
+    <div class="cap">Buscar · resultados en vivo</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:48</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body">
+        <div class="appbar">
+          <div class="greet"><b>Buscar</b><span>Resultados sin conexión</span></div>
+          <div class="iconbtn"><svg class="i"><use href="#ic-settings"/></svg></div>
+        </div>
+        <div class="scroll">
+          <div class="searchbar focus"><svg class="i lupa"><use href="#ic-search"/></svg><span class="ph typed">sin seg<span class="caret"></span></span><span class="mic"><svg class="i"><use href="#ic-mic"/></svg></span></div>
+
+          <div class="result">
+            <div class="dot" style="background:var(--sev-muy-solid)"></div>
+            <div class="main">
+              <b>Circular <span class="mark">sin seg</span>uro obligatorio</b>
+              <div class="meta"><span class="sev muy"><svg class="i sm"><use href="#ic-alert"/></svg>Muy grave</span> · 601–3.000 € <span class="pill-cons"><svg class="i sm"><use href="#ic-lock"/></svg>Inmovilización</span></div>
+            </div>
+            <svg class="i arrow"><use href="#ic-chev-r"/></svg>
+          </div>
+          <div class="result">
+            <div class="dot" style="background:var(--sev-grave-solid)"></div>
+            <div class="main">
+              <b>Sin ITV (inspección caducada)</b>
+              <div class="meta"><span class="sev grave"><svg class="i sm"><use href="#ic-alert"/></svg>Grave</span> · 200 €</div>
+            </div>
+            <svg class="i arrow"><use href="#ic-chev-r"/></svg>
+          </div>
+          <div class="result">
+            <div class="dot" style="background:var(--sev-leve-solid)"></div>
+            <div class="main">
+              <b>Documentación del <span class="mark">seg</span>uro no presentada</b>
+              <div class="meta"><span class="sev leve"><svg class="i sm"><use href="#ic-info"/></svg>Leve</span> · 10 €</div>
+            </div>
+            <svg class="i arrow"><use href="#ic-chev-r"/></svg>
+          </div>
+          <div class="result">
+            <div class="dot" style="background:var(--sev-del-solid)"></div>
+            <div class="main">
+              <b>Conducir sin permiso (pérdida de vigencia)</b>
+              <div class="meta"><span class="sev del"><svg class="i sm"><use href="#ic-gavel"/></svg>Delito</span> · vía penal</div>
+            </div>
+            <svg class="i arrow"><use href="#ic-chev-r"/></svg>
+          </div>
+        </div>
+        <nav class="tabbar">
+          <div class="tab on"><span class="ico"><svg class="i"><use href="#ic-search"/></svg></span><span class="lbl">Buscar</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-book"/></svg></span><span class="lbl">Normas</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-file"/></svg></span><span class="lbl">Documentos</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-cal"/></svg></span><span class="lbl">Cuadrante</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-grid"/></svg></span><span class="lbl">Más</span></div>
+        </nav>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 5. FICHA -->
+  <div class="screen">
+    <div class="cap">Ficha · consecuencia y copiar sobre el pliegue</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:48</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body">
+        <div class="scroll">
+          <div class="fichahead">
+            <div class="l"><svg class="i"><use href="#ic-chev-l"/></svg> Volver</div>
+            <div class="r"><div class="iconbtn"><svg class="i"><use href="#ic-star"/></svg></div><div class="iconbtn"><svg class="i"><use href="#ic-share"/></svg></div></div>
+          </div>
+          <div class="ficha-title">Alumbrado deficiente</div>
+          <div class="ficha-sub">faro roto · RGV art. 11.1 · Anexo I</div>
+
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span class="sev leve"><svg class="i sm"><use href="#ic-info"/></svg>Leve</span>
+            <span class="pill-cons">Administrativa</span>
+          </div>
+
+          <div class="tiles">
+            <div class="tile"><b>80&nbsp;€</b><span>importe</span></div>
+            <div class="tile accentnum"><b>40&nbsp;€</b><span>pronto pago</span></div>
+            <div class="tile"><b>0</b><span>puntos</span></div>
+          </div>
+
+          <div class="btn-primary"><svg class="i"><use href="#ic-copy"/></svg> Copiar texto del boletín</div>
+
+          <div class="cons">
+            <div class="ic"><svg class="i sm"><use href="#ic-lock"/></svg></div>
+            <div class="tx"><b>Sin inmovilización</b><span>El vehículo puede continuar. Subsanar el alumbrado. Art. 104 LSV.</span></div>
+            <svg class="i arrow"><use href="#ic-chev-r"/></svg>
+          </div>
+
+          <div class="segmented" style="margin-top:16px;">
+            <span class="on">Delantero</span><span>Trasero</span><span>Izq.</span><span>Der.</span>
+          </div>
+          <div class="bulletin">«El vehículo reseñado circulaba por vía interurbana con el <b>alumbrado del faro delantero</b> en estado deficiente, sin cumplir las condiciones del RGV…»</div>
+
+          <div class="banner"><svg class="i sm"><use href="#ic-info"/></svg><span>Orientación basada en la norma citada; la valoración final corresponde al agente.</span></div>
+
+          <div class="ficha-src"><svg class="i sm" style="vertical-align:-3px"><use href="#ic-file"/></svg> Actualizado el 12/07/2026 · Fuente: BOE-A-2003-…</div>
+        </div>
+        <nav class="tabbar">
+          <div class="tab on"><span class="ico"><svg class="i"><use href="#ic-search"/></svg></span><span class="lbl">Buscar</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-book"/></svg></span><span class="lbl">Normas</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-file"/></svg></span><span class="lbl">Documentos</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-cal"/></svg></span><span class="lbl">Cuadrante</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-grid"/></svg></span><span class="lbl">Más</span></div>
+        </nav>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 6. CUADRANTE -->
+  <div class="screen">
+    <div class="cap">Cuadrante · mes con resumen de horas</div>
+    <div class="phone"><div class="notch"></div><div class="glass">
+      <div class="status"><span>21:49</span><span class="dots"><svg class="i sm"><use href="#ic-wifi"/></svg><svg class="i sm"><use href="#ic-batt"/></svg></span></div>
+      <div class="body">
+        <div class="appbar">
+          <div class="greet"><b>Cuadrante</b><span>Respaldo cifrado · sincronizado</span></div>
+          <div class="iconbtn"><svg class="i"><use href="#ic-settings"/></svg></div>
+        </div>
+        <div class="scroll">
+          <div class="month-nav">
+            <div class="navbtns"><div class="iconbtn"><svg class="i"><use href="#ic-chev-l"/></svg></div></div>
+            <b>Marzo 2026</b>
+            <div class="navbtns"><div class="iconbtn"><svg class="i"><use href="#ic-chev-r"/></svg></div></div>
+          </div>
+          <div class="summary">
+            <div class="s"><b>148</b><span>horas</span></div>
+            <div class="s"><b>6</b><span>noches</span></div>
+            <div class="s"><b>2</b><span>festivos</span></div>
+            <div class="s"><b>−2</b><span>vs. 150 h</span></div>
+          </div>
+          <div class="weekhdr"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div class="grid">
+            <div class="cell S"><span class="d">23</span><span class="l">S</span></div>
+            <div class="cell L"><span class="d">24</span><span class="l">L</span></div>
+            <div class="cell M"><span class="d">25</span><span class="l">M</span></div>
+            <div class="cell M"><span class="d">26</span><span class="l">M</span></div>
+            <div class="cell T"><span class="d">27</span><span class="l">T</span></div>
+            <div class="cell T"><span class="d">28</span><span class="l">T</span></div>
+            <div class="cell N fest"><span class="fest"></span><span class="d">1</span><span class="l">N</span></div>
+
+            <div class="cell N"><span class="d">2</span><span class="l">N</span></div>
+            <div class="cell S"><span class="d">3</span><span class="l">S</span></div>
+            <div class="cell L"><span class="d">4</span><span class="l">L</span></div>
+            <div class="cell L"><span class="d">5</span><span class="l">L</span></div>
+            <div class="cell M"><span class="d">6</span><span class="l">M</span></div>
+            <div class="cell M"><span class="d">7</span><span class="l">M</span></div>
+            <div class="cell T"><span class="d">8</span><span class="l">T</span></div>
+
+            <div class="cell T"><span class="d">9</span><span class="l">T</span></div>
+            <div class="cell N"><span class="d">10</span><span class="l">N</span></div>
+            <div class="cell N"><span class="d">11</span><span class="l">N</span></div>
+            <div class="cell S"><span class="d">12</span><span class="l">S</span></div>
+            <div class="cell L"><span class="d">13</span><span class="l">L</span></div>
+            <div class="cell L today"><span class="edit"></span><span class="d">14</span><span class="l">L</span></div>
+            <div class="cell M"><span class="d">15</span><span class="l">M</span></div>
+          </div>
+          <div class="legend">
+            <span><i style="background:#3FBE83"></i>Mañana</span>
+            <span><i style="background:#E0A82E"></i>Tarde</span>
+            <span><i style="background:#5C6BC0"></i>Noche</span>
+            <span><i style="background:var(--surface-alt)"></i>Saliente</span>
+            <span><i style="background:var(--accent)"></i>Editado a mano</span>
+            <span><i style="background:var(--sev-muy-solid)"></i>Festivo</span>
+          </div>
+        </div>
+        <nav class="tabbar">
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-search"/></svg></span><span class="lbl">Buscar</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-book"/></svg></span><span class="lbl">Normas</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-file"/></svg></span><span class="lbl">Documentos</span></div>
+          <div class="tab on"><span class="ico"><svg class="i"><use href="#ic-cal"/></svg></span><span class="lbl">Cuadrante</span></div>
+          <div class="tab"><span class="ico"><svg class="i"><use href="#ic-grid"/></svg></span><span class="lbl">Más</span></div>
+        </nav>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<div class="palette-note">
+  <h3>Acento por cuerpo (personalización sutil, nunca apariencia oficial)</h3>
+  <div class="swatches">
+    <span class="sw"><i class="sw-gc"></i> Guardia Civil · verde pino</span>
+    <span class="sw"><i class="sw-pn"></i> Policía Nacional · azul marino</span>
+    <span class="sw"><i class="sw-pl"></i> Policía Local · azul claro</span>
+    <span class="sw"><i class="sw-aut"></i> Autonómica · pizarra-teal neutro</span>
+  </div>
+  <p>El acento solo tiñe pestaña activa, botones primarios, enlaces y detalles. Todo lo demás es la base neutra gris del sistema. Los colores de gravedad —leve (amarillo), grave (naranja), muy grave (rojo) y delito (vino)— son <b>fijos</b> y no cambian con el cuerpo: son semántica de seguridad. Ninguno de los acentos usa la familia amarillo/naranja/rojo, por lo que nunca se confunden con la gravedad. Usa el selector de arriba para ver cada cuerpo en claro y oscuro.</p>
+</div>
+
+<script>
+(function(){
+  var body = document.body;
+  var greetTxt = { gc:'Guardia Civil · Murcia', pn:'Policía Nacional · Murcia', pl:'Policía Local · Murcia', aut:'Policía Autonómica · Murcia' };
+  document.getElementById('segCuerpo').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    body.setAttribute('data-cuerpo', b.dataset.c);
+    this.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+    var g = document.getElementById('greetCuerpo'); if(g) g.textContent = greetTxt[b.dataset.c];
+    // reflejar la selección en la tarjeta del onboarding
+    document.querySelectorAll('.cuerpo-card').forEach(function(c){ c.classList.remove('sel'); var sw=c.querySelector('.swatch svg'); if(sw) sw.remove(); });
+    var map={gc:'.ob-gc',pn:'.ob-pn',pl:'.ob-pl',aut:'.ob-aut'};
+    var card=document.querySelector(map[b.dataset.c]);
+    if(card){ card.classList.add('sel'); card.querySelector('.swatch').innerHTML='<svg class="i sm"><use href="#ic-check"/></svg>'; }
+  });
+  document.getElementById('segMode').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    body.setAttribute('data-mode', b.dataset.m);
+    this.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+  });
+})();
+</script>
+</body>
+</html>
