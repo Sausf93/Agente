@@ -389,9 +389,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     id: 'inf-alumbrado-deficiente',
     articulo: ART_RGC_99,
     tituloCorto: 'Alumbrado deficiente',
-    gravedad: 'grave',
-    importeEur: 200,
-    importeReducidoEur: 100,
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
     puntos: 0,
     textoBoletin:
       'Circular con el sistema de alumbrado en deficientes condiciones (luz fundida, faro roto o ' +
@@ -413,8 +413,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR gravedad y cuantía: puede ser leve o grave según sea alumbrado obligatorio y ' +
-      'conducción nocturna/escasa visibilidad (RGC arts. 98-104 y RGV). Contrastar con el ' +
+      'Clasificada como LEVE (100 €) para el caso común (faro/piloto fundido o mal reglado). ' +
+      'A VERIFICAR: puede agravarse a GRAVE (200 €) si se circula prácticamente sin alumbrado de ' +
+      'noche o con visibilidad reducida (peligro real, posible inmovilización). Contrastar con el ' +
       'codificado DGT antes de publicar.',
   }),
   construirInfraccion({
