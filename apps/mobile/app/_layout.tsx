@@ -43,7 +43,16 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: 'slide_from_right',
+            // El botón de atrás muestra solo la flecha (sin el nombre de la ruta anterior, que
+            // era el crudo "(tabs)"). iOS: minimal; el resto ignora la opción sin romper.
+            headerBackButtonDisplayMode: 'minimal',
+            headerBackTitle: 'Atrás',
+          }}
+        >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false, animation: 'fade' }} />
         <Stack.Screen

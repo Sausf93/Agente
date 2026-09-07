@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CircleCheck, Lock } from 'lucide-react-native';
+import { CircleCheck, Lock, Plus } from 'lucide-react-native';
 import { renderPlantilla } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
@@ -57,6 +57,9 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [textoPlano, setTextoPlano] = useState('');
   const [faltantes, setFaltantes] = useState<string[]>([]);
+  // Los datos de tercero son OPCIONALES (solo si el caso los necesita): van plegados por defecto
+  // para no dar la sensación de que hay que rellenar mucho. Se abren con un toque.
+  const [mostrarTerceros, setMostrarTerceros] = useState(false);
 
   useEffect(() => {
     let vivo = true;
@@ -252,25 +255,57 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
           </View>
         ) : null}
 
-        {/* 4. Datos de terceros: SIEMPRE aparte, con aviso fijo y solo-dispositivo. */}
+        {/* 4. Datos de terceros: OPCIONALES y plegados por defecto (SIEMPRE aparte, con aviso). */}
         {camposTercero.length > 0 ? (
-          <View style={{ gap: t.spacing.md }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
-              <Lock size={20} color={t.color.warning} strokeWidth={2} />
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
-                Datos de vehículo o persona
-              </Text>
+          mostrarTerceros ? (
+            <View style={{ gap: t.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
+                <Lock size={20} color={t.color.warning} strokeWidth={2} />
+                <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
+                  Datos de vehículo o persona
+                </Text>
+              </View>
+              <Banner tone="warning" title="Opcional · solo en este dispositivo">
+                Rellena solo lo que necesites en el documento; puedes dejarlo en blanco y ponerlo a
+                mano. Matrículas, nombres y DNI no se guardan ni se envían a ningún servidor.
+              </Banner>
+              {listo
+                ? camposTercero.map((c) => (
+                    <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
+                  ))
+                : null}
             </View>
-            <Banner tone="warning" title="Solo en este dispositivo, no se envía">
-              Matrículas, nombres y DNI no se guardan como borrador ni se envían a ningún servidor.
-              Escríbelos solo si los necesitas en el documento.
-            </Banner>
-            {listo
-              ? camposTercero.map((c) => (
-                  <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
-                ))
-              : null}
-          </View>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Añadir datos de vehículo o persona, opcional"
+              onPress={() => setMostrarTerceros(true)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: t.spacing.sm,
+                minHeight: t.touch.min,
+                borderRadius: t.radius.md,
+                borderWidth: 1,
+                borderColor: t.color.border,
+                borderStyle: 'dashed',
+                backgroundColor: t.color.surface,
+                paddingHorizontal: t.spacing.md,
+                paddingVertical: t.spacing.sm,
+              }}
+            >
+              <Lock size={18} color={t.color.textSecondary} strokeWidth={2} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
+                  Añadir datos de vehículo o persona
+                </Text>
+                <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+                  Opcional · solo si los necesitas. Se quedan en tu móvil.
+                </Text>
+              </View>
+              <Plus size={20} color={t.color.accent} strokeWidth={2} />
+            </Pressable>
+          )
         ) : null}
 
         <Button

@@ -72,6 +72,17 @@ export const CATALOGO_TRAFICO: Record<string, EntradaCatalogo> = {
     cuerpos: CUERPOS_TRAFICO,
     implementada: true,
   },
+  LRCSCVM: {
+    // Texto refundido de la Ley sobre responsabilidad civil y seguro en la circulación de
+    // vehículos a motor (RDL 8/2004): el seguro obligatorio. El seed ya declaraba esta norma
+    // con id = idBoe, así que al enriquecer se le añade su articulado completo (mismo id).
+    codigo: 'LRCSCVM',
+    idBoe: 'BOE-A-2004-18911',
+    tipo: 'ley',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TRAFICO,
+    implementada: true,
+  },
 };
 
 /**
@@ -157,6 +168,7 @@ export const ENTRADAS_A_ENRIQUECER: EntradaCatalogo[] = [
   CATALOGO_TRAFICO.RGC!,
   CATALOGO_TRAFICO.LSV!,
   CATALOGO_TRAFICO.RGV!,
+  CATALOGO_TRAFICO.LRCSCVM!,
   CATALOGO_PENAL.CP!,
   CATALOGO_PENAL.LECrim!,
   CATALOGO_PENAL.LOSC!,
