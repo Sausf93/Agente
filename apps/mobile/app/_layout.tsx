@@ -71,6 +71,14 @@ export default function RootLayout() {
           name="documento/[plantillaId]"
           options={{ headerShown: true, title: 'Documento', presentation: 'card' }}
         />
+        <Stack.Screen
+          name="vehiculos/index"
+          options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
+        />
+        <Stack.Screen
+          name="vehiculos/[categoriaId]"
+          options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
+        />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>
