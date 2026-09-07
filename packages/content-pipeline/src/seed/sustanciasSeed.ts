@@ -89,7 +89,7 @@ function construirSustancia(input: SustanciaInput): Sustancia {
  *  - Heroína:               0,6 g/día → 3 g    | notoria importancia ~300 g (pura).
  *  - MDMA/éxtasis:          0,48 g/día → 2,4 g | notoria importancia ~240 g (pura).
  *  - Anfetamina/speed:      0,18 g/día → 0,9 g | notoria importancia ~90 g (pura).
- *  - Metanfetamina:         0,18 g/día → 0,9 g | notoria importancia ~90 g (pura).
+ *  - Metanfetamina:         0,06 g/día → 0,3 g | notoria importancia ~30 g (pura, más potente).
  */
 export const SUSTANCIAS_SEED: Sustancia[] = [
   construirSustancia({
@@ -178,11 +178,13 @@ export const SUSTANCIAS_SEED: Sustancia[] = [
     id: 'metanfetamina',
     nombre: 'Metanfetamina',
     aliases: ['metanfetamina', 'cristal', 'meth', 'tiza', 'hielo', 'crystal'],
-    umbralConsumoDiarioMg: 180, // ~0,18 g/día de metanfetamina pura
-    umbralAcopioG: 0.9,
+    umbralConsumoDiarioMg: 60, // ~0,06 g/día de metanfetamina pura (más potente que la anfetamina)
+    umbralAcopioG: 0.3,
     notasPureza: PUREZA_REDUCIR,
     notaRevision:
-      'Verificar la dosis diaria y el umbral de notoria importancia de metanfetamina con la ' +
-      'tabla del INTCF y la jurisprudencia (a menudo asimilada a la anfetamina).',
+      'Verificar con la tabla del CGPJ/INTCF vigente: la metanfetamina NO se asimila a la ' +
+      'anfetamina, la jurisprudencia la trata con umbral inferior por su mayor potencia (dosis ' +
+      'diaria ~60 mg, acopio ~0,3 g, notoria importancia 30 g, frente a 180 mg / 0,9 g / 90 g de ' +
+      'la anfetamina).',
   }),
 ];
