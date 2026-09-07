@@ -8,11 +8,14 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import type { Gravedad, TipoInfraccion } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
+import { severityFromGravedad, severityMeta } from '@/ui/theme';
 import { Badge } from '@/ui/components/Badge';
 import { Banner } from '@/ui/components/Banner';
+import { Button } from '@/ui/components/Button';
 import { Card } from '@/ui/components/Card';
 import { SeverityChip } from '@/ui/components/SeverityChip';
 import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
@@ -48,6 +51,7 @@ type EstadoCarga = 'cargando' | 'ok' | 'no-encontrada' | 'sin-contenido';
 export function FichaScreen({ infraccionId }: FichaScreenProps) {
   const t = useAppTheme();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const [estado, setEstado] = useState<EstadoCarga>('cargando');
   const [ficha, setFicha] = useState<FichaInfraccion | null>(null);
@@ -207,6 +211,25 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         ) : null}
 
         <CopyBulletinButton texto={textoCopiable} />
+
+        {/* 9. Generar documento: prerrellena el boletín con norma, artículo, importe y hecho. */}
+        <Button
+          title="Generar documento"
+          variant="secondary"
+          accessibilityHint="Abre el boletín de denuncia con estos datos ya rellenos"
+          onPress={() => {
+            const params: Record<string, string> = {
+              plantillaId: 'seed-boletin-denuncia',
+              norma: ficha.normaCodigo,
+              articulo: `art. ${ficha.articuloNumero}`,
+              hecho: textoCopiable,
+              gravedad: severityMeta[severityFromGravedad(ficha.gravedad)].label,
+            };
+            if (ficha.importeEur !== null) params.importe = formatEuros(ficha.importeEur);
+            if (ficha.puntos !== null) params.puntos = String(ficha.puntos);
+            router.push({ pathname: '/documento/[plantillaId]', params });
+          }}
+        />
       </View>
 
       {/* 6. Consecuencias con su fuente (orientativas, §4.6). */}

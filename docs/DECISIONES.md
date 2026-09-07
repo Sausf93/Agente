@@ -407,6 +407,58 @@ publicar `@agente/shared` compilado (`dist`) en vez de como fuente.
   intermedio "capítulo" (el paquete no modela capítulos: la navegación es norma → artículo, con el
   apartado localizable dentro del texto, coherente con la granularidad de `Articulo` de §6.1).
 
+## ADR-017 · Documentos: motor de plantillas puro, seed en la app y PDF en el dispositivo
+
+- **Estado:** aceptada (implementada en `apps/mobile/src/features/documentos` y
+  `packages/shared/src/plantillas.ts`).
+- **Fecha:** 2026-09-07.
+- **Contexto:** la pestaña Documentos (§4.8) rellena plantillas y genera un PDF. Debe funcionar
+  offline, en Expo Go y sin enviar datos de terceros ni el PDF a ningún servidor (no hay servidor
+  en v1; ADR-001/002). Es el pilar "ahorra trabajo de oficina".
+
+### Decisiones
+
+1. **Motor de plantillas PURO en `@agente/shared`** (`renderPlantilla`, `extraerVariables`):
+   sustituye `{{campo}}` en **una sola pasada** (el valor inyectado no se reescanea → sin
+   reentrada), tolera espacios en las llaves, y devuelve los `camposFaltantes` (que se imprimen
+   como línea a rellenar). Fuente única del tipo `Plantilla`. Testeado al 100 %.
+2. **Seed de plantillas ESTÁTICO en la app** (`plantillasSeed.ts`), NO en el paquete SQLite
+   firmado, en v1: permite iterarlas durante la beta sin regenerar/re-firmar el paquete y mantiene
+   todo offline. Tres plantillas clave: **boletín de denuncia administrativa**, **acta de
+   inmovilización** y **diligencia de identificación**. Un test valida cada seed contra el esquema
+   `Plantilla` y comprueba 1:1 que cada `{{variable}}` tiene su descriptor de campo. Cuando el
+   panel de administración las edite, se moverán al paquete **sin cambiar el contrato** de la app.
+3. **Encabezado NEUTRO**: cuerpo y unidad son **texto** que rellena el agente (campos del agente,
+   no de terceros); la app no imprime escudos ni denominaciones oficiales por defecto (§10).
+4. **Datos de terceros solo en el dispositivo (regla innegociable):** los campos de vehículo/
+   persona van marcados `esDatoTercero`, se piden en una sección aparte con **aviso fijo** y
+   **NUNCA se persisten como borrador ni se prerrellenan** (ni desde la ficha ni desde lo
+   recordado). Solo se "recuerdan" campos del agente marcados `recordar` (p. ej. su unidad), en una
+   tabla local nueva `documento_campo_recordado` (`user.db`, migración `user_version = 6`). El PDF
+   tampoco se guarda ni se sube.
+5. **PDF EN EL DISPOSITIVO con `expo-print`** (HTML → PDF; va en Expo Go). El Markdown relleno se
+   convierte a HTML de imprenta con un conversor **propio, puro y testeado** que **escapa** todo el
+   texto (un valor con `<`/`&`/comillas no rompe ni inyecta marcado). Página A4 sobria y neutra con
+   pie fijo: "generado en el dispositivo… no se ha enviado a ningún servidor… sin carácter oficial".
+6. **Compartir/enviar desde el propio teléfono:** `expo-sharing` (hoja de compartir con el PDF
+   adjunto → Mail, WhatsApp, Archivos/Guardar) como vía principal para "enviar a mi correo"; y
+   `mailto` (`expo-linking`/`Linking`) con una copia **en texto** del documento como atajo. Ninguna
+   sube el PDF a un backend. Cero dependencias que rompan Expo Go.
+7. **Entrada desde la ficha** ("Generar documento", §4.4 acción 9): abre el boletín con norma,
+   artículo, importe, puntos, gravedad y hecho ya rellenos vía parámetros de ruta; el prefill se
+   aplica SOLO a campos del agente (los de terceros nunca llegan por la ruta).
+8. **Lenguaje orientativo** en lo sensible (§4.6): las actas dicen "procede según el precepto
+   citado", nunca imperativo, y remiten la valoración final al agente/autoridad judicial.
+
+### Consecuencias
+
+- `lint`, `typecheck` y `test` en verde (shared 87, mobile 109) y `expo export --platform ios`
+  compila (3175 módulos, con `expo-print`/`expo-sharing`).
+- **Pendiente / siguiente iteración:** autocompletar el PK del lugar desde el mapa (§4.10, Fase 4);
+  las otras tres plantillas de §4.8 (intervención de sustancias, lectura de derechos, información a
+  la víctima); escudo opcional subido por el agente desde su galería; edición de plantillas desde el
+  panel y su viaje en el paquete de contenido; y un botón "Copiar texto" del documento.
+
 ## Decisiones aún abiertas (de la spec §13 y de las perspectivas)
 
 - Nombre e icono definitivos. Candidatos finalistas del análisis de marca: **Baliza**

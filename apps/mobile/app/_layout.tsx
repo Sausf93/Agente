@@ -56,6 +56,10 @@ export default function RootLayout() {
           name="feedback"
           options={{ headerShown: true, title: 'Sugerencias', presentation: 'card' }}
         />
+        <Stack.Screen
+          name="documento/[plantillaId]"
+          options={{ headerShown: true, title: 'Documento', presentation: 'card' }}
+        />
       </Stack>
     </SafeAreaProvider>
   );
