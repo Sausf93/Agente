@@ -122,11 +122,71 @@ const ART_CP_468 = articuloCp({
     'impone en todo caso pena de prisión. Resumen orientativo; consúltese el texto consolidado.',
 });
 
+const ART_CP_550 = articuloCp({
+  numero: '550',
+  titulo: 'Atentado contra la autoridad, sus agentes y los funcionarios públicos',
+  texto:
+    'Castiga como atentado agredir a la autoridad, a sus agentes o a los funcionarios públicos, o ' +
+    'emplear intimidación grave o violencia contra ellos cuando se hallen en el ejercicio de sus ' +
+    'funciones o con ocasión de ellas. Se agrava, entre otros supuestos, cuando se emplean armas u ' +
+    'objetos peligrosos. La resistencia o desobediencia grave sin llegar al atentado se castiga por ' +
+    'el art. 556. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_368 = articuloCp({
+  numero: '368',
+  titulo: 'Tráfico de drogas',
+  texto:
+    'Castiga a quienes ejecuten actos de cultivo, elaboración o tráfico, o de otro modo promuevan, ' +
+    'favorezcan o faciliten el consumo ilegal de drogas tóxicas, estupefacientes o sustancias ' +
+    'psicotrópicas, o las posean con esos fines. La pena es mayor si la sustancia causa grave daño ' +
+    'a la salud (p. ej. cocaína, heroína) que si no lo causa (p. ej. hachís). El consumo o la ' +
+    'tenencia para el consumo propio NO es delito (puede ser infracción de la LO 4/2015). La ' +
+    'calificación consumo/tráfico corresponde a la autoridad judicial. Resumen orientativo.',
+});
+
+const ART_CP_169 = articuloCp({
+  numero: '169',
+  titulo: 'Amenazas',
+  texto:
+    'Castiga a quien amenaza a otro con causarle a él, a su familia o a personas con las que esté ' +
+    'íntimamente vinculado un mal que constituya delito (homicidio, lesiones, etc.). La pena es ' +
+    'mayor cuando la amenaza es condicional (se exige una cantidad o se impone una condición) y ' +
+    'según se consiga o no el propósito. Las amenazas de un mal que no es delito y las leves se ' +
+    'regulan en los arts. 171 y 173. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_263 = articuloCp({
+  numero: '263',
+  titulo: 'Daños',
+  texto:
+    'Castiga a quien causa daños en propiedad ajena no comprendidos en otros títulos del Código, ' +
+    'cuando la cuantía del daño excede de 400 euros. Los daños de 400 euros o menos se castigan ' +
+    'como delito leve. Existen tipos agravados (daños a bienes de servicio público, patrimonio ' +
+    'histórico, con incendio, etc.). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_241 = articuloCp({
+  numero: '241',
+  titulo: 'Robo con fuerza en casa habitada, edificio público o local abierto al público',
+  texto:
+    'Agrava el robo con fuerza en las cosas (arts. 237 a 240) cuando se comete en casa habitada, en ' +
+    'alguna de sus dependencias, o en edificio o local abiertos al público o en sus dependencias. Se ' +
+    'considera casa habitada todo albergue que constituya morada de una o más personas, aunque ' +
+    'accidentalmente se encuentren ausentes cuando el robo tiene lugar. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_234,
   ART_CP_242,
   ART_CP_147,
   ART_CP_468,
+  ART_CP_550,
+  ART_CP_368,
+  ART_CP_169,
+  ART_CP_263,
+  ART_CP_241,
 ];
 
 // --- Constructor de un delito con su consecuencia de detención generada por el motor --------
@@ -352,6 +412,170 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'quebrantamientos, no privado de libertad) puede ser solo multa, lo que cambiaría la rama. ' +
       'Suele ser FLAGRANTE (el agente comprueba in situ el incumplimiento). Confirmar penas y el ' +
       'encaje del caso contra el texto consolidado del CP.',
+  }),
+  // --- Delitos añadidos para la Policía Nacional (ronda validadores de calle) ----------------
+  construirDelito({
+    id: 'del-atentado-agente',
+    articulo: ART_CP_550,
+    tituloCorto: 'Atentado a agente de la autoridad',
+    // Atentado contra agente (art. 550.2/551): prisión de 1 a 4 años → MENOS GRAVE (≤ 5 años).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 4 años y multa (atentado a agente de la autoridad, arts. 550-551 CP)',
+    textoBoletin:
+      'Agredir a un agente de la autoridad, o emplear intimidación grave o violencia contra él, ' +
+      'cuando se halla en el ejercicio de sus funciones o con ocasión de ellas (art. 550 CP). Si la ' +
+      'conducta no llega a atentado, puede ser resistencia o desobediencia grave (art. 556 CP) o ' +
+      'infracción administrativa (art. 36.6 LO 4/2015). La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'atentado',
+      'atentado a agente',
+      'agredir a un policia',
+      'agresion a agente de la autoridad',
+      'ha pegado a un agente',
+      'resistencia activa',
+      'resistirse con violencia',
+      'acometer a la policia',
+      'forcejeo con el agente',
+      'me ha agredido',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: atentado del art. 550 CP contra agente de la ' +
+      'autoridad → prisión de 1 a 4 años (art. 550.2), con agravantes del art. 551 (armas, objetos ' +
+      'peligrosos) → MENOS GRAVE. Distinguir de la resistencia/desobediencia grave (art. 556 CP, ' +
+      'prisión de 3 meses a 1 año) y de la infracción administrativa del art. 36.6 LO 4/2015 (sin ' +
+      'violencia/intimidación grave). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  construirDelito({
+    id: 'del-trafico-drogas',
+    articulo: ART_CP_368,
+    tituloCorto: 'Tráfico de drogas',
+    // Sustancias que causan grave daño a la salud (cocaína, heroína): prisión de 3 a 6 años →
+    // GRAVE (pena que puede superar los 5 años, art. 33 CP). Sin grave daño: 1 a 3 años.
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 3 a 6 años y multa (sustancias que causan grave daño a la salud, art. 368 CP)',
+    textoBoletin:
+      'Ejecutar actos de cultivo, elaboración o tráfico de drogas tóxicas, estupefacientes o ' +
+      'sustancias psicotrópicas, o promover, favorecer o facilitar su consumo ilegal, o poseerlas ' +
+      'con esos fines (art. 368 CP). La pena es mayor cuando la sustancia causa grave daño a la ' +
+      'salud. El consumo o la tenencia para el consumo propio NO es delito (puede ser infracción del ' +
+      'art. 36.16 LO 4/2015): la distinción se apoya en la cantidad, la forma de presentación y los ' +
+      'indicadores de tráfico (ver tabla de sustancias). La calificación corresponde a la autoridad judicial.',
+    terminos: [
+      'trafico de drogas',
+      'venta de droga',
+      'vender droga',
+      'trapicheo',
+      'camello',
+      'menudeo',
+      'pillar para vender',
+      'droga para vender',
+      'papelinas para vender',
+      'punto de venta de droga',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la clasificación: tráfico del art. 368 CP → prisión de 3 a 6 ' +
+      'años si la sustancia causa GRAVE DAÑO a la salud (cocaína, heroína…) → GRAVE (art. 33 CP); de ' +
+      '1 a 3 años en otro caso (hachís, marihuana) → MENOS GRAVE, lo que cambiaría la rama de ' +
+      'detención. El subtipo atenuado (art. 368.2, escasa entidad) también rebaja la pena. La ' +
+      'frontera consumo/tráfico es JUDICIAL y se apoya en la tabla de sustancias (§4.7). Confirmar ' +
+      'penas y encaje contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  construirDelito({
+    id: 'del-amenazas',
+    articulo: ART_CP_169,
+    tituloCorto: 'Amenazas',
+    // Amenazar con un mal constitutivo de delito (art. 169): prisión de 1 a 5 años (condicional
+    // conseguido el propósito) → MENOS GRAVE. Los tramos inferiores también son menos graves.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 5 años (amenaza de un mal constitutivo de delito, art. 169 CP)',
+    textoBoletin:
+      'Amenazar a otra persona con causarle a ella, a su familia o a personas con las que esté ' +
+      'íntimamente vinculada un mal que constituya delito, como matarla o lesionarla (art. 169 CP). ' +
+      'La pena varía según la amenaza sea o no condicional y se consiga o no el propósito. Las ' +
+      'amenazas de un mal que no es delito (art. 171) y las amenazas leves (art. 171.7) tienen pena ' +
+      'menor. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'amenazas',
+      'amenazar',
+      'me ha amenazado',
+      'amenaza de muerte',
+      'te voy a matar',
+      'coaccion',
+      'amenaza con un cuchillo',
+      'intimidacion',
+      'amenaza condicional',
+      'chantaje',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: amenazas de un mal constitutivo de delito ' +
+      '(art. 169 CP) → prisión de 1 a 5 años si es condicional y se consigue el propósito; tramos ' +
+      'inferiores si no. Todos → MENOS GRAVE. Distinguir de las amenazas de un mal NO constitutivo ' +
+      'de delito (art. 171), las coacciones (art. 172) y las amenazas LEVES (art. 171.7), que son ' +
+      'delito leve y cambiarían la rama de detención (art. 495 LECrim). Confirmar penas y encaje.',
+  }),
+  construirDelito({
+    id: 'del-danos',
+    articulo: ART_CP_263,
+    tituloCorto: 'Daños',
+    // Daños del art. 263.1 (cuantía > 400 €): multa de 6 a 24 meses → MENOS GRAVE (multa de más
+    // de 3 meses, art. 33.3 CP). Los daños ≤ 400 € son delito leve (art. 263.1, párr. 2º).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Multa de 6 a 24 meses (daños cuya cuantía excede de 400 €, art. 263.1 CP)',
+    textoBoletin:
+      'Causar daños en propiedad ajena no comprendidos en otros títulos del Código Penal, cuando la ' +
+      'cuantía del daño excede de 400 euros (art. 263.1 CP). Si el daño es de 400 euros o menos, es ' +
+      'delito leve. Existen tipos agravados (bienes de servicio o utilidad pública, patrimonio ' +
+      'histórico, mediante incendio, etc.). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'daños',
+      'rotura de mobiliario urbano',
+      'vandalismo',
+      'romper el retrovisor',
+      'pintadas',
+      'grafiti',
+      'ha roto un cristal',
+      'destrozos',
+      'rayar un coche',
+      'romper el escaparate',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la frontera leve/menos grave: daños del art. 263.1 CP → multa ' +
+      'de 6 a 24 meses cuando la cuantía EXCEDE de 400 € → MENOS GRAVE; con cuantía de 400 € o menos ' +
+      'es DELITO LEVE (multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. Comprobar los ' +
+      'tipos agravados del art. 263.2 (bienes públicos, patrimonio histórico, incendio). El grafiti/' +
+      'pintada puede ir por el art. 263 o por deslucimiento (art. 323). Confirmar penas y encaje.',
+  }),
+  construirDelito({
+    id: 'del-robo-fuerza-casa-habitada',
+    articulo: ART_CP_241,
+    tituloCorto: 'Robo con fuerza en casa habitada',
+    // Robo con fuerza en casa habitada (art. 241.1): prisión de 2 a 5 años → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 2 a 5 años (robo con fuerza en casa habitada, art. 241.1 CP)',
+    textoBoletin:
+      'Apoderarse de cosas muebles ajenas empleando fuerza en las cosas (escalamiento, rotura, ' +
+      'llaves falsas, inutilización de alarmas…) para acceder al lugar, cuando el robo se comete en ' +
+      'casa habitada, en sus dependencias o en edificio o local abiertos al público (arts. 237-241 ' +
+      'CP). Se considera casa habitada el albergue que constituye morada, aunque sus moradores estén ' +
+      'accidentalmente ausentes. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'robo en casa',
+      'robo en vivienda',
+      'robo con fuerza',
+      'butron',
+      'escalo',
+      'han entrado a robar en un piso',
+      'robo en domicilio',
+      'fuerza en las cosas',
+      'reventar la cerradura',
+      'alunizaje',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena: robo con fuerza en casa habitada (art. 241.1 CP) → prisión de ' +
+      '2 a 5 años → MENOS GRAVE; agravado (art. 241.2/241.4, organización o especial gravedad) puede ' +
+      'elevarse. Distinguir del robo con fuerza NO en casa habitada (art. 240, prisión de 1 a 3 años) ' +
+      'y del hurto (sin fuerza). Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
 ];
 

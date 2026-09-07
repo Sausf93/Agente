@@ -166,6 +166,113 @@ export function tilesFicha(
   return tiles;
 }
 
+/**
+ * ACCIÓN OPERATIVA (rediseño 2026-09, feedback "validadores de calle"): lo PRIMERO que decide un
+ * agente en el arcén o la vía no es el importe, sino QUÉ HACE con el vehículo o la persona. Se
+ * deriva del set de `consecuencias` de la ficha y se pinta ARRIBA DEL TODO como un chip grande.
+ *
+ * Reglas (de más a menos coercitiva; gana la primera que aparezca):
+ *  detención → depósito/grúa → inmovilización → decomiso → retirada de permiso.
+ * Si NO hay ninguna medida coercitiva:
+ *  - ficha `penal`: `null` (manda el bloque penal; no forzamos un "sigue" que sería falso).
+ *  - resto: estado POSITIVO explícito `sigue` ("el vehículo/persona sigue · solo denuncia"), tan
+ *    visible como el rojo para que el agente no tenga que interpretar la ausencia de aviso.
+ *
+ * Colores del chip: SIEMPRE semánticos FIJOS (no el acento por cuerpo). `coercitivo` = rojo,
+ * `positivo` = verde. Lenguaje ORIENTATIVO: la detención se enuncia como "atestado + detención",
+ * nunca en imperativo ("detén"); la valoración final es del agente y, en su caso, del juez.
+ */
+export type AccionOperativaKind =
+  | 'sigue'
+  | 'inmovilizacion'
+  | 'deposito'
+  | 'decomiso'
+  | 'retirada'
+  | 'detencion';
+
+export interface AccionOperativa {
+  kind: AccionOperativaKind;
+  /** Etiqueta corta y contundente para el chip grande (leer-primero). */
+  titulo: string;
+  /** Subtexto orientativo de una línea. */
+  detalle: string;
+  /** Fuente (artículo) de la consecuencia que la origina; `null` en el estado positivo. */
+  fuente: string | null;
+  /** Tono semántico FIJO: `coercitivo` (rojo) o `positivo` (verde). Nunca el acento por cuerpo. */
+  tono: 'coercitivo' | 'positivo';
+}
+
+/** Orden de prioridad: la medida más coercitiva manda sobre el resto si concurren varias. */
+const PRIORIDAD_COERCITIVA: {
+  tipo: TipoConsecuencia;
+  kind: AccionOperativaKind;
+  titulo: string;
+  detalle: string;
+}[] = [
+  {
+    tipo: 'detencion',
+    kind: 'detencion',
+    titulo: 'Atestado + detención',
+    detalle: 'Procede instruir atestado; valora la detención según el precepto citado.',
+  },
+  {
+    tipo: 'deposito',
+    kind: 'deposito',
+    titulo: 'Grúa y depósito',
+    detalle: 'Procede la retirada del vehículo al depósito.',
+  },
+  {
+    tipo: 'inmovilizacion',
+    kind: 'inmovilizacion',
+    titulo: 'Inmovilizo el vehículo',
+    detalle: 'El vehículo no continúa hasta subsanar la causa.',
+  },
+  {
+    tipo: 'decomiso',
+    kind: 'decomiso',
+    titulo: 'Intervengo · decomiso',
+    detalle: 'Procede la intervención del objeto o la sustancia.',
+  },
+  {
+    tipo: 'retirada_permiso',
+    kind: 'retirada',
+    titulo: 'Retirada de permiso',
+    detalle: 'Procede la retirada del permiso o licencia según el precepto.',
+  },
+];
+
+/**
+ * Deriva la acción operativa de una ficha a partir de su `fichaKind` y del set de consecuencias.
+ * Puro y testeable (no depende de React ni del tema).
+ */
+export function accionOperativaFrom(input: {
+  fichaKind: FichaKind;
+  consecuencias: { tipo: TipoConsecuencia; fuente: string }[];
+}): AccionOperativa | null {
+  for (const regla of PRIORIDAD_COERCITIVA) {
+    const encontrada = input.consecuencias.find((c) => c.tipo === regla.tipo);
+    if (encontrada) {
+      return {
+        kind: regla.kind,
+        titulo: regla.titulo,
+        detalle: regla.detalle,
+        fuente: encontrada.fuente,
+        tono: 'coercitivo',
+      };
+    }
+  }
+  // Sin medida coercitiva: en un delito no forzamos "sigue" (sería falso); manda el bloque penal.
+  if (input.fichaKind === 'penal') return null;
+  const sujeto = input.fichaKind === 'seguridad_ciudadana' ? 'La persona' : 'El vehículo';
+  return {
+    kind: 'sigue',
+    titulo: `${sujeto} sigue · solo denuncia`,
+    detalle: 'Sin medida sobre el vehículo o la persona: únicamente se formula el boletín.',
+    fuente: null,
+    tono: 'positivo',
+  };
+}
+
 /** Parseo tolerante del JSON de `regla` de una consecuencia (defensivo ante contenido inesperado). */
 function parseRegla(json: string): Record<string, unknown> | null {
   try {

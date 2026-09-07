@@ -1,12 +1,12 @@
 {
   "version": "0.1.0",
-  "fecha": "2026-09-07T20:34:43.931Z",
+  "fecha": "2026-09-07T21:00:52.677Z",
   "schemaVersion": 1,
-  "hash": "176547fd987b0ee06192d481cce5e723cf539b88a2ecdc0414c31c5518c141f8",
-  "tamanoBytes": 12574720,
+  "hash": "73b55fddcffd3613eda31c20d4094a309b113034f69e987f15c56b6f34903dcb",
+  "tamanoBytes": 12632064,
   "algoritmoFirma": "ed25519",
   "firma": null,
   "changelog": {
-    "resumen": "Carga inicial: infracciones de tráfico (seed de calle + RGC), primeros delitos penales (hurto, robo con violencia, lesiones y quebrantamiento) con orientación de detención según LECrim, infracciones de seguridad ciudadana (LO 4/2015) y la tabla de sustancias (§4.7): umbrales orientativos consumo/tráfico (INTCF + Acuerdo Sala 2ª TS 19/10/2001), todo pendiente de revisión."
+    "resumen": "Ronda de contenido \"de calle\" (tres cuerpos): tráfico (seed + RGC) ampliado con conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). Todo el contenido nuevo queda PENDIENTE DE REVISIÓN."
   }
 }

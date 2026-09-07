@@ -61,14 +61,51 @@ export const RANGO_IMPORTE_VELOCIDAD = { min: 100, max: 600 } as const;
 export const RANGO_IMPORTE_ALCOHOL_DROGAS = { min: 500, max: 1_000 } as const;
 
 /**
+ * Rango de importe del TRANSPORTE por carretera (LOTT, Ley 16/1987, art. 143; y su Reglamento).
+ * Cubre las infracciones de transporte que un agente de tráfico ve en la calle (manipulación o
+ * mal uso del tacógrafo, exceso de tiempos de conducción del Rgto (CE) 561/2006, exceso de masa,
+ * etc.). La sanción se gradúa en tramos amplios según la gravedad (leve/grave/muy grave), por lo
+ * que se modela con un rango único graduable en lugar de un valor fijo. Fuente: LOTT
+ * (BOE-A-1987-17803) art. 143. Marcar "a verificar" ante cambios (la Ley 13/2021 reformó el cuadro).
+ */
+export const RANGO_IMPORTE_TRANSPORTE = { min: 100, max: 4_000 } as const;
+
+/**
+ * Rangos de importe de EXTRANJERÍA (LO 4/2000, art. 55.1). La estancia irregular y demás
+ * infracciones administrativas de extranjería se sancionan por tramos: leves hasta 500 €; graves
+ * de 501 a 10.000 €; muy graves de 10.001 a 100.000 €. IMPORTANTE: en la estancia irregular la
+ * sanción PRINCIPAL suele ser la expulsión (art. 57), no la multa; el importe es orientativo.
+ * Fuente: LO 4/2000 (BOE-A-2000-544) art. 55.1. Marcar "a verificar" ante cambios.
+ */
+export const RANGOS_IMPORTE_EXTRANJERIA = {
+  leve: { min: 0, max: 500 },
+  grave: { min: 501, max: 10_000 },
+  muy_grave: { min: 10_001, max: 100_000 },
+} as const;
+
+/**
+ * Rangos de importe de ANIMALES POTENCIALMENTE PELIGROSOS (Ley 50/1999, art. 13.5): la tenencia
+ * de un PPP sin licencia, sin seguro o sin bozal en la vía pública se sanciona por tramos: leves
+ * de 60,10 a 150,25 €; graves de 150,25 a 1.502,53 €; muy graves de 1.502,54 a 15.025,30 €.
+ * Fuente: Ley 50/1999 (BOE-A-1999-24419) art. 13.5. Las ordenanzas municipales pueden concretar
+ * o endurecer; marcar "a verificar".
+ */
+export const RANGOS_IMPORTE_ANIMALES = {
+  leve: { min: 60.1, max: 150.25 },
+  grave: { min: 150.25, max: 1_502.53 },
+  muy_grave: { min: 1_502.54, max: 15_025.3 },
+} as const;
+
+/**
  * Marco normativo con el que interpretar los rangos de importe.
- * `trafico` y `seguridad_ciudadana` tienen rangos legales fijos que se validan.
- * `seguro_obligatorio`, `velocidad` y `alcohol_drogas` tienen un rango único legal graduable
- * (sin tramos por gravedad), modelados aparte porque no encajan en los tramos fijos de tráfico.
- * `municipal` y `autonomico` no tienen un rango único (varía por ordenanza/comunidad):
- * solo se valida coherencia (presencia y reducido ≤ base) y queda para revisión a dos ojos.
- * `penal` marca los DELITOS (vía penal): no llevan importe administrativo, `validarImporte`
- * corta de inmediato para ellos (la pena la fija el Código Penal, no un rango de multa).
+ * `trafico`, `seguridad_ciudadana`, `extranjeria` y `animales` tienen rangos legales POR
+ * GRAVEDAD que se validan. `seguro_obligatorio`, `velocidad`, `alcohol_drogas` y `transporte`
+ * tienen un rango único legal graduable (sin tramos por gravedad), modelados aparte porque no
+ * encajan en los tramos fijos de tráfico. `municipal` y `autonomico` no tienen un rango único
+ * (varía por ordenanza/comunidad): solo se valida coherencia (presencia y reducido ≤ base) y
+ * queda para revisión a dos ojos. `penal` marca los DELITOS (vía penal): no llevan importe
+ * administrativo, `validarImporte` corta de inmediato para ellos (la pena la fija el Código
+ * Penal, no un rango de multa).
  */
 export type MarcoImporte =
   | 'trafico'
@@ -76,6 +113,9 @@ export type MarcoImporte =
   | 'seguro_obligatorio'
   | 'velocidad'
   | 'alcohol_drogas'
+  | 'transporte'
+  | 'extranjeria'
+  | 'animales'
   | 'municipal'
   | 'autonomico'
   | 'penal';
@@ -125,6 +165,7 @@ export function validarImporte(
     seguro_obligatorio: RANGO_IMPORTE_SEGURO_OBLIGATORIO,
     velocidad: RANGO_IMPORTE_VELOCIDAD,
     alcohol_drogas: RANGO_IMPORTE_ALCOHOL_DROGAS,
+    transporte: RANGO_IMPORTE_TRANSPORTE,
   };
   const rangoUnico = rangosUnicos[marco];
   if (rangoUnico) {
@@ -138,8 +179,18 @@ export function validarImporte(
     return problemas;
   }
 
-  const tabla = marco === 'trafico' ? RANGOS_IMPORTE_TRAFICO : RANGOS_IMPORTE_SEGURIDAD_CIUDADANA;
-  const rango = tabla[infraccion.gravedad];
+  // Marcos con tabla de rangos POR GRAVEDAD (leve/grave/muy grave).
+  const tablasPorGravedad: Partial<
+    Record<MarcoImporte, Record<'leve' | 'grave' | 'muy_grave', { min: number; max: number }>>
+  > = {
+    trafico: RANGOS_IMPORTE_TRAFICO,
+    seguridad_ciudadana: RANGOS_IMPORTE_SEGURIDAD_CIUDADANA,
+    extranjeria: RANGOS_IMPORTE_EXTRANJERIA,
+    animales: RANGOS_IMPORTE_ANIMALES,
+  };
+  const tabla = tablasPorGravedad[marco] ?? RANGOS_IMPORTE_TRAFICO;
+  // Los delitos ya se cortaron arriba; aquí la gravedad es leve/grave/muy_grave.
+  const rango = tabla[infraccion.gravedad as 'leve' | 'grave' | 'muy_grave'];
 
   if (infraccion.importeEur < rango.min || infraccion.importeEur > rango.max) {
     problemas.push({

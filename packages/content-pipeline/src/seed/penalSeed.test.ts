@@ -15,8 +15,8 @@ const idsArticulos = new Set(SEED_PENAL.articulos.map((a) => a.id));
 const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_PENAL: integridad de los delitos', () => {
-  it('siembra 4 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(4);
+  it('siembra 9 delitos, todos por vía penal y sin importe administrativo', () => {
+    expect(SEED_PENAL.infracciones).toHaveLength(9);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -99,12 +99,24 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
     expect(new Set(artIds).size).toBe(artIds.length);
   });
 
-  it('conserva los artículos penales del CP (383 de tráfico + 234/242/147/468)', () => {
+  it('conserva los artículos penales del CP (tráfico 380/383 + penal 147/169/234/241/242/263/368/468/550)', () => {
     const numerosCp = combinado.articulos
       .filter((a) => a.normaId === 'BOE-A-1995-25444')
       .map((a) => a.numero)
       .sort();
-    expect(numerosCp).toEqual(['147', '234', '242', '383', '468']);
+    expect(numerosCp).toEqual([
+      '147',
+      '169',
+      '234',
+      '241',
+      '242',
+      '263',
+      '368',
+      '380',
+      '383',
+      '468',
+      '550',
+    ]);
   });
 
   it('suma las infracciones de ambos seeds', () => {

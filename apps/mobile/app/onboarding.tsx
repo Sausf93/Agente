@@ -399,7 +399,7 @@ function Paso2({
         />
         <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
           {esLocal
-            ? 'Obligatorio para Policía Local: activa la ordenanza de tu municipio.'
+            ? 'Obligatorio para Policía Local. Guardamos tu municipio para activar sus ordenanzas en cuanto estén disponibles (próximamente).'
             : 'Solo obligatorio para Policía Local.'}
         </Text>
       </View>

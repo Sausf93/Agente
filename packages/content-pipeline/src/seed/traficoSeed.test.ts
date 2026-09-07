@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 15 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(15);
+  it('siembra 20 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(20);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -39,6 +39,27 @@ describe('SEED_TRAFICO: integridad', () => {
       expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
       expect(item.notaRevision.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('SEED_TRAFICO: relevancia por cuerpo (bug E-03, filtro de Normas)', () => {
+  it('las normas de tráfico NO se etiquetan para la Policía Nacional', () => {
+    // RGC, LSV, RGV, LRCSCVM y LOTT son de tráfico: un PN no las lleva de oficio.
+    for (const codigo of ['RGC', 'LSV', 'RGV', 'LRCSCVM', 'LOTT']) {
+      const norma = SEED_TRAFICO.normas.find((n) => n.codigo === codigo);
+      expect(norma, codigo).toBeDefined();
+      expect(norma!.cuerpos, codigo).not.toContain('policia_nacional');
+      expect(norma!.cuerpos, codigo).toEqual([
+        'guardia_civil',
+        'policia_local',
+        'policia_autonomica',
+      ]);
+    }
+  });
+
+  it('el Código Penal SÍ es relevante para todos los cuerpos', () => {
+    const cp = SEED_TRAFICO.normas.find((n) => n.codigo === 'CP');
+    expect(cp!.cuerpos).toContain('policia_nacional');
   });
 });
 

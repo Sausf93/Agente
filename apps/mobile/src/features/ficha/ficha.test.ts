@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { fichaKindFrom, tilesFicha, type FichaInfraccion } from './ficha';
+import type { TipoConsecuencia } from '@agente/shared';
+import { accionOperativaFrom, fichaKindFrom, tilesFicha, type FichaInfraccion } from './ficha';
 import { formatEuros } from './format';
 
 /**
@@ -140,5 +141,79 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
     });
     expect(ficha.fichaKind).toBe('administrativa');
     expect(tilesFicha(ficha, formatEuros).map((x) => x.etiqueta)).toEqual(['Importe']);
+  });
+});
+
+/**
+ * Tests de la ACCIÓN OPERATIVA (rediseño 2026-09, feedback "validadores de calle"): lo que el
+ * agente decide ANTES que el importe. Se deriva del set de consecuencias con prioridad por
+ * coerción y con estado POSITIVO explícito cuando no hay medida.
+ */
+describe('accionOperativaFrom — qué hace el agente con el vehículo/persona', () => {
+  const cons = (...tipos: TipoConsecuencia[]) =>
+    tipos.map((tipo) => ({ tipo, fuente: `art. X (${tipo})` }));
+
+  it('la detención manda sobre cualquier otra medida (prioridad máxima)', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'penal',
+      consecuencias: cons('deposito', 'detencion', 'inmovilizacion'),
+    });
+    expect(a).not.toBeNull();
+    expect(a?.kind).toBe('detencion');
+    expect(a?.tono).toBe('coercitivo');
+    expect(a?.fuente).toBe('art. X (detencion)');
+  });
+
+  it('grúa/depósito por delante de inmovilización', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'trafico',
+      consecuencias: cons('inmovilizacion', 'deposito'),
+    });
+    expect(a?.kind).toBe('deposito');
+    expect(a?.tono).toBe('coercitivo');
+  });
+
+  it('inmovilización cuando es la única medida', () => {
+    const a = accionOperativaFrom({ fichaKind: 'trafico', consecuencias: cons('inmovilizacion') });
+    expect(a?.kind).toBe('inmovilizacion');
+  });
+
+  it('retirada de permiso se reconoce como acción coercitiva', () => {
+    const a = accionOperativaFrom({ fichaKind: 'trafico', consecuencias: cons('retirada_permiso') });
+    expect(a?.kind).toBe('retirada');
+    expect(a?.tono).toBe('coercitivo');
+  });
+
+  it('la identificación NO es coercitiva: en tráfico el vehículo SIGUE (estado positivo)', () => {
+    const a = accionOperativaFrom({ fichaKind: 'trafico', consecuencias: cons('identificacion') });
+    expect(a?.kind).toBe('sigue');
+    expect(a?.tono).toBe('positivo');
+    expect(a?.fuente).toBeNull();
+    expect(a?.titulo).toMatch(/^El vehículo sigue/);
+  });
+
+  it('sin consecuencias, tráfico: estado POSITIVO explícito "el vehículo sigue · solo denuncia"', () => {
+    const a = accionOperativaFrom({ fichaKind: 'trafico', consecuencias: [] });
+    expect(a?.kind).toBe('sigue');
+    expect(a?.tono).toBe('positivo');
+    expect(a?.titulo).toContain('solo denuncia');
+  });
+
+  it('sin consecuencias, seguridad ciudadana: el sujeto es la PERSONA, no el vehículo', () => {
+    const a = accionOperativaFrom({ fichaKind: 'seguridad_ciudadana', consecuencias: [] });
+    expect(a?.kind).toBe('sigue');
+    expect(a?.titulo).toMatch(/^La persona sigue/);
+  });
+
+  it('un delito SIN medida coercitiva no fuerza un "sigue" falso: devuelve null (manda el bloque penal)', () => {
+    const a = accionOperativaFrom({ fichaKind: 'penal', consecuencias: [] });
+    expect(a).toBeNull();
+  });
+
+  it('un delito CON detención muestra "atestado + detención", coercitivo', () => {
+    const a = accionOperativaFrom({ fichaKind: 'penal', consecuencias: cons('detencion') });
+    expect(a?.kind).toBe('detencion');
+    expect(a?.titulo).toContain('detención');
+    expect(a?.tono).toBe('coercitivo');
   });
 });

@@ -4,7 +4,10 @@ import {
   Infraccion,
   Norma,
   Sinonimo,
+  CUERPOS_TODOS,
+  type Cuerpo,
   type EstadoRevision,
+  type GravedadPenal,
   type MarcoImporte,
   type Sustancia,
 } from '@agente/shared';
@@ -39,9 +42,19 @@ const ID_RGC = 'BOE-A-2003-23514'; // RD 1428/2003, Reglamento General de Circul
 const ID_LSV = 'BOE-A-2015-11722'; // RDL 6/2015, texto refundido de la Ley de Tráfico (LSV)
 const ID_RGV = 'BOE-A-1999-1826'; // RD 2822/1998, Reglamento General de Vehículos
 const ID_LRCSCVM = 'BOE-A-2004-18911'; // RDL 8/2004, seguro obligatorio (LRCSCVM)
+const ID_LOTT = 'BOE-A-1987-17803'; // Ley 16/1987, de Ordenación de los Transportes Terrestres (LOTT)
 const ID_CP = 'BOE-A-1995-25444'; // LO 10/1995, Código Penal (delitos contra la seguridad vial)
 
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
+
+/**
+ * Relevancia de las normas de TRÁFICO (columna `cuerpos` del paquete, §8.2). La consultan la
+ * Guardia Civil (Agrupación de Tráfico), las policías locales (tráfico urbano) y las autonómicas
+ * con competencia; la Policía Nacional NO la lleva de oficio. Debe COINCIDIR con `CUERPOS_TRAFICO`
+ * del catálogo (`catalogo.ts`): si el seed no etiqueta, `Norma` cae al default `CUERPOS_TODOS`
+ * (incluye policia_nacional) y un PN vería tráfico por error en la lista de Normas (bug E-03).
+ */
+const CUERPOS_TRAFICO: Cuerpo[] = ['guardia_civil', 'policia_local', 'policia_autonomica'];
 
 /**
  * Normas citadas por el seed. Se declaran aquí con su identidad BOE y URL oficial; la
@@ -57,6 +70,7 @@ export const NORMAS_SEED: Norma[] = [
     ambito: 'estatal',
     urlBoe: urlBoe(ID_RGC),
     fechaConsolidacion: null,
+    cuerpos: CUERPOS_TRAFICO,
   }),
   Norma.parse({
     id: ID_LSV,
@@ -66,6 +80,7 @@ export const NORMAS_SEED: Norma[] = [
     ambito: 'estatal',
     urlBoe: urlBoe(ID_LSV),
     fechaConsolidacion: null,
+    cuerpos: CUERPOS_TRAFICO,
   }),
   Norma.parse({
     id: ID_RGV,
@@ -75,6 +90,7 @@ export const NORMAS_SEED: Norma[] = [
     ambito: 'estatal',
     urlBoe: urlBoe(ID_RGV),
     fechaConsolidacion: null,
+    cuerpos: CUERPOS_TRAFICO,
   }),
   Norma.parse({
     id: ID_LRCSCVM,
@@ -85,6 +101,17 @@ export const NORMAS_SEED: Norma[] = [
     ambito: 'estatal',
     urlBoe: urlBoe(ID_LRCSCVM),
     fechaConsolidacion: null,
+    cuerpos: CUERPOS_TRAFICO,
+  }),
+  Norma.parse({
+    id: ID_LOTT,
+    codigo: 'LOTT',
+    titulo: 'Ley de Ordenación de los Transportes Terrestres (Ley 16/1987)',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_LOTT),
+    fechaConsolidacion: null,
+    cuerpos: CUERPOS_TRAFICO,
   }),
   Norma.parse({
     id: ID_CP,
@@ -94,6 +121,8 @@ export const NORMAS_SEED: Norma[] = [
     ambito: 'estatal',
     urlBoe: urlBoe(ID_CP),
     fechaConsolidacion: null,
+    // El Código Penal lo consultan TODOS los cuerpos (delitos contra la seguridad vial incluidos).
+    cuerpos: [...CUERPOS_TODOS],
   }),
 ];
 
@@ -270,6 +299,64 @@ const ART_CP_383 = articuloSeed({
     'o de la presencia de drogas. La valoración final corresponde a la autoridad judicial. Resumen orientativo.',
 });
 
+const ART_CP_380 = articuloSeed({
+  normaId: ID_CP,
+  numero: '380',
+  titulo: 'Conducción temeraria (delito contra la seguridad vial)',
+  texto:
+    'Castiga como delito conducir un vehículo a motor o ciclomotor con temeridad manifiesta ' +
+    'poniendo en concreto peligro la vida o la integridad de las personas. Se presume la temeridad ' +
+    'manifiesta cuando concurren un exceso de velocidad y una tasa de alcohol constitutivos de ' +
+    'delito (arts. 379.1 y 379.2 CP). Si además se condujera con manifiesto desprecio por la vida ' +
+    'de los demás, se aplica el art. 381. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_LOTT_140 = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140',
+  titulo: 'Infracciones muy graves en el transporte (tacógrafo y tiempos de conducción)',
+  texto:
+    'Tipifica como infracciones muy graves de la ordenación del transporte, entre otras, la ' +
+    'manipulación o el falseamiento del tacógrafo o del limitador de velocidad y de sus elementos, ' +
+    'la instalación de mecanismos para alterar su funcionamiento, y el incumplimiento de los tiempos ' +
+    'de conducción y descanso del Reglamento (CE) 561/2006. La sanción y el régimen de precinto los ' +
+    'fija el art. 143 y su reglamento. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_RGC_33 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '33',
+  titulo: 'Adelantamiento: ejecución y prohibiciones',
+  texto:
+    'Regula la forma de efectuar el adelantamiento y los casos en que está prohibido (cambios de ' +
+    'rasante, curvas de visibilidad reducida, pasos para peatones, y allí donde la señalización lo ' +
+    'prohíba). Rebasar una marca longitudinal continua para adelantar, o adelantar sin visibilidad ' +
+    'o sin espacio suficiente, es una infracción de circulación. Resumen orientativo.',
+});
+
+const ART_RGV_12 = articuloSeed({
+  normaId: ID_RGV,
+  numero: '12',
+  titulo: 'Condiciones técnicas del vehículo (neumáticos y demás elementos)',
+  texto:
+    'Exige que los vehículos que circulan por las vías públicas reúnan las condiciones técnicas ' +
+    'reglamentarias, incluidas las de sus neumáticos (dibujo, estado y presión). Circular con ' +
+    'neumáticos en mal estado —desgaste por debajo del mínimo legal, cortes o deformaciones que ' +
+    'comprometan la seguridad— es una deficiencia que puede motivar denuncia e inmovilización. ' +
+    'Resumen orientativo; consúltese el texto consolidado y el Manual de Procedimiento de ITV.',
+});
+
+const ART_RGV_25 = articuloSeed({
+  normaId: ID_RGV,
+  numero: '25',
+  titulo: 'Placas de matrícula',
+  texto:
+    'Regula las placas de matrícula del vehículo: su obligatoriedad, características y colocación de ' +
+    'forma que sean legibles y no estén ocultas, dobladas ni manipuladas. Circular con la matrícula ' +
+    'oculta, ilegible o alterada dificulta la identificación del vehículo y constituye infracción. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_99,
   ART_RGC_18,
@@ -279,13 +366,18 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_48,
   ART_RGC_94,
   ART_RGC_121,
+  ART_RGC_33,
   ART_RGV_10,
+  ART_RGV_12,
+  ART_RGV_25,
   ART_LRCSCVM_3,
   ART_LSV_104,
   ART_LSV_105,
   ART_LSV_14,
   ART_LSV_77,
+  ART_LOTT_140,
   ART_CP_383,
+  ART_CP_380,
 ];
 
 // --- Infracciones ---------------------------------------------------------------------------
@@ -318,6 +410,10 @@ interface InfraccionSeedInput {
   importeEur: number | null;
   importeReducidoEur: number | null;
   puntos: number | null;
+  /** Pena legible del delito para el bloque "Marco penal" de la ficha (solo vía penal). */
+  penaTexto?: string | null;
+  /** Gravedad penal (art. 33 CP) para el chip del marco penal (solo vía penal). */
+  gravedadPenal?: GravedadPenal | null;
   textoBoletin: string;
   terminos: string[];
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
@@ -342,6 +438,8 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     importeEur: input.importeEur,
     importeReducidoEur: input.importeReducidoEur,
     puntos: input.puntos,
+    penaTexto: input.penaTexto ?? null,
+    gravedadPenal: input.gravedadPenal ?? null,
     textoBoletin: input.textoBoletin,
     variantesBoletin: [],
     competencia: COMPETENCIA_TRAFICO,
@@ -737,6 +835,19 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'estacionar mal',
       'aparcar donde no se debe',
       'grua',
+      'zona azul',
+      'zona verde',
+      'ora',
+      'parquimetro',
+      'sin ticket',
+      'ticket caducado',
+      'excedido',
+      'pmr',
+      'plaza de minusvalidos',
+      'plaza de movilidad reducida',
+      'carga y descarga',
+      'c/d',
+      'aparcado en carga y descarga',
     ],
     consecuencias: [
       {
@@ -817,6 +928,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'dos en un patinete',
       'patinete dos personas',
       'patinete de noche',
+      'patin',
+      'dos en el patin',
+      'con auriculares',
+      'patinete con auriculares',
+      'patinete de menor',
+      'patinete sin seguro',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -900,6 +1017,204 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'redacción orientativa de la detención con el revisor jurídico (§4.6, lenguaje NUNCA ' +
       'imperativo) y si procede reflejar pérdida de puntos asociada. No es sanción administrativa: ' +
       'no lleva importe. Revisar antes de publicar.',
+  }),
+  // --- Fichas "de calle" añadidas para la Guardia Civil de Tráfico (ronda validadores) -------
+  construirInfraccion({
+    id: 'inf-conduccion-temeraria',
+    articulo: ART_CP_380,
+    tituloCorto: 'Conducción temeraria',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    penaTexto: 'Prisión de 6 meses a 2 años y privación del derecho a conducir de 1 a 6 años (art. 380 CP)',
+    gravedadPenal: 'menos_grave',
+    textoBoletin:
+      'Conducir un vehículo a motor o ciclomotor con temeridad manifiesta poniendo en concreto ' +
+      'peligro la vida o la integridad de las personas (art. 380 CP). Se presume la temeridad ' +
+      'manifiesta cuando concurren un exceso de velocidad y una tasa de alcohol constitutivos de ' +
+      'delito. Si además se conduce con manifiesto desprecio por la vida de los demás, procede el ' +
+      'art. 381 CP (pena superior). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'conduccion temeraria',
+      'temeraria',
+      'conducir de forma temeraria',
+      'conduccion peligrosa',
+      'poniendo en peligro',
+      'zigzag entre coches',
+      'circular en sentido contrario',
+      'conducir a lo loco',
+      'temerario',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante (art. 490 LECrim) procede valorar la detención; en un delito ' +
+          'menos grave la autoridad y sus agentes tienen el deber de detener cuando concurre una ' +
+          'causa del art. 490 (art. 492.1 LECrim). La valoración de los indicios y del riesgo ' +
+          'corresponde al agente y, en su caso, a la autoridad judicial.',
+        fuente: 'CP art. 380; LECrim arts. 490 y 492.1',
+      },
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la situación de riesgo ' +
+          '(art. 104 LSV) y la intervención del permiso de conducción.',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'penal',
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: conducción temeraria del art. 380 CP (prisión de ' +
+      '6 meses a 2 años → MENOS GRAVE); con manifiesto desprecio por la vida de los demás pasa al ' +
+      'art. 381 CP (prisión de 2 a 5 años, con posible rebaja del 381.2). Confirmar penas y la ' +
+      'presunción del art. 380.2 (exceso de velocidad + alcohol constitutivos de delito) contra el ' +
+      'texto consolidado del CP. Redacción de la detención a validar por el revisor jurídico (§4.6).',
+  }),
+  construirInfraccion({
+    id: 'inf-tacografo',
+    articulo: ART_LOTT_140,
+    tituloCorto: 'Manipulación del tacógrafo o exceso de tiempos',
+    gravedad: 'muy_grave',
+    // LOTT art. 143: tramo muy grave (referencia mínima 1.001 €); a verificar el importe exacto.
+    importeEur: 1001,
+    importeReducidoEur: null,
+    puntos: null,
+    textoBoletin:
+      'Manipular o falsear el tacógrafo, el limitador de velocidad o sus elementos (imanes, ' +
+      'emuladores, alteración de datos), o incumplir los tiempos de conducción y descanso del ' +
+      'Reglamento (CE) 561/2006. Es infracción muy grave de la LOTT (art. 140), sancionable con ' +
+      'multa y precinto/inmovilización, sin perjuicio de que la manipulación pueda ser constitutiva ' +
+      'de delito (falsedad). La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'tacografo',
+      'manipular tacografo',
+      'iman en el tacografo',
+      'tacografo manipulado',
+      'falsear el tacografo',
+      'tiempos de conduccion',
+      'exceso de jornada',
+      'no ha descansado',
+      'disco del tacografo',
+      'tarjeta de conductor',
+      'sin descanso',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo y del dispositivo ' +
+          'manipulado hasta que se subsane, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el importe y la clasificación exactos: la LOTT (art. 140/143, reformada por la ' +
+      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija 1.001 € ' +
+      'como referencia mínima del tramo, pendiente de confirmar contra el texto consolidado y su ' +
+      'reglamento (RD 1211/1990). A VERIFICAR además la frontera penal: la manipulación puede ser ' +
+      'delito de falsedad (arts. 390/395 CP), lo que abriría la vía penal. No detrae puntos DGT. ' +
+      'Consúltese el artículo para el importe efectivo. Revisar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'inf-adelantamiento-antirreglamentario',
+    articulo: ART_RGC_33,
+    tituloCorto: 'Adelantamiento antirreglamentario / línea continua',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'Adelantar de forma antirreglamentaria: sin visibilidad o espacio suficiente, en lugar ' +
+      'prohibido (cambio de rasante, curva, paso para peatones) o rebasando una marca longitudinal ' +
+      'continua. Es infracción grave de circulación (art. 33 y ss. RGC).',
+    terminos: [
+      'adelantamiento',
+      'adelantar en linea continua',
+      'linea continua',
+      'se salto la linea continua',
+      'adelantamiento prohibido',
+      'adelantar donde no se puede',
+      'adelantar en curva',
+      'pisar la continua',
+      'raya continua',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave, marco tráfico). A VERIFICAR los puntos: el adelantamiento ' +
+      'antirreglamentario y el rebasamiento de línea continua se citan con 3 o 4 puntos según el ' +
+      'supuesto (DGT); el seed fija 4, a confirmar por supuesto contra el codificado DGT. Distinguir ' +
+      'del adelantamiento con riesgo que pueda escalar a conducción temeraria (art. 380 CP). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-neumaticos-mal-estado',
+    articulo: ART_RGV_12,
+    tituloCorto: 'Neumáticos en mal estado',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con uno o varios neumáticos en mal estado: desgaste por debajo de la profundidad ' +
+      'mínima legal del dibujo, cortes, deformaciones o daños que comprometan la seguridad (RGV, ' +
+      'condiciones técnicas del vehículo).',
+    terminos: [
+      'neumaticos',
+      'ruedas',
+      'neumaticos gastados',
+      'rueda lisa',
+      'neumatico deteriorado',
+      'sin dibujo',
+      'rueda en mal estado',
+      'neumaticos desgastados',
+      'rueda pinchada circulando',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el estado de los neumáticos ' +
+          'suponga un riesgo grave para la seguridad, hasta que se subsane (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave, marco tráfico) como referencia. A VERIFICAR el precepto sancionador ' +
+      'exacto (RGV / condiciones técnicas y Manual de Procedimiento de ITV) y si el supuesto más ' +
+      'grave (varios neumáticos o riesgo manifiesto) eleva la clasificación. Confirmar contra el ' +
+      'codificado DGT antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-matricula-oculta',
+    articulo: ART_RGV_25,
+    tituloCorto: 'Matrícula oculta, ilegible o alterada',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con la placa de matrícula oculta, doblada, ilegible o alterada, de forma que se ' +
+      'dificulte la identificación del vehículo (RGV, placas de matrícula).',
+    terminos: [
+      'matricula oculta',
+      'matricula tapada',
+      'matricula ilegible',
+      'sin matricula',
+      'matricula doblada',
+      'matricula manipulada',
+      'placa tapada',
+      'matricula no se lee',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave, marco tráfico) como referencia. A VERIFICAR el precepto y la ' +
+      'clasificación exactos (RGV placas de matrícula; ocultación deliberada para eludir controles ' +
+      'puede ser MUY GRAVE, e incluso conectar con delitos de falsedad si la placa está falsificada). ' +
+      'Confirmar contra el codificado DGT y con el revisor jurídico antes de publicar.',
   }),
 ];
 

@@ -3,12 +3,21 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import {
   Bell,
+  Bike,
   CalendarClock,
   CalendarX,
   ChevronRight,
+  CircleParking,
+  Fingerprint,
+  Hand,
   Lightbulb,
+  Pill,
   RotateCcw,
+  ScrollText,
+  Search,
   ShieldOff,
+  ShoppingBag,
+  Siren,
   Smartphone,
   Sparkles,
   Star,
@@ -20,6 +29,7 @@ import {
   proyectarDia,
   resumenHorasMes,
   type Cuadrante,
+  type Cuerpo,
   type DiaProyectado,
 } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
@@ -35,6 +45,8 @@ import { colorServicio, SERVICIO_LABEL } from '@/features/cuadrante/servicioVisu
 import { useCuadranteStore } from '@/features/cuadrante/store';
 import type { Favorito } from '@/db/userDb';
 import { useRecientesStore } from '@/features/buscador/recientesStore';
+import { useSettingsStore } from '@/store/settings';
+import { accesosRapidosPara } from './accesosRapidos';
 import { useFavoritosStore } from './favoritosStore';
 import { useInicioStore } from './inicioStore';
 import type { InfraccionSnapshot, UsoInfraccion } from './masUsadas';
@@ -55,15 +67,26 @@ export interface HomeInicioProps {
   paddingBottom: number;
 }
 
-/** Accesos rápidos por defecto (§4.2). Términos de calle que el buscador resuelve por sinónimo. */
-const ACCESOS_RAPIDOS: { termino: string; icon: ComponentType<LucideProps> }[] = [
-  { termino: 'Sin seguro', icon: ShieldOff },
-  { termino: 'Móvil', icon: Smartphone },
-  { termino: 'Faro roto', icon: Lightbulb },
-  { termino: 'Alcoholemia', icon: Wine },
-  { termino: 'Sin ITV', icon: CalendarX },
-  { termino: 'Semáforo rojo', icon: TrafficCone },
-];
+/**
+ * Icono por término de acceso rápido (la lista de términos por cuerpo vive en `accesosRapidos.ts`,
+ * pura y testeable). Refuerza el término con un icono; si falta, cae a la lupa genérica.
+ */
+const ACCESO_ICON: Record<string, ComponentType<LucideProps>> = {
+  'Sin seguro': ShieldOff,
+  Móvil: Smartphone,
+  'Faro roto': Lightbulb,
+  Alcoholemia: Wine,
+  'Sin ITV': CalendarX,
+  'Semáforo rojo': TrafficCone,
+  'Zona azul': CircleParking,
+  Patinete: Bike,
+  Desobediencia: Hand,
+  'Drogas en vía pública': Pill,
+  Hurto: ShoppingBag,
+  Robo: Siren,
+  'Leer derechos': ScrollText,
+  Identificación: Fingerprint,
+};
 
 const TOP_FAVORITAS = 3;
 /** Cuántos términos recientes se muestran junto a "Repetir última". */
@@ -72,6 +95,9 @@ const TOP_RECIENTES = 3;
 export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeInicioProps) {
   const t = useAppTheme();
   const router = useRouter();
+
+  // Los accesos rápidos se adaptan al cuerpo del perfil (tráfico vs seguridad ciudadana/penal).
+  const cuerpo = useSettingsStore((s) => s.cuerpo);
 
   const favoritos = useFavoritosStore((s) => s.favoritos);
   const cargarFavoritos = useFavoritosStore((s) => s.cargar);
@@ -108,7 +134,7 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <AccesosRapidos t={t} onQuickSearch={onQuickSearch} />
+      <AccesosRapidos t={t} cuerpo={cuerpo} onQuickSearch={onQuickSearch} />
 
       {recientes.length > 0 ? (
         <Recientes t={t} recientes={recientes} onQuickSearch={onQuickSearch} />
@@ -162,12 +188,23 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
 // Accesos rápidos
 // ---------------------------------------------------------------------------
 
-function AccesosRapidos({ t, onQuickSearch }: { t: Theme; onQuickSearch: (term: string) => void }) {
+function AccesosRapidos({
+  t,
+  cuerpo,
+  onQuickSearch,
+}: {
+  t: Theme;
+  cuerpo: Cuerpo | null;
+  onQuickSearch: (term: string) => void;
+}) {
+  const terminos = accesosRapidosPara(cuerpo);
   return (
     <View style={{ gap: t.spacing.sm }}>
       <TituloSeccion t={t} titulo="Accesos rápidos" />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm }}>
-        {ACCESOS_RAPIDOS.map(({ termino, icon: Icon }) => (
+        {terminos.map((termino) => {
+          const Icon = ACCESO_ICON[termino] ?? Search;
+          return (
           <PressableScale
             key={termino}
             accessibilityLabel={`Buscar ${termino}`}
@@ -191,7 +228,8 @@ function AccesosRapidos({ t, onQuickSearch }: { t: Theme; onQuickSearch: (term: 
             <Icon size={16} color={t.color.textSecondary} strokeWidth={2} />
             <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{termino}</Text>
           </PressableScale>
-        ))}
+          );
+        })}
       </View>
     </View>
   );

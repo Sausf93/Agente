@@ -1,0 +1,76 @@
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { FTS_PESOS_BM25_ORDENADOS, normalizarBusqueda } from '@agente/shared';
+import { DatabaseSync } from './sqlite.js';
+import { construirPaquete } from './buildPackage.js';
+import { combinarSeeds } from './combinar.js';
+import { SEED_TRAFICO } from '../seed/traficoSeed.js';
+import { SEED_PENAL } from '../seed/penalSeed.js';
+import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
+import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
+
+/**
+ * Test de INTEGRACIÓN del contenido "de calle": combina todos los seeds (sin red, sin BOE),
+ * construye el paquete como lo hará el CLI y comprueba que las consultas típicas de los tres
+ * cuerpos —que antes salían vacías— ahora devuelven una infracción. Es la red que garantiza que
+ * la demo al cofundador no encuentre huecos en los términos priorizados por los validadores.
+ */
+
+let dir: string;
+let db: DatabaseSync;
+
+beforeAll(() => {
+  dir = mkdtempSync(join(tmpdir(), 'agente-calle-'));
+  const ruta = join(dir, 'contenido-calle.sqlite');
+  const contenido = combinarSeeds(
+    SEED_TRAFICO,
+    SEED_PENAL,
+    SEED_SEGURIDAD_CIUDADANA,
+    SEED_EXTRANJERIA_LOCAL,
+  );
+  construirPaquete(contenido, {
+    rutaSalida: ruta,
+    version: '0.1.0',
+    fecha: '2026-09-07T00:00:00.000Z',
+    changelog: { resumen: 'test integración de contenido de calle' },
+  });
+  db = new DatabaseSync(ruta, { readOnly: true });
+});
+
+afterAll(() => {
+  db?.close();
+  rmSync(dir, { recursive: true, force: true });
+});
+
+/** Búsqueda FTS con ranking bm25 ponderado por columna (misma consulta que la app). */
+function buscarFts(consulta: string): string[] {
+  const [w0, w1, w2, w3] = FTS_PESOS_BM25_ORDENADOS;
+  const filas = db
+    .prepare(
+      `SELECT infraccion_id, bm25(busqueda, ${w0}, ${w1}, ${w2}, ${w3}) AS score
+       FROM busqueda WHERE busqueda MATCH ? ORDER BY score`,
+    )
+    .all(normalizarBusqueda(consulta)) as { infraccion_id: string; score: number }[];
+  return filas.map((f) => f.infraccion_id);
+}
+
+describe('contenido de calle: los términos priorizados por los validadores no salen vacíos', () => {
+  const casos: Array<[string, string]> = [
+    ['tacografo', 'inf-tacografo'],
+    ['atentado', 'del-atentado-agente'],
+    ['sin papeles', 'ext-estancia-irregular'],
+    ['temeraria', 'inf-conduccion-temeraria'],
+    ['zona azul', 'inf-estacionamiento-indebido'],
+    ['perro sin bozal', 'ppp-sin-bozal'],
+    ['trafico de drogas', 'del-trafico-drogas'],
+  ];
+
+  for (const [consulta, esperado] of casos) {
+    it(`"${consulta}" devuelve la infracción ${esperado}`, () => {
+      const resultados = buscarFts(consulta);
+      expect(resultados, consulta).toContain(esperado);
+    });
+  }
+});

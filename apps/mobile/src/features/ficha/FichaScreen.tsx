@@ -10,6 +10,7 @@ import type { ComponentType } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import {
+  ArrowRightCircle,
   Ban,
   FileDown,
   FileText,
@@ -38,7 +39,15 @@ import { getContentRunner } from '@/db/contentDb';
 import { recordUso } from '@/db/userDb';
 import { FavoriteToggle } from '@/features/inicio/FavoriteToggle';
 import type { InfraccionSnapshot } from '@/features/inicio/masUsadas';
-import { cargarFicha, tilesFicha, type FichaInfraccion, type TileFicha } from './ficha';
+import {
+  accionOperativaFrom,
+  cargarFicha,
+  tilesFicha,
+  type AccionOperativa,
+  type AccionOperativaKind,
+  type FichaInfraccion,
+  type TileFicha,
+} from './ficha';
 import { DetencionTree } from './DetencionTree';
 import {
   CONSECUENCIA_LABEL,
@@ -48,13 +57,15 @@ import {
 } from './format';
 
 /**
- * FICHA de infracción (§4.4). Muestra los campos EN ORDEN: título, norma+artículo,
- * gravedad/tipo, importes/puntos, TEXTO DE BOLETÍN con "Copiar boletín" SOBRE EL PLIEGUE
- * (ADR-004), consecuencias con su fuente (§4.6, orientativas), competencia, artículo completo
+ * FICHA de infracción (§4.4). Orden LEER-PRIMERO: título, norma+artículo, gravedad/tipo, ACCIÓN
+ * OPERATIVA (qué hace el agente con el vehículo/persona: sigue/inmoviliza/grúa/detención) ARRIBA
+ * DEL TODO, importes/puntos, TEXTO DE BOLETÍN con "Copiar boletín" SOBRE EL PLIEGUE (ADR-004),
+ * consecuencias detalladas con su fuente (§4.6, orientativas), competencia, artículo completo
  * (desplegable) + enlace al BOE, y el pie "Actualizado el… · Fuente".
  *
- * Si la infracción está `pendiente_revision`, muestra el distintivo "A verificar" y, si la hay,
- * la nota de qué confirmar (contrato del pipeline, §8.2/8.3).
+ * Si la infracción está `pendiente_revision`, muestra un distintivo DISCRETO "En revisión" (el
+ * contenido está en beta; su verificación es una decisión legal humana) y, si la hay, la nota de
+ * qué confirmar en tono informativo (contrato del pipeline, §8.2/8.3).
  */
 export interface FichaScreenProps {
   infraccionId: string;
@@ -67,9 +78,9 @@ const TIPO_LABEL: Record<TipoInfraccion, string> = {
 
 /**
  * El bloque de copia habla el idioma de la vía (D4 del rediseño): un delito NO se denuncia con
- * "boletín", se documenta en atestado/diligencia. `plantillaId` es la plantilla que prerrellena
- * "Generar documento"; hasta que exista una diligencia penal propia, la vía penal cae al boletín
- * genérico con el hecho ya prerelleno (no bloquea).
+ * "boletín" ni arrastra importe/puntos (que en penal no existen), se documenta en diligencia/
+ * atestado. `plantillaId` es la plantilla que prerrellena "Generar documento": la vía penal abre
+ * la DILIGENCIA de identificación (sin campos de importe/puntos), la administrativa el boletín.
  */
 const COPIA: Record<TipoInfraccion, {
   label: string;
@@ -87,7 +98,7 @@ const COPIA: Record<TipoInfraccion, {
     label: 'Texto para el atestado',
     copiar: 'Copiar para el atestado',
     generar: 'Generar diligencia',
-    plantillaId: 'seed-boletin-denuncia',
+    plantillaId: 'seed-diligencia-identificacion',
   },
 };
 
@@ -198,6 +209,12 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   const copia = COPIA[ficha.tipo];
   // Tiles adaptativos (solo con valor; ninguno en un delito → usa el "Marco penal").
   const tiles = tilesFicha(ficha, formatEuros);
+  // ACCIÓN OPERATIVA (leer-primero): QUÉ HACE el agente con el vehículo/persona. Se deriva del set
+  // de consecuencias y se pinta ARRIBA DEL TODO con color semántico FIJO (verde "sigue" / rojo).
+  const accion = accionOperativaFrom({
+    fichaKind: ficha.fichaKind,
+    consecuencias: ficha.consecuencias.map((c) => ({ tipo: c.tipo, fuente: c.fuente })),
+  });
   // La DETENCIÓN se separa del resto: en un delito sube arriba (leer-primero), no va enterrada.
   const consecuenciaDetencion = ficha.consecuencias.find((c) => c.tipo === 'detencion') ?? null;
   const otrasConsecuencias = esPenal
@@ -239,9 +256,13 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
               <Badge label={TIPO_LABEL[ficha.tipo]} tone="neutral" />
             </>
           )}
-          {pendiente ? <Badge label="A verificar" tone="warning" /> : null}
+          {pendiente ? <Badge label="En revisión" tone="neutral" /> : null}
         </View>
       </View>
+
+      {/* ACCIÓN OPERATIVA, leer-primero: lo que el agente decide ANTES que el importe. Verde
+          "sigue" o rojo coercitivo; color semántico FIJO (no el acento por cuerpo). */}
+      {accion ? <AccionOperativaBanner t={t} accion={accion} /> : null}
 
       {esPenal ? (
         <>
@@ -330,6 +351,21 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           icon={FileDown}
           accessibilityHint="Abre el documento con estos datos ya rellenos"
           onPress={() => {
+            const precepto = `${ficha.normaCodigo} art. ${ficha.articuloNumero}`;
+            if (esPenal) {
+              // Vía PENAL → diligencia: NADA de importe/puntos/gravedad administrativa (no existen
+              // en un delito). Se prerrellena el motivo con el hecho y el amparo con el precepto.
+              router.push({
+                pathname: '/documento/[plantillaId]',
+                params: {
+                  plantillaId: copia.plantillaId,
+                  motivo: textoCopiable,
+                  amparo: precepto,
+                },
+              });
+              return;
+            }
+            // Vía ADMINISTRATIVA → boletín: norma, artículo, hecho e importe/puntos si los hay.
             const params: Record<string, string> = {
               plantillaId: copia.plantillaId,
               norma: ficha.normaCodigo,
@@ -416,9 +452,10 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         ) : null}
       </View>
 
-      {/* Nota de revisión, si procede. */}
+      {/* Nota de revisión, si procede. Tono INFORMATIVO (no de alarma): el contenido está en beta
+          y su verificación es una decisión legal humana; bajamos el ruido visual sin ocultarlo. */}
       {pendiente && ficha.notaRevision ? (
-        <Banner tone="warning" title="Pendiente de revisión">
+        <Banner tone="info" title="Contenido en revisión">
           {ficha.notaRevision}
         </Banner>
       ) : null}
@@ -511,6 +548,86 @@ function PenalChip({ t }: { t: Theme }) {
       >
         Delito · vía penal
       </Text>
+    </View>
+  );
+}
+
+/** Icono de cada acción operativa: refuerza el mensaje (nunca solo color, regla UI 2.4). */
+const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
+  sigue: ArrowRightCircle,
+  inmovilizacion: Lock,
+  deposito: Truck,
+  decomiso: Ban,
+  retirada: FileText,
+  detencion: Gavel,
+};
+
+/**
+ * BANNER de ACCIÓN OPERATIVA (rediseño 2026-09): lo PRIMERO que lee el agente. Resume QUÉ HACE con
+ * el vehículo o la persona con color semántico FIJO —verde `sigue` / rojo coercitivo— más icono y
+ * texto (nunca solo color). Lenguaje ORIENTATIVO: enuncia la medida, no da órdenes. Lleva su fuente
+ * (artículo) cuando la medida nace de una consecuencia.
+ */
+function AccionOperativaBanner({ t, accion }: { t: Theme; accion: AccionOperativa }) {
+  const positivo = accion.tono === 'positivo';
+  const fg = positivo ? t.color.success : t.color.danger;
+  const bg = positivo ? t.color.successBg : t.color.dangerBg;
+  const Icon = ACCION_ICON[accion.kind];
+  const a11y = `Acción operativa: ${accion.titulo}. ${accion.detalle}${
+    accion.fuente ? ` Fuente: ${accion.fuente}.` : ''
+  }`;
+  return (
+    <View
+      accessible
+      accessibilityLabel={a11y}
+      style={{
+        flexDirection: 'row',
+        gap: t.spacing.md,
+        alignItems: 'center',
+        borderRadius: t.radius.md,
+        borderWidth: 1.5,
+        borderColor: fg,
+        backgroundColor: bg,
+        padding: t.spacing.md,
+        minHeight: t.touch.min,
+      }}
+    >
+      <View
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: t.radius.md,
+          backgroundColor: t.color.surface,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Icon size={26} color={fg} strokeWidth={2.4} />
+      </View>
+      <View style={{ flex: 1, gap: t.spacing.xxs }}>
+        <Text
+          accessibilityElementsHidden
+          maxFontSizeMultiplier={1.6}
+          style={{ color: fg, ...t.typography.scale.titleM }}
+        >
+          {accion.titulo}
+        </Text>
+        <Text
+          accessibilityElementsHidden
+          maxFontSizeMultiplier={1.6}
+          style={{ color: t.color.textPrimary, ...t.typography.scale.body }}
+        >
+          {accion.detalle}
+        </Text>
+        {accion.fuente ? (
+          <Text
+            accessibilityElementsHidden
+            style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}
+          >
+            Fuente: {accion.fuente}
+          </Text>
+        ) : null}
+      </View>
     </View>
   );
 }

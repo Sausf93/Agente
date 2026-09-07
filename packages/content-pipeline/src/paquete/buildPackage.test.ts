@@ -60,13 +60,17 @@ describe('construirPaquete: estructura y metadatos', () => {
   it('puebla todas las tablas con las cuentas del seed', () => {
     const cuenta = (tabla: string): number =>
       (db.prepare(`SELECT COUNT(*) AS n FROM ${tabla}`).get() as { n: number }).n;
-    expect(cuenta('norma')).toBe(5);
-    expect(cuenta('articulo')).toBe(15);
-    expect(cuenta('infraccion')).toBe(15);
-    expect(cuenta('busqueda')).toBe(15);
+    const consecuenciasSeed = SEED_TRAFICO.infracciones.reduce(
+      (n, i) => n + i.consecuencias.length,
+      0,
+    );
+    // Las cuentas se derivan del propio seed para no quedar acopladas a un número mágico.
+    expect(cuenta('norma')).toBe(SEED_TRAFICO.normas.length);
+    expect(cuenta('articulo')).toBe(SEED_TRAFICO.articulos.length);
+    expect(cuenta('infraccion')).toBe(SEED_TRAFICO.infracciones.length);
+    expect(cuenta('busqueda')).toBe(SEED_TRAFICO.infracciones.length);
     expect(cuenta('sinonimo')).toBeGreaterThanOrEqual(14);
-    // sin seguro (inmov.+depósito) + alcohol, drogas, estacionamiento, sin permiso, menor, negativa
-    expect(cuenta('consecuencia')).toBe(8);
+    expect(cuenta('consecuencia')).toBe(consecuenciasSeed);
   });
 
   it('escribe la meta con la versión de esquema y de contenido', () => {
@@ -80,7 +84,7 @@ describe('construirPaquete: estructura y metadatos', () => {
     expect(resultado.manifiesto.hash).toMatch(/^[0-9a-f]{64}$/);
     expect(resultado.manifiesto.firma).toBeNull();
     expect(resultado.manifiesto.schemaVersion).toBe(1);
-    expect(resultado.resumen.pendientesRevision).toBe(15);
+    expect(resultado.resumen.pendientesRevision).toBe(SEED_TRAFICO.infracciones.length);
   });
 
   it('marca todas las infracciones del seed como pendientes de revisión', () => {
@@ -94,18 +98,14 @@ describe('construirPaquete: estructura y metadatos', () => {
     expect(n).toBe(0);
   });
 
-  it('la columna cuerpos viaja como JSON en la tabla norma (default = todos)', () => {
+  it('la columna cuerpos viaja como JSON y el RGC (tráfico) excluye a la Policía Nacional', () => {
     const fila = db.prepare(`SELECT cuerpos FROM norma WHERE codigo = 'RGC'`).get() as {
       cuerpos: string;
     };
     const cuerpos = JSON.parse(fila.cuerpos) as string[];
-    // El seed no etiqueta cuerpos → Norma aplica el default (todos los cuerpos).
-    expect(cuerpos).toEqual([
-      'guardia_civil',
-      'policia_nacional',
-      'policia_local',
-      'policia_autonomica',
-    ]);
+    // El RGC es una norma de TRÁFICO: un PN no la lleva de oficio (bug E-03 corregido).
+    expect(cuerpos).toEqual(['guardia_civil', 'policia_local', 'policia_autonomica']);
+    expect(cuerpos).not.toContain('policia_nacional');
   });
 });
 

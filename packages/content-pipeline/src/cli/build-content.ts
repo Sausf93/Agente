@@ -21,6 +21,7 @@ import { parseNormaConsolidada } from '../parsers/boe-xml/parse.js';
 import { SEED_TRAFICO } from '../seed/traficoSeed.js';
 import { SEED_PENAL } from '../seed/penalSeed.js';
 import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
+import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
 import { SUSTANCIAS_SEED } from '../seed/sustanciasSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
@@ -61,7 +62,13 @@ async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaque
   // `combinarSeeds` deduplica las normas/artículos compartidos por `id` (tráfico y penal comparten
   // el CP); las sustancias viajan como un "seed" más que solo aporta `sustancias`.
   const seedSustancias = { normas: [], articulos: [], infracciones: [], sustancias: SUSTANCIAS_SEED };
-  let contenido = combinarSeeds(SEED_TRAFICO, SEED_PENAL, SEED_SEGURIDAD_CIUDADANA, seedSustancias);
+  let contenido = combinarSeeds(
+    SEED_TRAFICO,
+    SEED_PENAL,
+    SEED_SEGURIDAD_CIUDADANA,
+    SEED_EXTRANJERIA_LOCAL,
+    seedSustancias,
+  );
 
   const cliente = new BoeClient();
   // Enriquecemos con el TEXTO CONSOLIDADO REAL de cada norma del catálogo, con fallback POR NORMA:
@@ -101,11 +108,14 @@ async function main(): Promise<void> {
     version: VERSION,
     changelog: {
       resumen:
-        'Carga inicial: infracciones de tráfico (seed de calle + RGC), primeros delitos penales ' +
-        '(hurto, robo con violencia, lesiones y quebrantamiento) con orientación de detención ' +
-        'según LECrim, infracciones de seguridad ciudadana (LO 4/2015) y la tabla de sustancias ' +
-        '(§4.7): umbrales orientativos consumo/tráfico (INTCF + Acuerdo Sala 2ª TS 19/10/2001), ' +
-        'todo pendiente de revisión.',
+        'Ronda de contenido "de calle" (tres cuerpos): tráfico (seed + RGC) ampliado con ' +
+        'conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y ' +
+        'matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía ' +
+        'Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, ' +
+        'amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; ' +
+        'extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro ' +
+        'peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). ' +
+        'Todo el contenido nuevo queda PENDIENTE DE REVISIÓN.',
     },
   });
 
