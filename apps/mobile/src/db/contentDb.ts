@@ -50,7 +50,7 @@ let installPromise: Promise<boolean> | null = null;
  */
 function ensureContentInstalled(): Promise<boolean> {
   if (installPromise) return installPromise;
-  installPromise = (async () => {
+  const run = (async () => {
     // Web: el buscador sobre el paquete SQLite no está soportado en Fase 1 (ver README).
     if (Platform.OS === 'web') return false;
 
@@ -81,7 +81,16 @@ function ensureContentInstalled(): Promise<boolean> {
     }
     return true;
   })();
-  return installPromise;
+  installPromise = run;
+  // ROBUSTEZ: si la instalación FALLA (p. ej. no se puede copiar el asset o crear el directorio
+  // en el primer arranque), NO dejamos una promesa RECHAZADA cacheada para siempre —eso colgaría
+  // ficha/normas/sustancias en "cargando" sin posibilidad de reintento—. Al fallar se limpia el
+  // caché para que la siguiente llamada vuelva a intentarlo. El rechazo sigue propagándose al
+  // llamante (`openContentDb` → `getContentRunner`), que lo captura y cae a "sin contenido".
+  run.catch(() => {
+    installPromise = null;
+  });
+  return run;
 }
 
 /**
@@ -105,10 +114,22 @@ export async function openContentDb(): Promise<SQLiteDatabase | null> {
  */
 export async function getContentRunner(): Promise<SqlRunner | null> {
   if (contentRunner) return contentRunner;
-  const db = await openContentDb();
-  if (!db) return null;
-  contentRunner = fromSQLiteDatabase(db);
-  return contentRunner;
+  try {
+    const db = await openContentDb();
+    if (!db) return null;
+    contentRunner = fromSQLiteDatabase(db);
+    return contentRunner;
+  } catch (error) {
+    // PUNTO ÚNICO de captura: cualquier fallo al instalar/abrir el paquete (copiar el asset,
+    // crear el directorio, `openDatabaseAsync`) se traduce en `null`. Así ficha, normas y
+    // sustancias caen LIMPIAMENTE a su estado "sin contenido / no encontrada" (que ya manejan)
+    // en vez de quedarse cargando eternamente, sin tener que tocar cada pantalla. El caché de
+    // instalación ya se reseteó (`ensureContentInstalled`), de modo que una próxima llamada puede
+    // reintentar (p. ej. tras liberar espacio o reinstalar el asset).
+    // eslint-disable-next-line no-console
+    console.warn('[contentDb] No se pudo abrir el paquete de contenido; se usa el estado sin-contenido.', error);
+    return null;
+  }
 }
 
 /** Cierra el manejador (p. ej. antes de un swap atómico de versión). */

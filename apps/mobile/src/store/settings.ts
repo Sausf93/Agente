@@ -88,13 +88,21 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   hapticsEnabled: true,
 
   hydrate: async () => {
-    const [perfil, hapticsFlag] = await Promise.all([loadPerfil(), getAppFlag(FLAG_HAPTICS)]);
-    // La háptica está activada por defecto; solo se apaga si el agente lo guardó explícitamente.
-    const hapticsEnabled = hapticsFlag !== '0';
-    if (perfil) {
-      set({ ...perfil, hapticsEnabled, loaded: true });
-    } else {
-      set({ hapticsEnabled, loaded: true });
+    try {
+      const [perfil, hapticsFlag] = await Promise.all([loadPerfil(), getAppFlag(FLAG_HAPTICS)]);
+      // La háptica está activada por defecto; solo se apaga si el agente lo guardó explícitamente.
+      const hapticsEnabled = hapticsFlag !== '0';
+      if (perfil) {
+        set({ ...perfil, hapticsEnabled, loaded: true });
+      } else {
+        set({ hapticsEnabled, loaded: true });
+      }
+    } catch {
+      // ROBUSTEZ DE PRIMER ARRANQUE: si falla crear/migrar `user.db` (o leer el perfil/flags),
+      // NO dejamos la splash congelada para siempre. Arrancamos con el estado por defecto (perfil
+      // vacío, háptica por defecto) y SIEMPRE marcamos `loaded: true`: mejor entrar sin perfil —el
+      // onboarding se encargará— que dejar la app colgada en la pantalla de carga.
+      set({ ...PERFIL_VACIO, hapticsEnabled: true, loaded: true });
     }
   },
 

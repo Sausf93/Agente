@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import { forwardRef, type ComponentType } from 'react';
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -102,22 +102,26 @@ export default function MasScreen() {
   );
 }
 
-/** Fila pulsable del hub. `asChild` de Link le pasa el onPress. */
-function FilaMas({
-  t,
-  icon: Icon,
-  titulo,
-  descripcion,
-  onPress,
-}: {
+interface FilaMasProps {
   t: Theme;
   icon: ComponentType<LucideProps>;
   titulo: string;
   descripcion: string;
   onPress?: () => void;
-}) {
+}
+
+/**
+ * Fila pulsable del hub. `Link asChild` le inyecta el `onPress` Y una `ref`: por eso el
+ * componente se declara con `forwardRef` (si no, React avisa "Function components cannot be given
+ * refs"). La ref se reenvía al `Pressable`, sin cambiar el comportamiento de navegación.
+ */
+const FilaMas = forwardRef<View, FilaMasProps>(function FilaMas(
+  { t, icon: Icon, titulo, descripcion, onPress },
+  ref,
+) {
   return (
     <Pressable
+      ref={ref}
       accessibilityRole="button"
       onPress={onPress}
       style={{
@@ -153,4 +157,4 @@ function FilaMas({
       <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
     </Pressable>
   );
-}
+});

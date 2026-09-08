@@ -88,7 +88,11 @@ export const useBuscadorStore = create<BuscadorState>((set) => ({
         ultimoTerminoSinResultado = null;
       }
     } catch {
-      if (token === runToken) set({ resultados: [], articulos: [], buscando: false, buscado: true });
+      // Un fallo de la consulta (no una plataforma SIN paquete) debe caer a "nada exacto", no a
+      // "Contenido no disponible": reseteamos `sinContenido` para no arrastrar un estado anterior.
+      if (token === runToken) {
+        set({ resultados: [], articulos: [], buscando: false, buscado: true, sinContenido: false });
+      }
     }
   },
 
