@@ -12,6 +12,7 @@ import {
   horasReferenciaPeriodo,
   indicePatron,
   inicioCicloDesdeOffset,
+  minutosDisponibilidad,
   minutosNocturnos,
   ocurrenciasEnPatron,
   offsetsCompatibles,
@@ -714,5 +715,123 @@ describe('resumen de horas del periodo', () => {
       diasNaturales: 7,
     });
     expect(r.horasReferencia).toBeCloseTo(37.5, 2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Disponibilidad / retén "a efectos propios" (pedido por la validación de Guardia Civil):
+// horas de retén acumuladas APARTE, sin contaminar la jornada presencial. Núcleo crítico.
+// ---------------------------------------------------------------------------
+
+describe('horasDisponibilidad (retén, dato paralelo a la jornada)', () => {
+  const franja = { inicio: '22:00', fin: '06:00' } as const;
+
+  /** Constructor de un DiaProyectado con valores por defecto de una mañana de trabajo. */
+  function dia(overrides: Partial<DiaProyectado>): DiaProyectado {
+    return {
+      fecha: '2026-09-02',
+      servicio: 'manana',
+      horaInicio: '06:00',
+      horaFin: '14:00',
+      clase: 'trabajo',
+      computaPresencia: true,
+      cruzaMedianoche: false,
+      origen: 'patron',
+      esFestivo: false,
+      esFinDeSemana: false,
+      nota: null,
+      alarmaMinutosAntes: null,
+      ...overrides,
+    };
+  }
+
+  /** Un día de disponibilidad/retén con horas 08:00→20:00 (12 h). */
+  function diaDisponibilidad(overrides: Partial<DiaProyectado> = {}): DiaProyectado {
+    return dia({
+      servicio: 'disponibilidad',
+      clase: 'disponibilidad',
+      computaPresencia: false,
+      horaInicio: '08:00',
+      horaFin: '20:00',
+      ...overrides,
+    });
+  }
+
+  function resumir(dias: DiaProyectado[]) {
+    return resumenHoras(dias, {
+      jornadaRefHorasSemana: 37.5,
+      franjaNocturna: franja,
+      festivos: new Set<string>(),
+    });
+  }
+
+  it('minutosDisponibilidad cuenta SOLO la clase disponibilidad con horas', () => {
+    expect(minutosDisponibilidad(diaDisponibilidad())).toBe(720); // 12 h
+    // Sin horas (defecto de disponibilidad): no hay nada que contar.
+    expect(minutosDisponibilidad(diaDisponibilidad({ horaInicio: null, horaFin: null }))).toBe(0);
+    // El trabajo presencial NO es disponibilidad.
+    expect(minutosDisponibilidad(dia({}))).toBe(0);
+    // 'curso' es clase 'trabajo' que no computa presencia: tampoco es disponibilidad.
+    expect(
+      minutosDisponibilidad(dia({ servicio: 'curso', clase: 'trabajo', computaPresencia: false })),
+    ).toBe(0);
+    // Descanso (libre) tampoco.
+    expect(
+      minutosDisponibilidad(dia({ servicio: 'libre', clase: 'descanso', computaPresencia: false, horaInicio: null, horaFin: null })),
+    ).toBe(0);
+  });
+
+  it('(a) un turno de disponibilidad suma en horasDisponibilidad y NO en el total presencial', () => {
+    const r = resumir([diaDisponibilidad()]);
+    expect(r.horasDisponibilidad).toBeCloseTo(12, 2);
+    // No es presencia: ni total, ni días trabajados, ni nocturnas/festivas.
+    expect(r.horasTotales).toBe(0);
+    expect(r.diasTrabajados).toBe(0);
+    expect(r.horasNocturnas).toBe(0);
+    expect(r.horasFestivas).toBe(0);
+    expect(r.horasFinDeSemana).toBe(0);
+  });
+
+  it('(b) los totales presenciales NO cambian al añadir un día de disponibilidad', () => {
+    const soloTrabajo = resumir([dia({ fecha: '2026-09-02' })]); // 8 h de mañana
+    const conReten = resumir([
+      dia({ fecha: '2026-09-02' }),
+      diaDisponibilidad({ fecha: '2026-09-03' }),
+    ]);
+    // La jornada presencial queda idéntica: la disponibilidad no la toca.
+    expect(conReten.horasTotales).toBe(soloTrabajo.horasTotales);
+    expect(conReten.horasNocturnas).toBe(soloTrabajo.horasNocturnas);
+    expect(conReten.horasFestivas).toBe(soloTrabajo.horasFestivas);
+    expect(conReten.horasFinDeSemana).toBe(soloTrabajo.horasFinDeSemana);
+    expect(conReten.diasTrabajados).toBe(soloTrabajo.diasTrabajados);
+    expect(conReten.noches).toBe(soloTrabajo.noches);
+    // Y la disponibilidad aparece aparte.
+    expect(soloTrabajo.horasDisponibilidad).toBe(0);
+    expect(conReten.horasDisponibilidad).toBeCloseTo(12, 2);
+  });
+
+  it('(c) sin turnos de disponibilidad, horasDisponibilidad es 0', () => {
+    const r = resumir([dia({ fecha: '2026-09-02' }), dia({ fecha: '2026-09-03', servicio: 'tarde', horaInicio: '14:00', horaFin: '22:00' })]);
+    expect(r.horasDisponibilidad).toBe(0);
+    expect(r.horasTotales).toBeCloseTo(16, 2);
+  });
+
+  it('acumula varios días de retén y admite retén que cruza la medianoche', () => {
+    const r = resumir([
+      diaDisponibilidad({ fecha: '2026-09-02' }), // 12 h
+      diaDisponibilidad({ fecha: '2026-09-03', horaInicio: '20:00', horaFin: '08:00', cruzaMedianoche: true }), // 12 h
+    ]);
+    expect(r.horasDisponibilidad).toBeCloseTo(24, 2);
+    expect(r.horasTotales).toBe(0); // sigue sin computar presencia
+  });
+
+  it('el resumen mensual real del patrón GC no inventa disponibilidad (retén sin horas por defecto)', () => {
+    // PATRONES_PREDEFINIDOS[0] no incluye disponibilidad: el mes debe dar 0 h de retén y
+    // mantener EXACTOS los totales presenciales ya testeados (regresión de la nueva lógica).
+    const c = hacerCuadrante({ festivosExtra: ['2026-09-02'] });
+    const r = resumenHorasMes(c, 2026, 9);
+    expect(r.horasDisponibilidad).toBe(0);
+    expect(r.horasTotales).toBeCloseTo(144, 2);
+    expect(r.horasNocturnas).toBeCloseTo(48, 2);
   });
 });

@@ -515,6 +515,31 @@ export interface ResumenHoras {
   noches: number;
   /** Nº de días festivos efectivamente trabajados. */
   festivosTrabajados: number;
+  /**
+   * Horas de DISPONIBILIDAD / RETÉN acumuladas del periodo, "a efectos propios" del agente
+   * (control personal que pidió la Guardia Civil). NO se suman a `horasTotales` ni a ningún
+   * otro total: la disponibilidad no es presencia efectiva y no debe contaminar la jornada.
+   *
+   * Criterio de agrupación (decisión de dominio): SOLO cuentan los días cuya CLASE es
+   * `'disponibilidad'` (retén/localización), no todos los servicios no presenciales. Los
+   * demás no presenciales son descanso (saliente/libre) o ausencia (vacaciones, baja, asuntos
+   * propios…): sumar sus horas no tiene sentido (no hay servicio ni horas que contar) y
+   * mezclaría conceptos distintos. Usamos la clase, no el tipo, para que un tipo con horas de
+   * retén marcado como `'disponibilidad'` cuente aunque el `curso` (clase 'trabajo' que no
+   * computa presencia) quede correctamente fuera.
+   */
+  horasDisponibilidad: number;
+}
+
+/**
+ * Minutos de DISPONIBILIDAD/RETÉN de un día proyectado, para el contador "a efectos propios".
+ * Solo cuentan los días de clase `'disponibilidad'` que tengan horas definidas (el defecto de
+ * la disponibilidad no trae horas; el patrón o la excepción del agente pueden dárselas). No
+ * interviene en el cómputo de presencia: es un dato paralelo.
+ */
+export function minutosDisponibilidad(dia: DiaProyectado): number {
+  if (dia.clase !== 'disponibilidad' || dia.horaInicio === null || dia.horaFin === null) return 0;
+  return duracionMinutos(dia.horaInicio, dia.horaFin, dia.cruzaMedianoche);
 }
 
 /**
@@ -549,6 +574,7 @@ export function resumenHoras(dias: readonly DiaProyectado[], opciones: OpcionesR
   let minNocturnos = 0;
   let minFestivos = 0;
   let minFinde = 0;
+  let minDisponibilidad = 0;
   let diasTrabajados = 0;
   let noches = 0;
   let festivosTrabajados = 0;
@@ -564,6 +590,8 @@ export function resumenHoras(dias: readonly DiaProyectado[], opciones: OpcionesR
     minNocturnos += c.minutosNocturnos;
     minFestivos += c.minutosFestivos;
     minFinde += c.minutosFinDeSemana;
+    // Disponibilidad/retén: dato paralelo, NUNCA se suma a los totales presenciales.
+    minDisponibilidad += minutosDisponibilidad(dia);
   }
 
   const diasNaturales = opciones.diasNaturales ?? dias.length;
@@ -580,6 +608,7 @@ export function resumenHoras(dias: readonly DiaProyectado[], opciones: OpcionesR
     diasTrabajados,
     noches,
     festivosTrabajados,
+    horasDisponibilidad: aHoras(minDisponibilidad),
   };
 }
 

@@ -946,6 +946,33 @@ function ResumenHoras({ t, resumen }: { t: Theme; resumen: ReturnType<typeof res
         </Text>
         <Badge label={`${signo}${resumen.exceso} h`} tone={excesoTone} />
       </View>
+      {resumen.horasDisponibilidad > 0 ? (
+        <View
+          style={{
+            marginTop: t.spacing.sm,
+            paddingTop: t.spacing.sm,
+            borderTopWidth: 1,
+            borderTopColor: t.color.border,
+            gap: t.spacing.xxs,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+              Disponibilidad / retén
+            </Text>
+            <Badge label={`${resumen.horasDisponibilidad} h`} tone="neutral" />
+          </View>
+          <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+            A efectos propios: no cuenta como jornada presencial ni se suma al total.
+          </Text>
+        </View>
+      ) : null}
     </Card>
   );
 }
