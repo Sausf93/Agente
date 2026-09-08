@@ -12,15 +12,20 @@
     },
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.agente.app"
+      "bundleIdentifier": "es.modoagente.app"
     },
     "android": {
-      "package": "com.agente.app",
-      "edgeToEdgeEnabled": true
+      "package": "es.modoagente.app",
+      "edgeToEdgeEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#152C4E"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +36,8 @@
       [
         "expo-splash-screen",
         {
+          "image": "./assets/icon.png",
+          "imageWidth": 180,
           "backgroundColor": "#F6F7F9",
           "dark": { "backgroundColor": "#12151A" }
         }
