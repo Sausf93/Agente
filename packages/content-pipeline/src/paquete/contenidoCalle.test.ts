@@ -94,6 +94,10 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     // (SCTF): consultas de calle que antes salían vacías para los tres cuerpos.
     ['botellon', 'sc-consumo-alcohol-via-publica'],
     ['mena', 'sc-mena-consulta'],
+    // Consultas de garantías/derechos que la validación de Policía Nacional echó de menos.
+    ['derechos de la victima', 'sc-derechos-victima'],
+    ['cacheo', 'sc-cacheo-registro'],
+    ['entrada y registro', 'sc-cacheo-registro'],
     ['terraza sin licencia', 'ord-sctf-terrazas'],
     ['zbe', 'ord-sctf-zbe'],
   ];

@@ -43,6 +43,10 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 const ID_LOSC = 'BOE-A-2015-3442'; // LO 4/2015, de 30 de marzo (legislación consolidada)
 // Norma de PROTECCIÓN DEL MENOR (para la entrada consultable MENA, no sancionadora).
 const ID_LOPJM = 'BOE-A-1996-1069'; // LO 1/1996, de 15 de enero, de Protección Jurídica del Menor
+// Estatuto de la VÍCTIMA del delito (para la entrada consultable de derechos de la víctima). OJO:
+// es la Ley 4/2015, de 27 de abril (ley ORDINARIA), que NO debe confundirse con la LO 4/2015 de
+// seguridad ciudadana pese a compartir el "4/2015" en el nombre.
+const ID_EVD = 'BOE-A-2015-4606'; // Ley 4/2015, de 27 de abril, del Estatuto de la víctima del delito
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
 
 export const NORMAS_SEGURIDAD_SEED: Norma[] = [
@@ -62,6 +66,15 @@ export const NORMAS_SEGURIDAD_SEED: Norma[] = [
     tipo: 'ley',
     ambito: 'estatal',
     urlBoe: urlBoe(ID_LOPJM),
+    fechaConsolidacion: null,
+  }),
+  Norma.parse({
+    id: ID_EVD,
+    codigo: 'EVD',
+    titulo: 'Estatuto de la Víctima del Delito (Ley 4/2015)',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_EVD),
     fechaConsolidacion: null,
   }),
 ];
@@ -231,8 +244,56 @@ const ART_LOPJM_MENA = articuloDe(ID_LOPJM, {
     'internamiento como adulto por su condición de menor o de extranjero. Resumen orientativo.',
 });
 
+// Artículo de GARANTÍAS (no sancionador) para la entrada consultable de cacheo/registro. Resume el
+// art. 20 LO 4/2015 (registros corporales externos) y sirve de anclaje a la consulta; la entrada y
+// registro en domicilio (art. 18.2 CE y arts. 545 y ss. LECrim) se cita en el boletín de la ficha.
+const ART_LOSC_20 = articuloLosc({
+  numero: '20',
+  titulo: 'Registros corporales externos (garantías del cacheo)',
+  texto:
+    'El art. 20 LO 4/2015 regula el REGISTRO CORPORAL EXTERNO Y SUPERFICIAL (cacheo/palpación): con ' +
+    'carácter general procede cuando existan indicios racionales de que puede conducir al hallazgo de ' +
+    'instrumentos, efectos u otros objetos relevantes para el ejercicio de las funciones de indagación ' +
+    'o prevención (art. 20.1). GARANTÍAS (art. 20.2): salvo situación de urgencia por riesgo grave e ' +
+    'inminente, lo practica un agente del MISMO SEXO que la persona registrada; y cuando exija dejar a ' +
+    'la vista partes del cuerpo normalmente cubiertas por ropa, se efectúa en un LUGAR RESERVADO y ' +
+    'fuera de la vista de terceros, dejando CONSTANCIA ESCRITA de la diligencia, de sus causas y de la ' +
+    'identidad del agente. El registro respeta los principios de proporcionalidad e injerencia mínima ' +
+    '(art. 20.3, por remisión al art. 16.1), causando el menor perjuicio a la intimidad y dignidad, e ' +
+    'informando de inmediato y de forma comprensible de las razones. El registro que implique DESNUDO ' +
+    'INTEGRAL no lo regula el literal del art. 20: es excepcional y con garantías reforzadas conforme a ' +
+    'la doctrina del Tribunal Constitucional sobre la intimidad corporal. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+// Artículo de DERECHOS (no sancionador) para la entrada consultable de información a la víctima.
+// Resume el marco del Estatuto de la víctima (Ley 4/2015, de 27 de abril) y el ofrecimiento de
+// acciones y la orden de protección de la LECrim. No es un tipo infractor: orienta al agente sobre
+// qué debe informar y ofrecer a la víctima (distinto de los derechos del DETENIDO del art. 520 LECrim).
+const ART_EVD_VICTIMA = articuloDe(ID_EVD, {
+  numero: '5 y concordantes',
+  titulo: 'Información de derechos a la víctima (Estatuto + ofrecimiento de acciones LECrim)',
+  texto:
+    'El Estatuto de la víctima del delito (Ley 4/2015, de 27 de abril) reconoce a toda víctima, con ' +
+    'carácter general y desde el PRIMER CONTACTO con las autoridades, un conjunto de derechos que el ' +
+    'agente procede a garantizar y a hacer efectivos: derecho a ENTENDER y a ser entendida, con ' +
+    'lenguaje claro, sencillo y accesible (art. 4); derecho a la INFORMACIÓN desde el primer contacto ' +
+    '(medidas de apoyo y protección disponibles, cómo denunciar, asesoramiento y asistencia jurídica, ' +
+    'indemnizaciones, interpretación y traducción, y las resoluciones relevantes del proceso) (art. 5); ' +
+    'derecho a la TRADUCCIÓN E INTERPRETACIÓN gratuitas cuando no hable o entienda el idioma (art. 9); y ' +
+    'una EVALUACIÓN INDIVIDUAL de sus necesidades de protección para determinar las medidas que procedan ' +
+    '(art. 23). Además, la LECrim prevé el OFRECIMIENTO DE ACCIONES: informar a la persona ofendida o ' +
+    'perjudicada de su derecho a mostrarse parte en la causa y a la restitución, reparación e ' +
+    'indemnización del daño (art. 109), pudiendo personarse y ejercitar las acciones civiles y penales ' +
+    '(art. 110). En violencia de género o doméstica, la víctima tiene derecho a SOLICITAR una ORDEN DE ' +
+    'PROTECCIÓN, que acuerda en su caso la autoridad judicial (art. 544 ter LECrim). Resumen orientativo; ' +
+    'la valoración final corresponde a la autoridad competente.',
+});
+
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_16,
+  ART_LOSC_20,
+  ART_EVD_VICTIMA,
   ART_LOSC_36_1,
   ART_LOSC_36_3,
   ART_LOSC_36_6,
@@ -844,6 +905,116 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'Fiscalía; jurisprudencia del TS y del Comité de Derechos del Niño), (iii) la inimputabilidad del ' +
       'menor de 14 años (fuera de la LO 5/2000) y (iv) la redacción del mensaje de que NUNCA procede ' +
       'calabozo. Punto jurídicamente muy sensible: confirmar toda la redacción antes de publicar.',
+  }),
+  // ENTRADA CONSULTABLE (no sancionadora): INFORMACIÓN DE DERECHOS A LA VÍCTIMA. La validación de
+  // Policía Nacional la echó de menos: distinta de los derechos del DETENIDO (art. 520 LECrim, que
+  // viven en otra pantalla). Orienta al agente sobre qué debe informar y ofrecer a la víctima
+  // (Estatuto de la víctima + ofrecimiento de acciones y orden de protección de la LECrim). Se
+  // modela `no_sancionador` (sin importe), igual que el requerimiento de identificación o el MENA.
+  construirInfraccion({
+    id: 'sc-derechos-victima',
+    articulo: ART_EVD_VICTIMA,
+    tituloCorto: 'Información de derechos a la víctima',
+    gravedad: 'leve', // valor de relleno exigido por el modelo; lo determinante es que NO sanciona
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Información de derechos a la VÍCTIMA (Estatuto de la víctima del delito, Ley 4/2015; y LECrim). ' +
+      'NO es una cuestión sancionadora: orienta sobre qué procede informar y ofrecer a la víctima desde ' +
+      'el PRIMER CONTACTO (a diferencia de los derechos del DETENIDO del art. 520 LECrim, que se leen a la ' +
+      'persona detenida y viven aparte). Con carácter general procede: (i) garantizar que ENTIENDE y es ' +
+      'entendida, en lenguaje claro y accesible (art. 4); (ii) INFORMARLE de las medidas de apoyo y ' +
+      'protección, de cómo denunciar, del asesoramiento y la asistencia jurídica, de las posibles ' +
+      'indemnizaciones y de la interpretación/traducción (art. 5); (iii) ofrecer INTÉRPRETE/TRADUCCIÓN ' +
+      'gratuitos si no habla o entiende el idioma (art. 9); (iv) tener en cuenta la EVALUACIÓN INDIVIDUAL ' +
+      'de sus necesidades de protección (art. 23); (v) practicar el OFRECIMIENTO DE ACCIONES, informándola ' +
+      'de su derecho a mostrarse parte en la causa y a la restitución, reparación e indemnización ' +
+      '(arts. 109 y 110 LECrim); y (vi) en violencia de género o doméstica, informarle de su derecho a ' +
+      'SOLICITAR una ORDEN DE PROTECCIÓN, que acuerda en su caso la autoridad judicial (juez de ' +
+      'instrucción en funciones de guardia, art. 544 ter LECrim). La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'derechos de la victima',
+      'victima',
+      'estatuto de la victima',
+      'ofrecimiento de acciones',
+      'informar a la victima',
+      'orden de proteccion',
+      '109 lecrim',
+    ],
+    // SIN consecuencia coercitiva a propósito (revisor): es una consulta GENERAL de derechos de toda
+    // víctima, no un caso activo de violencia de género; usar `proteccion` (que sale destacado en rojo)
+    // sobre-señalaría que siempre hay orden de protección en juego. Al no llevar consecuencia, cae al
+    // chip informativo "Consulta · orientación". La orden de protección queda acotada a VG en el texto.
+    consecuencias: [],
+    notaRevision:
+      'ENTRADA CONSULTABLE, no infracción: es información de DERECHOS a la víctima, no sancionadora ' +
+      '(marco `no_sancionador`, sin importe). Fuentes cotejadas en el BOE consolidado: Ley 4/2015, de 27 ' +
+      'de abril, del Estatuto de la víctima del delito (arts. 4, 5, 9 y 23) y LECrim (arts. 109, 110 y ' +
+      '544 ter). A VERIFICAR con el revisor jurídico: (i) que no se confunda con los derechos del DETENIDO ' +
+      '(art. 520 LECrim), que ya viven en otra pantalla; (ii) el alcance y los requisitos de la ORDEN DE ' +
+      'PROTECCIÓN del art. 544 ter (legitimación para solicitarla, competencia del juez de guardia); ' +
+      '(iii) la redacción orientativa del ofrecimiento de acciones; y (iv) la presentación en la ficha de ' +
+      'una entrada sin sanción (que no muestre tramo/importe). Confirmar toda la redacción antes de publicar.',
+  }),
+  // ENTRADA CONSULTABLE (no sancionadora): CACHEO / REGISTRO y ENTRADA Y REGISTRO — consulta de
+  // GARANTÍAS. La validación de Policía Nacional la echó de menos. Orienta sobre qué requiere
+  // autorización judicial y qué no; NO es un tipo infractor. Se modela `no_sancionador` (sin importe),
+  // anclada al art. 20 LO 4/2015 (registros corporales externos); la entrada y registro en domicilio
+  // se apoya en el art. 18.2 CE y en los arts. 545 y ss. LECrim, citados en el boletín.
+  construirInfraccion({
+    id: 'sc-cacheo-registro',
+    articulo: ART_LOSC_20,
+    tituloCorto: 'Cacheo, registro corporal y entrada y registro (garantías)',
+    gravedad: 'leve', // valor de relleno exigido por el modelo; lo determinante es que NO sanciona
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Cacheo y registros: CONSULTA de GARANTÍAS (no es una sanción). Con carácter general: el REGISTRO ' +
+      'CORPORAL EXTERNO Y SUPERFICIAL (cacheo/palpación) procede cuando haya indicios racionales de que ' +
+      'puede llevar al hallazgo de objetos relevantes (art. 20.1 LO 4/2015); se practica respetando la ' +
+      'dignidad, por agente del MISMO SEXO salvo urgencia por riesgo grave, con motivación e informando ' +
+      'de las razones, y —si obliga a dejar a la vista partes del cuerpo cubiertas por ropa— en LUGAR ' +
+      'RESERVADO y con constancia escrita (art. 20.2 y 20.3). El registro que implique DESNUDO INTEGRAL ' +
+      'se considera EXCEPCIONAL y con garantías reforzadas (motivación cualificada, proporcionalidad ' +
+      'estricta, nunca de forma rutinaria), conforme a la doctrina del Tribunal Constitucional sobre la ' +
+      'intimidad corporal (no lo regula el literal del art. 20). El REGISTRO DEL VEHÍCULO, como registro ' +
+      'superficial de un efecto, con carácter general no equivale a la entrada en domicilio, SALVO que el ' +
+      'vehículo se use como VIVIENDA (autocaravana o furgoneta-camper habitada), en cuyo caso puede tener ' +
+      'la protección del domicilio y requerir la misma cobertura. La ENTRADA Y REGISTRO en DOMICILIO es lo ' +
+      'más garantista: salvo CONSENTIMIENTO del titular o DELITO FLAGRANTE, requiere RESOLUCIÓN JUDICIAL ' +
+      '(art. 18.2 CE; arts. 545 y siguientes LECrim). REGLA ORIENTATIVA: el cacheo y el registro de un ' +
+      'vehículo ordinario, con indicios y garantías, no requieren autorización judicial; la entrada en ' +
+      'domicilio —o en un vehículo-vivienda— SÍ la requiere salvo consentimiento o flagrancia. La ' +
+      'valoración final corresponde al agente y, en su caso, a la autoridad judicial.',
+    terminos: [
+      'cacheo',
+      'le cacheo',
+      'registro superficial',
+      'registro por encima',
+      'registro de vehiculo',
+      'mirar el coche',
+      'entrada y registro',
+      'registrar el domicilio',
+      'registrar un piso',
+      '18.2',
+      'cacheo con desnudo',
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE, no infracción: es consulta de GARANTÍAS del cacheo/registro, no sancionadora ' +
+      '(marco `no_sancionador`, sin importe). Fuentes cotejadas en el BOE consolidado: art. 20 LO 4/2015 ' +
+      '(registros corporales externos: 20.1 indicios racionales; 20.2 mismo sexo salvo urgencia, lugar ' +
+      'reservado y constancia escrita; 20.3 proporcionalidad, injerencia mínima e información) y art. 18.2 ' +
+      'CE con los arts. 545 y ss. LECrim (entrada y registro en domicilio: consentimiento, resolución ' +
+      'judicial o delito flagrante). A VERIFICAR con el revisor jurídico: (i) el encaje exacto del registro ' +
+      'con DESNUDO INTEGRAL (art. 20.2/20.3 y jurisprudencia del TC sobre intimidad corporal) y de las ' +
+      'medidas compulsivas (art. 20.4), a verificar; (ii) los matices del registro del VEHÍCULO frente al ' +
+      'domicilio (auto-caravana/vivienda habitual); (iii) el concepto de delito FLAGRANTE y los supuestos ' +
+      'del art. 553 LECrim; y (iv) la presentación en la ficha de una entrada sin sanción. Punto sensible ' +
+      'por afectar a derechos fundamentales: mantener el lenguaje orientativo y confirmar toda la ' +
+      'redacción antes de publicar.',
   }),
 ];
 

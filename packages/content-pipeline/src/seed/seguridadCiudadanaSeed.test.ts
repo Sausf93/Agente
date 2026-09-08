@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 13 entradas de calle (10 infracciones LOSC + identificación art. 16 + consumo de alcohol 37.17 + MENA)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(13);
+  it('siembra 15 entradas de calle (10 infracciones LOSC + 5 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, derechos de la víctima y cacheo/registro)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(15);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {
@@ -42,7 +42,7 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     }
   });
 
-  it('cada infracción cita un artículo de la LO 4/2015 presente en el seed y tiene ≥3 sinónimos', () => {
+  it('cada infracción cita un artículo presente en el seed y tiene ≥3 sinónimos', () => {
     for (const { infraccion, sinonimos } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
       expect(idsArticulos.has(infraccion.articuloId), infraccion.id).toBe(true);
       expect(sinonimos.length, infraccion.id).toBeGreaterThanOrEqual(3);
@@ -114,6 +114,37 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     // El tipo estatal EXIGE perturbación grave; el botellón simple es materia de ORDENANZA municipal.
     expect(alcohol!.infraccion.textoBoletin.toLowerCase()).toMatch(/perturbe gravemente|perturbaci/);
     expect(alcohol!.infraccion.textoBoletin.toLowerCase()).toMatch(/ordenanza/);
+  });
+
+  it('los derechos de la víctima son una entrada consultable SIN sanción (Estatuto + LECrim)', () => {
+    const victima = porId('sc-derechos-victima');
+    expect(victima).toBeDefined();
+    expect(victima!.marcoImporte).toBe('no_sancionador');
+    expect(victima!.infraccion.importeEur).toBeNull();
+    expect(victima!.infraccion.importeReducidoEur).toBeNull();
+    // Diferenciarlo de los derechos del DETENIDO (art. 520 LECrim) y citar la orden de protección.
+    expect(victima!.infraccion.textoBoletin).toMatch(/520/);
+    expect(victima!.infraccion.textoBoletin.toLowerCase()).toMatch(/orden de protecci/);
+    expect(victima!.infraccion.textoBoletin).toMatch(/544 ter/);
+    // SIN consecuencia coercitiva (revisor): es una consulta GENERAL de derechos, no un caso activo de
+    // VG; sin consecuencia cae al chip informativo "Consulta · orientación" (no al destacado de
+    // `proteccion`, pensado para VG). La orden de protección queda acotada a VG dentro del texto.
+    expect(victima!.consecuencias).toHaveLength(0);
+  });
+
+  it('el cacheo/registro es una entrada consultable SIN sanción y deja claro qué requiere autorización judicial', () => {
+    const cacheo = porId('sc-cacheo-registro');
+    expect(cacheo).toBeDefined();
+    expect(cacheo!.marcoImporte).toBe('no_sancionador');
+    expect(cacheo!.infraccion.importeEur).toBeNull();
+    expect(cacheo!.infraccion.importeReducidoEur).toBeNull();
+    // Garantías del art. 20 LO 4/2015 y la entrada en domicilio (18.2 CE / resolución judicial).
+    expect(cacheo!.infraccion.textoBoletin.toLowerCase()).toMatch(/mismo sexo/);
+    expect(cacheo!.infraccion.textoBoletin.toLowerCase()).toMatch(/resoluci[oó]n judicial/);
+    expect(cacheo!.infraccion.textoBoletin).toMatch(/18\.2 CE/);
+    expect(cacheo!.infraccion.textoBoletin.toLowerCase()).toMatch(/flagrante/);
+    // Lenguaje orientativo (no imperativo): "con carácter general", "procede".
+    expect(cacheo!.infraccion.textoBoletin.toLowerCase()).toMatch(/con car[aá]cter general|procede/);
   });
 });
 
@@ -277,6 +308,17 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
   it('"mena" resuelve a la entrada consultable de menor extranjero no acompañado', () => {
     expect(buscarSinonimoExacto('mena')).toContain('sc-mena-consulta');
     expect(buscarFts('mena')).toContain('sc-mena-consulta');
+  });
+
+  it('"derechos de la victima" resuelve a la entrada consultable de derechos de la víctima', () => {
+    expect(buscarSinonimoExacto('derechos de la victima')).toContain('sc-derechos-victima');
+    expect(buscarFts('derechos de la victima')).toContain('sc-derechos-victima');
+  });
+
+  it('"cacheo" y "entrada y registro" resuelven a la consulta de garantías de cacheo/registro', () => {
+    expect(buscarSinonimoExacto('cacheo')).toContain('sc-cacheo-registro');
+    expect(buscarSinonimoExacto('entrada y registro')).toContain('sc-cacheo-registro');
+    expect(buscarFts('cacheo')).toContain('sc-cacheo-registro');
   });
 
   it('encuentra por número de artículo ("LOSC 36")', () => {
