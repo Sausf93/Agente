@@ -23,6 +23,7 @@ import {
   Smartphone,
   Sparkles,
   Star,
+  Timer,
   TrafficCone,
   Wine,
   type LucideProps,
@@ -90,7 +91,8 @@ const ACCESO_ICON: Record<string, ComponentType<LucideProps>> = {
   Robo: Siren,
   'Leer derechos': ScrollText,
   Identificación: Fingerprint,
-  Tacógrafo: Gauge,
+  Velocidad: Gauge,
+  Tacógrafo: Timer,
   Extranjería: Globe,
   // Seguridad ciudadana (autonómica sin contenido) y ocio (autonómica con contenido).
   'Falta de respeto': Hand,
