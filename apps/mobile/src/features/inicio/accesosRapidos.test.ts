@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ACCESOS_AUTONOMICA,
   ACCESOS_LOCAL_EXTRA,
   ACCESOS_POLICIA_NACIONAL,
+  ACCESOS_SEGURIDAD_CIUDADANA,
   ACCESOS_TRAFICO,
   accesosRapidosPara,
 } from './accesosRapidos';
@@ -38,8 +40,31 @@ describe('accesosRapidosPara', () => {
     expect(accesosRapidosPara(null)).toEqual([...ACCESOS_TRAFICO]);
   });
 
-  it('policía autonómica cae al set por defecto de tráfico', () => {
-    expect(accesosRapidosPara('policia_autonomica')).toEqual([...ACCESOS_TRAFICO]);
+  // Task 5 (Auto I1): la POLICÍA AUTONÓMICA NO cae a tráfico. Sin contenido autonómico en su CCAA,
+  // usa el set genérico de SEGURIDAD CIUDADANA; con contenido, el set de OCIO/actividades clasificadas.
+  it('policía autonómica SIN contenido autonómico: seguridad ciudadana, NUNCA tráfico', () => {
+    const accesos = accesosRapidosPara('policia_autonomica');
+    expect(accesos).toEqual([...ACCESOS_SEGURIDAD_CIUDADANA]);
+    expect(labels(accesos)).not.toContain('Alcoholemia');
+    expect(labels(accesos)).not.toContain('Sin seguro');
+    expect(labels(accesos)).toContain('Desobediencia');
+  });
+
+  it('policía autonómica CON contenido autonómico: set de ocio (nunca tráfico)', () => {
+    const accesos = accesosRapidosPara('policia_autonomica', true);
+    expect(accesos).toEqual([...ACCESOS_AUTONOMICA]);
+    expect(labels(accesos)).toEqual([
+      'Ocio nocturno',
+      'Sin licencia',
+      'Exceso de aforo',
+      'Ruidos',
+      'Alcohol a menores',
+    ]);
+    expect(labels(accesos)).not.toContain('Alcoholemia');
+  });
+
+  it('el flag de contenido autonómico solo afecta a la autonómica (GC sigue en tráfico)', () => {
+    expect(accesosRapidosPara('guardia_civil', true)).toEqual([...ACCESOS_TRAFICO]);
   });
 });
 

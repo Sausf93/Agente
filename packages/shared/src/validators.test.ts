@@ -13,6 +13,7 @@ function infraccion(overrides: Partial<Infraccion> = {}): Infraccion {
     tipo: 'administrativa',
     importeEur: 80,
     importeReducidoEur: 40,
+    importeMaxEur: null,
     puntos: 0,
     textoBoletin: 'Circular con el alumbrado en deficientes condiciones...',
     variantesBoletin: [],

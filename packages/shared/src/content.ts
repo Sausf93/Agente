@@ -131,6 +131,13 @@ export const Infraccion = z
     tipo: TipoInfraccion,
     importeEur: z.number().nonnegative().nullable().default(null),
     importeReducidoEur: z.number().nonnegative().nullable().default(null),
+    /**
+     * EXTREMO SUPERIOR del tramo sancionador, cuando la sanción NO es una cifra cerrada sino una
+     * HORQUILLA (seguridad ciudadana LO 4/2015, autonómico, municipal). Opcional: `null` cuando la
+     * multa es fija (tráfico) o solo se conoce el mínimo. La ficha lo usa para mostrar el RANGO
+     * ("601–30.000 €") sin destacar el número: en estos marcos manda el tramo/gravedad o la acción.
+     */
+    importeMaxEur: z.number().nonnegative().nullable().default(null),
     puntos: z.number().int().nonnegative().nullable().default(null),
     /**
      * Pena legible del delito (art. del CP), p. ej. "Prisión de 6 a 18 meses". Solo tiene

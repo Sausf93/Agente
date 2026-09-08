@@ -26,6 +26,7 @@ function fichaDe(over: Partial<FichaInfraccion>): FichaInfraccion {
     ambito: 'estatal',
     importeEur: 200,
     importeReducidoEur: 100,
+    importeMaxEur: null,
     puntos: 3,
     penaTexto: null,
     gravedadPenal: null,
@@ -132,39 +133,63 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
     expect(tiles.some((x) => x.valor === '—')).toBe(false);
   });
 
-  it('seguridad ciudadana: importe + pronto pago + TRAMO cualitativo, NUNCA puntos', () => {
+  // Marco de HORQUILLA (I-2): seguridad ciudadana con máximo del tramo → RANGO ("601–30.000 €") sin
+  // énfasis; el tile que MANDA es el TRAMO. Nunca puntos.
+  it('seguridad ciudadana: multa como RANGO (sin énfasis) + pronto pago + TRAMO, NUNCA puntos', () => {
     const ficha = fichaDe({
       tipo: 'administrativa',
       gravedad: 'grave',
       normaCodigo: 'LOSC',
       importeEur: 601,
       importeReducidoEur: 300,
+      importeMaxEur: 30000,
       puntos: null,
     });
     expect(ficha.fichaKind).toBe('seguridad_ciudadana');
-    const etiquetas = tilesFicha(ficha, formatEuros).map((x) => x.etiqueta);
-    expect(etiquetas).toEqual(['Importe', 'Pronto pago', 'Tramo']);
-    expect(etiquetas).not.toContain('Puntos');
-    const tramo = tilesFicha(ficha, formatEuros).find((x) => x.etiqueta === 'Tramo');
-    expect(tramo?.valor).toBe('Grave');
+    const tiles = tilesFicha(ficha, formatEuros);
+    expect(tiles.map((x) => x.etiqueta)).toEqual(['Multa', 'Pronto pago', 'Tramo']);
+    expect(tiles.map((x) => x.etiqueta)).not.toContain('Puntos');
+    // El importe va como rango y SIN énfasis (no manda el número).
+    expect(tiles[0]).toMatchObject({ etiqueta: 'Multa', valor: '601–30.000 €' });
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+    expect(tiles.find((x) => x.etiqueta === 'Tramo')?.valor).toBe('Grave');
   });
 
-  it('administrativa genérica: solo importe (+ pronto pago si aplica), sin puntos ni tramo', () => {
+  // Sin máximo conocido, el marco de horquilla muestra "desde X" (como extranjería), sin énfasis.
+  it('horquilla sin máximo: multa "desde X" sin énfasis', () => {
     const ficha = fichaDe({
       tipo: 'administrativa',
       gravedad: 'leve',
+      normaCodigo: 'LOSC',
+      importeEur: 100,
+      importeReducidoEur: null,
+      importeMaxEur: null,
+      puntos: null,
+    });
+    const tiles = tilesFicha(ficha, formatEuros);
+    expect(tiles[0]).toMatchObject({ etiqueta: 'Multa', valor: 'desde 100 €' });
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+  });
+
+  it('administrativa ESTATAL con multa fija: importe con énfasis (no es horquilla)', () => {
+    const ficha = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'leve',
+      ambito: 'estatal',
+      fichaKind: 'administrativa',
       normaCodigo: 'ORD-MUNI',
       importeEur: 80,
       importeReducidoEur: null,
+      importeMaxEur: null,
       puntos: null,
     });
     expect(ficha.fichaKind).toBe('administrativa');
-    expect(tilesFicha(ficha, formatEuros).map((x) => x.etiqueta)).toEqual(['Importe']);
+    expect(tilesFicha(ficha, formatEuros)[0]).toMatchObject({ etiqueta: 'Importe', enfasis: true });
   });
 
-  // I-2: en autonómico/municipal manda la ACCIÓN (cese/desalojo), no la multa. El importe va DE
-  // REFERENCIA: etiqueta "Multa (ref.)" y SIN énfasis (nunca el tile de acento).
-  it('autonómica/municipal: el importe va de referencia, SIN énfasis', () => {
+  // I-2: en autonómico/municipal la multa es un tramo amplio: va como RANGO/"desde", SIN énfasis, y
+  // el tile que manda es el TRAMO (gravedad).
+  it('autonómica/municipal: la multa va como rango/desde, SIN énfasis, con TRAMO', () => {
     const auton = fichaDe({
       tipo: 'administrativa',
       gravedad: 'muy_grave',
@@ -173,14 +198,16 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
       normaCodigo: 'CAN-ESP',
       importeEur: 15001,
       importeReducidoEur: null,
+      importeMaxEur: 30000,
       puntos: null,
     });
     const tiles = tilesFicha(auton, formatEuros);
-    expect(tiles).toHaveLength(1);
-    expect(tiles[0]).toMatchObject({ etiqueta: 'Multa (ref.)' });
+    expect(tiles.map((x) => x.etiqueta)).toEqual(['Multa', 'Tramo']);
+    expect(tiles[0]).toMatchObject({ etiqueta: 'Multa', valor: '15.001–30.000 €' });
     expect(tiles.some((x) => x.enfasis)).toBe(false);
+    expect(tiles.find((x) => x.etiqueta === 'Tramo')?.valor).toBe('Muy grave');
 
-    // Contraste: la MISMA administrativa pero ESTATAL sí da énfasis al importe.
+    // Contraste: la MISMA administrativa pero ESTATAL con multa fija sí da énfasis al importe.
     const estatal = fichaDe({
       tipo: 'administrativa',
       gravedad: 'leve',
@@ -189,6 +216,7 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
       normaCodigo: 'ORD-MUNI',
       importeEur: 80,
       importeReducidoEur: null,
+      importeMaxEur: null,
       puntos: null,
     });
     expect(tilesFicha(estatal, formatEuros)[0]).toMatchObject({ etiqueta: 'Importe', enfasis: true });

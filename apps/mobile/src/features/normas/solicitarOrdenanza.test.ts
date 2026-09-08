@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { construirSolicitudOrdenanza } from './solicitarOrdenanza';
+import {
+  construirSolicitudNormativaAutonomica,
+  construirSolicitudOrdenanza,
+} from './solicitarOrdenanza';
 
 describe('construirSolicitudOrdenanza', () => {
   it('incluye municipio y CCAA cuando ambos están', () => {
@@ -19,5 +22,19 @@ describe('construirSolicitudOrdenanza', () => {
   it('recorta espacios sobrantes del municipio y la CCAA', () => {
     const s = construirSolicitudOrdenanza('  Adeje  ', '  Canarias  ');
     expect(s.territorio).toBe('Adeje (Canarias)');
+  });
+});
+
+describe('construirSolicitudNormativaAutonomica', () => {
+  it('compone la solicitud con el nombre de la comunidad', () => {
+    const s = construirSolicitudNormativaAutonomica('Cataluña');
+    expect(s.territorio).toBe('Cataluña');
+    expect(s.texto).toContain('Cataluña');
+    expect(s.texto.toLowerCase()).toContain('normativa autonómica');
+  });
+
+  it('cae a "mi comunidad" cuando el nombre viene vacío', () => {
+    const s = construirSolicitudNormativaAutonomica('   ');
+    expect(s.territorio).toBe('mi comunidad');
   });
 });

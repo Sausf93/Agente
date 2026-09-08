@@ -5,7 +5,8 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SqlRunner } from '@/db/sqlRunner';
 import { buscarArticulos, buscarInfracciones, buscarTodo } from './search';
-import { cargarFicha } from '../ficha/ficha';
+import { accionOperativaFrom, cargarFicha, tilesFicha } from '../ficha/ficha';
+import { formatEuros } from '../ficha/format';
 
 /**
  * Test de INTEGRACIÓN del buscador y la ficha contra el `.sqlite` REAL empaquetado con la app
@@ -105,6 +106,19 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
 
   it('id inexistente → null', async () => {
     expect(await cargarFicha(runner, 'no-existe')).toBeNull();
+  });
+
+  // BLOQUEANTE (Task 1, Local): "zona azul"/ORA NO puede enganchar la ficha ESTATAL grave de 200 €
+  // + grúa (`inf-estacionamiento-indebido`). Sin ordenanza de zona azul cargada, es preferible
+  // "sin resultado" a un dato falso. Se comprueba que esos términos ya no devuelven esa ficha.
+  it('"zona azul"/"ora"/"sin ticket" NO devuelven la ficha estatal de 200 € + grúa', async () => {
+    for (const q of ['zona azul', 'ora', 'sin ticket', 'ticket caducado', 'zona verde']) {
+      const res = await buscarInfracciones(runner, q);
+      expect(res.every((r) => r.infraccionId !== 'inf-estacionamiento-indebido')).toBe(true);
+    }
+    // La ficha de estacionamiento indebido SIGUE existiendo para el supuesto real (doble fila).
+    const dobleFila = await buscarInfracciones(runner, 'doble fila');
+    expect(dobleFila.some((r) => r.infraccionId === 'inf-estacionamiento-indebido')).toBe(true);
   });
 });
 
@@ -225,5 +239,29 @@ suite('buscador: filtro territorial de la capa autonómica (Canarias)', () => {
   it('sin territorio (perfil neutro) tampoco ve la normativa autonómica canaria', async () => {
     const infracciones = await buscarInfracciones(runner, 'sin licencia');
     expect(infracciones.every((r) => !r.infraccionId.startsWith('can-'))).toBe(true);
+  });
+
+  // Task 3: el EXCESO DE AFORO (>10%) lleva ahora la medida operativa de CESE/DESALOJO. Antes salía
+  // "sin medida cautelar", absurdo ante un local desbordado. La ficha debe traer `cese_actividad` y
+  // la acción operativa debe ser el cese destacado (coercitivo), no un estado positivo.
+  it('"exceso de aforo" → ficha con cese/desalojo (chip destacado, no "sin medida")', async () => {
+    const { infracciones } = await buscarTodo(runner, 'exceso de aforo', CADENA_CANARIAS);
+    expect(infracciones.some((r) => r.infraccionId === 'can-esp-exceso-aforo')).toBe(true);
+
+    const ficha = await cargarFicha(runner, 'can-esp-exceso-aforo');
+    expect(ficha).not.toBeNull();
+    expect(ficha!.consecuencias.map((c) => c.tipo)).toContain('cese_actividad');
+
+    const accion = accionOperativaFrom({
+      fichaKind: ficha!.fichaKind,
+      consecuencias: ficha!.consecuencias.map((c) => ({ tipo: c.tipo, fuente: c.fuente })),
+    });
+    expect(accion?.kind).toBe('cese_actividad');
+    expect(accion?.tono).toBe('coercitivo');
+
+    // El importe muy grave se muestra como RANGO (horquilla del art. 66), sin destacar la cifra.
+    const tiles = tilesFicha(ficha!, formatEuros);
+    expect(tiles.some((x) => x.etiqueta === 'Multa' && /–/.test(x.valor))).toBe(true);
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
   });
 });

@@ -61,6 +61,8 @@ export interface FichaInfraccion {
   fichaKind: FichaKind;
   importeEur: number | null;
   importeReducidoEur: number | null;
+  /** Extremo superior del tramo (horquilla), cuando la sanción no es cifra cerrada; `null` si no. */
+  importeMaxEur: number | null;
   puntos: number | null;
   /** Ámbito de la norma (estatal/autonómico/municipal): decide, p. ej., si el importe manda o va
    * de referencia (en autonómico/municipal lo que manda es la acción, no la multa). */
@@ -92,6 +94,7 @@ interface FilaFicha {
   tipo: TipoInfraccion;
   importe_eur: number | null;
   importe_reducido_eur: number | null;
+  importe_max_eur: number | null;
   puntos: number | null;
   pena_texto: string | null;
   gravedad_penal: GravedadPenal | null;
@@ -176,14 +179,15 @@ const TRAMO_LABEL: Partial<Record<Gravedad, string>> = {
  * (nunca un tile con "—"):
  *  - `penal`: NINGUNO (usa el bloque "Marco penal", no tiles de tráfico).
  *  - `trafico`: importe* + pronto pago? + puntos?
- *  - `seguridad_ciudadana`: importe* + pronto pago? + tramo (cualitativo; NUNCA puntos).
  *  - `extranjeria`: "Sanción: multa o expulsión" (cualitativo, MANDA) + multa mínima DE-ENFATIZADA.
  *    La sanción real de la estancia irregular suele ser la expulsión, no la multa (§4.4, ADR-004);
  *    por eso el importe NO va como tile de acento.
- *  - `administrativa` ESTATAL: importe* + pronto pago?
- *  - `administrativa` AUTONÓMICA/MUNICIPAL: lo que manda es la ACCIÓN (cese/desalojo/precinto), no
- *    la multa; el importe va DE REFERENCIA (sin énfasis), igual que en extranjería. Además la
- *    cuantía suele ser un tramo amplio (mínimo orientativo), no un dato de acento (I-2).
+ *  - Marcos de HORQUILLA (`seguridad_ciudadana` y TODO lo autonómico/municipal): la multa NO es una
+ *    cifra cerrada sino un TRAMO amplio (LO 4/2015 art. 39; leyes autonómicas; ordenanzas). El
+ *    importe va SIN énfasis y como RANGO ("601–30.000 €") si se conoce el máximo (`importeMaxEur`),
+ *    o "desde 601 €" si solo hay mínimo (como extranjería). Lo que MANDA es el TRAMO/gravedad (tile
+ *    "Tramo") o la ACCIÓN (chip de cese/desalojo, que va aparte, encima). Nunca puntos (I-2).
+ *  - `administrativa` ESTATAL con multa fija (p. ej. animales): importe* (con énfasis) + pronto pago?
  *
  * `formatEuros` se inyecta para no acoplar este módulo (puro, testeable) al formato de la UI.
  */
@@ -204,26 +208,46 @@ export function tilesFicha(
     }
     return tiles;
   }
-  // En autonómico/municipal el importe NO manda (manda la acción): va de referencia, sin énfasis.
-  const importeDeReferencia = ficha.ambito === 'autonomico' || ficha.ambito === 'municipal';
+  // Marcos de HORQUILLA: seguridad ciudadana (LO 4/2015) y todo lo autonómico/municipal. La multa
+  // NO manda (es un tramo amplio, orientativo): va SIN énfasis, como rango o "desde".
+  const esHorquilla =
+    ficha.fichaKind === 'seguridad_ciudadana' ||
+    ficha.ambito === 'autonomico' ||
+    ficha.ambito === 'municipal';
   const tiles: TileFicha[] = [];
   if (ficha.importeEur !== null) {
-    tiles.push({
-      etiqueta: importeDeReferencia ? 'Multa (ref.)' : 'Importe',
-      valor: formatEuros(ficha.importeEur),
-      enfasis: !importeDeReferencia,
-    });
+    if (esHorquilla) {
+      tiles.push({ etiqueta: 'Multa', valor: rangoImporte(ficha.importeEur, ficha.importeMaxEur, formatEuros) });
+    } else {
+      tiles.push({ etiqueta: 'Importe', valor: formatEuros(ficha.importeEur), enfasis: true });
+    }
   }
   if (ficha.importeReducidoEur !== null) {
     tiles.push({ etiqueta: 'Pronto pago', valor: formatEuros(ficha.importeReducidoEur) });
   }
-  if (ficha.fichaKind === 'seguridad_ciudadana') {
+  if (esHorquilla) {
     const tramo = TRAMO_LABEL[ficha.gravedad];
     if (tramo) tiles.push({ etiqueta: 'Tramo', valor: tramo });
   } else if (ficha.puntos !== null) {
     tiles.push({ etiqueta: 'Puntos', valor: String(ficha.puntos) });
   }
   return tiles;
+}
+
+/**
+ * Compone el valor del tile de multa en marcos de HORQUILLA: rango "601–30.000 €" cuando hay
+ * máximo del tramo, o "desde 601 €" cuando solo se conoce el mínimo (mismo criterio que extranjería).
+ * El símbolo € se pinta una sola vez, al final. Puro; `formatEuros` se inyecta.
+ */
+function rangoImporte(
+  min: number,
+  max: number | null,
+  formatEuros: (n: number | null) => string,
+): string {
+  if (max !== null && max > min) {
+    return `${formatEuros(min).replace(/\s*€$/, '')}–${formatEuros(max)}`;
+  }
+  return `desde ${formatEuros(min)}`;
 }
 
 /**
@@ -294,7 +318,7 @@ const PRIORIDAD_COERCITIVA: {
   {
     tipo: 'cese_actividad',
     kind: 'cese_actividad',
-    titulo: 'Cese de actividad / desalojo',
+    titulo: 'Cese de actividad / desalojo / precinto',
     detalle:
       'Procede valorar el cese de la actividad, el desalojo o el precinto del local (medida ' +
       'administrativa, no sancionadora); la sanción la impone después el órgano competente.',
@@ -462,7 +486,7 @@ export async function cargarFicha(
 ): Promise<FichaInfraccion | null> {
   const fila = await runner.getFirst<FilaFicha>(
     `SELECT i.id AS infraccion_id, i.titulo_corto, i.gravedad, i.tipo, i.importe_eur,
-            i.importe_reducido_eur, i.puntos, i.pena_texto, i.gravedad_penal,
+            i.importe_reducido_eur, i.importe_max_eur, i.puntos, i.pena_texto, i.gravedad_penal,
             i.texto_boletin, i.variantes_boletin,
             i.competencia, i.estado_revision, i.nota_revision,
             n.codigo AS norma_codigo, n.ambito, n.url_boe,
@@ -500,6 +524,7 @@ export async function cargarFicha(
     ambito: fila.ambito,
     importeEur: fila.importe_eur,
     importeReducidoEur: fila.importe_reducido_eur,
+    importeMaxEur: fila.importe_max_eur,
     puntos: fila.puntos,
     penaTexto: fila.pena_texto,
     gravedadPenal: fila.gravedad_penal,

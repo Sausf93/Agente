@@ -301,16 +301,29 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'perro suelto',
       'perro peligroso suelto',
       'sin correa',
+      'perro sin correa',
       'pitbull sin bozal',
       'perro sin correa en la calle',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar el aseguramiento (intervención cautelar) del animal cuando se encuentre ' +
+          'suelto o sin bozal y su tenencia entrañe riesgo, poniéndolo a disposición de la autoridad ' +
+          'competente hasta que se subsanen las medidas de seguridad (Ley 50/1999 y RD 287/2002).',
+        fuente: 'Ley 50/1999 art. 13',
+      },
+    ],
     marcoImporte: 'animales',
     notaRevision:
       'A VERIFICAR importe y clasificación: llevar el PPP sin bozal/correa o suelto en la vía pública ' +
       'es GRAVE (Ley 50/1999 art. 13.2), multa de 300,52 a 2.404,05 € (art. 13.5); el seed fija el ' +
       'mínimo del tramo. Las medidas concretas (bozal, correa ≤ 2 m no extensible, un animal por ' +
-      'persona) y las cuantías las suele detallar la ORDENANZA MUNICIPAL. Confirmar con el revisor jurídico.',
+      'persona) y las cuantías las suele detallar la ORDENANZA MUNICIPAL. A VERIFICAR también el ' +
+      'ASEGURAMIENTO/intervención cautelar del animal (orientativo, art. 13 y RD 287/2002). Confirmar ' +
+      'con el revisor jurídico.',
   }),
 ];
 

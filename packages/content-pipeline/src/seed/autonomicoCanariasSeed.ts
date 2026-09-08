@@ -336,9 +336,9 @@ function consecuenciaCese(infraccionId: string): Consecuencia {
  * de esta ley debe dejar clarísimo el "a verificar" sobre el importe. Se añade a cada `notaRevision`.
  */
 const CAVEAT_ART_66 =
-  ' IMPORTANTE (revisor): las CUANTÍAS del art. 66 están SIN CONFIRMAR por fuente primaria (no se ' +
-  'pudo leer el literal del artículo); tómense como ORIENTATIVAS (mínimo del tramo) y verifíquense ' +
-  'con el texto consolidado del BOE antes de publicar.';
+  ' IMPORTANTE (revisor): las CUANTÍAS del art. 66 (tanto el MÍNIMO como el MÁXIMO del tramo que se ' +
+  'muestra como rango) están SIN CONFIRMAR por fuente primaria (no se pudo leer el literal del ' +
+  'artículo); tómense como ORIENTATIVAS y verifíquense con el texto consolidado del BOE antes de publicar.';
 
 // --- Constructor de una infracción AUTONÓMICA con sus sinónimos y consecuencias -------------
 interface InfraccionSeedInput {
@@ -348,6 +348,11 @@ interface InfraccionSeedInput {
   gravedad: Infraccion['gravedad'];
   importeEur: number;
   importeReducidoEur: number | null;
+  /**
+   * Extremo SUPERIOR del tramo del art. 66 (horquilla). La ficha lo usa para mostrar el RANGO en
+   * vez de una cifra suelta (I-2). Igual que el mínimo, va "a verificar" (ver `CAVEAT_ART_66`).
+   */
+  importeMaxEur: number;
   textoBoletin: string;
   terminos: string[];
   notaRevision: string;
@@ -365,6 +370,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     tipo: 'administrativa',
     importeEur: input.importeEur,
     importeReducidoEur: input.importeReducidoEur,
+    importeMaxEur: input.importeMaxEur,
     puntos: null,
     textoBoletin: input.textoBoletin,
     variantesBoletin: [],
@@ -415,6 +421,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // Ley 7/2011 art. 63.4 (grave) → art. 66.2: multa de 3.001 a 15.000 €. Se fija el mínimo.
     importeEur: 3001,
     importeReducidoEur: null,
+    importeMaxEur: 15000,
     textoBoletin:
       'Incumplir el horario de cierre establecido para el local de ocio, restauración o espectáculo ' +
       '(manteniendo la actividad o la emisión musical fuera del horario autorizado por el decreto de ' +
@@ -422,6 +429,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'y la cuantía dentro del tramo corresponden a la autoridad competente.',
     terminos: [
       'horario de cierre',
+      'hora de cierre',
       'exceso de horario',
       'cierre local',
       'ocio nocturno',
@@ -446,6 +454,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // Ley 7/2011 art. 63.16 (grave) → art. 66.2: multa de 3.001 a 15.000 €. Se fija el mínimo.
     importeEur: 3001,
     importeReducidoEur: null,
+    importeMaxEur: 15000,
     textoBoletin:
       'Mantener actividad comercial o recreativa o emisión musical dentro del local a partir de la ' +
       'hora de cierre y durante el plazo de desalojo (máximo treinta minutos), incumpliendo el régimen ' +
@@ -458,6 +467,8 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'desalojo local',
       'actividad tras el cierre',
       'local no cierra',
+      'after',
+      'afters',
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: mantener actividad o música tras la hora de cierre durante ' +
@@ -473,6 +484,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // Ley 7/2011 art. 63.9 (grave) → art. 66.2: multa de 3.001 a 15.000 €. Se fija el mínimo.
     importeEur: 3001,
     importeReducidoEur: null,
+    importeMaxEur: 15000,
     textoBoletin:
       'La producción de ruidos y molestias por el local de ocio, restauración o espectáculo. Es ' +
       'infracción GRAVE del art. 63.9 de la Ley 7/2011. La valoración final y la eventual necesidad de ' +
@@ -484,13 +496,16 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'ruido discoteca',
       'ruido bar',
       'musica alta local',
+      'musica alta',
       'ruido ocio nocturno',
+      'sonometro',
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: la producción de ruidos y molestias es GRAVE (Ley 7/2011 ' +
       'art. 63.9), multa de 3.001 a 15.000 € (art. 66.2); el seed fija el mínimo del tramo. Puede ' +
       'concurrir con la ordenanza municipal de ruidos (evitar doble sanción) y requerir medición ' +
-      'sonométrica. Confirmar con el texto consolidado y el revisor jurídico.',
+      'sonométrica. VALORAR si procede una medida de cese/precinto de la actividad (arts. 49/65.2) — ' +
+      'a confirmar por revisor. Confirmar con el texto consolidado y el revisor jurídico.',
   }),
   construirInfraccion({
     id: 'can-esp-sin-licencia',
@@ -501,6 +516,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // Ley 7/2011 art. 62.1 (muy grave) → art. 66.1: multa de 15.001 a 30.000 €. Se fija el mínimo.
     importeEur: 15001,
     importeReducidoEur: null,
+    importeMaxEur: 30000,
     textoBoletin:
       'Desarrollar una actividad o abrir un establecimiento sujeto a la Ley 7/2011 sin la previa ' +
       'licencia correspondiente ni haber cursado la comunicación previa o declaración responsable ' +
@@ -515,6 +531,8 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'sin comunicacion previa',
       'establecimiento clandestino',
       'fiesta sin autorizacion',
+      'local ilegal',
+      'rave',
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: abrir o desarrollar la actividad sin licencia ni ' +
@@ -534,6 +552,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // Ley 7/2011 art. 62 (muy grave; ordinal a verificar) → art. 66.1: 15.001 a 30.000 €. Mínimo.
     importeEur: 15001,
     importeReducidoEur: null,
+    importeMaxEur: 30000,
     textoBoletin:
       'Vender, suministrar o dispensar, de forma gratuita o no, bebidas alcohólicas o tabaco a menores ' +
       'en locales de espectáculos o de venta de bebidas alcohólicas. Es infracción MUY GRAVE del ' +
@@ -545,16 +564,23 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'tabaco a menores',
       'menores bebiendo local',
       'servir alcohol menor',
+      'menor con copa',
+      'shisha menores',
     ],
     notaRevision:
       'A VERIFICAR importe, clasificación y ORDINAL: dispensar alcohol o tabaco a menores es MUY GRAVE ' +
       '(Ley 7/2011 art. 62), multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del tramo. ' +
       'Confirmar el ordinal EXACTO del art. 62 (probablemente 62.6) y delimitar respecto a la normativa ' +
       'estatal/autonómica de menores y de venta de alcohol y tabaco (posible concurrencia) con el texto ' +
-      'consolidado y el revisor jurídico.',
+      'consolidado y el revisor jurídico. VALORAR si procede una medida de cese/precinto de la actividad ' +
+      '(arts. 49/65.2) — a confirmar por revisor.',
   }),
   construirInfraccion({
     id: 'can-esp-exceso-aforo',
+    // Ante SOBREAFORO lo operativo NO es solo la multa: procede el DESALOJO parcial hasta el aforo
+    // autorizado (medida no sancionadora, arts. 49/65.2). Sin cese, el chip salía "sin medida
+    // cautelar", que era absurdo para un aforo desbordado (validación de calle Local I1 + Auto I2).
+    conCese: true,
     articulo: ART_ESP_62,
     tituloCorto: 'Exceso de aforo superior al 10% del autorizado',
     gravedad: 'muy_grave',
@@ -562,6 +588,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
     // (El exceso de aforo que NO supera el 10% es GRAVE del art. 63; aquí se tipifica el >10%.)
     importeEur: 15001,
     importeReducidoEur: null,
+    importeMaxEur: 30000,
     textoBoletin:
       'Tolerar o permitir un aforo que supere en más del diez por ciento el autorizado para el local ' +
       'o espectáculo. Es infracción MUY GRAVE del art. 62 de la Ley 7/2011 (ordinal a verificar). El ' +
@@ -573,6 +600,8 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'local lleno exceso aforo',
       'superar aforo',
       'demasiada gente local',
+      'sobreaforo',
+      'petado',
     ],
     notaRevision:
       'A VERIFICAR importe, clasificación y ORDINAL: superar en más del 10% el aforo es MUY GRAVE (Ley ' +

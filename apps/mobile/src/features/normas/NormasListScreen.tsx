@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, SectionList, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BookOpen, Bookmark, Building2, ChevronRight, Send } from 'lucide-react-native';
+import { BookOpen, Bookmark, Building2, ChevronRight, Landmark, Send } from 'lucide-react-native';
 import { ccaaPorId } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { Badge } from '@/ui/components/Badge';
@@ -16,7 +16,10 @@ import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
 import { useFeedbackStore } from '@/features/feedback/store';
 import { useMarcadoresStore } from './marcadoresStore';
-import { construirSolicitudOrdenanza } from './solicitarOrdenanza';
+import {
+  construirSolicitudNormativaAutonomica,
+  construirSolicitudOrdenanza,
+} from './solicitarOrdenanza';
 import {
   agruparNormasPorBloque,
   articulosLabel,
@@ -86,13 +89,24 @@ export function NormasListScreen() {
     };
   }, [cadena]);
 
-  // La ordenanza municipal del perfil se muestra en su PROPIO bloque (arriba), no en los bloques
-  // temáticos estatales. Se separa de la lista general.
+  // Las capas por TERRITORIO (autonómica y municipal) se muestran en su PROPIO bloque (arriba), no
+  // en los bloques temáticos estatales. Se separan de la lista general (misma mecánica para ambas).
   const municipales = useMemo(() => normas.filter((n) => n.ambito === 'municipal'), [normas]);
-  const generales = useMemo(() => normas.filter((n) => n.ambito !== 'municipal'), [normas]);
+  const autonomicas = useMemo(() => normas.filter((n) => n.ambito === 'autonomico'), [normas]);
+  const generales = useMemo(
+    () => normas.filter((n) => n.ambito !== 'municipal' && n.ambito !== 'autonomico'),
+    [normas],
+  );
   const ordenanzaCargada = municipales.length > 0;
   // Un Local (o cualquier perfil con municipio) sin ordenanza cargada ve el estado honesto.
   const puedeSolicitar = municipioId !== null && !ordenanzaCargada;
+
+  // Capa AUTONÓMICA (ADR-006/008): honestidad para las CCAA sin contenido, igual que la municipal.
+  // Un Mosso/Ertzaintza/Foral (o cualquier perfil con CCAA) ve su normativa autonómica cargada o,
+  // si aún no está, el banner "no disponible" + "Solicitar la normativa de mi comunidad".
+  const normativaAutonomicaCargada = autonomicas.length > 0;
+  const puedeSolicitarAutonomica = ccaaId !== null && !normativaAutonomicaCargada;
+  const ccaaNombre = useMemo(() => (ccaaId ? (ccaaPorId(ccaaId)?.nombre ?? null) : null), [ccaaId]);
 
   // El filtro por cuerpo solo aporta si REALMENTE hay normas que no son del cuerpo del agente
   // (si no, "Solo mi cuerpo" y "Todas" darían la misma lista y el control confunde: p. ej. un
@@ -114,6 +128,7 @@ export function NormasListScreen() {
   const addFeedback = useFeedbackStore((s) => s.add);
   const enviarPendientes = useFeedbackStore((s) => s.sendPending);
   const [solicitando, setSolicitando] = useState(false);
+  const [solicitandoAutonomica, setSolicitandoAutonomica] = useState(false);
 
   const cambiarFiltro = (siguiente: Filtro) => {
     if (siguiente === filtro) return;
@@ -150,6 +165,36 @@ export function NormasListScreen() {
       Alert.alert('No se pudo registrar', 'Inténtalo de nuevo en un momento.');
     } finally {
       setSolicitando(false);
+    }
+  }
+
+  // "Solicitar la normativa de mi comunidad": mismo mecanismo honesto que la ordenanza municipal
+  // (ADR-011). Se envía SOLO el nombre de la CCAA (segmento no identificativo); nada de terceros.
+  async function solicitarNormativaAutonomica() {
+    if (solicitandoAutonomica) return;
+    setSolicitandoAutonomica(true);
+    hapticSelection();
+    try {
+      const { texto, territorio } = construirSolicitudNormativaAutonomica(
+        ccaaNombre ?? 'mi comunidad',
+      );
+      await addFeedback({
+        tipo: 'sugerencia',
+        texto,
+        territorio,
+        ...(cuerpo ? { cuerpo } : {}),
+      });
+      const resultado = await enviarPendientes();
+      Alert.alert(
+        'Solicitud registrada',
+        resultado === 'cancelled'
+          ? 'La hemos guardado. Puedes enviárnosla cuando quieras desde Más › Mis sugerencias.'
+          : 'Gracias. La tendremos en cuenta para priorizar tu comunidad.',
+      );
+    } catch {
+      Alert.alert('No se pudo registrar', 'Inténtalo de nuevo en un momento.');
+    } finally {
+      setSolicitandoAutonomica(false);
     }
   }
 
@@ -192,6 +237,15 @@ export function NormasListScreen() {
                   <Bookmark size={20} color={t.color.textTertiary} strokeWidth={2} />
                 </View>
               }
+            />
+            <NormativaAutonomica
+              t={t}
+              ccaaNombre={ccaaNombre}
+              autonomicas={autonomicas}
+              puedeSolicitar={puedeSolicitarAutonomica}
+              solicitando={solicitandoAutonomica}
+              onAbrir={(id) => router.push(`/normas/norma/${id}`)}
+              onSolicitar={solicitarNormativaAutonomica}
             />
             <OrdenanzaMunicipio
               t={t}
@@ -400,6 +454,80 @@ function OrdenanzaMunicipio({
           </Banner>
           <Button
             title={solicitando ? 'Enviando…' : 'Solicitar mi ordenanza'}
+            variant="secondary"
+            onPress={onSolicitar}
+            disabled={solicitando}
+            icon={Send}
+          />
+        </View>
+      )}
+    </View>
+  );
+}
+
+/**
+ * Bloque "Normativa autonómica de {CCAA}" (§4.5, capa autonómica, ADR-006/008). Dos estados
+ * HONESTOS, igual que la municipal:
+ *  - Con normativa cargada: encabezado con la comunidad + sus normas autonómicas (tocar → articulado).
+ *  - Sin cargar (CCAA aún no publicada): aviso claro + "Solicitar la normativa de mi comunidad".
+ * Si el perfil no tiene CCAA, no se pinta nada.
+ */
+function NormativaAutonomica({
+  t,
+  ccaaNombre,
+  autonomicas,
+  puedeSolicitar,
+  solicitando,
+  onAbrir,
+  onSolicitar,
+}: {
+  t: ReturnType<typeof useAppTheme>;
+  ccaaNombre: string | null;
+  autonomicas: NormaResumen[];
+  puedeSolicitar: boolean;
+  solicitando: boolean;
+  onAbrir: (id: string) => void;
+  onSolicitar: () => void;
+}) {
+  const hayNormativa = autonomicas.length > 0;
+  if (!hayNormativa && !puedeSolicitar) return null;
+  const nombre = ccaaNombre?.trim() || 'tu comunidad';
+
+  return (
+    <View style={{ paddingTop: t.spacing.sm }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: t.spacing.sm,
+          paddingHorizontal: t.spacing.base,
+          paddingTop: t.spacing.lg,
+          paddingBottom: t.spacing.xs,
+        }}
+      >
+        <Landmark size={18} color={t.color.accent} strokeWidth={2.2} />
+        <Text
+          style={{
+            color: t.color.textSecondary,
+            ...t.typography.scale.label,
+            textTransform: 'uppercase',
+            letterSpacing: 0.6,
+          }}
+        >
+          {hayNormativa ? `Normativa autonómica de ${nombre}` : `Tu comunidad: ${nombre}`}
+        </Text>
+      </View>
+
+      {hayNormativa ? (
+        autonomicas.map((item) => <FilaNorma key={item.id} t={t} item={item} onPress={onAbrir} />)
+      ) : (
+        <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md, paddingTop: t.spacing.xs }}>
+          <Banner tone="info" title={`La normativa de ${nombre} aún no está cargada`}>
+            Estamos ampliando comunidad a comunidad. Pídenos la tuya y la priorizaremos; solo
+            enviaremos el nombre de la comunidad, nada más.
+          </Banner>
+          <Button
+            title={solicitando ? 'Enviando…' : 'Solicitar la normativa de mi comunidad'}
             variant="secondary"
             onPress={onSolicitar}
             disabled={solicitando}

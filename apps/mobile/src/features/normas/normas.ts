@@ -344,6 +344,21 @@ export async function listarMunicipiosConOrdenanza(runner: SqlRunner): Promise<s
 }
 
 /**
+ * Devuelve los `territorioId` de CCAA que TIENEN normativa autonómica cargada en el paquete
+ * (distinct de las normas de ámbito autonómico). Análogo a `listarMunicipiosConOrdenanza`: sirve
+ * para decidir, en Normas, si la comunidad del perfil ya trae contenido autonómico o aún no
+ * ("solicítala"). Honestidad de la capa autonómica igual que la municipal (ADR-006/008). Sin red.
+ */
+export async function listarCcaaConContenido(runner: SqlRunner): Promise<string[]> {
+  const filas = await runner.getAll<{ territorio_id: string | null }>(
+    `SELECT DISTINCT n.territorio_id
+       FROM norma n
+      WHERE n.ambito = 'autonomico' AND n.territorio_id IS NOT NULL`,
+  );
+  return filas.map((f) => f.territorio_id).filter((id): id is string => id !== null);
+}
+
+/**
  * Carga los artículos vigentes de una norma, ya ORDENADOS para lectura. Cada uno trae la cadena
  * `textoBusqueda` (normalizada) para que el buscador dentro de la norma funcione en memoria, sin
  * más consultas y sin red.

@@ -4,6 +4,7 @@ import {
   Infraccion,
   Norma,
   Sinonimo,
+  RANGOS_IMPORTE_SEGURIDAD_CIUDADANA,
   type MarcoImporte,
 } from '@agente/shared';
 import { hashTexto } from '../parsers/boe-xml/hash.js';
@@ -230,7 +231,20 @@ interface InfraccionSeedInput {
   marcoImporte?: MarcoImporte;
 }
 
+/**
+ * Máximo del tramo (horquilla del art. 39) por gravedad, tomado del RANGO LEGAL de shared (fuente
+ * única): leve 600 €, grave 30.000 €, muy grave 600.000 €. La ficha lo usa para pintar el RANGO
+ * ("601–30.000 €") sin destacar la cifra: en seguridad ciudadana manda el TRAMO, no el número.
+ */
+function maximoTramoSeguridad(gravedad: Infraccion['gravedad']): number | null {
+  if (gravedad === 'leve' || gravedad === 'grave' || gravedad === 'muy_grave') {
+    return RANGOS_IMPORTE_SEGURIDAD_CIUDADANA[gravedad].max;
+  }
+  return null;
+}
+
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
+  const marco = input.marcoImporte ?? ('seguridad_ciudadana' satisfies MarcoImporte);
   const infraccion = Infraccion.parse({
     id: input.id,
     articuloId: input.articulo.id,
@@ -240,6 +254,11 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     tipo: 'administrativa',
     importeEur: input.importeEur,
     importeReducidoEur: input.importeReducidoEur,
+    // Máximo del tramo solo cuando hay sanción de seguridad ciudadana (no en `no_sancionador`).
+    importeMaxEur:
+      input.importeEur !== null && marco === 'seguridad_ciudadana'
+        ? maximoTramoSeguridad(input.gravedad)
+        : null,
     puntos: null, // la LO 4/2015 no detrae puntos (no es tráfico)
     textoBoletin: input.textoBoletin,
     variantesBoletin: [],
@@ -278,7 +297,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     infraccion,
     sinonimos,
     consecuencias,
-    marcoImporte: input.marcoImporte ?? ('seguridad_ciudadana' satisfies MarcoImporte),
+    marcoImporte: marco,
     revision: 'pendiente_revision',
     notaRevision: input.notaRevision,
   };

@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS infraccion (
   tipo                  TEXT NOT NULL,     -- administrativa|penal
   importe_eur           REAL,
   importe_reducido_eur  REAL,
+  importe_max_eur       REAL,             -- extremo superior del tramo (horquilla); NULL si multa fija
   puntos                INTEGER,
   pena_texto            TEXT,              -- pena legible del delito (vía penal); NULL en administrativas
   gravedad_penal        TEXT,              -- leve|menos_grave|grave (art. 33 CP); NULL en administrativas

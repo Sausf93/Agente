@@ -1,4 +1,4 @@
-import { useCallback, type ComponentType, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import {
@@ -46,6 +46,8 @@ import { useCuadranteStore } from '@/features/cuadrante/store';
 import type { Favorito } from '@/db/userDb';
 import { useRecientesStore } from '@/features/buscador/recientesStore';
 import { useSettingsStore } from '@/store/settings';
+import { getContentRunner } from '@/db/contentDb';
+import { listarCcaaConContenido } from '@/features/normas/normas';
 import { accesosRapidosPara, type AccesoDestino } from './accesosRapidos';
 import { useFavoritosStore } from './favoritosStore';
 import { useInicioStore } from './inicioStore';
@@ -86,6 +88,14 @@ const ACCESO_ICON: Record<string, ComponentType<LucideProps>> = {
   Robo: Siren,
   'Leer derechos': ScrollText,
   Identificación: Fingerprint,
+  // Seguridad ciudadana (autonómica sin contenido) y ocio (autonómica con contenido).
+  'Falta de respeto': Hand,
+  'Armas prohibidas': ShieldOff,
+  'Ocio nocturno': Wine,
+  'Alcohol a menores': Wine,
+  'Exceso de aforo': Siren,
+  Ruidos: Bell,
+  'Sin licencia': CalendarX,
 };
 
 const TOP_FAVORITAS = 3;
@@ -98,6 +108,27 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
 
   // Los accesos rápidos se adaptan al cuerpo del perfil (tráfico vs seguridad ciudadana/penal).
   const cuerpo = useSettingsStore((s) => s.cuerpo);
+  const ccaaId = useSettingsStore((s) => s.ccaaId);
+
+  // ¿La CCAA del perfil trae normativa autonómica cargada? Decide los accesos de una AUTONÓMICA:
+  // ocio/actividades clasificadas si hay contenido; si no, seguridad ciudadana (nunca tráfico).
+  const [tieneContenidoAutonomico, setTieneContenidoAutonomico] = useState(false);
+  useEffect(() => {
+    if (cuerpo !== 'policia_autonomica' || !ccaaId) {
+      setTieneContenidoAutonomico(false);
+      return;
+    }
+    let vivo = true;
+    (async () => {
+      const runner = await getContentRunner();
+      if (!vivo || !runner) return;
+      const ccaas = await listarCcaaConContenido(runner);
+      if (vivo) setTieneContenidoAutonomico(ccaas.includes(ccaaId));
+    })();
+    return () => {
+      vivo = false;
+    };
+  }, [cuerpo, ccaaId]);
 
   const favoritos = useFavoritosStore((s) => s.favoritos);
   const cargarFavoritos = useFavoritosStore((s) => s.cargar);
@@ -146,7 +177,12 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <AccesosRapidos t={t} cuerpo={cuerpo} onAcceso={irAAcceso} />
+      <AccesosRapidos
+        t={t}
+        cuerpo={cuerpo}
+        tieneContenidoAutonomico={tieneContenidoAutonomico}
+        onAcceso={irAAcceso}
+      />
 
       {recientes.length > 0 ? (
         <Recientes t={t} recientes={recientes} onQuickSearch={onQuickSearch} />
@@ -203,13 +239,15 @@ export function HomeInicio({ onQuickSearch, onAbrirFicha, paddingBottom }: HomeI
 function AccesosRapidos({
   t,
   cuerpo,
+  tieneContenidoAutonomico,
   onAcceso,
 }: {
   t: Theme;
   cuerpo: Cuerpo | null;
+  tieneContenidoAutonomico: boolean;
   onAcceso: (destino: AccesoDestino) => void;
 }) {
-  const accesos = accesosRapidosPara(cuerpo);
+  const accesos = accesosRapidosPara(cuerpo, tieneContenidoAutonomico);
   return (
     <View style={{ gap: t.spacing.sm }}>
       <TituloSeccion t={t} titulo="Accesos rápidos" />

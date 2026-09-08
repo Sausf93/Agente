@@ -128,7 +128,7 @@ export type MarcoImporte =
   | 'no_sancionador';
 
 function validarCoherenciaImporte(
-  infraccion: Pick<Infraccion, 'importeEur' | 'importeReducidoEur'>,
+  infraccion: Pick<Infraccion, 'importeEur' | 'importeReducidoEur' | 'importeMaxEur'>,
 ): ProblemaValidacion[] {
   const problemas: ProblemaValidacion[] = [];
   if (infraccion.importeEur === null) {
@@ -144,6 +144,13 @@ function validarCoherenciaImporte(
       mensaje: 'El importe reducido no puede ser mayor que el importe base',
     });
   }
+  // El máximo del tramo (horquilla) nunca puede quedar por debajo del mínimo (importe base).
+  if (infraccion.importeMaxEur !== null && infraccion.importeMaxEur < infraccion.importeEur) {
+    problemas.push({
+      campo: 'importeMaxEur',
+      mensaje: 'El importe máximo del tramo no puede ser menor que el importe base (mínimo)',
+    });
+  }
   return problemas;
 }
 
@@ -152,7 +159,10 @@ function validarCoherenciaImporte(
  * Devuelve la lista de problemas (vacía si es correcta). No valida delitos (vía penal).
  */
 export function validarImporte(
-  infraccion: Pick<Infraccion, 'gravedad' | 'tipo' | 'importeEur' | 'importeReducidoEur'>,
+  infraccion: Pick<
+    Infraccion,
+    'gravedad' | 'tipo' | 'importeEur' | 'importeReducidoEur' | 'importeMaxEur'
+  >,
   marco: MarcoImporte,
 ): ProblemaValidacion[] {
   if (infraccion.tipo === 'penal' || infraccion.gravedad === 'delito') {

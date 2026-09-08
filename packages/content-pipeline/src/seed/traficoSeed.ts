@@ -931,13 +931,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'estacionar mal',
       'aparcar donde no se debe',
       'grua',
-      'zona azul',
-      'zona verde',
-      'ora',
-      'parquimetro',
-      'sin ticket',
-      'ticket caducado',
-      'excedido',
+      // NOTA (validación de calle, Local): NO se enganchan aquí 'zona azul'/'zona verde'/'ora'/
+      // 'parquimetro'/'sin ticket'/'ticket caducado'/'excedido'. Un exceso de estacionamiento
+      // regulado (ORA) NO es este supuesto GRAVE de 200 € + grúa: se rige por la ORDENANZA
+      // municipal (cuando esté cargada). Mientras no haya ordenanza de zona azul, es preferible
+      // "sin resultado → solicitar mi ordenanza" que devolver un dato falso.
       'pmr',
       'plaza de minusvalidos',
       'plaza de movilidad reducida',
@@ -1030,13 +1028,30 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'patinete con auriculares',
       'patinete de menor',
       'patinete sin seguro',
+      'patinete a dos',
+      'patinete sin luz',
+      'patinete tuneado',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        // MISMO texto que la ficha municipal `ord-sctf-vmp-acera`: el mismo hecho (VMP de riesgo)
+        // no puede dar mensajes distintos entre la capa estatal y la municipal (validación de calle).
+        textoCorto:
+          'Procede valorar la retención (inmovilización cautelar) del VMP cuando su circulación ' +
+          'entrañe riesgo, hasta que cese la causa; la medida y la devolución del vehículo las ' +
+          'concreta la ordenanza municipal.',
+        fuente: 'RGC (RD 1428/2003, reforma RD 970/2020) y ordenanza municipal',
+      },
     ],
     marcoImporte: 'trafico',
     notaRevision:
       'A VERIFICAR: los VMP se regulan por el RGC (reforma del RD 970/2020) Y por la ordenanza ' +
       'municipal, que puede endurecer o matizar (casco, chaleco, zonas). Los importes citados ' +
       '(200 €/100 €) proceden de criterios DGT; confirmar por supuesto y advertir de la variación ' +
-      'municipal. Alcohol y drogas en VMP se rigen por sus propias tasas. No detrae puntos. Revisar.',
+      'municipal. Alcohol y drogas en VMP se rigen por sus propias tasas. No detrae puntos. A ' +
+      'VERIFICAR además la INMOVILIZACIÓN/retención cautelar del VMP en supuestos de riesgo: es ' +
+      'ORIENTATIVA y depende de la ordenanza municipal; confirmar con el revisor jurídico. Revisar.',
   }),
   construirInfraccion({
     id: 'inf-menor-sin-sri',

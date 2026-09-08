@@ -33,3 +33,18 @@ export function construirSolicitudOrdenanza(
     territorio: ubicacion,
   };
 }
+
+/**
+ * Compone la solicitud de NORMATIVA AUTONÓMICA de una comunidad (capa autonómica, ADR-006/008),
+ * cuando la CCAA del perfil aún no tiene contenido cargado. Mismo mecanismo honesto que la
+ * municipal: se registra y se envía SOLO el nombre de la comunidad (segmento no identificativo).
+ */
+export function construirSolicitudNormativaAutonomica(ccaaNombre: string): SolicitudOrdenanza {
+  const ccaa = ccaaNombre.trim() || 'mi comunidad';
+  return {
+    texto:
+      `Solicito la normativa autonómica de ${ccaa}. ` +
+      `Aún no está cargada en la app y me gustaría consultarla desde Normas/Buscar.`,
+    territorio: ccaa,
+  };
+}

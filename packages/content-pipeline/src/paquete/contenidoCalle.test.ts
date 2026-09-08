@@ -62,7 +62,9 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     ['atentado', 'del-atentado-agente'],
     ['sin papeles', 'ext-estancia-irregular'],
     ['temeraria', 'inf-conduccion-temeraria'],
-    ['zona azul', 'inf-estacionamiento-indebido'],
+    // "doble fila" es el supuesto REAL de estacionamiento indebido grave (200 € + grúa). La "zona
+    // azul"/ORA se comprueba aparte: ya NO debe enganchar esta ficha (Task 1, validación de calle).
+    ['doble fila', 'inf-estacionamiento-indebido'],
     ['perro sin bozal', 'ppp-sin-bozal'],
     ['trafico de drogas', 'del-trafico-drogas'],
     // Fichas penales / seguridad ciudadana añadidas para la Policía Nacional (ronda validadores).
@@ -80,4 +82,13 @@ describe('contenido de calle: los términos priorizados por los validadores no s
       expect(resultados, consulta).toContain(esperado);
     });
   }
+
+  // BLOQUEANTE (Task 1, Local): la "zona azul"/ORA NO puede enganchar la ficha ESTATAL grave de
+  // 200 € + grúa. Es un exceso de estacionamiento regulado que rige la ORDENANZA municipal; sin
+  // ella cargada, mejor "sin resultado" que un dato falso.
+  it('"zona azul"/"ora"/"sin ticket" NO devuelven la ficha estatal de 200 € + grúa', () => {
+    for (const q of ['zona azul', 'ora', 'sin ticket', 'ticket caducado', 'zona verde']) {
+      expect(buscarFts(q), q).not.toContain('inf-estacionamiento-indebido');
+    }
+  });
 });

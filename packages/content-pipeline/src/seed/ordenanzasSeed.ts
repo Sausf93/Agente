@@ -286,12 +286,28 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'patinete zona peatonal',
       'patin electrico acera',
       'patinete peaton',
+      'patinete a dos',
+      'patinete sin luz',
+      'patinete tuneado',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        // MISMO texto que la ficha estatal `inf-vmp-patinete`: el mismo hecho (VMP de riesgo) no
+        // puede dar mensajes distintos entre la capa estatal y la municipal (validación de calle).
+        textoCorto:
+          'Procede valorar la retención (inmovilización cautelar) del VMP cuando su circulación ' +
+          'entrañe riesgo, hasta que cese la causa; la medida y la devolución del vehículo las ' +
+          'concreta la ordenanza municipal.',
+        fuente: 'Ordenanza municipal de circulación (VMP)',
+      },
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: circular con VMP por acera/zona peatonal está prohibido ' +
       'por la Ordenanza municipal de circulación (campaña municipal "las 7 reglas del patinete" cita ' +
       'hasta 200 €). Confirmar el artículo exacto, la cuantía y si hay pronto pago (reducido) con el ' +
-      'texto consolidado en la sede electrónica y con el revisor jurídico antes de publicar.',
+      'texto consolidado en la sede electrónica y con el revisor jurídico antes de publicar. La ' +
+      'INMOVILIZACIÓN/retención cautelar del VMP es ORIENTATIVA (a confirmar en la ordenanza).',
   }),
   construirInfraccion({
     id: 'ord-sctf-vmp-sin-casco-menor',

@@ -42,6 +42,33 @@ export const ACCESOS_TRAFICO: readonly AccesoRapido[] = [
 /** Añadidos de POLICÍA LOCAL: convivencia y movilidad urbana (zona azul, patinete). */
 export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [buscar('Zona azul'), buscar('Patinete')];
 
+/**
+ * Accesos GENÉRICOS de SEGURIDAD CIUDADANA (LO 4/2015, estatal → siempre resuelven). Es el set al
+ * que cae la POLICÍA AUTONÓMICA cuando su comunidad aún NO trae normativa autonómica cargada: nunca
+ * a tráfico (no es la consulta de calle nº1 de una autonómica integral), sino a seguridad ciudadana.
+ */
+export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
+  buscar('Desobediencia'),
+  buscar('Drogas en vía pública'),
+  buscar('Identificación', 'identificacion'),
+  buscar('Falta de respeto', 'falta de respeto'),
+  buscar('Armas prohibidas', 'arma prohibida'),
+];
+
+/**
+ * Accesos de POLICÍA AUTONÓMICA con normativa autonómica cargada (ocio nocturno y actividades
+ * clasificadas: el trabajo de calle de una autonómica integral). Los términos enganchan las fichas
+ * autonómicas (p. ej. Ley 7/2011 de Canarias). Si su CCAA no tiene contenido, se usa el set de
+ * seguridad ciudadana (ver `accesosRapidosPara`).
+ */
+export const ACCESOS_AUTONOMICA: readonly AccesoRapido[] = [
+  buscar('Ocio nocturno', 'ocio nocturno'),
+  buscar('Sin licencia', 'sin licencia'),
+  buscar('Exceso de aforo', 'exceso de aforo'),
+  buscar('Ruidos', 'ruidos del local'),
+  buscar('Alcohol a menores', 'alcohol a menores'),
+];
+
 /** Accesos de POLICÍA NACIONAL: seguridad ciudadana y vía penal, NO tráfico. */
 export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   buscar('Desobediencia'),
@@ -57,17 +84,27 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
 ];
 
 /**
- * Devuelve los accesos rápidos para el cuerpo del perfil. Sin cuerpo (o autonómica, que asume
- * competencia mixta hasta afinar su set) cae al set de tráfico por defecto.
+ * Devuelve los accesos rápidos para el cuerpo del perfil.
+ *  - Policía Nacional: seguridad ciudadana y vía penal.
+ *  - Policía Local: tráfico urbano + convivencia (zona azul, patinete).
+ *  - Policía Autonómica: OCIO/actividades clasificadas si su CCAA trae normativa autonómica cargada
+ *    (`tieneContenidoAutonomico`); si no, set genérico de seguridad ciudadana — NUNCA tráfico.
+ *  - Guardia Civil / sin cuerpo: tráfico por defecto.
  */
-export function accesosRapidosPara(cuerpo: Cuerpo | null): AccesoRapido[] {
+export function accesosRapidosPara(
+  cuerpo: Cuerpo | null,
+  tieneContenidoAutonomico: boolean = false,
+): AccesoRapido[] {
   switch (cuerpo) {
     case 'policia_nacional':
       return [...ACCESOS_POLICIA_NACIONAL];
     case 'policia_local':
       return [...ACCESOS_TRAFICO, ...ACCESOS_LOCAL_EXTRA];
-    case 'guardia_civil':
     case 'policia_autonomica':
+      return tieneContenidoAutonomico
+        ? [...ACCESOS_AUTONOMICA]
+        : [...ACCESOS_SEGURIDAD_CIUDADANA];
+    case 'guardia_civil':
     default:
       return [...ACCESOS_TRAFICO];
   }

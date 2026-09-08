@@ -8,6 +8,7 @@ import {
   cargarArticulo,
   filtrarArticulos,
   listarArticulos,
+  listarCcaaConContenido,
   listarMunicipiosConOrdenanza,
   listarNormas,
 } from './normas';
@@ -140,6 +141,16 @@ suite('normas contra el paquete real', () => {
     expect(normas.every((n) => n.territorioId !== 'es-ccaa-05')).toBe(true);
     // Pero sí ve lo estatal.
     expect(normas.some((n) => n.codigo === 'RGC')).toBe(true);
+  });
+
+  // Honestidad de la capa AUTONÓMICA (Task 4): `listarCcaaConContenido` expone SOLO las CCAA con
+  // normativa autonómica sembrada (piloto: Canarias). Una CCAA que no está en la lista es el estado
+  // "no disponible → solicitar la normativa de mi comunidad" (banner honesto), no un vacío mudo.
+  it('listarCcaaConContenido expone Canarias y NO otras CCAA sin contenido (estado "no disponible")', async () => {
+    const ccaas = await listarCcaaConContenido(runner);
+    expect(ccaas).toContain('es-ccaa-05'); // Canarias, con Ley 7/2011 cargada
+    // Madrid (es-ccaa-13) no tiene normativa autonómica sembrada: cae al estado "no disponible".
+    expect(ccaas).not.toContain('es-ccaa-13');
   });
 
   it('cargarArticulo devuelve texto, fuente y fecha; id inexistente → null', async () => {
