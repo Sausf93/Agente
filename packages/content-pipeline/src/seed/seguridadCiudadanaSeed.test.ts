@@ -209,9 +209,18 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
     return filas.map((f) => f.infraccion_id);
   }
 
-  it('"okupas" resuelve a ocupación de inmueble', () => {
-    expect(buscarSinonimoExacto('okupas')).toContain('sc-ocupacion-inmueble');
-    expect(buscarFts('okupas')[0]).toBe('sc-ocupacion-inmueble');
+  it('"okupas" resuelve a ocupación de inmueble (admin 37.7 LOSC y penal 245.2 CP, ambas reachable)', () => {
+    // FRONTERA 37.7 LOSC vs 245.2 CP: la ocupación pacífica de un inmueble ajeno que no es morada es,
+    // en la práctica, el DELITO LEVE de usurpación (art. 245.2 CP); la infracción administrativa del
+    // art. 37.7 LOSC es RESIDUAL ("cuando no sean constitutivas de infracción penal"). Por eso el
+    // buscador surfacea primero la ficha PENAL, pero la administrativa sigue siendo alcanzable. Ambas
+    // quedan pendientes de revisión para que el jurista decida el encaje.
+    const sinExacto = buscarSinonimoExacto('okupas');
+    expect(sinExacto).toContain('sc-ocupacion-inmueble');
+    expect(sinExacto).toContain('del-usurpacion');
+    const fts = buscarFts('okupas');
+    expect(fts).toContain('sc-ocupacion-inmueble');
+    expect(fts).toContain('del-usurpacion');
   });
 
   it('"insultar a la policia" resuelve a falta de respeto (tildes plegadas)', () => {

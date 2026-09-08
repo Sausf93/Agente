@@ -80,6 +80,13 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     ['se resiste', 'del-resistencia-desobediencia'],
     ['estafa', 'del-estafa'],
     ['identificacion', 'sc-identificacion-requerimiento'],
+    // Figuras penales nuevas (Guardia Civil rural + Policía Nacional): antes salían vacías.
+    ['pasaporte falso', 'del-falsedad-documental'],
+    ['coche robado', 'del-sustraccion-vehiculo'],
+    ['okupas', 'del-usurpacion'],
+    ['allanamiento', 'del-allanamiento-morada'],
+    ['omision de socorro', 'del-omision-socorro'],
+    ['arma de fuego', 'del-tenencia-armas'],
     // T-7: capa AUTONÓMICA (Ley 7/2011 de Canarias) resuelta contra el `.db` construido en el test.
     ['ocio nocturno', 'can-esp-horario-cierre'],
     ['sin licencia', 'can-esp-sin-licencia'],

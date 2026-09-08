@@ -246,6 +246,95 @@ const ART_CP_249 = articuloCp({
     'orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+const ART_CP_392 = articuloCp({
+  numero: '392',
+  titulo: 'Falsedad en documento público, oficial o mercantil cometida por particular',
+  texto:
+    'Castiga al particular que comete en documento público, oficial o mercantil alguna de las ' +
+    'falsedades de los tres primeros números del art. 390.1 (alterar un documento en un elemento ' +
+    'esencial, simular un documento que induzca a error sobre su autenticidad o suponer en un acto ' +
+    'la intervención de personas que no la han tenido): prisión de seis meses a tres años y multa ' +
+    'de seis a doce meses (art. 392.1). El art. 392.2 castiga al que, sin haber intervenido en la ' +
+    'falsificación, trafica de cualquier modo con un documento de identidad falso (misma pena) y al ' +
+    'que hace uso, a sabiendas, de un documento de identidad falso (prisión de seis meses a un año y ' +
+    'multa de tres a seis meses), aunque el documento sea de otro Estado. El uso de documento falso ' +
+    'por quien no lo falsificó se castiga por el art. 393 (pena inferior en grado); el art. 400 bis ' +
+    'equipara al uso el empleo de un documento auténtico por quien no está legitimado para ello. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_244 = articuloCp({
+  numero: '244',
+  titulo: 'Robo y hurto de uso de vehículos',
+  texto:
+    'Castiga a quien sustrae o utiliza sin la debida autorización un vehículo a motor o ciclomotor ' +
+    'ajenos, sin ánimo de apropiárselo (hurto de uso). Cuando lo restituye, directa o ' +
+    'indirectamente, en un plazo no superior a cuarenta y ocho horas, la pena es de trabajos en ' +
+    'beneficio de la comunidad de treinta y uno a noventa días o multa de dos a doce meses ' +
+    '(art. 244.1). Si el hecho se ejecuta empleando fuerza en las cosas, la pena se impone en su ' +
+    'mitad superior. De no producirse la restitución en ese plazo, el hecho se castiga como hurto o ' +
+    'robo, según corresponda. Si media violencia o intimidación en las personas, se imponen en todo ' +
+    'caso las penas del art. 242 (robo con violencia). Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_CP_245 = articuloCp({
+  numero: '245',
+  titulo: 'Usurpación de bienes inmuebles',
+  texto:
+    'Castiga (art. 245.1) a quien, con violencia o intimidación en las personas, ocupa una cosa ' +
+    'inmueble o usurpa un derecho real inmobiliario ajeno: prisión de uno a dos años (además de las ' +
+    'penas por las violencias ejercidas), según la utilidad obtenida y el daño causado. El art. ' +
+    '245.2 castiga con multa de tres a seis meses a quien ocupa, sin autorización debida, un ' +
+    'inmueble, vivienda o edificio ajenos que NO constituyan morada, o se mantiene en ellos contra ' +
+    'la voluntad de su titular (ocupación pacífica). Se distingue del allanamiento de morada ' +
+    '(art. 202, cuando el inmueble es morada) y de la infracción administrativa de ocupación del ' +
+    'art. 37.7 de la LO 4/2015 (ocupación que no es constitutiva de delito). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_202 = articuloCp({
+  numero: '202',
+  titulo: 'Allanamiento de morada',
+  texto:
+    'Castiga (art. 202.1) al particular que, sin habitar en ella, entra en morada ajena o se ' +
+    'mantiene en la misma contra la voluntad de su morador: prisión de seis meses a dos años. Si el ' +
+    'hecho se ejecuta con violencia o intimidación, la pena es de prisión de uno a cuatro años y ' +
+    'multa de seis a doce meses (art. 202.2). La clave es que el lugar sea MORADA (espacio de vida ' +
+    'privada del morador); la ocupación de un inmueble ajeno que no es morada se castiga por la ' +
+    'usurpación (art. 245). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_195 = articuloCp({
+  numero: '195',
+  titulo: 'Omisión del deber de socorro',
+  texto:
+    'Castiga (art. 195.1) a quien no socorre a una persona que se halla desamparada y en peligro ' +
+    'manifiesto y grave, cuando pudiera hacerlo sin riesgo propio ni de terceros: multa de tres a ' +
+    'doce meses. La misma pena se impone (art. 195.2) a quien, impedido de prestar socorro, no ' +
+    'demanda con urgencia auxilio ajeno. Cuando la víctima lo es por un accidente ocasionado por el ' +
+    'que omitió el auxilio (art. 195.3), la pena es de prisión de seis meses a dieciocho meses si el ' +
+    'accidente fue fortuito, y de prisión de seis meses a cuatro años si se debió a imprudencia. ' +
+    'Este supuesto es el típico de la fuga tras un atropello. La calificación final corresponde a la ' +
+    'autoridad judicial. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_564 = articuloCp({
+  numero: '564',
+  titulo: 'Tenencia ilícita de armas de fuego reglamentadas',
+  texto:
+    'Castiga la tenencia de armas de fuego reglamentadas careciendo de las licencias o permisos ' +
+    'necesarios (art. 564.1): prisión de uno a dos años si se trata de armas cortas, y prisión de ' +
+    'seis meses a un año si se trata de armas largas. Las penas se imponen en su mitad superior ' +
+    '(art. 564.2) cuando el arma carece de marcas de fábrica o de número, o los tiene alterados o ' +
+    'borrados; ha sido introducida ilegalmente en territorio español; o ha sido transformada ' +
+    'modificando sus características originales. La tenencia de armas PROHIBIDAS o de las que sean ' +
+    'resultado de la modificación sustancial de armas reglamentadas se castiga por el art. 563 ' +
+    '(prisión de uno a tres años). Se distingue de la infracción administrativa del art. 36.10 de la ' +
+    'LO 4/2015 (portar, exhibir o usar armas prohibidas, o armas de otra clase fuera del domicilio, ' +
+    'como navajas, porras o sprays de defensa). Resumen orientativo; consúltese el texto consolidado.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_234,
   ART_CP_242,
@@ -261,6 +350,12 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_557,
   ART_CP_556,
   ART_CP_249,
+  ART_CP_392,
+  ART_CP_244,
+  ART_CP_245,
+  ART_CP_202,
+  ART_CP_195,
+  ART_CP_564,
 ];
 
 // --- Constructor de un delito con su consecuencia de detención generada por el motor --------
@@ -839,6 +934,278 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'los subtipos AGRAVADOS del art. 250 (vivienda, especial gravedad, abuso de relaciones ' +
       'personales, etc.), que elevan la pena. Distinguir de la apropiación indebida (art. 253) y de la ' +
       'administración desleal (art. 252). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Falsedad documental (muy buscada en control de extranjería / identificaciones) ---------
+  construirDelito({
+    id: 'del-falsedad-documental',
+    articulo: ART_CP_392,
+    tituloCorto: 'Falsedad de documento (papeles falsos)',
+    // Caso modelado: falsedad en documento público/oficial/mercantil por particular (art. 392.1),
+    // prisión de 6 meses a 3 años + multa → MENOS GRAVE (pena ≤ 5 años, art. 33 CP).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 3 años y multa de 6 a 12 meses (falsedad en documento público, oficial o ' +
+      'mercantil por particular, art. 392.1 CP). A verificar',
+    textoBoletin:
+      'Falsificar un documento público, oficial o mercantil (alterándolo en un elemento esencial, ' +
+      'simulándolo o suponiendo la intervención de personas que no la han tenido), o traficar con un ' +
+      'documento de identidad falso o usarlo a sabiendas (art. 392 CP). En el control de extranjería ' +
+      'es frecuente el uso de pasaporte, permiso de residencia o documento de identidad falso o ' +
+      'ajeno: el uso de documento falso por quien no lo falsificó va por el art. 393 (pena inferior ' +
+      'en grado) y el uso de un documento AUTÉNTICO por quien no está legitimado se equipara al uso ' +
+      'falso (art. 400 bis). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'papeles falsos',
+      'pasaporte falso',
+      'dni falso',
+      'documentacion falsa',
+      'carnet falso',
+      'documento falsificado',
+      'pasaporte trucado',
+      'falsedad documental',
+      'permiso de residencia falso',
+    ],
+    // Intervención (comiso) del documento como efecto/instrumento del delito (art. 127 CP).
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la intervención del documento presuntamente falso o usado indebidamente como ' +
+          'efecto o instrumento del delito, a disposición de la autoridad judicial (comiso, art. 127 ' +
+          'CP). La valoración final corresponde a la autoridad judicial.',
+        fuente: 'CP art. 127 (comiso de efectos e instrumentos del delito)',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: la ficha modela la falsedad del art. 392.1 CP ' +
+      '(documento público, oficial o mercantil por particular) → prisión de 6 meses a 3 años y multa ' +
+      'de 6 a 12 meses → MENOS GRAVE. DISTINGUIR: (i) tráfico con documento de IDENTIDAD falso ' +
+      '(art. 392.2, misma pena) y USO a sabiendas de documento de identidad falso (art. 392.2, ' +
+      'prisión de 6 meses a 1 año y multa de 3 a 6 meses); (ii) uso de documento falso por quien no ' +
+      'lo falsificó (art. 393, pena inferior en grado); (iii) uso de documento auténtico por quien no ' +
+      'está legitimado (art. 400 bis); (iv) falsedad en certificados (art. 399) y falsificación de ' +
+      'tarjetas de crédito/débito y cheques de viaje (art. 399 bis, pena MÁS grave, hasta prisión de ' +
+      '4 a 8 años → GRAVE). Confirmar el encaje del caso y las penas contra el texto consolidado del CP.',
+  }),
+  // --- Sustracción de vehículos (Guardia Civil rural) ----------------------------------------
+  construirDelito({
+    id: 'del-sustraccion-vehiculo',
+    articulo: ART_CP_244,
+    tituloCorto: 'Robo y hurto de uso de vehículo',
+    // Caso modelado: hurto de uso del art. 244.1 (sin ánimo de apropiárselo, restitución < 48 h) →
+    // trabajos en beneficio de la comunidad de 31 a 90 días o multa de 2 a 12 meses → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Trabajos en beneficio de la comunidad de 31 a 90 días o multa de 2 a 12 meses (hurto de uso, ' +
+      'restitución < 48 h, art. 244.1 CP); en su mitad superior si hay fuerza en las cosas. A verificar',
+    textoBoletin:
+      'Sustraer o utilizar sin autorización un vehículo a motor o ciclomotor ajenos SIN ánimo de ' +
+      'apropiárselo (hurto de uso, art. 244 CP). Si se restituye en un plazo no superior a 48 horas, ' +
+      'la pena es de trabajos en beneficio de la comunidad o multa; con fuerza en las cosas se impone ' +
+      'en su mitad superior. Si NO se restituye en plazo, el hecho se castiga como HURTO o ROBO ' +
+      '(según haya o no fuerza); si media violencia o intimidación, se aplican en todo caso las penas ' +
+      'del robo con violencia (art. 242). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'coche robado',
+      'sustraccion de vehiculo',
+      'robo de coche',
+      'me han robado el coche',
+      'vehiculo sustraido',
+      'requisitoria',
+      'hurto de uso',
+      'moto robada',
+    ],
+    // Vehículo recuperado: depósito y devolución al titular + comprobación de sustracción/requisitoria.
+    consecuenciasExtra: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Si el vehículo se recupera, procede su depósito y la devolución a su titular, previa ' +
+          'comprobación de si consta como sustraído o requisitoriado en las bases de datos policiales. ' +
+          'Las medidas sobre el vehículo y las personas las acuerda o ratifica la autoridad judicial.',
+        fuente: 'CP art. 244; comprobación de sustracción/requisitoria en bases de datos policiales',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: la ficha modela el HURTO DE USO del art. 244.1 CP ' +
+      '(sin ánimo de apropiárselo, restitución en 48 h) → trabajos en beneficio de la comunidad de 31 ' +
+      'a 90 días o multa de 2 a 12 meses → MENOS GRAVE (por trabajos > 30 días / multa > 3 meses, ' +
+      'art. 33 CP). Cambian la pena y la rama: fuerza en las cosas (mitad superior), NO restitución en ' +
+      '48 h (se castiga como HURTO art. 234 o ROBO con fuerza art. 237 y ss.) y violencia o ' +
+      'intimidación (penas del art. 242). DISTINGUIR del robo/hurto de cosas del interior del vehículo. ' +
+      'MATIZ (revisor): por la cláusula de tope del propio art. 244.1 ("la pena no podrá ser igual o ' +
+      'superior a la que correspondería si se apropiare definitivamente"), un vehículo de ESCASO VALOR ' +
+      '(por debajo del umbral del hurto, 400 €), sin fuerza ni violencia, puede arrastrar el hecho al ' +
+      'HURTO DE USO LEVE, lo que cambiaría la rama de detención al art. 495 LECrim. El caso modelado ' +
+      'asume un vehículo de valor normal (menos grave). Confirmar penas y encaje contra el CP consolidado.',
+  }),
+  // --- Usurpación de inmueble / okupación (frontera con allanamiento y con la leve 37.7 LOSC) --
+  construirDelito({
+    id: 'del-usurpacion',
+    articulo: ART_CP_245,
+    tituloCorto: 'Usurpación de inmueble (okupación)',
+    // Caso modelado: OCUPACIÓN PACÍFICA de inmueble ajeno que no es morada (art. 245.2) → multa de
+    // 3 a 6 meses. Por el art. 13.4 CP (pena que puede ser leve o menos grave → LEVE), es DELITO LEVE
+    // → la detención se rige por el art. 495 LECrim (no procede salvo excepción).
+    gravedadCp: 'leve',
+    penaTexto:
+      'Multa de 3 a 6 meses (ocupación pacífica de inmueble ajeno que no es morada, art. 245.2 CP); ' +
+      'con violencia o intimidación (art. 245.1): prisión de 1 a 2 años. A verificar',
+    textoBoletin:
+      'Ocupar, sin autorización debida, un inmueble, vivienda o edificio ajenos que NO constituyan ' +
+      'morada, o mantenerse en ellos contra la voluntad de su titular (ocupación pacífica, art. 245.2 ' +
+      'CP). FRONTERAS: si el inmueble es MORADA (alguien vive en él), el hecho es allanamiento de ' +
+      'morada (art. 202 CP), más grave; si se ocupa con violencia o intimidación en las personas, ' +
+      'art. 245.1 (prisión de 1 a 2 años); y la ocupación que NO es constitutiva de delito puede ser ' +
+      'infracción administrativa (art. 37.7 LO 4/2015). La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'okupas',
+      'okupacion',
+      'usurpacion',
+      'han okupado',
+      'ocupacion de inmueble',
+      'okupas en un piso vacio',
+      'usurpacion de inmueble',
+      'ocupacion ilegal',
+    ],
+    notaRevision:
+      'A VERIFICAR la clasificación y la frontera: la ficha modela la OCUPACIÓN PACÍFICA del ' +
+      'art. 245.2 CP (inmueble ajeno que no es morada) → multa de 3 a 6 meses. Al ser una pena que por ' +
+      'su extensión puede ser leve o menos grave, el art. 13.4 CP obliga a considerarla DELITO LEVE → ' +
+      'la detención se rige por el art. 495 LECrim (NO procede salvo excepción, p. ej. desconocer el ' +
+      'domicilio). DISTINGUIR: (i) del ALLANAMIENTO DE MORADA (art. 202 CP) cuando el inmueble es ' +
+      'morada habitada; (ii) de la usurpación con VIOLENCIA o intimidación (art. 245.1, prisión de 1 a ' +
+      '2 años → MENOS GRAVE, que sí cambiaría la rama de detención); y (iii) de la infracción ' +
+      'administrativa de ocupación del art. 37.7 LO 4/2015. Confirmar clasificación (leve vs menos ' +
+      'grave) y penas con el revisor jurídico contra el texto consolidado del CP.',
+  }),
+  // --- Allanamiento de morada (Policía Nacional; frontera con la usurpación) ------------------
+  construirDelito({
+    id: 'del-allanamiento-morada',
+    articulo: ART_CP_202,
+    tituloCorto: 'Allanamiento de morada',
+    // Caso modelado: art. 202.1 (entrar o mantenerse en morada ajena contra la voluntad del morador)
+    // → prisión de 6 meses a 2 años → MENOS GRAVE. Con violencia/intimidación (202.2): 1 a 4 años.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 2 años (allanamiento de morada, art. 202.1 CP); con violencia o ' +
+      'intimidación (art. 202.2): prisión de 1 a 4 años y multa de 6 a 12 meses. A verificar',
+    textoBoletin:
+      'Entrar en morada ajena, o mantenerse en ella contra la voluntad de su morador, por un ' +
+      'particular que no la habita (art. 202.1 CP). Si el hecho se ejecuta con violencia o ' +
+      'intimidación, la pena es mayor (art. 202.2). FRONTERA con la usurpación: el art. 202 protege ' +
+      'la MORADA (el espacio de vida privada donde alguien vive), mientras que la ocupación de un ' +
+      'inmueble ajeno que NO es morada se castiga por la usurpación (art. 245 CP). La calificación ' +
+      'final corresponde a la autoridad judicial.',
+    terminos: [
+      'allanamiento',
+      'allanamiento de morada',
+      'entrar en casa ajena',
+      'se metio en mi casa',
+      'okupas con gente dentro',
+      'entrada en domicilio',
+      'se ha colado en mi casa',
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: allanamiento de morada del art. 202.1 CP → prisión ' +
+      'de 6 meses a 2 años → MENOS GRAVE; con violencia o intimidación (art. 202.2) → prisión de 1 a 4 ' +
+      'años y multa de 6 a 12 meses (también MENOS GRAVE, pena ≤ 5 años). La clave del tipo es que el ' +
+      'lugar sea MORADA: DISTINGUIR de la usurpación de inmueble que no es morada (art. 245 CP) y del ' +
+      'allanamiento de domicilio de persona jurídica, despacho u oficina (art. 203 CP). Confirmar ' +
+      'penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Omisión del deber de socorro (fuga tras atropello) ------------------------------------
+  construirDelito({
+    id: 'del-omision-socorro',
+    articulo: ART_CP_195,
+    tituloCorto: 'Omisión del deber de socorro',
+    // Caso modelado: fuga tras atropello causado por imprudencia del que omite (art. 195.3) →
+    // prisión de 6 meses a 4 años → MENOS GRAVE (pena ≤ 5 años, art. 33 CP).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 4 años (accidente causado por imprudencia del que omite el auxilio, ' +
+      'art. 195.3 CP); si el accidente fue fortuito: prisión de 6 a 18 meses. El tipo básico ' +
+      '(art. 195.1) es multa de 3 a 12 meses. A verificar',
+    textoBoletin:
+      'No socorrer a una persona desamparada y en peligro manifiesto y grave pudiendo hacerlo sin ' +
+      'riesgo propio ni de terceros (art. 195.1 CP), o no demandar auxilio ajeno cuando uno está ' +
+      'impedido de socorrer (art. 195.2). La pena se agrava (art. 195.3) cuando la víctima lo es por ' +
+      'un accidente ocasionado por el propio que omite el auxilio: es el supuesto típico de la FUGA ' +
+      'tras un atropello, mayor aún si el accidente se debió a imprudencia. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'omision de socorro',
+      'se dio a la fuga',
+      'fuga tras atropello',
+      'no auxilio',
+      'dejar tirado a un herido',
+      'atropello y huida',
+      'no socorrer',
+      'darse a la fuga',
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: la ficha modela el art. 195.3 CP (víctima por ' +
+      'accidente ocasionado por el que omitió el auxilio) → prisión de 6 a 18 meses si el accidente ' +
+      'fue FORTUITO y prisión de 6 meses a 4 años si se debió a IMPRUDENCIA; ambos MENOS GRAVE. El ' +
+      'tipo BÁSICO (art. 195.1, no socorrer a un desamparado en peligro) es multa de 3 a 12 meses → ' +
+      'por el art. 13.4 CP sería DELITO LEVE (cambiaría la rama de detención al art. 495 LECrim). OJO: ' +
+      'la fuga tras atropello puede concurrir con el abandono del lugar del accidente (art. 382 bis ' +
+      'CP) y con el delito imprudente de lesiones/homicidio; deslindar los tipos. Confirmar la ' +
+      'redacción vigente del art. 195.3 y las penas contra el texto consolidado del CP.',
+  }),
+  // --- Tenencia ilícita de armas de fuego (Guardia Civil rural) -------------------------------
+  construirDelito({
+    id: 'del-tenencia-armas',
+    articulo: ART_CP_564,
+    tituloCorto: 'Tenencia ilícita de armas de fuego',
+    // Caso modelado: tenencia de arma de fuego reglamentada sin licencia/guía, arma corta (art.
+    // 564.1.1º) → prisión de 1 a 2 años → MENOS GRAVE. Arma larga (564.1.2º): 6 meses a 1 año.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 2 años (arma de fuego corta reglamentada sin licencia, art. 564.1.1º CP); arma ' +
+      'larga (art. 564.1.2º): prisión de 6 meses a 1 año; armas prohibidas (art. 563): prisión de 1 a ' +
+      '3 años. A verificar',
+    textoBoletin:
+      'Tener un arma de fuego reglamentada careciendo de las licencias o permisos necesarios (guía de ' +
+      'pertenencia, licencia) — art. 564 CP: prisión de 1 a 2 años si es arma corta y de 6 meses a 1 ' +
+      'año si es arma larga (escopeta, rifle). La pena sube (art. 564.2) si el arma carece de marcas o ' +
+      'número o los tiene borrados, se introdujo ilegalmente en España o fue transformada. La tenencia ' +
+      'de armas PROHIBIDAS o de las resultantes de modificar sustancialmente un arma reglamentada va ' +
+      'por el art. 563 (prisión de 1 a 3 años). FRONTERA: portar navajas, porras, sprays de defensa u ' +
+      'otras armas prohibidas por la normativa, sin llegar al tipo penal, es infracción administrativa ' +
+      '(art. 36.10 LO 4/2015). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'arma de fuego',
+      'pistola',
+      'fusca',
+      'escopeta sin guia',
+      'sin licencia de armas',
+      'tenencia ilicita de armas',
+      'escopeta sin papeles',
+      'arma sin licencia',
+    ],
+    // Intervención (comiso) del arma como efecto/instrumento del delito (art. 127 CP).
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la intervención del arma y de su munición como efecto o instrumento del delito, a ' +
+          'disposición de la autoridad judicial (comiso, art. 127 CP). La valoración final corresponde ' +
+          'a la autoridad judicial.',
+        fuente: 'CP art. 127 (comiso de efectos e instrumentos del delito)',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: la ficha modela la tenencia de arma de fuego ' +
+      'reglamentada SIN licencia del art. 564.1 CP → prisión de 1 a 2 años (arma corta) o de 6 meses a ' +
+      '1 año (arma larga) → MENOS GRAVE; agravada (art. 564.2: sin marcas/número o borrados, ' +
+      'introducción ilegal, transformación) en su mitad superior. La tenencia de armas PROHIBIDAS o de ' +
+      'armas reglamentadas modificadas sustancialmente va por el art. 563 (prisión de 1 a 3 años → ' +
+      'MENOS GRAVE). DISTINGUIR de la infracción administrativa del art. 36.10 LO 4/2015 (portar, ' +
+      'exhibir o usar armas prohibidas —navaja, porra, spray— o armas fuera del domicilio) y del ' +
+      'depósito de armas de guerra (arts. 566-567, pena MÁS grave). Confirmar penas y encaje contra el ' +
+      'texto consolidado del CP con el revisor jurídico.',
   }),
 ];
 

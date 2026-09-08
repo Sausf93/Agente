@@ -15,8 +15,8 @@ const idsArticulos = new Set(SEED_PENAL.articulos.map((a) => a.id));
 const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_PENAL: integridad de los delitos', () => {
-  it('siembra 13 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(13);
+  it('siembra 19 delitos, todos por vía penal y sin importe administrativo', () => {
+    expect(SEED_PENAL.infracciones).toHaveLength(19);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -161,6 +161,101 @@ describe('SEED_PENAL: fichas nuevas para la Policía Nacional (VG, orden públic
   });
 });
 
+describe('SEED_PENAL: fichas penales nuevas (falsedad, vehículo, usurpación, allanamiento, socorro, armas)', () => {
+  const NUEVAS = [
+    'del-falsedad-documental',
+    'del-sustraccion-vehiculo',
+    'del-usurpacion',
+    'del-allanamiento-morada',
+    'del-omision-socorro',
+    'del-tenencia-armas',
+  ];
+
+  it('cada ficha nueva es penal, cita su artículo del CP, tiene marco penal y dispara detención', () => {
+    for (const id of NUEVAS) {
+      const item = porId(id);
+      expect(item, id).toBeDefined();
+      // Vía penal, delito, sin importe administrativo.
+      expect(item!.infraccion.tipo, id).toBe('penal');
+      expect(item!.infraccion.gravedad, id).toBe('delito');
+      expect(item!.infraccion.importeEur, id).toBeNull();
+      expect(item!.marcoImporte, id).toBe('penal');
+      // Artículo fuente presente en el seed y pena legible + gravedad penal (art. 33 CP).
+      expect(idsArticulos.has(item!.infraccion.articuloId), id).toBe(true);
+      expect(item!.infraccion.penaTexto, id).toBeTruthy();
+      expect(item!.infraccion.gravedadPenal, id).toBeTruthy();
+      // Detención generada por el motor: gravedadPenal presente en la regla + lenguaje orientativo.
+      const det = item!.consecuencias.find((c) => c.tipo === 'detencion')!;
+      expect(det, id).toBeDefined();
+      expect(det.regla.gravedadCp, id).toBe(item!.infraccion.gravedadPenal);
+      expect(det.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+      expect(det.textoCorto.toLowerCase(), id).not.toMatch(/\bdetén\b|\bdetenga\b/);
+      expect(det.fuente, id).toMatch(/LECrim art\./);
+      // Pendiente de revisión con nota "a verificar".
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+    }
+  });
+
+  it('las figuras menos graves flagrantes orientan a que PROCEDE (art. 490); la usurpación pacífica es LEVE (art. 495)', () => {
+    for (const id of [
+      'del-falsedad-documental',
+      'del-sustraccion-vehiculo',
+      'del-allanamiento-morada',
+      'del-omision-socorro',
+      'del-tenencia-armas',
+    ]) {
+      const det = porId(id)!.consecuencias.find((c) => c.tipo === 'detencion')!;
+      expect(det.regla.orientacionBase, id).toBe('procede');
+      expect(det.fuente, id).toMatch(/LECrim art\. 490/);
+    }
+    // Ocupación pacífica del art. 245.2 CP → delito leve → detención regida por el art. 495 LECrim.
+    const usurp = porId('del-usurpacion')!.consecuencias.find((c) => c.tipo === 'detencion')!;
+    expect(usurp.regla.orientacionBase).toBe('no_procede_salvo');
+    expect(usurp.fuente).toMatch(/LECrim art\. 495/);
+  });
+
+  it('falsedad y tenencia de armas intervienen el efecto (decomiso, art. 127 CP); el vehículo recuperado va a depósito', () => {
+    for (const id of ['del-falsedad-documental', 'del-tenencia-armas']) {
+      const dec = porId(id)!.consecuencias.find((c) => c.tipo === 'decomiso');
+      expect(dec, id).toBeDefined();
+      expect(dec!.fuente, id).toMatch(/127/);
+      expect(dec!.textoCorto.toLowerCase(), id).toMatch(/procede/);
+    }
+    const dep = porId('del-sustraccion-vehiculo')!.consecuencias.find((c) => c.tipo === 'deposito');
+    expect(dep, 'vehículo recuperado → depósito').toBeDefined();
+    expect(dep!.textoCorto.toLowerCase()).toMatch(/requisitor|sustra/);
+  });
+
+  it('el textoBoletin explica la frontera con las figuras vecinas', () => {
+    // Usurpación 245 vs allanamiento 202 vs leve 37.7 LOSC.
+    const usurp = porId('del-usurpacion')!.infraccion.textoBoletin;
+    expect(usurp).toMatch(/202/);
+    expect(usurp).toMatch(/37\.7/);
+    // Allanamiento 202 (morada) vs usurpación 245 (no morada).
+    expect(porId('del-allanamiento-morada')!.infraccion.textoBoletin).toMatch(/245/);
+    // Tenencia penal 563/564 vs administrativa 36.10 LOSC.
+    const armas = porId('del-tenencia-armas')!.infraccion.textoBoletin;
+    expect(armas).toMatch(/36\.10/);
+    expect(armas).toMatch(/563/);
+  });
+
+  it('los sinónimos clave de calle resuelven a su ficha', () => {
+    const casos: Array<[string, string]> = [
+      ['pasaporte falso', 'del-falsedad-documental'],
+      ['coche robado', 'del-sustraccion-vehiculo'],
+      ['okupas', 'del-usurpacion'],
+      ['allanamiento', 'del-allanamiento-morada'],
+      ['omision de socorro', 'del-omision-socorro'],
+      ['arma de fuego', 'del-tenencia-armas'],
+    ];
+    for (const [termino, id] of casos) {
+      const terminos = porId(id)!.sinonimos.map((s) => s.termino);
+      expect(terminos, `${termino} → ${id}`).toContain(termino);
+    }
+  });
+});
+
 describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
   const combinado = combinarSeeds(SEED_TRAFICO, SEED_PENAL);
 
@@ -176,7 +271,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
     expect(new Set(artIds).size).toBe(artIds.length);
   });
 
-  it('conserva los artículos penales del CP (tráfico 379.1/379.2/380/383/384 + penal, incluidos VG 153/173, desórdenes 557, resistencia 556 y estafa 249)', () => {
+  it('conserva los artículos penales del CP (tráfico + penal, incluidas las figuras nuevas 195/202/244/245/392/564)', () => {
     const numerosCp = combinado.articulos
       .filter((a) => a.normaId === 'BOE-A-1995-25444')
       .map((a) => a.numero)
@@ -186,9 +281,13 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '153',
       '169',
       '173.2',
+      '195',
+      '202',
       '234',
       '241',
       '242',
+      '244',
+      '245',
       '249',
       '263',
       '368',
@@ -197,10 +296,12 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '380',
       '383',
       '384',
+      '392',
       '468',
       '550',
       '556',
       '557',
+      '564',
     ]);
   });
 
