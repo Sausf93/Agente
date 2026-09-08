@@ -66,4 +66,5 @@ export const CONSECUENCIA_LABEL: Record<TipoConsecuencia, string> = {
   retirada_permiso: 'Retirada de permiso',
   identificacion: 'Identificación',
   proteccion: 'Protección de la víctima',
+  cese_actividad: 'Cese de actividad / precinto',
 };

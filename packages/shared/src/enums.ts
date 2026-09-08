@@ -48,6 +48,9 @@ export type TipoInfraccion = z.infer<typeof TipoInfraccion>;
  * Tipos de consecuencia asociada a una infracción (capa de consecuencias, sección 4.6).
  * `proteccion`: medidas de protección de la víctima (orden de protección, valoración de riesgo)
  * que deben salir DESTACADAS en delitos como la violencia de género, no enterradas en el texto.
+ * `cese_actividad`: medida operativa (NO sancionadora) de cese de la actividad, desalojo o
+ * precinto de un local/espectáculo (p. ej. Ley 7/2011 de Canarias, arts. 49 y 65.2). En la calle
+ * es lo determinante frente a la multa: la sanción la impone después el órgano competente.
  */
 export const TipoConsecuencia = z.enum([
   'detencion',
@@ -57,6 +60,7 @@ export const TipoConsecuencia = z.enum([
   'retirada_permiso',
   'identificacion',
   'proteccion',
+  'cese_actividad',
 ]);
 export type TipoConsecuencia = z.infer<typeof TipoConsecuencia>;
 

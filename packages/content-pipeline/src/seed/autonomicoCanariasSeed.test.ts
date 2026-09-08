@@ -106,3 +106,71 @@ describe('SEED_AUTONOMICO_CANARIAS: cobertura de lo más útil en Canarias', () 
     expect(terminos).toContain('espectaculos canarias');
   });
 });
+
+describe('SEED_AUTONOMICO_CANARIAS: correcciones de la ronda de validación (revisor + validador)', () => {
+  // I-1/I-2: el ocio lleva la medida operativa `cese_actividad` (cese/desalojo/precinto), que MANDA
+  // sobre la multa. Debe llevar su fuente (arts. 49 y 65.2) y lenguaje orientativo.
+  it('las infracciones de ocio llevan la consecuencia estructurada `cese_actividad` con su fuente', () => {
+    for (const id of ['can-esp-horario-cierre', 'can-esp-tras-cierre', 'can-esp-sin-licencia']) {
+      const item = porId(id)!;
+      const cese = item.consecuencias.find((c) => c.tipo === 'cese_actividad');
+      expect(cese, id).toBeDefined();
+      expect(cese!.fuente, id).toMatch(/49.*65\.2|65\.2/);
+      expect(cese!.textoCorto.toLowerCase(), id).toMatch(/cese|desalojo|precinto/);
+      // Orientativo, nunca imperativo.
+      expect(cese!.textoCorto.toLowerCase(), id).toMatch(/procede|valorar/);
+    }
+  });
+
+  // I-3 (revisor): dispensación de alcohol/tabaco a menores y exceso de aforo son DOS infracciones
+  // distintas (antes empaquetadas en una), cada una citando el art. 62 con el ordinal "a verificar".
+  it('la dispensación a menores y el exceso de aforo van SEPARADAS, con el ordinal a verificar', () => {
+    const alcohol = porId('can-esp-alcohol-menores')!;
+    const aforo = porId('can-esp-exceso-aforo')!;
+    expect(alcohol).toBeDefined();
+    expect(aforo).toBeDefined();
+    // El boletín de alcohol/tabaco YA NO mezcla el aforo, y viceversa.
+    expect(alcohol.infraccion.textoBoletin.toLowerCase()).not.toContain('aforo');
+    expect(aforo.infraccion.textoBoletin.toLowerCase()).not.toContain('menores');
+    // Ambas citan el art. 62 con el ordinal "a verificar" (no se da por seguro el 62.6).
+    for (const item of [alcohol, aforo]) {
+      expect(item.notaRevision.toLowerCase()).toContain('ordinal');
+      expect(item.notaRevision.toLowerCase()).toContain('verificar');
+    }
+  });
+
+  // I-3 (revisor): las cuantías del art. 66 no están confirmadas por fuente primaria; DEBE quedar
+  // clarísimo en cada nota de las infracciones de la Ley 7/2011.
+  it('cada nota deja clarísimo que las cuantías del art. 66 están SIN confirmar', () => {
+    for (const item of SEED_AUTONOMICO_CANARIAS.infracciones) {
+      const nota = item.notaRevision.toLowerCase();
+      expect(nota, item.infraccion.id).toContain('art. 66');
+      expect(nota, item.infraccion.id).toMatch(/sin confirmar|sin confirmar por fuente primaria/);
+    }
+  });
+
+  // I-3 (revisor): Ley 8/1991 — el censo/identificación es el art. 11 (no un placeholder), y la
+  // "correa <2m" NO se atribuye a la 8/1991 (su art. 6 solo remite a ordenanzas).
+  it('la ley de animales usa el art. 11 (censo) y el art. 6 (remisión), sin placeholders', () => {
+    const numeros = SEED_AUTONOMICO_CANARIAS.articulos
+      .filter((a) => a.normaId === 'BOE-A-1991-16425')
+      .map((a) => a.numero);
+    expect(numeros).toContain('11');
+    expect(numeros).toContain('6');
+    expect(numeros).not.toContain('IDENT');
+    expect(numeros).not.toContain('CORREA');
+
+    const art6 = SEED_AUTONOMICO_CANARIAS.articulos.find(
+      (a) => a.normaId === 'BOE-A-1991-16425' && a.numero === '6',
+    )!;
+    // No sobreatribuye la correa <2m a la 8/1991: remite a la ordenanza / Ley 50/1999.
+    expect(art6.texto.toLowerCase()).toMatch(/ordenanza/);
+    expect(art6.texto.toLowerCase()).toMatch(/50\/1999|remite/);
+
+    const art11 = SEED_AUTONOMICO_CANARIAS.articulos.find(
+      (a) => a.normaId === 'BOE-A-1991-16425' && a.numero === '11',
+    )!;
+    // Los plazos quedan marcados "a verificar".
+    expect(art11.texto.toLowerCase()).toContain('verificar');
+  });
+});

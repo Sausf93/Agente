@@ -16,6 +16,10 @@ import {
 const CADENA_SCTF = ['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife'];
 /** Cadena de un Local de otro municipio (para comprobar que NO ve la ordenanza ajena). */
 const CADENA_OTRO_MUNICIPIO = ['es-ccaa-05', 'es-prov-38', 'mun-la-laguna'];
+/** Cadena de un Policía Canaria (autonómico): solo la CCAA de Canarias, sin municipio. */
+const CADENA_CANARIAS = ['es-ccaa-05'];
+/** Cadena de un agente de OTRA CCAA (Madrid): no debe ver NADA de Canarias. */
+const CADENA_MADRID = ['es-ccaa-13', 'es-prov-28', 'mun-madrid'];
 
 /**
  * Test de INTEGRACIÓN de NORMAS contra el `.sqlite` REAL empaquetado (`assets/content/…db`),
@@ -114,6 +118,28 @@ suite('normas contra el paquete real', () => {
   it('listarMunicipiosConOrdenanza expone el municipio del piloto', async () => {
     const municipios = await listarMunicipiosConOrdenanza(runner);
     expect(municipios).toContain('mun-santa-cruz-de-tenerife');
+  });
+
+  // CAPA AUTONÓMICA (piloto Canarias, ADR-006/008): las leyes CAN-* solo las ve quien tiene Canarias
+  // en su cadena; un agente de otra CCAA nunca. Mismo contrato territorial que la capa municipal.
+  it('un perfil de Canarias (autonómico) VE las leyes autonómicas canarias (CAN-*)', async () => {
+    const normas = await listarNormas(runner, CADENA_CANARIAS);
+    const codigos = normas.map((n) => n.codigo);
+    expect(codigos).toContain('CAN-ESP'); // Ley 7/2011 de espectáculos
+    const autonomicasCan = normas.filter(
+      (n) => n.ambito === 'autonomico' && n.territorioId === 'es-ccaa-05',
+    );
+    expect(autonomicasCan.length).toBeGreaterThan(0);
+    // Sigue viendo lo estatal (RGC) junto a lo autonómico.
+    expect(codigos).toContain('RGC');
+  });
+
+  it('un perfil de OTRA CCAA (Madrid) NO ve ninguna norma canaria', async () => {
+    const normas = await listarNormas(runner, CADENA_MADRID);
+    expect(normas.some((n) => n.codigo.startsWith('CAN-'))).toBe(false);
+    expect(normas.every((n) => n.territorioId !== 'es-ccaa-05')).toBe(true);
+    // Pero sí ve lo estatal.
+    expect(normas.some((n) => n.codigo === 'RGC')).toBe(true);
   });
 
   it('cargarArticulo devuelve texto, fuente y fecha; id inexistente → null', async () => {

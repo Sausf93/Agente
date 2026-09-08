@@ -1,6 +1,7 @@
 import {
   Competencia,
   VarianteBoletin,
+  type Ambito,
   type EstadoRevision,
   type Gravedad,
   type GravedadPenal,
@@ -61,6 +62,9 @@ export interface FichaInfraccion {
   importeEur: number | null;
   importeReducidoEur: number | null;
   puntos: number | null;
+  /** Ámbito de la norma (estatal/autonómico/municipal): decide, p. ej., si el importe manda o va
+   * de referencia (en autonómico/municipal lo que manda es la acción, no la multa). */
+  ambito: Ambito;
   /** Marco penal (solo delitos): pena legible (art. del CP) y gravedad del art. 33 CP. */
   penaTexto: string | null;
   gravedadPenal: GravedadPenal | null;
@@ -96,6 +100,7 @@ interface FilaFicha {
   competencia: string;
   estado_revision: EstadoRevision;
   nota_revision: string | null;
+  ambito: Ambito;
   norma_codigo: string;
   url_boe: string | null;
   articulo_numero: string;
@@ -117,8 +122,9 @@ interface FilaConsecuencia {
  *     EXPULSIÓN, no la multa; NO se destaca el importe (501 €) como dato principal (ADR-004, §4.4).
  *  3. Norma de seguridad ciudadana (LO 4/2015, código `LOSC`) → `seguridad_ciudadana` (sin puntos).
  *  4. Detrae puntos → `trafico` (solo el tráfico detrae puntos).
- *  5. Norma de tráfico por su código (LSV/RGC/RGV/LRCSCVM…) → `trafico`.
- *  6. Resto → `administrativa` (importe, sin puntos ni tramo).
+ *  5. Norma de MARCO DE VEHÍCULO por su código (LSV/RGC/RGV/LRCSCVM/LOTT…) → `trafico`. Incluye el
+ *     transporte (LOTT), donde el sujeto sigue siendo el vehículo aunque no detraiga puntos.
+ *  6. Resto → `administrativa` (municipal/autonómico/animales/ocio; SIN vehículo de por medio).
  *
  * (El `marcoImporte` del pipeline —`extranjeria`, `penal`…— no viaja en el paquete; aquí se DERIVA
  * del código de norma, que sí viaja, para dar el mismo trato a la ficha jurídicamente delicada.)
@@ -133,7 +139,7 @@ export function fichaKindFrom(f: {
   if (/\bLOEX\b|extranjer/i.test(f.normaCodigo)) return 'extranjeria';
   if (/\bLOSC\b|seguridad ciudadana/i.test(f.normaCodigo)) return 'seguridad_ciudadana';
   if (f.puntos !== null) return 'trafico';
-  if (/\bLSV\b|\bRGC\b|\bRGV\b|\bLRCSCVM\b|circulaci|tr[aá]fico/i.test(f.normaCodigo)) {
+  if (/\bLSV\b|\bRGC\b|\bRGV\b|\bLRCSCVM\b|\bLOTT\b|circulaci|tr[aá]fico|transporte/i.test(f.normaCodigo)) {
     return 'trafico';
   }
   return 'administrativa';
@@ -174,7 +180,10 @@ const TRAMO_LABEL: Partial<Record<Gravedad, string>> = {
  *  - `extranjeria`: "Sanción: multa o expulsión" (cualitativo, MANDA) + multa mínima DE-ENFATIZADA.
  *    La sanción real de la estancia irregular suele ser la expulsión, no la multa (§4.4, ADR-004);
  *    por eso el importe NO va como tile de acento.
- *  - `administrativa`: importe* + pronto pago?
+ *  - `administrativa` ESTATAL: importe* + pronto pago?
+ *  - `administrativa` AUTONÓMICA/MUNICIPAL: lo que manda es la ACCIÓN (cese/desalojo/precinto), no
+ *    la multa; el importe va DE REFERENCIA (sin énfasis), igual que en extranjería. Además la
+ *    cuantía suele ser un tramo amplio (mínimo orientativo), no un dato de acento (I-2).
  *
  * `formatEuros` se inyecta para no acoplar este módulo (puro, testeable) al formato de la UI.
  */
@@ -195,9 +204,15 @@ export function tilesFicha(
     }
     return tiles;
   }
+  // En autonómico/municipal el importe NO manda (manda la acción): va de referencia, sin énfasis.
+  const importeDeReferencia = ficha.ambito === 'autonomico' || ficha.ambito === 'municipal';
   const tiles: TileFicha[] = [];
   if (ficha.importeEur !== null) {
-    tiles.push({ etiqueta: 'Importe', valor: formatEuros(ficha.importeEur), enfasis: true });
+    tiles.push({
+      etiqueta: importeDeReferencia ? 'Multa (ref.)' : 'Importe',
+      valor: formatEuros(ficha.importeEur),
+      enfasis: !importeDeReferencia,
+    });
   }
   if (ficha.importeReducidoEur !== null) {
     tiles.push({ etiqueta: 'Pronto pago', valor: formatEuros(ficha.importeReducidoEur) });
@@ -217,11 +232,16 @@ export function tilesFicha(
  * deriva del set de `consecuencias` de la ficha y se pinta ARRIBA DEL TODO como un chip grande.
  *
  * Reglas (de más a menos coercitiva; gana la primera que aparezca):
- *  detención → depósito/grúa → inmovilización → decomiso → retirada de permiso.
+ *  detención → cese de actividad/desalojo/precinto → depósito/grúa → inmovilización → decomiso →
+ *  retirada de permiso.
+ * (El `cese_actividad` es una medida ADMINISTRATIVA, no sancionadora ni coercitiva sobre persona/
+ * vehículo, pero es lo DETERMINANTE en el ocio: sube destacado, por encima de la multa.)
  * Si NO hay ninguna medida coercitiva:
  *  - ficha `penal`: `null` (manda el bloque penal; no forzamos un "sigue" que sería falso).
- *  - resto: estado POSITIVO explícito `sigue` ("el vehículo/persona sigue · solo denuncia"), tan
- *    visible como el rojo para que el agente no tenga que interpretar la ausencia de aviso.
+ *  - resto: estado POSITIVO explícito `sigue`, tan visible como el rojo para que el agente no tenga
+ *    que interpretar la ausencia de aviso. El SUJETO lo fija el MARCO —vehículo (tráfico/transporte),
+ *    persona (seguridad ciudadana/extranjería) o NEUTRO "sanción administrativa · sin medida
+ *    cautelar" (municipal/autonómico/animales/ocio)—: nunca "el vehículo" por defecto.
  *
  * Colores del chip: SIEMPRE semánticos FIJOS (no el acento por cuerpo). `coercitivo` = rojo,
  * `positivo` = verde. Lenguaje ORIENTATIVO: la detención se enuncia como "atestado + detención",
@@ -234,6 +254,7 @@ export type AccionOperativaKind =
   | 'decomiso'
   | 'retirada'
   | 'identificacion'
+  | 'cese_actividad'
   | 'detencion';
 
 export interface AccionOperativa {
@@ -251,42 +272,61 @@ export interface AccionOperativa {
   tono: 'coercitivo' | 'positivo' | 'informativo';
 }
 
-/** Orden de prioridad: la medida más coercitiva manda sobre el resto si concurren varias. */
+/**
+ * Orden de prioridad: la medida más determinante manda sobre el resto si concurren varias. Cada
+ * entrada lleva su `tono` (color semántico FIJO del chip): rojo para las medidas coercitivas y
+ * para el cese/desalojo/precinto (acción física destacada), aunque este último sea administrativo.
+ */
 const PRIORIDAD_COERCITIVA: {
   tipo: TipoConsecuencia;
   kind: AccionOperativaKind;
   titulo: string;
   detalle: string;
+  tono: 'coercitivo';
 }[] = [
   {
     tipo: 'detencion',
     kind: 'detencion',
     titulo: 'Atestado + detención',
     detalle: 'Procede instruir atestado; valora la detención según el precepto citado.',
+    tono: 'coercitivo',
+  },
+  {
+    tipo: 'cese_actividad',
+    kind: 'cese_actividad',
+    titulo: 'Cese de actividad / desalojo',
+    detalle:
+      'Procede valorar el cese de la actividad, el desalojo o el precinto del local (medida ' +
+      'administrativa, no sancionadora); la sanción la impone después el órgano competente.',
+    tono: 'coercitivo',
   },
   {
     tipo: 'deposito',
     kind: 'deposito',
     titulo: 'Grúa y depósito',
     detalle: 'Procede la retirada del vehículo al depósito.',
+    tono: 'coercitivo',
   },
   {
     tipo: 'inmovilizacion',
     kind: 'inmovilizacion',
     titulo: 'Inmovilizo el vehículo',
     detalle: 'El vehículo no continúa hasta subsanar la causa.',
+    tono: 'coercitivo',
   },
   {
     tipo: 'decomiso',
     kind: 'decomiso',
     titulo: 'Intervengo · decomiso',
     detalle: 'Procede la intervención del objeto o la sustancia.',
+    tono: 'coercitivo',
   },
   {
     tipo: 'retirada_permiso',
     kind: 'retirada',
     titulo: 'Retirada de permiso',
     detalle: 'Procede la retirada del permiso o licencia según el precepto.',
+    tono: 'coercitivo',
   },
 ];
 
@@ -306,7 +346,7 @@ export function accionOperativaFrom(input: {
         titulo: regla.titulo,
         detalle: regla.detalle,
         fuente: encontrada.fuente,
-        tono: 'coercitivo',
+        tono: regla.tono,
       };
     }
   }
@@ -351,13 +391,34 @@ export function accionOperativaFrom(input: {
     };
   }
 
-  const sujeto = sujetoPersona ? 'La persona' : 'El vehículo';
+  // Estado POSITIVO sin medida cautelar. El SUJETO lo decide el MARCO de la ficha, NUNCA por defecto
+  // el vehículo (bug: una ordenanza de perros o el ocio canario no tienen vehículo alguno):
+  //  - `trafico` (incluye transporte): el VEHÍCULO sigue.
+  //  - `seguridad_ciudadana`/`extranjeria`: la PERSONA sigue.
+  //  - resto de administrativas (municipal, autonómico, animales, ocio): estado NEUTRO, sin hablar
+  //    de vehículo ni de persona-sujeto — es una sanción administrativa sin medida cautelar.
+  if (input.fichaKind === 'trafico') {
+    return {
+      kind: 'sigue',
+      titulo: 'El vehículo sigue · solo denuncia',
+      detalle: 'Sin medida sobre el vehículo: únicamente se formula el boletín.',
+      fuente: null,
+      tono: 'positivo',
+    };
+  }
+  if (sujetoPersona) {
+    return {
+      kind: 'sigue',
+      titulo: 'La persona sigue · solo denuncia',
+      detalle: 'Sin medida sobre la persona: únicamente se formula el boletín/denuncia.',
+      fuente: null,
+      tono: 'positivo',
+    };
+  }
   return {
     kind: 'sigue',
-    titulo: `${sujeto} sigue · solo denuncia`,
-    detalle: sujetoPersona
-      ? 'Sin medida sobre la persona: únicamente se formula el boletín/denuncia.'
-      : 'Sin medida sobre el vehículo: únicamente se formula el boletín.',
+    titulo: 'Sanción administrativa · sin medida cautelar',
+    detalle: 'No procede medida cautelar: se formula la denuncia y resuelve el órgano competente.',
     fuente: null,
     tono: 'positivo',
   };
@@ -404,7 +465,7 @@ export async function cargarFicha(
             i.importe_reducido_eur, i.puntos, i.pena_texto, i.gravedad_penal,
             i.texto_boletin, i.variantes_boletin,
             i.competencia, i.estado_revision, i.nota_revision,
-            n.codigo AS norma_codigo, n.url_boe,
+            n.codigo AS norma_codigo, n.ambito, n.url_boe,
             a.numero AS articulo_numero, a.titulo AS articulo_titulo, a.texto AS articulo_texto
        FROM infraccion i
        JOIN articulo a ON a.id = i.articulo_id
@@ -436,6 +497,7 @@ export async function cargarFicha(
       puntos: fila.puntos,
       normaCodigo: fila.norma_codigo,
     }),
+    ambito: fila.ambito,
     importeEur: fila.importe_eur,
     importeReducidoEur: fila.importe_reducido_eur,
     puntos: fila.puntos,

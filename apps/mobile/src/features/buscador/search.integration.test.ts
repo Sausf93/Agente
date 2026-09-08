@@ -199,3 +199,31 @@ suite('buscador: filtro territorial de la ordenanza municipal', () => {
     void propios;
   });
 });
+
+/**
+ * CAPA AUTONÓMICA en el BUSCADOR (piloto Canarias, ADR-006/008): la normativa canaria (Ley 7/2011,
+ * ocio) solo debe salir a quien tenga Canarias en su cadena; un agente de otra CCAA nunca la ve.
+ */
+suite('buscador: filtro territorial de la capa autonómica (Canarias)', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  /** Cadena de un Policía Canaria (autonómico): solo la CCAA de Canarias. */
+  const CADENA_CANARIAS = ['es-ccaa-05'];
+  /** Cadena de un agente de OTRA CCAA (Madrid). */
+  const CADENA_MADRID = ['es-ccaa-13', 'es-prov-28', 'mun-madrid'];
+
+  it('con cadena de Canarias, "ocio nocturno" devuelve las infracciones canarias (can-*)', async () => {
+    const { infracciones } = await buscarTodo(runner, 'ocio nocturno', CADENA_CANARIAS);
+    expect(infracciones.some((r) => r.infraccionId.startsWith('can-esp-'))).toBe(true);
+  });
+
+  it('con cadena de Madrid, "ocio nocturno" NO trae ninguna infracción canaria', async () => {
+    const { infracciones } = await buscarTodo(runner, 'ocio nocturno', CADENA_MADRID);
+    expect(infracciones.every((r) => !r.infraccionId.startsWith('can-'))).toBe(true);
+  });
+
+  it('sin territorio (perfil neutro) tampoco ve la normativa autonómica canaria', async () => {
+    const infracciones = await buscarInfracciones(runner, 'sin licencia');
+    expect(infracciones.every((r) => !r.infraccionId.startsWith('can-'))).toBe(true);
+  });
+});

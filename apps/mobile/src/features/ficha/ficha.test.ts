@@ -23,6 +23,7 @@ function fichaDe(over: Partial<FichaInfraccion>): FichaInfraccion {
     gravedad: 'grave',
     tipo: 'administrativa',
     fichaKind: 'trafico',
+    ambito: 'estatal',
     importeEur: 200,
     importeReducidoEur: 100,
     puntos: 3,
@@ -77,6 +78,12 @@ describe('fichaKindFrom', () => {
   it('una norma de tráfico sin puntos sigue siendo `trafico` (RGC/RGV)', () => {
     expect(
       fichaKindFrom({ tipo: 'administrativa', gravedad: 'leve', puntos: null, normaCodigo: 'RGC' }),
+    ).toBe('trafico');
+  });
+
+  it('el transporte (LOTT) es marco de VEHÍCULO → `trafico` (sujeto vehículo), aunque no detraiga puntos', () => {
+    expect(
+      fichaKindFrom({ tipo: 'administrativa', gravedad: 'muy_grave', puntos: null, normaCodigo: 'LOTT' }),
     ).toBe('trafico');
   });
 
@@ -153,6 +160,38 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
     });
     expect(ficha.fichaKind).toBe('administrativa');
     expect(tilesFicha(ficha, formatEuros).map((x) => x.etiqueta)).toEqual(['Importe']);
+  });
+
+  // I-2: en autonómico/municipal manda la ACCIÓN (cese/desalojo), no la multa. El importe va DE
+  // REFERENCIA: etiqueta "Multa (ref.)" y SIN énfasis (nunca el tile de acento).
+  it('autonómica/municipal: el importe va de referencia, SIN énfasis', () => {
+    const auton = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'muy_grave',
+      ambito: 'autonomico',
+      fichaKind: 'administrativa',
+      normaCodigo: 'CAN-ESP',
+      importeEur: 15001,
+      importeReducidoEur: null,
+      puntos: null,
+    });
+    const tiles = tilesFicha(auton, formatEuros);
+    expect(tiles).toHaveLength(1);
+    expect(tiles[0]).toMatchObject({ etiqueta: 'Multa (ref.)' });
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+
+    // Contraste: la MISMA administrativa pero ESTATAL sí da énfasis al importe.
+    const estatal = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'leve',
+      ambito: 'estatal',
+      fichaKind: 'administrativa',
+      normaCodigo: 'ORD-MUNI',
+      importeEur: 80,
+      importeReducidoEur: null,
+      puntos: null,
+    });
+    expect(tilesFicha(estatal, formatEuros)[0]).toMatchObject({ etiqueta: 'Importe', enfasis: true });
   });
 
   it('extranjería: la sanción (multa o expulsión) MANDA y el importe NO se destaca (sin énfasis)', () => {
@@ -232,6 +271,50 @@ describe('accionOperativaFrom — qué hace el agente con el vehículo/persona',
     const a = accionOperativaFrom({ fichaKind: 'seguridad_ciudadana', consecuencias: [] });
     expect(a?.kind).toBe('sigue');
     expect(a?.titulo).toMatch(/^La persona sigue/);
+  });
+
+  // BLOQUEANTE (I-1): una administrativa NO de vehículo (ordenanza de perros, ocio canario) NUNCA
+  // debe hablar de "El vehículo". Estado NEUTRO: "Sanción administrativa · sin medida cautelar".
+  it('sin consecuencias, administrativa (municipal/autonómica): estado NEUTRO, NUNCA "El vehículo"', () => {
+    const a = accionOperativaFrom({ fichaKind: 'administrativa', consecuencias: [] });
+    expect(a?.kind).toBe('sigue');
+    expect(a?.tono).toBe('positivo');
+    expect(a?.titulo).toMatch(/^Sanción administrativa/);
+    expect(a?.titulo).not.toMatch(/veh[íi]culo/i);
+    expect(a?.detalle).not.toMatch(/veh[íi]culo/i);
+  });
+
+  it('una administrativa con identificación tampoco inventa un vehículo (estado neutro)', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consecuencias: [{ tipo: 'identificacion', fuente: 'Ordenanza art. X' }],
+    });
+    expect(a?.titulo).not.toMatch(/veh[íi]culo/i);
+  });
+
+  // I-1/I-2: el OCIO (Ley 7/2011) lleva la medida operativa `cese_actividad` (cese/desalojo/
+  // precinto). Debe MANDAR sobre la multa: sube como acción destacada con su fuente.
+  it('cese de actividad (ocio): acción destacada "Cese de actividad / desalojo" con su fuente', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consecuencias: [{ tipo: 'cese_actividad', fuente: 'Ley 7/2011 arts. 49 y 65.2' }],
+    });
+    expect(a?.kind).toBe('cese_actividad');
+    expect(a?.tono).toBe('coercitivo');
+    expect(a?.titulo).toMatch(/cese|desalojo/i);
+    expect(a?.titulo).not.toMatch(/veh[íi]culo/i);
+    expect(a?.fuente).toBe('Ley 7/2011 arts. 49 y 65.2');
+  });
+
+  it('la detención (persona) manda incluso sobre el cese de actividad', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consecuencias: [
+        { tipo: 'cese_actividad', fuente: 'Ley 7/2011 arts. 49 y 65.2' },
+        { tipo: 'detencion', fuente: 'art. X' },
+      ],
+    });
+    expect(a?.kind).toBe('detencion');
   });
 
   it('un delito SIN medida coercitiva no fuerza un "sigue" falso: devuelve null (manda el bloque penal)', () => {

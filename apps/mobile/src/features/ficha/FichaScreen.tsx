@@ -12,6 +12,7 @@ import { Stack, useRouter } from 'expo-router';
 import {
   ArrowRightCircle,
   Ban,
+  DoorClosed,
   FileDown,
   FileText,
   FileWarning,
@@ -583,6 +584,7 @@ const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
   decomiso: Ban,
   retirada: FileText,
   identificacion: Fingerprint,
+  cese_actividad: DoorClosed,
   detencion: Gavel,
 };
 
@@ -748,6 +750,7 @@ const CONSECUENCIA_ICON: Record<TipoConsecuencia, ComponentType<LucideProps>> = 
   retirada_permiso: FileText,
   identificacion: Fingerprint,
   proteccion: ShieldCheck,
+  cese_actividad: DoorClosed,
 };
 
 /**

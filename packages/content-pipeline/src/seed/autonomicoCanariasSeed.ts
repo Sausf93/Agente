@@ -224,28 +224,31 @@ const ART_ESP_66 = articuloSeed({
 // Ley 8/1991 — protección de los animales de Canarias (norma navegable; ojo con la estatal 7/2023).
 const ART_ANIM_IDENT = articuloSeed({
   normaId: ID_ANIM,
-  numero: 'IDENT',
+  numero: '11',
   titulo: 'Identificación y censo de los perros',
   texto:
     'Obliga a identificar a los perros del modo reglamentario y a inscribirlos en el censo del ' +
-    'municipio donde reside habitualmente el animal, en un plazo máximo de tres meses desde su ' +
-    'nacimiento o de un mes desde su adquisición; el animal debe llevar de forma permanente su ' +
-    'identificación censal. IMPORTANTE: la Ley estatal 7/2023 de protección de los derechos y el ' +
-    'bienestar de los animales ha modificado el marco general (identificación, registros), por lo que ' +
-    'esta previsión autonómica debe leerse junto a la estatal. Resumen orientativo; consúltese el ' +
-    'texto consolidado en el BOE.',
+    'municipio donde reside habitualmente el animal; el animal debe llevar de forma permanente su ' +
+    'identificación censal. Los PLAZOS que suelen citarse (unos tres meses desde el nacimiento o un ' +
+    'mes desde la adquisición) están A VERIFICAR: probablemente los fija la vía REGLAMENTARIA y no la ' +
+    'propia ley. IMPORTANTE: la Ley estatal 7/2023 de protección de los derechos y el bienestar de ' +
+    'los animales ha modificado el marco general (identificación, registros), por lo que esta ' +
+    'previsión autonómica debe leerse junto a la estatal. Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
 });
 
 const ART_ANIM_CORREA = articuloSeed({
   normaId: ID_ANIM,
-  numero: 'CORREA',
-  titulo: 'Conducción del perro en la vía pública',
+  numero: '6',
+  titulo: 'Tenencia de animales: remisión a las ordenanzas municipales',
   texto:
-    'Exige conducir y controlar a los perros con cadena o correa no extensible ni rompible, de ' +
-    'longitud inferior a dos metros, adecuada para dominar al animal en todo momento. Las medidas ' +
-    'concretas y su régimen sancionador se completan con la ordenanza municipal y con la normativa ' +
-    'estatal (Ley 7/2023 y, para animales potencialmente peligrosos, Ley 50/1999). Resumen ' +
-    'orientativo; consúltese el texto consolidado en el BOE.',
+    'El art. 6 de la Ley 8/1991 NO fija por sí mismo las medidas concretas de conducción del perro en ' +
+    'la vía pública (tipo de correa o longitud): REMITE a las ORDENANZAS MUNICIPALES, que son las que ' +
+    'las regulan. La exigencia habitual de correa no extensible ni rompible y de longitud reducida ' +
+    '(en torno a dos metros), y en su caso el bozal, proviene de la ORDENANZA MUNICIPAL y, para ' +
+    'animales POTENCIALMENTE PELIGROSOS, de la Ley estatal 50/1999 y su reglamento (consúltese también ' +
+    'la Ley estatal 7/2023). Esa medida concreta NO debe atribuirse a la Ley 8/1991. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE y la ordenanza aplicable.',
 });
 
 const ART_ANIM_26 = articuloSeed({
@@ -303,6 +306,40 @@ export const ARTICULOS_CANARIAS_SEED: Articulo[] = [
   ART_PCAN_FUNC,
 ];
 
+// --- Medida OPERATIVA del ocio: cese / desalojo / precinto (arts. 49 y 65.2 Ley 7/2011) ------
+/**
+ * En la calle, ante un local sin licencia, fuera de horario o que no desaloja, lo DETERMINANTE no
+ * es la multa (la impone luego el órgano competente) sino la medida administrativa de CESE de la
+ * actividad, DESALOJO o PRECINTO. La Ley 7/2011 la configura como medida NO sancionadora (art. 65.2)
+ * ligada al régimen de cierre (art. 49). Se modela como consecuencia estructurada `cese_actividad`
+ * para que la ficha la muestre DESTACADA por encima del importe (I-1/I-2). Lenguaje ORIENTATIVO.
+ */
+const FUENTE_CESE = 'Ley 7/2011 arts. 49 y 65.2';
+
+function consecuenciaCese(infraccionId: string): Consecuencia {
+  return Consecuencia.parse({
+    id: `${infraccionId}:cons-cese`,
+    tipo: 'cese_actividad',
+    regla: {},
+    textoCorto:
+      'Procede valorar el cese de la actividad, el desalojo o el precinto (medida no sancionadora, ' +
+      'arts. 49 y 65.2 Ley 7/2011); la sanción la impone el órgano competente.',
+    fuente: FUENTE_CESE,
+    infraccionId,
+    articuloId: null,
+  });
+}
+
+/**
+ * Coletilla OBLIGATORIA (revisor, ronda validación): las CUANTÍAS del art. 66 de la Ley 7/2011 no
+ * han podido confirmarse contra el literal del artículo (fuente primaria), así que TODA infracción
+ * de esta ley debe dejar clarísimo el "a verificar" sobre el importe. Se añade a cada `notaRevision`.
+ */
+const CAVEAT_ART_66 =
+  ' IMPORTANTE (revisor): las CUANTÍAS del art. 66 están SIN CONFIRMAR por fuente primaria (no se ' +
+  'pudo leer el literal del artículo); tómense como ORIENTATIVAS (mínimo del tramo) y verifíquense ' +
+  'con el texto consolidado del BOE antes de publicar.';
+
 // --- Constructor de una infracción AUTONÓMICA con sus sinónimos y consecuencias -------------
 interface InfraccionSeedInput {
   id: string;
@@ -314,6 +351,8 @@ interface InfraccionSeedInput {
   textoBoletin: string;
   terminos: string[];
   notaRevision: string;
+  /** Ocio (Ley 7/2011): añade la medida operativa `cese_actividad` (cese/desalojo/precinto). */
+  conCese?: boolean;
 }
 
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
@@ -348,19 +387,20 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     }),
   );
 
-  // Sin consecuencias estructuradas en este piloto (la sanción se refleja en importe + boletín).
-  const consecuencias: Consecuencia[] = [];
+  // Ocio (Ley 7/2011): la medida operativa `cese_actividad` sube DESTACADA en la ficha (I-1/I-2);
+  // el resto refleja la sanción en importe + boletín.
+  const consecuencias: Consecuencia[] = input.conCese ? [consecuenciaCese(input.id)] : [];
 
   return {
     infraccion,
     sinonimos,
     consecuencias,
     // Marco `autonomico`: sin rango legal único en el validador (varía por comunidad); solo se
-    // valida la coherencia (importe presente y reducido ≤ base). Las cuantías van VERIFICADAS del
-    // texto consolidado (Ley 7/2011 art. 66) y se toma el mínimo del tramo. §8.3.
+    // valida la coherencia (importe presente y reducido ≤ base). El importe es ORIENTATIVO (mínimo
+    // del tramo del art. 66, SIN confirmar por fuente primaria — ver `notaRevision`). §8.3.
     marcoImporte: 'autonomico' satisfies MarcoImporte,
     revision: 'pendiente_revision' satisfies EstadoRevision,
-    notaRevision: input.notaRevision,
+    notaRevision: input.notaRevision + CAVEAT_ART_66,
   };
 }
 
@@ -368,6 +408,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
 export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'can-esp-horario-cierre',
+    conCese: true,
     articulo: ART_ESP_63,
     tituloCorto: 'Incumplir el horario de cierre (ocio nocturno)',
     gravedad: 'grave',
@@ -398,6 +439,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
   }),
   construirInfraccion({
     id: 'can-esp-tras-cierre',
+    conCese: true,
     articulo: ART_ESP_63,
     tituloCorto: 'Actividad o música tras la hora de cierre (durante el desalojo)',
     gravedad: 'grave',
@@ -452,6 +494,7 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
   }),
   construirInfraccion({
     id: 'can-esp-sin-licencia',
+    conCese: true,
     articulo: ART_ESP_62,
     tituloCorto: 'Actividad o espectáculo sin licencia ni comunicación previa',
     gravedad: 'muy_grave',
@@ -480,33 +523,62 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       'exigen licencia y cuáles comunicación/declaración (Decretos 52/2012 y 86/2013) y el régimen de ' +
       'cierre no sancionador del art. 65.2, con el texto consolidado y el revisor jurídico.',
   }),
+  // NOTA (revisor): esta conducta y el exceso de aforo iban ANTES empaquetadas en una sola ficha
+  // citando el mismo art. 62.6. Se SEPARAN en dos infracciones (son conductas distintas) y se cita
+  // el art. 62 con el ORDINAL "a verificar": no está confirmado que ambas compartan el 62.6.
   construirInfraccion({
     id: 'can-esp-alcohol-menores',
     articulo: ART_ESP_62,
     tituloCorto: 'Dispensar alcohol o tabaco a menores en el local',
     gravedad: 'muy_grave',
-    // Ley 7/2011 art. 62.6 (muy grave) → art. 66.1: multa de 15.001 a 30.000 €. Se fija el mínimo.
+    // Ley 7/2011 art. 62 (muy grave; ordinal a verificar) → art. 66.1: 15.001 a 30.000 €. Mínimo.
     importeEur: 15001,
     importeReducidoEur: null,
     textoBoletin:
       'Vender, suministrar o dispensar, de forma gratuita o no, bebidas alcohólicas o tabaco a menores ' +
-      'en locales de espectáculos o de venta de bebidas alcohólicas, o tolerar un aforo que supere en ' +
-      'más del diez por ciento el autorizado. Es infracción MUY GRAVE del art. 62.6 de la Ley 7/2011. ' +
-      'La valoración final corresponde a la autoridad competente.',
+      'en locales de espectáculos o de venta de bebidas alcohólicas. Es infracción MUY GRAVE del ' +
+      'art. 62 de la Ley 7/2011 (ordinal a verificar; probablemente el 62.6). La valoración final ' +
+      'corresponde a la autoridad competente.',
     terminos: [
       'alcohol a menores',
       'vender alcohol a menores',
       'tabaco a menores',
       'menores bebiendo local',
       'servir alcohol menor',
-      'aforo superado',
-      'exceso de aforo',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: dispensar alcohol o tabaco a menores, o superar en más del ' +
-      '10% el aforo, es MUY GRAVE (Ley 7/2011 art. 62.6), multa de 15.001 a 30.000 € (art. 66.1); el ' +
-      'seed fija el mínimo del tramo. Delimitar respecto a la normativa estatal/autonómica de menores y ' +
-      'de venta de alcohol y tabaco (posible concurrencia) con el texto consolidado y el revisor jurídico.',
+      'A VERIFICAR importe, clasificación y ORDINAL: dispensar alcohol o tabaco a menores es MUY GRAVE ' +
+      '(Ley 7/2011 art. 62), multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del tramo. ' +
+      'Confirmar el ordinal EXACTO del art. 62 (probablemente 62.6) y delimitar respecto a la normativa ' +
+      'estatal/autonómica de menores y de venta de alcohol y tabaco (posible concurrencia) con el texto ' +
+      'consolidado y el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'can-esp-exceso-aforo',
+    articulo: ART_ESP_62,
+    tituloCorto: 'Exceso de aforo superior al 10% del autorizado',
+    gravedad: 'muy_grave',
+    // Ley 7/2011 art. 62 (muy grave; ordinal a verificar) → art. 66.1: 15.001 a 30.000 €. Mínimo.
+    // (El exceso de aforo que NO supera el 10% es GRAVE del art. 63; aquí se tipifica el >10%.)
+    importeEur: 15001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tolerar o permitir un aforo que supere en más del diez por ciento el autorizado para el local ' +
+      'o espectáculo. Es infracción MUY GRAVE del art. 62 de la Ley 7/2011 (ordinal a verificar). El ' +
+      'exceso de aforo que NO supere el 10% es GRAVE (art. 63). La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'aforo superado',
+      'exceso de aforo',
+      'local lleno exceso aforo',
+      'superar aforo',
+      'demasiada gente local',
+    ],
+    notaRevision:
+      'A VERIFICAR importe, clasificación y ORDINAL: superar en más del 10% el aforo es MUY GRAVE (Ley ' +
+      '7/2011 art. 62), multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del tramo. ' +
+      'Confirmar el ordinal EXACTO del art. 62 (puede NO coincidir con el de la dispensación a menores) ' +
+      'y el umbral del 10% frente al exceso GRAVE del art. 63, con el texto consolidado y el revisor.',
   }),
 ];
 
