@@ -74,7 +74,9 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   buscar('Desobediencia'),
   buscar('Drogas en vía pública'),
   buscar('Hurto'),
-  buscar('Robo'),
+  // Extranjería es media plantilla de PN: 'estancia irregular' abre la ficha (NO es delito, vía
+  // administrativa); desde ahí y con 'mena' se llega a la consulta del menor no acompañado.
+  buscar('Extranjería', 'estancia irregular'),
   // "Leer derechos" abre la pantalla de derechos del detenido (no es una búsqueda).
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
   // "Identificación" lleva a la ficha del REQUERIMIENTO de identificación (art. 16 LOSC), la
@@ -84,12 +86,27 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
 ];
 
 /**
+ * Accesos de GUARDIA CIVIL: carretera (su oficio) + lo que un guardia echaba de menos en el set
+ * genérico de tráfico (validación de calle GC): la frontera de la alcoholemia, el tacógrafo, la
+ * identificación, la extranjería en carretera y la lectura de derechos. No es solo "multas de coche".
+ */
+export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
+  buscar('Alcoholemia'),
+  buscar('Sin seguro'),
+  buscar('Tacógrafo', 'tacografo'),
+  buscar('Extranjería', 'estancia irregular'),
+  buscar('Identificación', 'identificacion'),
+  { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
+];
+
+/**
  * Devuelve los accesos rápidos para el cuerpo del perfil.
  *  - Policía Nacional: seguridad ciudadana y vía penal.
  *  - Policía Local: tráfico urbano + convivencia (zona azul, patinete).
  *  - Policía Autonómica: OCIO/actividades clasificadas si su CCAA trae normativa autonómica cargada
  *    (`tieneContenidoAutonomico`); si no, set genérico de seguridad ciudadana — NUNCA tráfico.
- *  - Guardia Civil / sin cuerpo: tráfico por defecto.
+ *  - Guardia Civil: carretera + tacógrafo/extranjería/identificación/derechos (no solo tráfico).
+ *  - Sin cuerpo: tráfico por defecto.
  */
 export function accesosRapidosPara(
   cuerpo: Cuerpo | null,
@@ -105,6 +122,7 @@ export function accesosRapidosPara(
         ? [...ACCESOS_AUTONOMICA]
         : [...ACCESOS_SEGURIDAD_CIUDADANA];
     case 'guardia_civil':
+      return [...ACCESOS_GUARDIA_CIVIL];
     default:
       return [...ACCESOS_TRAFICO];
   }

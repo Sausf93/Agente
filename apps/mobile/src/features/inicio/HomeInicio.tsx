@@ -9,6 +9,8 @@ import {
   ChevronRight,
   CircleParking,
   Fingerprint,
+  Gauge,
+  Globe,
   Hand,
   Lightbulb,
   Pill,
@@ -88,6 +90,8 @@ const ACCESO_ICON: Record<string, ComponentType<LucideProps>> = {
   Robo: Siren,
   'Leer derechos': ScrollText,
   Identificación: Fingerprint,
+  Tacógrafo: Gauge,
+  Extranjería: Globe,
   // Seguridad ciudadana (autonómica sin contenido) y ocio (autonómica con contenido).
   'Falta de respeto': Hand,
   'Armas prohibidas': ShieldOff,

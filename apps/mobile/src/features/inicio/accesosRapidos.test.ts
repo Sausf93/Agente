@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ACCESOS_AUTONOMICA,
+  ACCESOS_GUARDIA_CIVIL,
   ACCESOS_LOCAL_EXTRA,
   ACCESOS_POLICIA_NACIONAL,
   ACCESOS_SEGURIDAD_CIUDADANA,
@@ -17,16 +18,25 @@ import {
 const labels = (accesos: { label: string }[]): string[] => accesos.map((a) => a.label);
 
 describe('accesosRapidosPara', () => {
-  it('Guardia Civil usa el set de tráfico', () => {
-    expect(accesosRapidosPara('guardia_civil')).toEqual([...ACCESOS_TRAFICO]);
+  it('Guardia Civil usa su set propio (carretera + tacógrafo/extranjería/derechos), no solo tráfico', () => {
+    const accesos = accesosRapidosPara('guardia_civil');
+    expect(accesos).toEqual([...ACCESOS_GUARDIA_CIVIL]);
+    // Lo que GC echaba de menos en el set genérico de tráfico:
+    expect(labels(accesos)).toContain('Tacógrafo');
+    expect(labels(accesos)).toContain('Extranjería');
+    expect(labels(accesos)).toContain('Leer derechos');
+    expect(labels(accesos)).toContain('Identificación');
+    // Sin dejar de ser de carretera:
+    expect(labels(accesos)).toContain('Alcoholemia');
   });
 
-  it('Policía Nacional NO ve accesos de tráfico, sino seguridad ciudadana/penal', () => {
+  it('Policía Nacional NO ve accesos de tráfico, sino seguridad ciudadana/penal (con extranjería)', () => {
     const accesos = accesosRapidosPara('policia_nacional');
     expect(accesos).toEqual([...ACCESOS_POLICIA_NACIONAL]);
     expect(labels(accesos)).not.toContain('Alcoholemia');
     expect(labels(accesos)).toContain('Desobediencia');
     expect(labels(accesos)).toContain('Identificación');
+    expect(labels(accesos)).toContain('Extranjería');
   });
 
   it('Policía Local: tráfico + convivencia urbana (zona azul, patinete)', () => {
@@ -63,8 +73,8 @@ describe('accesosRapidosPara', () => {
     expect(labels(accesos)).not.toContain('Alcoholemia');
   });
 
-  it('el flag de contenido autonómico solo afecta a la autonómica (GC sigue en tráfico)', () => {
-    expect(accesosRapidosPara('guardia_civil', true)).toEqual([...ACCESOS_TRAFICO]);
+  it('el flag de contenido autonómico solo afecta a la autonómica (GC sigue en su set)', () => {
+    expect(accesosRapidosPara('guardia_civil', true)).toEqual([...ACCESOS_GUARDIA_CIVIL]);
   });
 });
 
