@@ -70,8 +70,16 @@ funciones puras para poder testearla con Vitest sin el runtime de React Native n
 ## Gancho "reportar error" desde una ficha
 
 La ruta admite parámetros opcionales `tipo`, `articuloId`, `infraccionId`, `pantalla`
-que prerrellenan el formulario (p. ej. `tipo=error_contenido&articuloId=...`). Aún no
-hay fichas; de momento se usa solo desde **Más**, pero el terreno queda listo.
+que prerrellenan el formulario (p. ej. `tipo=error_contenido&infraccionId=...`).
+
+**Ya está enganchado desde la ficha.** Al pie de `features/ficha/FichaScreen.tsx` hay una
+acción discreta ("¿Ves algo mal? Avísanos") que navega a `app/feedback.tsx` con el tipo
+`error_contenido` seleccionado y el contexto de la infracción. Los parámetros los construye
+la función pura `features/ficha/reportarError.ts` (`reportarErrorFichaLink`, con test):
+`tipo=error_contenido`, `infraccionId=<id de la ficha>` y `pantalla=ficha:<id>`. Coherente
+con el badge "En revisión" del contenido en beta; sigue sin capturar datos de terceros (el
+socio escribe el texto y el aviso de privacidad sigue fijo). También se usa desde **Más**,
+donde el formulario llega vacío.
 
 ## Cuando exista Supabase (Fase 5, pendiente)
 

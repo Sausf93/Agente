@@ -20,6 +20,7 @@ import {
   Gavel,
   Info,
   Lock,
+  MessageSquareWarning,
   ShieldCheck,
   Truck,
   WifiOff,
@@ -53,6 +54,7 @@ import {
   type TileFicha,
 } from './ficha';
 import { DetencionTree } from './DetencionTree';
+import { reportarErrorFichaLink } from './reportarError';
 import {
   CONSECUENCIA_LABEL,
   formatCompetencia,
@@ -504,7 +506,53 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           Fuente: {ficha.normaCodigo} art. {ficha.articuloNumero}
         </Text>
       </View>
+
+      {/* Gancho "reportar error de contenido" (§4.15, ADR-011): el socio (guardia real) avisa de un
+          dato mal con un toque. Coherente con que el contenido está EN REVISIÓN durante la beta.
+          Abre el formulario de feedback PRERRELLENADO (tipo + infracción + pantalla); no captura
+          datos de terceros: el socio escribe el texto y la pantalla de feedback avisa. */}
+      <ReportarError t={t} infraccionId={ficha.infraccionId} />
     </ScrollView>
+  );
+}
+
+/**
+ * Acción DISCRETA al pie de la ficha para reportar un dato incorrecto. Abre `app/feedback.tsx`
+ * con el tipo `error_contenido` ya elegido y el contexto de la infracción (ver `reportarError.ts`).
+ * Tono cercano y orientativo, en línea con el badge "En revisión".
+ */
+function ReportarError({ t, infraccionId }: { t: Theme; infraccionId: string }) {
+  const router = useRouter();
+  const link = reportarErrorFichaLink(infraccionId);
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Reportar un dato de esta ficha"
+      accessibilityHint="Abre el formulario para avisarnos de un error en el contenido"
+      onPress={() => router.push(link)}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: t.spacing.sm,
+        minHeight: t.touch.min,
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        borderColor: t.color.border,
+        backgroundColor: t.color.surface,
+        paddingHorizontal: t.spacing.md,
+        paddingVertical: t.spacing.sm,
+      }}
+    >
+      <MessageSquareWarning size={20} color={t.color.textSecondary} strokeWidth={2} />
+      <View style={{ flex: 1, gap: t.spacing.xxs }}>
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>
+          ¿Ves algo mal? Avísanos
+        </Text>
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+          Si algo no cuadra con la norma o falta un supuesto, cuéntamelo.
+        </Text>
+      </View>
+    </Pressable>
   );
 }
 
