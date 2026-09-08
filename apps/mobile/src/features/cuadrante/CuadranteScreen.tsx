@@ -29,6 +29,7 @@ import {
   turnosDelPatron,
   type Cuadrante,
   type DiaProyectado,
+  type FranjaNocturna,
   type PatronTurno,
   type TipoServicio,
 } from '@agente/shared';
@@ -51,6 +52,7 @@ import {
   SERVICIO_LABEL,
   SERVICIOS_ORDEN,
 } from './servicioVisual';
+import { esHoy, hoyISO } from './fechas';
 import { useCuadranteStore } from './store';
 
 /**
@@ -100,14 +102,6 @@ function Cargando({ t }: { t: Theme }) {
 // el ciclo se ANCLA a esos días seguidos. Nada de "primer día del ciclo", de escribir fechas
 // ni de elegir "1.ª/2.ª mañana" (docs/diseno/cuadrante-rediseno.md §2).
 // ---------------------------------------------------------------------------
-
-function hoyISO(): string {
-  const d = new Date();
-  const y = d.getFullYear().toString().padStart(4, '0');
-  const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  const da = d.getDate().toString().padStart(2, '0');
-  return `${y}-${m}-${da}`;
-}
 
 /** Nombres completos de día de semana (lunes = 0, convención del cuadrante). */
 const DIAS_SEMANA_LARGO = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'] as const;
@@ -776,6 +770,12 @@ function VistaMes({
   const dias = useMemo(() => proyectarMes(cuadrante, anio, mes), [cuadrante, anio, mes]);
   const resumen = useMemo(() => resumenHorasMes(cuadrante, anio, mes), [cuadrante, anio, mes]);
 
+  // HOY, para "de un vistazo": solo tiene sentido cuando el mes visible es el actual. Se
+  // deriva de los días proyectados (así el turno de hoy respeta las excepciones manuales).
+  const hoyStr = hoyISO();
+  const esMesActual = anio === hoy.getFullYear() && mes === hoy.getMonth() + 1;
+  const diaDeHoy = esMesActual ? dias.find((d) => esHoy(d.fecha, hoyStr)) : undefined;
+
   const primerDia = dias[0];
   const blancosIniciales = primerDia ? diaSemanaLunes0(primerDia.fecha) : 0;
 
@@ -838,7 +838,9 @@ function VistaMes({
           gap: t.spacing.md,
         }}
       >
-        <ResumenHoras t={t} resumen={resumen} />
+        <ResumenHoras t={t} resumen={resumen} franja={cuadrante.franjaNocturna} />
+
+        {diaDeHoy ? <LineaHoy t={t} servicio={diaDeHoy.servicio} /> : null}
 
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <FlechaMes t={t} etiqueta="Mes anterior" Icono={ChevronLeft} onPress={() => cambiarMes(-1)} />
@@ -869,7 +871,14 @@ function VistaMes({
                 <View key={`b-${i}`} style={{ width: celda, height: celda }} />
               ))}
               {dias.map((dia) => (
-                <CeldaDia key={dia.fecha} t={t} dia={dia} tam={celda} onPress={() => setDiaEditando(dia)} />
+                <CeldaDia
+                  key={dia.fecha}
+                  t={t}
+                  dia={dia}
+                  tam={celda}
+                  esHoy={esMesActual && esHoy(dia.fecha, hoyStr)}
+                  onPress={() => setDiaEditando(dia)}
+                />
               ))}
             </View>
           </Animated.View>
@@ -918,18 +927,38 @@ function FlechaMes({
   );
 }
 
-function ResumenHoras({ t, resumen }: { t: Theme; resumen: ReturnType<typeof resumenHorasMes> }) {
+function ResumenHoras({
+  t,
+  resumen,
+  franja,
+}: {
+  t: Theme;
+  resumen: ReturnType<typeof resumenHorasMes>;
+  franja: FranjaNocturna;
+}) {
   const signo = resumen.exceso > 0 ? '+' : '';
   const excesoTone = resumen.exceso > 0 ? 'warning' : 'success';
+  // Franja nocturna en uso (config del cuadrante; default 22:00–06:00 del esquema). Etiqueta
+  // la cifra de nocturnas para que el agente sepa QUÉ tramo se está contando en su nómina.
+  const inicio = franja?.inicio ?? '22:00';
+  const fin = franja?.fin ?? '06:00';
   return (
     <Card>
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>Este mes</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.lg, marginTop: t.spacing.xxs }}>
         <Cifra t={t} valor={`${resumen.horasTotales} h`} etiqueta="Total" />
-        <Cifra t={t} valor={`${resumen.horasNocturnas} h`} etiqueta="Nocturnas" />
+        <Cifra
+          t={t}
+          valor={`${resumen.horasNocturnas} h`}
+          etiqueta={`Nocturnas · ${inicio}–${fin}`}
+          destacado
+        />
         <Cifra t={t} valor={`${resumen.horasFestivas} h`} etiqueta="Festivas" />
         <Cifra t={t} valor={`${resumen.noches}`} etiqueta="Noches" />
       </View>
+      <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption, marginTop: t.spacing.xs }}>
+        Nocturnas: horas trabajadas dentro de tu franja nocturna.
+      </Text>
       <View
         style={{
           flexDirection: 'row',
@@ -977,19 +1006,87 @@ function ResumenHoras({ t, resumen }: { t: Theme; resumen: ReturnType<typeof res
   );
 }
 
-function Cifra({ t, valor, etiqueta }: { t: Theme; valor: string; etiqueta: string }) {
+/**
+ * Una cifra del resumen. `destacado` da algo más de peso a la métrica (color de acento +
+ * etiqueta reforzada): se usa en NOCTURNAS, que es lo que el agente revisa para cobrar. No
+ * cambia el cálculo ni la maquetación de las cuatro cifras, solo su presentación.
+ */
+function Cifra({
+  t,
+  valor,
+  etiqueta,
+  destacado = false,
+}: {
+  t: Theme;
+  valor: string;
+  etiqueta: string;
+  destacado?: boolean;
+}) {
   return (
     <View style={{ gap: 2 }}>
       <Text
         style={{
-          color: t.color.textPrimary,
+          color: destacado ? t.color.accent : t.color.textPrimary,
           ...t.typography.scale.titleL,
           fontVariant: ['tabular-nums'],
         }}
       >
         {valor}
       </Text>
-      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>{etiqueta}</Text>
+      <Text
+        style={{
+          color: destacado ? t.color.accent : t.color.textSecondary,
+          ...t.typography.scale.caption,
+          fontWeight: destacado ? '700' : '400',
+        }}
+      >
+        {etiqueta}
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * Badge compacto "Hoy · {turno}" con el color del servicio: responde de un vistazo "¿qué
+ * turno tengo hoy?". Solo se pinta cuando el mes visible es el actual (lo decide `VistaMes`).
+ */
+function LineaHoy({ t, servicio }: { t: Theme; servicio: TipoServicio }) {
+  const c = colorServicio(t, servicio);
+  return (
+    <View
+      accessibilityRole="text"
+      accessibilityLabel={`Hoy tienes turno de ${SERVICIO_LABEL[servicio]}`}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: t.spacing.sm,
+        alignSelf: 'flex-start',
+        minHeight: t.touch.min,
+        paddingVertical: t.spacing.xs,
+        paddingHorizontal: t.spacing.md,
+        borderRadius: t.radius.pill,
+        borderWidth: 1,
+        borderColor: t.color.accent,
+        backgroundColor: t.color.accentWeak,
+      }}
+    >
+      <View
+        style={{
+          width: 26,
+          height: 26,
+          borderRadius: t.radius.sm,
+          backgroundColor: c.bg,
+          borderWidth: 1,
+          borderColor: t.color.border,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Text style={{ color: c.fg, fontSize: 13, fontWeight: '700' }}>{SERVICIO_ABREV[servicio]}</Text>
+      </View>
+      <Text style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}>
+        Hoy · {SERVICIO_LABEL[servicio]}
+      </Text>
     </View>
   );
 }
@@ -998,11 +1095,13 @@ function CeldaDia({
   t,
   dia,
   tam,
+  esHoy: hoy,
   onPress,
 }: {
   t: Theme;
   dia: DiaProyectado;
   tam: number;
+  esHoy: boolean;
   onPress: () => void;
 }) {
   const c = colorServicio(t, dia.servicio);
@@ -1010,6 +1109,7 @@ function CeldaDia({
   const abrev = SERVICIO_ABREV[dia.servicio];
   const a11y = [
     `Día ${numDia}`,
+    hoy ? 'hoy' : null,
     SERVICIO_LABEL[dia.servicio],
     dia.esFestivo ? 'festivo' : null,
     dia.origen === 'manual' ? 'editado a mano' : null,
@@ -1036,17 +1136,44 @@ function CeldaDia({
       }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Text
-          style={{
-            color: dia.esFestivo ? t.color.danger : t.color.textSecondary,
-            fontSize: 12,
-            fontWeight: dia.esFestivo ? '700' : '400',
-            textDecorationLine: dia.esFestivo ? 'underline' : 'none',
-            fontVariant: ['tabular-nums'],
-          }}
-        >
-          {numDia}
-        </Text>
+        {hoy ? (
+          // HOY: número en un badge de acento. Es independiente del borde "editado a mano"
+          // (color brand), así ambos estados conviven sin pelearse ni romper la rejilla.
+          <View
+            style={{
+              minWidth: 18,
+              height: 18,
+              paddingHorizontal: 3,
+              borderRadius: t.radius.sm,
+              backgroundColor: t.color.accent,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text
+              style={{
+                color: t.color.accentOn,
+                fontSize: 12,
+                fontWeight: '800',
+                fontVariant: ['tabular-nums'],
+              }}
+            >
+              {numDia}
+            </Text>
+          </View>
+        ) : (
+          <Text
+            style={{
+              color: dia.esFestivo ? t.color.danger : t.color.textSecondary,
+              fontSize: 12,
+              fontWeight: dia.esFestivo ? '700' : '400',
+              textDecorationLine: dia.esFestivo ? 'underline' : 'none',
+              fontVariant: ['tabular-nums'],
+            }}
+          >
+            {numDia}
+          </Text>
+        )}
         {dia.esFestivo ? (
           <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: t.color.danger }} />
         ) : null}
