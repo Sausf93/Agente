@@ -466,17 +466,103 @@ describe('accionOperativaFrom — qué hace el agente con el vehículo/persona',
   });
 
   // T-2 (QA B-2): una ficha NO penal cuya única consecuencia sea `proteccion` NO puede caer al
-  // estado verde tranquilizador "la persona sigue · solo denuncia". Con protección de víctima el
-  // banner debe salir destacado (tono distinto de `positivo`) y con etiqueta de protección.
-  it('T-2 · protección de la víctima (sin detención): banner NO verde, etiqueta de protección', () => {
+  // estado verde tranquilizador "la persona sigue · solo denuncia". Con protección el banner debe
+  // salir destacado (tono distinto de `positivo`) y con etiqueta de protección (ahora NEUTRA).
+  it('T-2 · protección (sin detención): banner NO verde, etiqueta de protección', () => {
     const a = accionOperativaFrom({
       fichaKind: 'seguridad_ciudadana',
       consecuencias: [{ tipo: 'proteccion', fuente: 'LO 1/2004 art. 61' }],
     });
     expect(a?.kind).toBe('proteccion');
     expect(a?.tono).not.toBe('positivo');
-    expect(a?.titulo).toMatch(/protecci[oó]n de la v[ií]ctima/i);
+    expect(a?.titulo).toMatch(/protecci[oó]n/i);
     expect(a?.fuente).toBe('LO 1/2004 art. 61');
+  });
+
+  // MEDIA-2: el banner de `proteccion` usa el `textoCorto` REVISADO de la consecuencia, no un copy
+  // genérico de víctima de VG. Para MENA (protección del MENOR) NO debe hablar de "víctima" ni de
+  // "orden de protección"; para VG SÍ conserva su texto propio.
+  it('MEDIA-2 · MENA: el banner refleja protección del MENOR, sin "víctima" ni "orden de protección"', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consultable: true,
+      consecuencias: [
+        {
+          tipo: 'proteccion',
+          fuente: 'LO 1/1996 y LO 4/2000 art. 35',
+          textoCorto:
+            'Procede identificar al menor con cautelas, ponerlo a disposición de la Entidad Pública ' +
+            'de protección de menores y comunicar al Ministerio Fiscal (Fiscalía de Menores). NUNCA ' +
+            'procede calabozo por su condición de menor/extranjero.',
+        },
+      ],
+    });
+    expect(a?.kind).toBe('proteccion');
+    expect(a?.tono).not.toBe('positivo');
+    expect(a?.detalle).not.toMatch(/orden de protecci[oó]n/i);
+    expect(a?.detalle).not.toMatch(/v[ií]ctima/i);
+    expect(a?.detalle).toMatch(/Entidad P[uú]blica/i);
+    expect(a?.detalle).toMatch(/Fiscal[ií]a/i);
+    expect(a?.fuente).toBe('LO 1/1996 y LO 4/2000 art. 35');
+  });
+
+  it('MEDIA-2 · VG: una ficha de violencia de género con proteccion sigue mostrando su texto propio', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'penal',
+      consecuencias: [
+        {
+          tipo: 'proteccion',
+          fuente: 'LO 1/2004 art. 61',
+          textoCorto:
+            'Procede valorar el riesgo (VPR/VioGén) y solicitar la orden de protección de la víctima; ' +
+            'la acuerda la autoridad judicial.',
+        },
+      ],
+    });
+    expect(a?.kind).toBe('proteccion');
+    expect(a?.detalle).toMatch(/v[ií]ctima/i);
+    expect(a?.detalle).toMatch(/orden de protecci[oó]n/i);
+  });
+
+  // MEDIA-1: una ficha CONSULTABLE (no_sancionador) SIN medida ni identificación (p. ej. la ZBE con
+  // régimen sancionador aún no aplicable) NO debe caer al verde "se formula la denuncia": va como
+  // estado INFORMATIVO de orientación (tono != positivo), nunca positivo.
+  it('MEDIA-1 · consultable sin consecuencias: NO verde "se formula la denuncia" (informativo)', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consultable: true,
+      consecuencias: [],
+    });
+    expect(a).not.toBeNull();
+    expect(a?.tono).not.toBe('positivo');
+    expect(a?.kind).toBe('consulta');
+    expect(a?.detalle).not.toMatch(/se formula la denuncia/i);
+  });
+
+  it('MEDIA-1 · NO consultable sin consecuencias: mantiene el estado positivo (no cambia)', () => {
+    const a = accionOperativaFrom({ fichaKind: 'administrativa', consecuencias: [] });
+    expect(a?.tono).toBe('positivo');
+    expect(a?.titulo).toMatch(/^Sanción administrativa/);
+  });
+
+  // Las consultables CON acción destacada siguen subiendo su acción (no las degrada la señal
+  // `consultable`): MENA→protección, terrazas→cese de actividad.
+  it('MEDIA-1 · una consultable CON protección (MENA) sigue subiendo la protección, no "consulta"', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consultable: true,
+      consecuencias: [{ tipo: 'proteccion', fuente: 'LO 4/2000 art. 35' }],
+    });
+    expect(a?.kind).toBe('proteccion');
+  });
+
+  it('MEDIA-1 · una consultable CON cese de actividad (terrazas) sigue subiendo el cese', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'administrativa',
+      consultable: true,
+      consecuencias: [{ tipo: 'cese_actividad', fuente: 'Ordenanza municipal (terrazas)' }],
+    });
+    expect(a?.kind).toBe('cese_actividad');
   });
 
   it('la detención manda sobre la protección de la víctima (concurrencia en un delito de VG)', () => {

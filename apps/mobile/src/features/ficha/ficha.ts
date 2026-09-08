@@ -286,6 +286,7 @@ function rangoImporte(
  */
 export type AccionOperativaKind =
   | 'sigue'
+  | 'consulta'
   | 'inmovilizacion'
   | 'deposito'
   | 'decomiso'
@@ -331,11 +332,14 @@ const DETALLE_COERCION: Partial<
     tono: 'coercitivo',
   },
   proteccion: {
+    // TÍTULO NEUTRO (QA MEDIA-2): la `proteccion` no siempre es de una VÍCTIMA de violencia de
+    // género —también protege al MENOR (MENA: Entidad Pública + Fiscalía, nunca calabozo)—. El
+    // detalle concreto lo pone el `textoCorto` REVISADO de cada consecuencia; este es solo el
+    // encabezado y el fallback genérico si la consecuencia no trae texto propio.
     kind: 'proteccion',
-    titulo: 'Protección de la víctima',
+    titulo: 'Protección',
     detalle:
-      'Procede activar las medidas de protección de la víctima (valoración del riesgo y, en su ' +
-      'caso, solicitud de orden de protección) conforme al precepto citado; la acuerda la ' +
+      'Procede activar las medidas de protección conforme al precepto citado; las acuerda la ' +
       'autoridad competente.',
     tono: 'coercitivo',
   },
@@ -379,17 +383,27 @@ const DETALLE_COERCION: Partial<
  */
 export function accionOperativaFrom(input: {
   fichaKind: FichaKind;
-  consecuencias: { tipo: TipoConsecuencia; fuente: string }[];
+  consecuencias: { tipo: TipoConsecuencia; fuente: string; textoCorto?: string }[];
+  /**
+   * La ficha es CONSULTABLE / `no_sancionador` (facultad/diligencia o régimen aún no aplicable, p.
+   * ej. la ZBE aprobada sin sanción todavía): NO debe caer al estado verde "se formula la denuncia"
+   * cuando no hay medida (QA MEDIA-1). Lo deriva la pantalla con `esConsultableSinSancion`.
+   */
+  consultable?: boolean;
 }): AccionOperativa | null {
   for (const tipo of ORDEN_COERCION) {
     const regla = DETALLE_COERCION[tipo];
     if (!regla) continue;
     const encontrada = input.consecuencias.find((c) => c.tipo === tipo);
     if (encontrada) {
+      // El detalle usa el `textoCorto` REDACTADO de ESA consecuencia cuando existe (revisado por
+      // contenido: protección del MENOR en MENA vs. de la víctima en VG), cayendo al texto genérico
+      // de la medida solo si la consecuencia no trae texto propio (QA MEDIA-2).
+      const textoPropio = encontrada.textoCorto?.trim();
       return {
         kind: regla.kind,
         titulo: regla.titulo,
-        detalle: regla.detalle,
+        detalle: textoPropio ? textoPropio : regla.detalle,
         fuente: encontrada.fuente,
         tono: regla.tono,
       };
@@ -432,6 +446,23 @@ export function accionOperativaFrom(input: {
         'por el tiempo imprescindible (en ningún caso más de 6 horas, art. 16.2), que NO es una ' +
         'detención. La valoración final corresponde al agente.',
       fuente: identificacion.fuente,
+      tono: 'informativo',
+    };
+  }
+
+  // Entrada CONSULTABLE / `no_sancionador` SIN medida ni identificación (p. ej. la ZBE aprobada
+  // cuyo régimen sancionador aún NO es aplicable): NO puede caer al verde "se formula la denuncia"
+  // —contradiría su propio boletín, "hoy no procede sanción"—. Estado INFORMATIVO de orientación,
+  // nunca `positivo` (QA MEDIA-1). Las consultables CON acción (MENA→protección, terrazas→cese) ya
+  // salieron antes en el bucle de coerción; las que llevan identificación, en la rama de arriba.
+  if (input.consultable) {
+    return {
+      kind: 'consulta',
+      titulo: 'Consulta · orientación',
+      detalle:
+        'Entrada informativa: por este motivo hoy no procede sanción. Revisa la orientación y su ' +
+        'fuente; la valoración final corresponde al agente y al órgano competente.',
+      fuente: null,
       tono: 'informativo',
     };
   }

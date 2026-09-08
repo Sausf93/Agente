@@ -166,12 +166,19 @@ export async function buscarInfracciones(
 
   // Paso 1: sinónimos EXACTOS (van siempre arriba). Se une a `infraccion` para poder filtrar por
   // territorio (el sinónimo no lleva territorio; lo lleva su infracción).
+  //
+  // DESEMPATE DETERMINISTA (QA MEDIA-3): un mismo término de calle puede tener varias fichas con
+  // sinónimo EXACTO en la frontera penal/administrativa ("okupas" → usurpación 245.2 CP y ocupación
+  // 37.7 LOSC). Sin `ORDER BY` el primer resultado dependía del rowid. Dictamen del revisor: prima
+  // la PENAL sobre la administrativa (`i.tipo = 'penal'` primero) y, dentro del mismo tipo, orden
+  // estable por `id`. No altera los términos con un único match exacto (la inmensa mayoría).
   const exactos = await runner.getAll<{ infraccion_id: string }>(
-    `SELECT DISTINCT s.infraccion_id AS infraccion_id
+    `SELECT DISTINCT s.infraccion_id AS infraccion_id, i.tipo AS tipo, i.id AS id
        FROM sinonimo s
        JOIN infraccion i ON i.id = s.infraccion_id
       WHERE s.termino_normalizado = ? AND s.infraccion_id IS NOT NULL
-        AND ${filtroExacto.sql}`,
+        AND ${filtroExacto.sql}
+      ORDER BY (i.tipo = 'penal') DESC, i.id ASC`,
     [consultaNorm, ...filtroExacto.params],
   );
   const idsExactos = exactos.map((r) => r.infraccion_id);

@@ -18,6 +18,7 @@ import {
   FileWarning,
   Fingerprint,
   Gavel,
+  Info,
   Lock,
   ShieldCheck,
   Truck,
@@ -219,7 +220,15 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   // de consecuencias y se pinta ARRIBA DEL TODO con color semántico FIJO (verde "sigue" / rojo).
   const accion = accionOperativaFrom({
     fichaKind: ficha.fichaKind,
-    consecuencias: ficha.consecuencias.map((c) => ({ tipo: c.tipo, fuente: c.fuente })),
+    // Se pasa `textoCorto` (para que el banner use el texto REVISADO de cada consecuencia: MENA
+    // protege al menor, VG a la víctima) y la señal `consultable` (una entrada sin sanción sin
+    // medida NO debe caer al verde "se formula la denuncia").
+    consecuencias: ficha.consecuencias.map((c) => ({
+      tipo: c.tipo,
+      fuente: c.fuente,
+      textoCorto: c.textoCorto,
+    })),
+    consultable,
   });
   // La DETENCIÓN se separa del resto: en un delito sube arriba (leer-primero), no va enterrada.
   const consecuenciaDetencion = ficha.consecuencias.find((c) => c.tipo === 'detencion') ?? null;
@@ -579,6 +588,7 @@ function PenalChip({ t }: { t: Theme }) {
 /** Icono de cada acción operativa: refuerza el mensaje (nunca solo color, regla UI 2.4). */
 const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
   sigue: ArrowRightCircle,
+  consulta: Info,
   inmovilizacion: Lock,
   deposito: Truck,
   decomiso: Ban,

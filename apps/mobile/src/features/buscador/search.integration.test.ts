@@ -5,7 +5,13 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SqlRunner } from '@/db/sqlRunner';
 import { buscarArticulos, buscarInfracciones, buscarTodo } from './search';
-import { accionOperativaFrom, cargarFicha, tilesFicha } from '../ficha/ficha';
+import {
+  accionOperativaFrom,
+  cargarFicha,
+  esConsultableSinSancion,
+  tilesFicha,
+  type FichaInfraccion,
+} from '../ficha/ficha';
 import { formatEuros } from '../ficha/format';
 
 /**
@@ -295,5 +301,158 @@ suite('buscador: T-5/T-6 · convivencia de capas estatal + municipal + autonómi
     expect(autonomico.infracciones.some((r) => r.infraccionId.startsWith('can-esp-'))).toBe(true);
     const municipal = await buscarTodo(runner, 'perro suelto', CADENA_CANARIAS);
     expect(municipal.infracciones.every((r) => !r.infraccionId.startsWith('ord-sctf-'))).toBe(true);
+  });
+});
+
+/** Deriva la acción operativa de una ficha REAL como lo hace la pantalla (con `consultable` y `textoCorto`). */
+function accionDeFicha(ficha: FichaInfraccion) {
+  return accionOperativaFrom({
+    fichaKind: ficha.fichaKind,
+    consecuencias: ficha.consecuencias.map((c) => ({
+      tipo: c.tipo,
+      fuente: c.fuente,
+      textoCorto: c.textoCorto,
+    })),
+    consultable: esConsultableSinSancion(ficha),
+  });
+}
+
+/**
+ * MEDIA-3 (QA): "okupas"/"okupacion" comparten sinónimo EXACTO entre la USURPACIÓN penal (245.2 CP)
+ * y la OCUPACIÓN administrativa (37.7 LOSC). El desempate determinista del lookup exacto prima la
+ * penal; la administrativa queda detrás, alcanzable.
+ */
+suite('MEDIA-3 · frontera penal/administrativa: "okupas" prima la penal', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  for (const q of ['okupas', 'okupacion']) {
+    it(`"${q}" → primero la usurpación penal (del-usurpacion), con la administrativa detrás`, async () => {
+      const res = await buscarInfracciones(runner, q);
+      expect(res[0]?.infraccionId).toBe('del-usurpacion');
+      // La administrativa residual (37.7 LOSC) sigue estando, pero DETRÁS de la penal.
+      expect(res.map((r) => r.infraccionId)).toContain('sc-ocupacion-inmueble');
+      const iPenal = res.findIndex((r) => r.infraccionId === 'del-usurpacion');
+      const iAdmin = res.findIndex((r) => r.infraccionId === 'sc-ocupacion-inmueble');
+      expect(iPenal).toBeLessThan(iAdmin);
+    });
+  }
+});
+
+/**
+ * Presentación de las 8 DELITOS nuevos (QA): marco penal (sin tiles de importe), acción de
+ * atestado + detención con su ÁRBOL de decisión (regla no vacía).
+ */
+suite('presentación · las 8 penales nuevas', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  const PENALES = [
+    'del-velocidad-penal',
+    'del-conduccion-sin-permiso',
+    'del-falsedad-documental',
+    'del-sustraccion-vehiculo',
+    'del-usurpacion',
+    'del-allanamiento-morada',
+    'del-omision-socorro',
+    'del-tenencia-armas',
+  ];
+
+  for (const id of PENALES) {
+    it(`${id}: marco penal, sin tiles de importe, acción detención con árbol`, async () => {
+      const ficha = await cargarFicha(runner, id);
+      expect(ficha, `falta ${id} en el paquete`).not.toBeNull();
+      expect(ficha!.fichaKind).toBe('penal');
+      // Un delito NO pinta tiles de tráfico (importe/puntos): usa el bloque "Marco penal".
+      expect(tilesFicha(ficha!, formatEuros)).toEqual([]);
+      // La acción operativa es el atestado + detención (coercitiva).
+      const accion = accionDeFicha(ficha!);
+      expect(accion?.kind).toBe('detencion');
+      // La consecuencia de detención lleva su REGLA (árbol de decisión) no vacía.
+      const det = ficha!.consecuencias.find((c) => c.tipo === 'detencion');
+      expect(det, `${id} sin consecuencia de detención`).toBeTruthy();
+      expect(det!.regla).not.toBeNull();
+      expect(Object.keys(det!.regla ?? {}).length).toBeGreaterThan(0);
+    });
+  }
+});
+
+/**
+ * Presentación del TRANSPORTE (QA): las sanciones por HORQUILLA (exceso de MMA, ADR) van como rango
+ * "–" sin énfasis; la de CIRCULACIÓN por cifra fija (mala estiba) mantiene el importe destacado y su
+ * pronto pago. Todas con inmovilización como acción operativa.
+ */
+suite('presentación · transporte pesado (horquilla vs cifra fija)', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  it('inf-exceso-mma: importe como RANGO (–) sin énfasis + inmovilización', async () => {
+    const ficha = await cargarFicha(runner, 'inf-exceso-mma');
+    expect(ficha).not.toBeNull();
+    const tiles = tilesFicha(ficha!, formatEuros);
+    const importe = tiles.find((x) => x.etiqueta === 'Importe');
+    expect(importe?.valor).toMatch(/–/);
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+    expect(accionDeFicha(ficha!)?.kind).toBe('inmovilizacion');
+  });
+
+  it('inf-adr-mercancias-peligrosas: importe como RANGO (–) sin énfasis + inmovilización', async () => {
+    const ficha = await cargarFicha(runner, 'inf-adr-mercancias-peligrosas');
+    expect(ficha).not.toBeNull();
+    const tiles = tilesFicha(ficha!, formatEuros);
+    const importe = tiles.find((x) => x.etiqueta === 'Importe');
+    expect(importe?.valor).toMatch(/–/);
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+    expect(accionDeFicha(ficha!)?.kind).toBe('inmovilizacion');
+  });
+
+  it('inf-sujecion-carga: importe fijo "200 €" con énfasis (sin "–") + pronto pago + inmovilización', async () => {
+    const ficha = await cargarFicha(runner, 'inf-sujecion-carga');
+    expect(ficha).not.toBeNull();
+    const tiles = tilesFicha(ficha!, formatEuros);
+    const importe = tiles.find((x) => x.etiqueta === 'Importe');
+    expect(importe?.valor).toBe('200 €');
+    expect(importe?.valor).not.toMatch(/–/);
+    expect(importe?.enfasis).toBe(true);
+    expect(tiles.some((x) => x.etiqueta === 'Pronto pago')).toBe(true);
+    expect(accionDeFicha(ficha!)?.kind).toBe('inmovilizacion');
+  });
+});
+
+/**
+ * Presentación de las entradas CONSULTABLES `no_sancionador` (QA): sin tiles de sanción, y el banner
+ * de acción NUNCA cae al verde "se formula la denuncia". MENA sube su protección (del MENOR);
+ * terrazas sube el cese de actividad; la ZBE (régimen aún no aplicable) va como consulta informativa.
+ */
+suite('presentación · entradas consultables (no_sancionador)', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  it('sc-mena-consulta: consultable, sin tiles, acción PROTECCIÓN (del menor) tono no positivo', async () => {
+    const ficha = await cargarFicha(runner, 'sc-mena-consulta');
+    expect(ficha).not.toBeNull();
+    expect(esConsultableSinSancion(ficha!)).toBe(true);
+    expect(tilesFicha(ficha!, formatEuros)).toEqual([]);
+    const accion = accionDeFicha(ficha!);
+    expect(accion?.kind).toBe('proteccion');
+    expect(accion?.tono).not.toBe('positivo');
+    // El detalle es el texto REVISADO del menor: NUNCA "víctima" ni "orden de protección".
+    expect(accion?.detalle).not.toMatch(/v[ií]ctima/i);
+    expect(accion?.detalle).not.toMatch(/orden de protecci[oó]n/i);
+    expect(accion?.detalle).toMatch(/Entidad P[uú]blica|Fiscal[ií]a/i);
+  });
+
+  it('ord-sctf-zbe: consultable, sin tiles, banner NO verde "se formula la denuncia"', async () => {
+    const ficha = await cargarFicha(runner, 'ord-sctf-zbe');
+    expect(ficha).not.toBeNull();
+    expect(esConsultableSinSancion(ficha!)).toBe(true);
+    expect(tilesFicha(ficha!, formatEuros)).toEqual([]);
+    const accion = accionDeFicha(ficha!);
+    expect(accion?.tono).not.toBe('positivo');
+    expect(accion?.detalle ?? '').not.toMatch(/se formula la denuncia/i);
+  });
+
+  it('ord-sctf-terrazas: acción CESE de actividad (destacada, no un estado positivo)', async () => {
+    const ficha = await cargarFicha(runner, 'ord-sctf-terrazas');
+    expect(ficha).not.toBeNull();
+    const accion = accionDeFicha(ficha!);
+    expect(accion?.kind).toBe('cese_actividad');
+    expect(accion?.tono).toBe('coercitivo');
   });
 });
