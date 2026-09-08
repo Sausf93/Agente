@@ -23,6 +23,7 @@ import { SEED_PENAL } from '../seed/penalSeed.js';
 import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
 import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
 import { SEED_ORDENANZAS } from '../seed/ordenanzasSeed.js';
+import { SEED_AUTONOMICO_CANARIAS } from '../seed/autonomicoCanariasSeed.js';
 import { SUSTANCIAS_SEED } from '../seed/sustanciasSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
@@ -69,6 +70,7 @@ async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaque
     SEED_SEGURIDAD_CIUDADANA,
     SEED_EXTRANJERIA_LOCAL,
     SEED_ORDENANZAS,
+    SEED_AUTONOMICO_CANARIAS,
     seedSustancias,
   );
 
@@ -119,6 +121,10 @@ async function main(): Promise<void> {
         'peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). ' +
         'PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, ' +
         'zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. ' +
+        'PILOTO de NORMATIVA AUTONÓMICA de CANARIAS (capa autonómica): espectáculos y actividades ' +
+        'clasificadas (Ley 7/2011: horario de cierre, ocio nocturno, sin licencia, alcohol a menores, ' +
+        'ruidos), animales (Ley 8/1991) y las leyes de policía canaria (coordinación de policías ' +
+        'locales Ley 6/1997 y Cuerpo General de la Policía Canaria Ley 2/2008), ligadas a la CCAA. ' +
         'Todo el contenido nuevo queda PENDIENTE DE REVISIÓN.',
     },
   });

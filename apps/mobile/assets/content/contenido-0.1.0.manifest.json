@@ -1,12 +1,12 @@
 {
   "version": "0.1.0",
-  "fecha": "2026-09-07T23:34:30.729Z",
+  "fecha": "2026-09-08T00:53:20.681Z",
   "schemaVersion": 1,
-  "hash": "684f06d9a7f0706f1f8c5513cbfe9b9d588dfe40a8ac77839a102e67f8957697",
-  "tamanoBytes": 12709888,
+  "hash": "dca015f9551cc5fae43354da03f7f51de60ec8051cdfe2f4c5fbc9d794c49784",
+  "tamanoBytes": 12759040,
   "algoritmoFirma": "ed25519",
   "firma": null,
   "changelog": {
-    "resumen": "Ronda de contenido \"de calle\" (tres cuerpos): tráfico (seed + RGC) ampliado con conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. Todo el contenido nuevo queda PENDIENTE DE REVISIÓN."
+    "resumen": "Ronda de contenido \"de calle\" (tres cuerpos): tráfico (seed + RGC) ampliado con conducción temeraria, tacógrafo (LOTT), adelantamiento/línea continua, neumáticos y matrícula, y con la relevancia por cuerpo corregida (tráfico ya no aparece a la Policía Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. PILOTO de NORMATIVA AUTONÓMICA de CANARIAS (capa autonómica): espectáculos y actividades clasificadas (Ley 7/2011: horario de cierre, ocio nocturno, sin licencia, alcohol a menores, ruidos), animales (Ley 8/1991) y las leyes de policía canaria (coordinación de policías locales Ley 6/1997 y Cuerpo General de la Policía Canaria Ley 2/2008), ligadas a la CCAA. Todo el contenido nuevo queda PENDIENTE DE REVISIÓN."
   }
 }
