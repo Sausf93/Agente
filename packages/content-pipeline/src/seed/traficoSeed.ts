@@ -326,6 +326,76 @@ const ART_CP_380 = articuloSeed({
     'de los demás, se aplica el art. 381. Resumen orientativo; consúltese el texto consolidado.',
 });
 
+const ART_CP_379_1 = articuloSeed({
+  normaId: ID_CP,
+  numero: '379.1',
+  titulo: 'Exceso de velocidad penalmente relevante (delito contra la seguridad vial)',
+  texto:
+    'Castiga como delito conducir un vehículo a motor o ciclomotor a una velocidad superior en 60 ' +
+    'km/h en vía urbana o en 80 km/h en vía interurbana a la permitida reglamentariamente. La pena ' +
+    'es prisión de 3 a 6 meses o multa de 6 a 12 meses o trabajos en beneficio de la comunidad de ' +
+    '31 a 90 días, y EN CUALQUIER CASO privación del derecho a conducir por tiempo superior a 1 y ' +
+    'hasta 4 años. Por debajo de esos umbrales, el exceso de velocidad es sanción administrativa ' +
+    '(cuadro del art. 48 RGC / LSV): es la FRONTERA entre el boletín (administrativo) y el atestado ' +
+    '(penal). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_384 = articuloSeed({
+  normaId: ID_CP,
+  numero: '384',
+  titulo: 'Conducción sin permiso (delito contra la seguridad vial)',
+  texto:
+    'Castiga como delito conducir un vehículo a motor o ciclomotor en tres supuestos: (a) tras la ' +
+    'pérdida de vigencia del permiso o licencia por la pérdida total de los puntos legalmente ' +
+    'asignados; (b) tras haber sido privado cautelar o definitivamente del permiso o licencia por ' +
+    'decisión judicial; y (c) sin haber obtenido nunca permiso o licencia de conducción. La pena es ' +
+    'prisión de 3 a 6 meses o multa de 12 a 24 meses o trabajos en beneficio de la comunidad de 31 ' +
+    'a 90 días. Distinto de la conducción sin permiso NO delictiva (p. ej. permiso caducado sin ' +
+    'renovar), que es sanción administrativa (art. 77 LSV). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_14 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '14',
+  titulo: 'Disposición de la carga',
+  texto:
+    'Exige que la carga transportada en un vehículo, así como los accesorios para su ' +
+    'acondicionamiento o protección, se dispongan y, en su caso, se sujeten de forma que no puedan ' +
+    'arrastrar, caer total o parcialmente, desplazarse de manera peligrosa, comprometer la ' +
+    'estabilidad del vehículo, ni producir ruido, polvo u otras molestias evitables. La carga mal ' +
+    'estibada o sin sujeción es infracción de circulación y puede motivar la inmovilización hasta su ' +
+    'correcta reestiba. Resumen orientativo; consúltese el texto consolidado y la normativa de estiba.',
+});
+
+const ART_LOTT_141 = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141',
+  titulo: 'Infracciones graves en el transporte (exceso de masa y acondicionamiento de la carga)',
+  texto:
+    'Tipifica como infracciones de la ordenación del transporte, entre otras, el exceso sobre la masa ' +
+    'máxima autorizada (MMA) del vehículo y el transporte de mercancías con la carga mal acondicionada ' +
+    'o sin la debida sujeción. El exceso de masa se gradúa por el porcentaje de sobrepeso (leve, grave ' +
+    'o muy grave según el tramo) y la responsabilidad puede alcanzar al transportista, cargador y ' +
+    'expedidor. Los límites de masa los fija el Reglamento General de Vehículos (RD 2822/1998) y sus ' +
+    'anexos. La sanción y el régimen de inmovilización los concretan el art. 143 LOTT y su reglamento ' +
+    '(RD 1211/1990). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_MMPP = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140 (mercancías peligrosas)',
+  titulo: 'Transporte de mercancías peligrosas incumpliendo el ADR (infracción muy grave)',
+  texto:
+    'Tipifica como infracción muy grave de la ordenación del transporte el incumplimiento de las ' +
+    'condiciones del ADR (Acuerdo europeo sobre transporte internacional de mercancías peligrosas por ' +
+    'carretera) exigibles para el transporte de mercancías peligrosas: ausencia o incorrección de los ' +
+    'paneles naranjas y las etiquetas de peligro, falta de la carta de porte con los datos de la ' +
+    'mercancía (número ONU), y ausencia de la autorización, la formación del conductor (certificado ' +
+    'ADR) o los equipos de seguridad obligatorios. En España el régimen se desarrolla por el RD ' +
+    '97/2014. La sanción y el precinto/inmovilización los concretan los arts. 140, 143 LOTT y su ' +
+    'reglamento. Resumen orientativo; consúltese el texto consolidado y el ADR vigente.',
+});
+
 const ART_LOTT_140 = articuloSeed({
   normaId: ID_LOTT,
   numero: '140',
@@ -385,13 +455,18 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_RGV_10,
   ART_RGV_12,
   ART_RGV_25,
+  ART_RGC_14,
   ART_LRCSCVM_3,
   ART_LSV_104,
   ART_LSV_105,
   ART_LSV_14,
   ART_LSV_77,
   ART_LOTT_140,
+  ART_LOTT_141,
+  ART_LOTT_MMPP,
   ART_CP_379,
+  ART_CP_379_1,
+  ART_CP_384,
   ART_CP_383,
   ART_CP_380,
 ];
@@ -926,6 +1001,138 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'la NEGATIVA a la prueba (art. 383 CP, `inf-negativa-prueba`). Redacción de la detención a ' +
       'validar por el revisor jurídico (§4.6, lenguaje NUNCA imperativo). No lleva importe (vía penal).',
   }),
+  // --- Velocidad PENAL (art. 379.1 CP): gemela de la alcoholemia penal ----------------------
+  // Delito HERMANO de la sanción administrativa por velocidad (`inf-exceso-velocidad`, cuadro del
+  // art. 48 RGC / LSV). Lo que los separa es la FRONTERA objetiva: superar el límite en más de 60
+  // km/h en vía urbana o en más de 80 km/h en interurbana es DELITO (atestado + posible detención);
+  // por debajo, es el CUADRO administrativo graduado (boletín). Reutiliza el mismo helper
+  // `reglaDetencion` que la alcoholemia penal para pintar el árbol interactivo y "Leer derechos".
+  construirInfraccion({
+    id: 'del-velocidad-penal',
+    articulo: ART_CP_379_1,
+    tituloCorto: 'Exceso de velocidad penal (delito)',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    // Art. 379.1 CP: prisión de 3 a 6 meses → MENOS GRAVE (art. 33.3 CP). Mismo marco penal que la
+    // alcoholemia penal (art. 379.2): alimenta el árbol de detención (escenario flagrante → "procede").
+    penaTexto:
+      'Prisión de 3 a 6 meses o multa de 6 a 12 meses o trabajos en beneficio de la comunidad de ' +
+      '31 a 90 días, y EN TODO CASO privación del derecho a conducir de más de 1 a 4 años (art. 379.1 CP)',
+    gravedadPenal: 'menos_grave',
+    textoBoletin:
+      'FRONTERA administrativo ↔ penal. Conducir superando el límite reglamentario en MÁS DE 60 km/h ' +
+      'en vía urbana o en MÁS DE 80 km/h en vía interurbana es DELITO contra la seguridad vial ' +
+      '(art. 379.1 CP) → procede instruir ATESTADO. POR DEBAJO de esos umbrales, el exceso de ' +
+      'velocidad es SANCIÓN ADMINISTRATIVA graduada por un CUADRO de tramos (ver ficha "Exceso de ' +
+      'velocidad", desde 100 € y hasta 6 puntos según el exceso) → boletín. Ejemplos: en una vía ' +
+      'urbana limitada a 50 km/h, el delito empieza al superar los 110 km/h; en una interurbana ' +
+      'limitada a 90 km/h, al superar los 170 km/h. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'delito de velocidad',
+      'iba a 200',
+      '379.1',
+      'mas de 80 de exceso',
+      'mas de 60 en ciudad',
+      'velocidad penal',
+      'atestado por velocidad',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante procede valorar la detención conforme a los arts. 490 y 492 ' +
+          'LECrim; la valoración de los indicios, del riesgo y del aseguramiento de la prueba de la ' +
+          'velocidad (cinemómetro/vídeo) corresponde al agente y, en su caso, a la autoridad judicial.',
+        fuente: 'CP art. 379.1; LECrim arts. 490 y 492',
+      },
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la causa (art. 104 LSV), ' +
+          'salvo que se haga cargo otro conductor habilitado, y la intervención del permiso de conducción.',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'penal',
+    notaRevision:
+      'A VERIFICAR la pena y la FRONTERA administrativo↔penal contra el texto consolidado del CP: ' +
+      'delito del art. 379.1 CP → prisión de 3 a 6 meses o multa de 6 a 12 meses o trabajos en ' +
+      'beneficio de la comunidad de 31 a 90 días, y en todo caso privación del derecho a conducir de ' +
+      'más de 1 a 4 años → MENOS GRAVE (art. 33.3 CP). Umbrales OBJETIVOS: +60 km/h sobre el límite ' +
+      'en vía urbana y +80 km/h en interurbana. Distinguir con claridad de la sanción administrativa ' +
+      'por velocidad (`inf-exceso-velocidad`, cuadro graduado) y del delito de conducción temeraria ' +
+      '(art. 380 CP), que puede concurrir. Redacción de la detención a validar por el revisor ' +
+      'jurídico (§4.6, lenguaje NUNCA imperativo). No lleva importe (vía penal). CONFIRMADO por ' +
+      'fuente oficial el texto del art. 379.1 CP; revisar antes de publicar.',
+  }),
+  // --- Conducción sin permiso PENAL (art. 384 CP): gemela de la alcoholemia penal ------------
+  // Delito HERMANO de la sanción administrativa `inf-sin-permiso` (art. 77 LSV). Lo que los separa
+  // son los TRES supuestos del art. 384 CP: (a) tras perder TODOS los puntos, (b) tras privación
+  // JUDICIAL del permiso, (c) sin haberlo obtenido NUNCA. Fuera de esos casos (p. ej. permiso
+  // caducado sin renovar), es sanción administrativa. Mismo helper `reglaDetencion` (árbol + derechos).
+  construirInfraccion({
+    id: 'del-conduccion-sin-permiso',
+    articulo: ART_CP_384,
+    tituloCorto: 'Conducción sin permiso penal (delito)',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    // Art. 384 CP: prisión de 3 a 6 meses → MENOS GRAVE (art. 33.3 CP). NO lleva privación del
+    // derecho a conducir (a diferencia del 379): en los tres supuestos el reo carece ya de permiso
+    // vigente. Alimenta el árbol de detención (escenario flagrante → "procede").
+    penaTexto:
+      'Prisión de 3 a 6 meses o multa de 12 a 24 meses o trabajos en beneficio de la comunidad de ' +
+      '31 a 90 días (art. 384 CP)',
+    gravedadPenal: 'menos_grave',
+    textoBoletin:
+      'FRONTERA administrativo ↔ penal. Es DELITO (art. 384 CP) conducir un vehículo a motor o ' +
+      'ciclomotor en TRES supuestos: (a) tras la pérdida de vigencia del permiso por haber perdido ' +
+      'TODOS los puntos; (b) tras haber sido privado cautelar o definitivamente del permiso por ' +
+      'DECISIÓN JUDICIAL; y (c) sin haber obtenido NUNCA permiso o licencia → procede instruir ' +
+      'ATESTADO. FUERA de esos tres casos (p. ej. permiso simplemente CADUCADO sin renovar, o no ' +
+      'tener la clase adecuada), es SANCIÓN ADMINISTRATIVA muy grave (art. 77 LSV, ver ficha ' +
+      '"Conducir sin permiso o sin vigencia") → boletín. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'conducir sin puntos',
+      'sin puntos delito',
+      'nunca ha tenido carnet',
+      'privado del carnet por el juez',
+      'conducir sin carnet delito',
+      '384',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante procede valorar la detención conforme a los arts. 490 y 492 ' +
+          'LECrim; la valoración de los indicios y del riesgo corresponde al agente y, en su caso, a ' +
+          'la autoridad judicial.',
+        fuente: 'CP art. 384; LECrim arts. 490 y 492',
+      },
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la causa (art. 104 LSV), ' +
+          'salvo que se haga cargo otro conductor habilitado.',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'penal',
+    notaRevision:
+      'A VERIFICAR la pena y los TRES supuestos contra el texto consolidado del CP: delito del art. ' +
+      '384 CP → prisión de 3 a 6 meses o multa de 12 a 24 meses o trabajos en beneficio de la ' +
+      'comunidad de 31 a 90 días → MENOS GRAVE (art. 33.3 CP). NO conlleva privación del derecho a ' +
+      'conducir (el reo carece ya de permiso). Distinguir con claridad de la sanción administrativa ' +
+      'del art. 77 LSV (`inf-sin-permiso`): el permiso caducado sin renovar o sin la clase adecuada ' +
+      'suele ser administrativo. Redacción de la detención a validar por el revisor jurídico (§4.6, ' +
+      'lenguaje NUNCA imperativo). No lleva importe (vía penal). CONFIRMADO por fuente oficial el ' +
+      'texto del art. 384 CP (tres supuestos y pena); revisar antes de publicar.',
+  }),
   construirInfraccion({
     id: 'inf-estacionamiento-indebido',
     articulo: ART_RGC_94,
@@ -1255,6 +1462,151 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'reglamento (RD 1211/1990). A VERIFICAR además la frontera penal: la manipulación puede ser ' +
       'delito de falsedad (arts. 390/395 CP), lo que abriría la vía penal. No detrae puntos DGT. ' +
       'Consúltese el artículo para el importe efectivo. Revisar con el revisor jurídico.',
+  }),
+  // --- Transporte pesado: sobrecarga / exceso de MMA (LOTT, marco `transporte`) --------------
+  construirInfraccion({
+    id: 'inf-exceso-mma',
+    articulo: ART_LOTT_141,
+    tituloCorto: 'Exceso de masa máxima autorizada (sobrecarga)',
+    gravedad: 'grave',
+    // Horquilla del tramo GRAVE del exceso de masa (aprox. 401–2.000 €): NO es cifra fija, se gradúa
+    // por el porcentaje de sobrepeso. La ficha la pinta como rango, sin énfasis (GC I1). El tramo
+    // muy grave (>20 % de exceso) sube más: a verificar contra el texto consolidado y su reglamento.
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 2000,
+    puntos: null,
+    textoBoletin:
+      'Circular con un vehículo o conjunto que supera la masa máxima autorizada (MMA) o los límites ' +
+      'por eje. El exceso de masa se gradúa por el PORCENTAJE de sobrepeso: hasta ~5 % suele ser leve, ' +
+      'entre ~5 % y ~20 % grave, y por encima de ~20 % muy grave (con importes mayores). La ' +
+      'responsabilidad puede alcanzar al transportista, al cargador y al expedidor. Los límites de masa ' +
+      'los fija el Reglamento General de Vehículos (RD 2822/1998). No detrae puntos DGT.',
+    terminos: [
+      'sobrecargado',
+      'pasado de peso',
+      'exceso de peso',
+      'exceso de mma',
+      'masa maxima',
+      'va cargado de mas',
+      'sobrepeso camion',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el exceso de masa se detecta en ' +
+          'carretera, hasta que se subsane la causa (descarga o transbordo de la mercancía sobrante).',
+        fuente: 'LOTT art. 143 (y su reglamento, RD 1211/1990)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'Cotejado con el revisor jurídico: el exceso de masa GRAVE se tipifica en el art. 141 LOTT ' +
+      '(apartado 141.2) y el MUY GRAVE en el art. 140 (apartado 140.23); el art. 143 no tipifica, solo ' +
+      'FIJA la cuantía (el exceso de masa tiene escala sancionadora propia: leve 301–400 / grave ' +
+      '401–2.000 / muy grave 2.001–4.000 €). El seed ancla el tramo GRAVE (401–2.000 €). A VERIFICAR el ' +
+      'TRAMO exacto por porcentaje de exceso contra el texto consolidado de la LOTT (reformada por la ' +
+      'Ley 13/2021) y su reglamento (RD 1211/1990): los umbrales de porcentaje varían según la MMA del ' +
+      'vehículo y según sea sobre uno o dos ejes. La inmovilización hasta subsanar (descarga/transbordo) ' +
+      'es la medida operativa habitual. No detrae puntos. Revisar por supuesto antes de publicar.',
+  }),
+  // --- Transporte pesado: carga mal estibada / sin sujeción (RGC art. 14, marco `transporte`) --
+  construirInfraccion({
+    id: 'inf-sujecion-carga',
+    articulo: ART_RGC_14,
+    tituloCorto: 'Carga mal estibada o sin sujeción',
+    gravedad: 'grave',
+    // Se modela como infracción de CIRCULACIÓN (RGC art. 14 → LSV): grave de 200 € (cifra fija, con
+    // pronto pago), NO como sanción de transporte por horquilla (revisor jurídico: la mezcla anterior
+    // "RGC art. 14 + marco transporte + 401–1.000 €" era internamente incoherente).
+    importeEur: 200,
+    importeReducidoEur: 100,
+    importeMaxEur: null,
+    puntos: null,
+    textoBoletin:
+      'Transportar la carga sin disponerla ni sujetarla debidamente, de forma que pueda arrastrar, ' +
+      'caer total o parcialmente, desplazarse de manera peligrosa o comprometer la estabilidad del ' +
+      'vehículo (art. 14 RGC). Es una de las causas más frecuentes de pérdida de carga en carretera. ' +
+      'Como infracción de circulación es grave; procede valorar la inmovilización hasta la reestiba.',
+    terminos: [
+      'carga suelta',
+      'carga mal atada',
+      'mercancia sin atar',
+      'sujecion de carga',
+      'carga sin amarrar',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que la carga quede correctamente ' +
+          'dispuesta y sujeta (reestiba), cuando su estado suponga un riesgo para la circulación.',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el precepto sancionador y la cuantía por supuesto. La DISPOSICIÓN DE LA CARGA es el ' +
+      'art. 14 del RGC (RD 1428/2003) —NO el art. 14 de la LSV, que regula el alcohol—: confirmado por ' +
+      'fuente oficial. Tras la revisión jurídica, la ficha modela la mala estiba como infracción de ' +
+      'CIRCULACIÓN (marco `trafico`), GRAVE de 200 € con pronto pago, que es la vía coherente con el ' +
+      'artículo citado. ALTERNATIVA a valorar por supuesto: si el hecho se persigue por la vía del ' +
+      'TRANSPORTE (LOTT / RD 563/2017 sobre control de la sujeción de la carga en carretera), la ' +
+      'clasificación y la cuantía cambian (horquilla, no cifra fija). La inmovilización hasta reestiba ' +
+      'es la medida operativa habitual. A VERIFICAR los puntos DGT (el seed no fija). Revisar.',
+  }),
+  // --- Transporte pesado: mercancías peligrosas / ADR (LOTT muy grave, marco `transporte`) ----
+  construirInfraccion({
+    id: 'inf-adr-mercancias-peligrosas',
+    articulo: ART_LOTT_MMPP,
+    tituloCorto: 'Mercancías peligrosas: incumplimiento del ADR',
+    gravedad: 'muy_grave',
+    // Horquilla del tramo alto del muy grave ADR (4.001–6.000 €): NO es cifra fija. Se pinta como
+    // rango, sin énfasis (GC I1). El revisor jurídico sitúa el ADR general (art. 140.15) en el tramo
+    // alto; con reincidencia en 12 meses sube (6.001–18.000 €, fuera del rango del validador, ver nota).
+    importeEur: 4001,
+    importeReducidoEur: null,
+    importeMaxEur: 6000,
+    puntos: null,
+    textoBoletin:
+      'Transportar mercancías peligrosas incumpliendo las condiciones del ADR: sin los paneles ' +
+      'naranjas ni las etiquetas de peligro reglamentarias, sin la carta de porte con los datos de la ' +
+      'mercancía (número ONU), o sin la autorización, la formación del conductor (certificado ADR) o ' +
+      'los equipos de seguridad obligatorios. Es infracción muy grave de la LOTT, sancionable con ' +
+      'multa y precinto/inmovilización del vehículo. La valoración final corresponde a la autoridad ' +
+      'competente.',
+    terminos: [
+      'adr',
+      'mercancias peligrosas',
+      'camion de peligrosas',
+      'paneles naranjas',
+      'numero onu',
+      'carta de porte adr',
+      'sin adr',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo hasta que se subsane el ' +
+          'incumplimiento del ADR, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, RD 1211/1990)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el importe, la clasificación y el PRECEPTO exactos contra el texto consolidado de la ' +
+      'LOTT (arts. 140-143, reformada por la Ley 13/2021), su reglamento (RD 1211/1990), el RD 97/2014 ' +
+      '(que desarrolla en España el transporte de mercancías peligrosas por carretera) y el propio ADR ' +
+      'vigente. El artículo citado ("140 mercancías peligrosas") es una REFERENCIA al bloque de ' +
+      'infracciones muy graves del art. 140.15 LOTT y sus subapartados (p. ej. 140.15.5 paneles/' +
+      'etiquetas, 140.15.8 carta de porte, 140.15.3 certificado de aprobación): A VERIFICAR el ' +
+      'subapartado/letra concreto por supuesto. El seed ancla el tramo ALTO del muy grave ' +
+      '(4.001–6.000 €), donde el revisor sitúa el ADR general; con REINCIDENCIA en 12 meses la cuantía ' +
+      'sube a 6.001–18.000 € (fuera del rango del validador `transporte`, por eso solo se anota, no se ' +
+      'modela como importe). Distinguir los distintos incumplimientos (paneles, carta de porte, ' +
+      'formación, cisterna). El precinto/inmovilización es la medida operativa habitual. Revisar.',
   }),
   construirInfraccion({
     id: 'inf-adelantamiento-antirreglamentario',

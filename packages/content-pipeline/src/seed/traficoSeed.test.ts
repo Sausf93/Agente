@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 21 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(21);
+  it('siembra 26 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(26);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -165,6 +165,136 @@ describe('SEED_TRAFICO: alcohol y drogas usan su marco de importe propio', () =>
       (i) => i.infraccion.id === 'inf-exceso-velocidad',
     );
     expect(velocidad!.marcoImporte).toBe('velocidad');
+  });
+});
+
+describe('SEED_TRAFICO: nuevos delitos de tráfico (velocidad 379.1 y sin permiso 384)', () => {
+  const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+
+  // La app deriva `fichaKind: 'penal'` de `tipo === 'penal' || gravedad === 'delito'`
+  // (ficha.ts `fichaKindFrom`). Aquí afirmamos esas propiedades: son las que disparan la forma
+  // penal (bloque "Marco penal" + árbol de detención) en lugar de tiles de importe/puntos.
+  it('las dos penales tienen tipo penal + gravedad delito (→ fichaKind penal), sin importe', () => {
+    for (const id of ['del-velocidad-penal', 'del-conduccion-sin-permiso']) {
+      const item = find(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('penal');
+      expect(item!.infraccion.gravedad, id).toBe('delito');
+      expect(item!.infraccion.importeEur, id).toBeNull();
+      expect(item!.marcoImporte, id).toBe('penal');
+      expect(item!.infraccion.penaTexto, id).toBeTruthy();
+    }
+  });
+
+  it('las dos penales disparan detención ORIENTATIVA con la regla del motor (árbol + derechos)', () => {
+    for (const id of ['del-velocidad-penal', 'del-conduccion-sin-permiso']) {
+      const item = find(id);
+      const det = item!.consecuencias.find((c) => c.tipo === 'detencion');
+      expect(det, id).toBeDefined();
+      // Lenguaje orientativo, nunca imperativo (CLAUDE.md §4.6).
+      expect(det!.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+      expect(det!.textoCorto.toLowerCase(), id).not.toMatch(/\bdeten\b|\bdetén\b/);
+      const regla = det!.regla as Record<string, unknown>;
+      expect(regla.motor, id).toBe('detencion');
+      expect(regla.gravedadCp, id).toBe('menos_grave');
+      expect(regla.orientacionBase, id).toBe('procede');
+    }
+  });
+
+  it('citan su artículo penal (379.1 y 384) y marcan la frontera con la administrativa', () => {
+    const velocidad = find('del-velocidad-penal')!;
+    const artVel = SEED_TRAFICO.articulos.find((a) => a.id === velocidad.infraccion.articuloId);
+    expect(artVel!.numero).toBe('379.1');
+    expect(velocidad.infraccion.textoBoletin).toMatch(/60 km\/h|80 km\/h/);
+    expect(velocidad.infraccion.textoBoletin.toLowerCase()).toMatch(/atestado/);
+
+    const sinPermiso = find('del-conduccion-sin-permiso')!;
+    const artSp = SEED_TRAFICO.articulos.find((a) => a.id === sinPermiso.infraccion.articuloId);
+    expect(artSp!.numero).toBe('384');
+    // Los tres supuestos del art. 384 CP y la frontera con el art. 77 LSV administrativo.
+    expect(sinPermiso.infraccion.textoBoletin.toLowerCase()).toMatch(/art\. 77 lsv/i);
+    expect(sinPermiso.infraccion.penaTexto).toMatch(/384/);
+  });
+});
+
+describe('SEED_TRAFICO: transporte pesado (LOTT, marco transporte)', () => {
+  // Solo LOTT: exceso de masa y ADR. La mala estiba (`inf-sujecion-carga`) se modela por la vía de
+  // circulación (marco `trafico`), no por transporte (revisor jurídico: RGC art. 14 → LSV grave 200 €).
+  const idsTransporte = ['inf-exceso-mma', 'inf-adr-mercancias-peligrosas'];
+
+  it('cada una es administrativa del marco transporte, con inmovilización y horquilla', () => {
+    for (const id of idsTransporte) {
+      const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('administrativa');
+      expect(item!.marcoImporte, id).toBe('transporte');
+      // Medida operativa determinante: inmovilización/precinto, con lenguaje orientativo.
+      const inmov = item!.consecuencias.find((c) => c.tipo === 'inmovilizacion');
+      expect(inmov, id).toBeDefined();
+      expect(inmov!.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+      // Importe como HORQUILLA (no cifra fija): importeMaxEur presente y >= mínimo.
+      expect(item!.infraccion.importeMaxEur, id).not.toBeNull();
+      expect(item!.infraccion.importeMaxEur!, id).toBeGreaterThanOrEqual(item!.infraccion.importeEur!);
+    }
+  });
+
+  it('sus importes caen en el rango legal del marco transporte', () => {
+    for (const id of idsTransporte) {
+      const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id)!;
+      expect(validarImporte(item.infraccion, 'transporte'), id).toEqual([]);
+    }
+  });
+});
+
+describe('SEED_TRAFICO: carga mal estibada (circulación, marco trafico)', () => {
+  it('es infracción de circulación grave con cifra fija (no horquilla de transporte)', () => {
+    const item = SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === 'inf-sujecion-carga');
+    expect(item).toBeDefined();
+    expect(item!.infraccion.tipo).toBe('administrativa');
+    expect(item!.marcoImporte).toBe('trafico');
+    expect(item!.infraccion.gravedad).toBe('grave');
+    // Cifra fija (con pronto pago), NO horquilla de transporte.
+    expect(item!.infraccion.importeMaxEur).toBeNull();
+    expect(item!.infraccion.importeEur).toBe(200);
+    expect(item!.infraccion.importeReducidoEur).toBe(100);
+    // Sigue llevando la inmovilización orientativa hasta la reestiba.
+    const inmov = item!.consecuencias.find((c) => c.tipo === 'inmovilizacion');
+    expect(inmov).toBeDefined();
+    expect(validarImporte(item!.infraccion, 'trafico')).toEqual([]);
+  });
+});
+
+describe('SEED_TRAFICO: los sinónimos clave resuelven a su ficha', () => {
+  // Sinónimos que el buscador debe llevar a la ficha correcta. Comprobamos que la ficha OWNER
+  // lleva el término. NOTA: «conducir sin puntos» es un término AMBIGUO que también sembró la
+  // administrativa `inf-sin-permiso` (art. 77 LSV): es correcto que surja en ambas (el agente
+  // decide si perdió todos los puntos —delito 384— o solo caducó), por eso aquí verificamos
+  // PERTENENCIA, no exclusividad.
+  const owner = (id: string) =>
+    SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id)!.sinonimos.map((s) => s.termino);
+
+  it.each([
+    ['iba a 200', 'del-velocidad-penal'],
+    ['conducir sin puntos', 'del-conduccion-sin-permiso'],
+    ['sobrecargado', 'inf-exceso-mma'],
+    ['carga suelta', 'inf-sujecion-carga'],
+    ['adr', 'inf-adr-mercancias-peligrosas'],
+  ])('«%s» pertenece a %s', (termino, id) => {
+    expect(owner(id)).toContain(termino);
+  });
+
+  // Los términos NUEVOS y específicos de cada ficha SÍ son exclusivos (no los duplica otra ficha).
+  it.each([
+    ['iba a 200', 'del-velocidad-penal'],
+    ['384', 'del-conduccion-sin-permiso'],
+    ['sobrecargado', 'inf-exceso-mma'],
+    ['carga suelta', 'inf-sujecion-carga'],
+    ['adr', 'inf-adr-mercancias-peligrosas'],
+  ])('«%s» es exclusivo de %s', (termino, id) => {
+    const duenos = SEED_TRAFICO.infracciones
+      .filter((i) => i.sinonimos.some((s) => s.termino === termino))
+      .map((i) => i.infraccion.id);
+    expect(duenos).toEqual([id]);
   });
 });
 
