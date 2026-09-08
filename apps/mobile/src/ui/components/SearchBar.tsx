@@ -12,8 +12,9 @@ import { useReduceMotion } from '@/ui/motion';
  * Novedades de dinamismo:
  *  - `autoFocus` en arranque en frío: el teclado ya sube y el cursor está listo (01-ux F2).
  *  - PLACEHOLDER rotatorio con ejemplos "de calle" (fade cada ~3 s; estático con reduce-motion).
- *  - Botón de MICRÓFONO visible (44×44). La voz llega en un dev build (P2-15): de momento avisa
- *    "pronto" al pulsar, pero el hueco y la accesibilidad ya quedan listos.
+ *  - Botón de MICRÓFONO OCULTO por defecto: la voz llega en un dev build (P2-15). En la beta no se
+ *    pinta para no prometer algo que no está (promete-y-no-está resta). Se activa con `showMic`
+ *    (más `onMicPress`) el día que la búsqueda por voz exista de verdad.
  *
  * Alto 56 (`touch.searchHeight`), foco con anillo de 2 pt (`focusRing`) y botón "limpiar" 44×44.
  */
@@ -25,7 +26,9 @@ export interface SearchBarProps {
   examples?: string[];
   onSubmit?: () => void;
   autoFocus?: boolean;
-  /** Acción del micrófono. Si no se pasa, el botón avisa de que la voz aún no está disponible. */
+  /** Muestra el botón de micrófono (voz). Desactivado en la beta: la voz aún no existe (P2-15). */
+  showMic?: boolean;
+  /** Acción del micrófono. Solo relevante cuando `showMic` está activo. */
   onMicPress?: () => void;
 }
 
@@ -39,6 +42,7 @@ export function SearchBar({
   examples = EJEMPLOS_CALLE,
   onSubmit,
   autoFocus = false,
+  showMic = false,
   onMicPress,
 }: SearchBarProps) {
   const t = useAppTheme();
@@ -155,12 +159,11 @@ export function SearchBar({
             <X size={14} color={t.color.textSecondary} strokeWidth={2.4} />
           </View>
         </Pressable>
-      ) : (
+      ) : showMic ? (
+        // Micrófono OCULTO en la beta (voz aún no disponible): solo se pinta con `showMic`.
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Búsqueda por voz"
-          accessibilityHint="La búsqueda por voz llega en la próxima versión"
-          accessibilityState={{ disabled: true }}
           onPress={onMic}
           hitSlop={8}
           style={{
@@ -172,7 +175,7 @@ export function SearchBar({
         >
           <Mic size={20} color={t.color.textTertiary} strokeWidth={2} />
         </Pressable>
-      )}
+      ) : null}
     </View>
   );
 }

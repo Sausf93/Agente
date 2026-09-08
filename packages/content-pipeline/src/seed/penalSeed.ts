@@ -1137,6 +1137,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     terminos: [
       'omision de socorro',
       'se dio a la fuga',
+      'se piro tras el golpe',
       'fuga tras atropello',
       'no auxilio',
       'dejar tirado a un herido',
@@ -1179,6 +1180,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'arma de fuego',
       'pistola',
       'fusca',
+      'hierro',
       'escopeta sin guia',
       'sin licencia de armas',
       'tenencia ilicita de armas',

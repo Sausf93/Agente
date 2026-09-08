@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Alert, FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -87,10 +87,6 @@ export function BuscadorScreen() {
     router.push(`/normas/articulo/${encodeURIComponent(id)}`);
   }
 
-  function avisoVoz() {
-    Alert.alert('Búsqueda por voz', 'Llega en la próxima versión. De momento, escribe tu búsqueda.');
-  }
-
   // Inicio (§4.2) cuando NO hay búsqueda activa: accesos rápidos, turno, favoritas, más usadas y
   // novedades. En cuanto el agente escribe algo, la pantalla pasa a los resultados del buscador.
   const enInicio = consulta.trim().length === 0;
@@ -98,11 +94,11 @@ export function BuscadorScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: t.color.bg }}>
       <ScreenHeader title="Buscar">
+        {/* Sin micrófono en la beta: la búsqueda por voz aún no existe (P2-15) y prometerla resta. */}
         <SearchBar
           value={consulta}
           onChangeText={setConsulta}
           autoFocus={autoFocusInicial}
-          onMicPress={avisoVoz}
         />
       </ScreenHeader>
 

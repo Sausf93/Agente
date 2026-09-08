@@ -69,9 +69,9 @@ import {
  * consecuencias detalladas con su fuente (§4.6, orientativas), competencia, artículo completo
  * (desplegable) + enlace al BOE, y el pie "Actualizado el… · Fuente".
  *
- * Si la infracción está `pendiente_revision`, muestra un distintivo DISCRETO "En revisión" (el
- * contenido está en beta; su verificación es una decisión legal humana) y, si la hay, la nota de
- * qué confirmar en tono informativo (contrato del pipeline, §8.2/8.3).
+ * Si la infracción está `pendiente_revision`, muestra un distintivo DISCRETO "Borrador beta" y un
+ * banner que da CONFIANZA (cotejado con la fuente, pendiente de 2ª revisión), no que la reste: el
+ * contenido está en beta y su verificación final es una decisión legal humana.
  */
 export interface FichaScreenProps {
   infraccionId: string;
@@ -285,7 +285,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
               <Badge label={TIPO_LABEL[ficha.tipo]} tone="neutral" />
             </>
           )}
-          {pendiente ? <Badge label="En revisión" tone="neutral" /> : null}
+          {pendiente ? <Badge label="Borrador beta" tone="neutral" /> : null}
         </View>
       </View>
 
@@ -487,11 +487,17 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         ) : null}
       </View>
 
-      {/* Nota de revisión, si procede. Tono INFORMATIVO (no de alarma): el contenido está en beta
-          y su verificación es una decisión legal humana; bajamos el ruido visual sin ocultarlo. */}
-      {pendiente && ficha.notaRevision ? (
-        <Banner tone="info" title="Contenido en revisión">
-          {ficha.notaRevision}
+      {/* Distintivo de BETA que da CONFIANZA en vez de restarla (pulido pre-beta, validación GC): un
+          "En revisión" a secas hacía dudar del dato para un boletín, aunque la ficha SÍ lleva
+          artículo fuente + fecha (arriba y al pie). El mensaje es honesto —cotejado con la fuente,
+          pendiente de 2ª revisión— y enlaza con el botón "¿Ves algo mal?" del pie. NO afirma
+          "verificado": la aprobación final es una decisión legal humana. La `notaRevision` es una
+          nota interna de QA (contrato del pipeline, §8.2/8.3) que no se vuelca cruda al agente. */}
+      {pendiente ? (
+        <Banner tone="info" title="Borrador beta">
+          Cotejado con el BOE (tienes el artículo y la fecha a la vista, arriba y al pie); pendiente
+          de una segunda revisión antes de publicarlo. Si ves algo que no cuadre, avísanos con el
+          botón de aquí abajo.
         </Banner>
       ) : null}
 
@@ -519,7 +525,7 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
 /**
  * Acción DISCRETA al pie de la ficha para reportar un dato incorrecto. Abre `app/feedback.tsx`
  * con el tipo `error_contenido` ya elegido y el contexto de la infracción (ver `reportarError.ts`).
- * Tono cercano y orientativo, en línea con el badge "En revisión".
+ * Tono cercano y orientativo, en línea con el badge/banner "Borrador beta".
  */
 function ReportarError({ t, infraccionId }: { t: Theme; infraccionId: string }) {
   const router = useRouter();

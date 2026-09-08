@@ -589,6 +589,7 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'costo',
       'maria',
       'hachis',
+      'china',
       'cocaina en la calle',
       'esnifando',
       'droga para consumo propio',

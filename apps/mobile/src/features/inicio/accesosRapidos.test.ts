@@ -21,6 +21,9 @@ describe('accesosRapidosPara', () => {
   it('Guardia Civil usa su set propio (carretera + tacógrafo/extranjería/derechos), no solo tráfico', () => {
     const accesos = accesosRapidosPara('guardia_civil');
     expect(accesos).toEqual([...ACCESOS_GUARDIA_CIVIL]);
+    // Lo que MÁS consulta un Tráfico, arriba del todo (validación de calle GC):
+    expect(labels(accesos)).toContain('Velocidad');
+    expect(labels(accesos)).toContain('Móvil');
     // Lo que GC echaba de menos en el set genérico de tráfico:
     expect(labels(accesos)).toContain('Tacógrafo');
     expect(labels(accesos)).toContain('Extranjería');
@@ -28,6 +31,11 @@ describe('accesosRapidosPara', () => {
     expect(labels(accesos)).toContain('Identificación');
     // Sin dejar de ser de carretera:
     expect(labels(accesos)).toContain('Alcoholemia');
+    // Velocidad teclea el término de la ficha de exceso de velocidad; móvil, su propia etiqueta.
+    const velocidad = ACCESOS_GUARDIA_CIVIL.find((a) => a.label === 'Velocidad');
+    expect(velocidad?.destino).toEqual({ tipo: 'buscar', valor: 'exceso de velocidad' });
+    const movil = ACCESOS_GUARDIA_CIVIL.find((a) => a.label === 'Móvil');
+    expect(movil?.destino).toEqual({ tipo: 'buscar', valor: 'Móvil' });
   });
 
   it('Policía Nacional NO ve accesos de tráfico, sino seguridad ciudadana/penal (con extranjería)', () => {

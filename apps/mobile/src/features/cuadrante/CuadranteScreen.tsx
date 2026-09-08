@@ -425,6 +425,16 @@ function Onboarding({ t, insets }: { t: Theme; insets: { bottom: number } }) {
           </Text>
         </Pressable>
 
+        {/* Aviso VISIBLE de la jornada de referencia (validación de calle GC): que no salga un
+            "exceso" cantado sin que el agente sepa que la referencia es 37,5 h y que puede cambiarla.
+            Va FUERA del acordeón cerrado; el detalle y el campo editable están dentro. */}
+        {!ajustesAbiertos ? (
+          <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+            Jornada de referencia: {jornada.replace('.', ',')} h/semana. No todos los cuerpos son
+            37,5 h — ábrela para ajustarla a la tuya.
+          </Text>
+        ) : null}
+
         {ajustesAbiertos ? (
           <View style={{ gap: t.spacing.md, paddingLeft: t.spacing.lg }}>
             <View style={{ gap: t.spacing.xs }}>
@@ -936,8 +946,37 @@ function ResumenHoras({
   resumen: ReturnType<typeof resumenHorasMes>;
   franja: FranjaNocturna;
 }) {
+  const cambiarJornada = useCuadranteStore((s) => s.cambiarJornada);
   const signo = resumen.exceso > 0 ? '+' : '';
   const excesoTone = resumen.exceso > 0 ? 'warning' : 'success';
+  // Editor INLINE de la jornada de referencia (validación de calle GC): el "exceso" se calcula sobre
+  // esta cifra (37,5 h por defecto). No todos los cuerpos son 37,5 h → el agente debe poder ver de
+  // dónde sale el número y cambiarlo sin salir del cuadrante (offline, sin rehacer el onboarding).
+  const [editando, setEditando] = useState(false);
+  const [jornadaInput, setJornadaInput] = useState(String(resumen.horasReferencia).replace('.', ','));
+  const [guardando, setGuardando] = useState(false);
+  const jornadaNum = Number(jornadaInput.replace(',', '.'));
+  const jornadaOk = Number.isFinite(jornadaNum) && jornadaNum > 0;
+
+  function abrirEditor() {
+    hapticSelection();
+    setJornadaInput(String(resumen.horasReferencia).replace('.', ','));
+    setEditando(true);
+  }
+
+  async function guardarJornada() {
+    if (!jornadaOk || guardando) return;
+    setGuardando(true);
+    try {
+      await cambiarJornada(jornadaNum);
+      hapticSuccess();
+      setEditando(false);
+    } catch {
+      Alert.alert('No se pudo guardar', 'Revisa la jornada (horas por semana).');
+    } finally {
+      setGuardando(false);
+    }
+  }
   // Franja nocturna en uso (config del cuadrante; default 22:00–06:00 del esquema). Etiqueta
   // la cifra de nocturnas para que el agente sepa QUÉ tramo se está contando en su nómina.
   const inicio = franja?.inicio ?? '22:00';
@@ -975,6 +1014,41 @@ function ResumenHoras({
         </Text>
         <Badge label={`${signo}${resumen.exceso} h`} tone={excesoTone} />
       </View>
+
+      {/* Enlace DISCRETO para que el exceso nunca salga "cantado" sin saber de dónde sale ni cómo
+          cambiarlo (validación GC). Abre un editor INLINE de la jornada de referencia. */}
+      {editando ? (
+        <View style={{ marginTop: t.spacing.sm, gap: t.spacing.xs }}>
+          <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+            Jornada de referencia (h/semana). El exceso se calcula sobre esta cifra; no todos los
+            cuerpos son 37,5 h.
+          </Text>
+          <View style={{ flexDirection: 'row', gap: t.spacing.sm, alignItems: 'center' }}>
+            <TextInput
+              accessibilityLabel="Jornada de referencia en horas por semana"
+              value={jornadaInput}
+              onChangeText={setJornadaInput}
+              keyboardType="decimal-pad"
+              placeholder="37,5"
+              placeholderTextColor={t.color.textTertiary}
+              style={[campoStyle(t, jornadaOk), { flex: 1 }]}
+            />
+            <Button title="Guardar" onPress={guardarJornada} disabled={!jornadaOk || guardando} />
+          </View>
+        </View>
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Ajustar la jornada de referencia"
+          accessibilityHint="El exceso se calcula sobre esta jornada"
+          onPress={abrirEditor}
+          style={{ minHeight: t.touch.min, justifyContent: 'center' }}
+        >
+          <Text style={{ color: t.color.brand, ...t.typography.scale.caption, fontWeight: '600' }}>
+            ¿No es tu jornada? Ajústala
+          </Text>
+        </Pressable>
+      )}
       {resumen.horasDisponibilidad > 0 ? (
         <View
           style={{

@@ -87,10 +87,15 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
 
 /**
  * Accesos de GUARDIA CIVIL: carretera (su oficio) + lo que un guardia echaba de menos en el set
- * genérico de tráfico (validación de calle GC): la frontera de la alcoholemia, el tacógrafo, la
- * identificación, la extranjería en carretera y la lectura de derechos. No es solo "multas de coche".
+ * genérico de tráfico (validación de calle GC). ARRIBA lo que MÁS consulta un Tráfico: velocidad
+ * (la nº 1) y móvil (la nº 4); luego la alcoholemia, el seguro, el tacógrafo, la extranjería en
+ * carretera, la identificación y la lectura de derechos. No es solo "multas de coche".
+ * `Velocidad` teclea 'exceso de velocidad' (término de la ficha `inf-exceso-velocidad`, que también
+ * responde a 'radar'/'corriendo'/'velocidad'); `Móvil` resuelve `inf-movil-conduciendo`.
  */
 export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
+  buscar('Velocidad', 'exceso de velocidad'),
+  buscar('Móvil'),
   buscar('Alcoholemia'),
   buscar('Sin seguro'),
   buscar('Tacógrafo', 'tacografo'),
@@ -105,7 +110,8 @@ export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
  *  - Policía Local: tráfico urbano + convivencia (zona azul, patinete).
  *  - Policía Autonómica: OCIO/actividades clasificadas si su CCAA trae normativa autonómica cargada
  *    (`tieneContenidoAutonomico`); si no, set genérico de seguridad ciudadana — NUNCA tráfico.
- *  - Guardia Civil: carretera + tacógrafo/extranjería/identificación/derechos (no solo tráfico).
+ *  - Guardia Civil: carretera con velocidad y móvil arriba (lo más consultado por Tráfico) +
+ *    tacógrafo/extranjería/identificación/derechos (no solo tráfico).
  *  - Sin cuerpo: tráfico por defecto.
  */
 export function accesosRapidosPara(
