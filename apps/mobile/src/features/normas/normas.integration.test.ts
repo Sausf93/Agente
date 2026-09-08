@@ -143,6 +143,44 @@ suite('normas contra el paquete real', () => {
     expect(normas.some((n) => n.codigo === 'RGC')).toBe(true);
   });
 
+  // T-5: un LOCAL canario (CCAA + provincia + municipio) ve SIMULTÁNEAMENTE las TRES capas: lo
+  // estatal (RGC), su ordenanza municipal (SCTF) y las leyes autonómicas canarias (CAN-*).
+  it('T-5 · un Local de SCTF ve a la vez lo estatal (RGC), su ordenanza (SCTF) y lo autonómico (CAN-*)', async () => {
+    const normas = await listarNormas(runner, CADENA_SCTF);
+    // Estatal.
+    expect(normas.some((n) => n.codigo === 'RGC' && n.ambito === 'estatal')).toBe(true);
+    // Municipal (ordenanza del propio municipio).
+    expect(
+      normas.some(
+        (n) => n.ambito === 'municipal' && n.territorioId === 'mun-santa-cruz-de-tenerife',
+      ),
+    ).toBe(true);
+    // Autonómico (leyes canarias CAN-*).
+    expect(
+      normas.some(
+        (n) =>
+          n.codigo.startsWith('CAN-') && n.ambito === 'autonomico' && n.territorioId === 'es-ccaa-05',
+      ),
+    ).toBe(true);
+  });
+
+  // T-6: fuga cruzada. Autonómico y municipal son capas INDEPENDIENTES.
+  it('T-6 · Madrid con municipio propio NO ve CAN-* ni la ordenanza de SCTF', async () => {
+    const normas = await listarNormas(runner, CADENA_MADRID);
+    expect(normas.some((n) => n.codigo.startsWith('CAN-'))).toBe(false);
+    expect(normas.some((n) => n.territorioId === 'mun-santa-cruz-de-tenerife')).toBe(false);
+    expect(normas.some((n) => n.codigo === 'RGC')).toBe(true);
+  });
+
+  it('T-6 · un canario SIN municipio ve CAN-* pero NO la ordenanza municipal de SCTF', async () => {
+    const normas = await listarNormas(runner, CADENA_CANARIAS);
+    // Ve lo autonómico canario.
+    expect(normas.some((n) => n.codigo.startsWith('CAN-'))).toBe(true);
+    // Pero NO la ordenanza municipal de SCTF (no tiene municipio en su cadena).
+    expect(normas.some((n) => n.territorioId === 'mun-santa-cruz-de-tenerife')).toBe(false);
+    expect(normas.every((n) => n.ambito !== 'municipal')).toBe(true);
+  });
+
   // Honestidad de la capa AUTONÓMICA (Task 4): `listarCcaaConContenido` expone SOLO las CCAA con
   // normativa autonómica sembrada (piloto: Canarias). Una CCAA que no está en la lista es el estado
   // "no disponible → solicitar la normativa de mi comunidad" (banner honesto), no un vacío mudo.

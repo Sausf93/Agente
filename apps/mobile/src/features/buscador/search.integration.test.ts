@@ -59,11 +59,12 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
     expect(res[0]?.porSinonimoExacto).toBe(true);
   });
 
-  it('"sin seguro" → ficha con inmovilización', async () => {
+  it('"sin seguro" → ficha con inmovilización y depósito (grúa)', async () => {
     const res = await buscarInfracciones(runner, 'sin seguro');
     expect(res[0]?.infraccionId).toBe('inf-sin-seguro');
-    // La fila del buscador ya trae la pista de consecuencia determinante (chip inline, P0-4).
-    expect(res[0]?.pista).toEqual({ tipo: 'inmovilizacion', peligro: false });
+    // La fila del buscador trae la pista de consecuencia DETERMINANTE (chip inline, P0-4). Con el
+    // ORDEN_COERCION compartido (QA B-1), la grúa/depósito pesa por encima de la inmovilización.
+    expect(res[0]?.pista).toEqual({ tipo: 'deposito', peligro: false });
 
     const ficha = await cargarFicha(runner, 'inf-sin-seguro');
     expect(ficha).not.toBeNull();
@@ -263,5 +264,36 @@ suite('buscador: filtro territorial de la capa autonómica (Canarias)', () => {
     const tiles = tilesFicha(ficha!, formatEuros);
     expect(tiles.some((x) => x.etiqueta === 'Multa' && /–/.test(x.valor))).toBe(true);
     expect(tiles.some((x) => x.enfasis)).toBe(false);
+  });
+});
+
+/**
+ * T-5/T-6 (espejo en el BUSCADOR): un Local canario (CCAA + provincia + municipio) alcanza las TRES
+ * capas —estatal, municipal (SCTF) y autonómica (CAN-*)— desde el buscador; un canario SIN municipio
+ * ve lo autonómico pero NO la ordenanza municipal. Autonómico y municipal son capas independientes.
+ */
+suite('buscador: T-5/T-6 · convivencia de capas estatal + municipal + autonómica', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  const CADENA_SCTF = ['es-ccaa-05', 'es-prov-38', 'mun-santa-cruz-de-tenerife'];
+  const CADENA_CANARIAS = ['es-ccaa-05'];
+
+  it('T-5 · un Local de SCTF alcanza lo estatal, su ordenanza y lo autonómico canario', async () => {
+    // Estatal (RGC): "sin seguro" → inf-sin-seguro.
+    const estatal = await buscarTodo(runner, 'sin seguro', CADENA_SCTF);
+    expect(estatal.infracciones.some((r) => r.infraccionId === 'inf-sin-seguro')).toBe(true);
+    // Municipal (ordenanza SCTF): "perro suelto" → ord-sctf-perro-suelto.
+    const municipal = await buscarTodo(runner, 'perro suelto', CADENA_SCTF);
+    expect(municipal.infracciones.some((r) => r.infraccionId === 'ord-sctf-perro-suelto')).toBe(true);
+    // Autonómico (Ley 7/2011 Canarias): "ocio nocturno" → can-esp-*.
+    const autonomico = await buscarTodo(runner, 'ocio nocturno', CADENA_SCTF);
+    expect(autonomico.infracciones.some((r) => r.infraccionId.startsWith('can-esp-'))).toBe(true);
+  });
+
+  it('T-6 · un canario SIN municipio ve lo autonómico (CAN-*) pero NO la ordenanza de SCTF', async () => {
+    const autonomico = await buscarTodo(runner, 'ocio nocturno', CADENA_CANARIAS);
+    expect(autonomico.infracciones.some((r) => r.infraccionId.startsWith('can-esp-'))).toBe(true);
+    const municipal = await buscarTodo(runner, 'perro suelto', CADENA_CANARIAS);
+    expect(municipal.infracciones.every((r) => !r.infraccionId.startsWith('ord-sctf-'))).toBe(true);
   });
 });

@@ -10,6 +10,8 @@ import { SEED_TRAFICO } from '../seed/traficoSeed.js';
 import { SEED_PENAL } from '../seed/penalSeed.js';
 import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
 import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
+import { SEED_ORDENANZAS } from '../seed/ordenanzasSeed.js';
+import { SEED_AUTONOMICO_CANARIAS } from '../seed/autonomicoCanariasSeed.js';
 
 /**
  * Test de INTEGRACIÓN del contenido "de calle": combina todos los seeds (sin red, sin BOE),
@@ -24,11 +26,15 @@ let db: DatabaseSync;
 beforeAll(() => {
   dir = mkdtempSync(join(tmpdir(), 'agente-calle-'));
   const ruta = join(dir, 'contenido-calle.sqlite');
+  // Se combinan TODOS los seeds que empaqueta el CLI, incluidas las capas MUNICIPAL (ordenanzas) y
+  // AUTONÓMICA (Canarias), para que el buscador del test cubra el ocio nocturno y las licencias (T-7).
   const contenido = combinarSeeds(
     SEED_TRAFICO,
     SEED_PENAL,
     SEED_SEGURIDAD_CIUDADANA,
     SEED_EXTRANJERIA_LOCAL,
+    SEED_ORDENANZAS,
+    SEED_AUTONOMICO_CANARIAS,
   );
   construirPaquete(contenido, {
     rutaSalida: ruta,
@@ -74,6 +80,9 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     ['se resiste', 'del-resistencia-desobediencia'],
     ['estafa', 'del-estafa'],
     ['identificacion', 'sc-identificacion-requerimiento'],
+    // T-7: capa AUTONÓMICA (Ley 7/2011 de Canarias) resuelta contra el `.db` construido en el test.
+    ['ocio nocturno', 'can-esp-horario-cierre'],
+    ['sin licencia', 'can-esp-sin-licencia'],
   ];
 
   for (const [consulta, esperado] of casos) {

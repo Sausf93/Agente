@@ -213,9 +213,11 @@ const ART_CP_557 = articuloCp({
     'sobre las cosas, o amenacen con llevarlos a cabo: prisión de seis meses a tres años. La ' +
     'modalidad AGRAVADA del art. 557.2 se aprecia cuando los hechos se cometen en el seno de una ' +
     'multitud o grupo numeroso idóneo para afectar gravemente el orden público, o cuando el ' +
-    'culpable se prevalga de esa situación: prisión de tres a cinco años. Los tipos del art. 557 bis ' +
-    '(porte de armas u objetos peligrosos, actos de violencia con peligro para la vida o la ' +
-    'integridad, etc.) elevan la pena. La alteración de menor entidad puede ser infracción ' +
+    'culpable se prevalga de esa situación: prisión de tres a cinco años. El subtipo AGRAVADO del ' +
+    'art. 557.3 (llevar armas u otros instrumentos peligrosos, o cometer actos de pillaje) eleva la ' +
+    'pena (redacción de la LO 14/2022). El art. 557 bis, tras esa reforma, castiga aparte la ' +
+    'invasión u ocupación en grupo del domicilio de una persona jurídica, despacho, oficina, ' +
+    'establecimiento o local. La alteración de menor entidad puede ser infracción ' +
     'administrativa (art. 36.1/36.3 LO 4/2015). Resumen orientativo; consúltese el texto ' +
     'consolidado en el BOE.',
 });
@@ -761,9 +763,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'actos de violencia o intimidación) → prisión de 6 meses a 3 años → MENOS GRAVE; la modalidad ' +
       'AGRAVADA del art. 557.2 (hechos cometidos en el seno de una multitud o grupo numeroso idóneo ' +
       'para afectar gravemente el orden público, o prevaliéndose de ella) → prisión de 3 a 5 años → ' +
-      'GRAVE, lo que cambiaría la rama de detención. Los tipos del art. 557 bis (porte de armas u ' +
-      'objetos peligrosos, actos de violencia con peligro para la vida o la integridad) también ' +
-      'elevan la pena. DISTINGUIR de la infracción administrativa de desórdenes (art. 36.1/36.3 LO ' +
+      'GRAVE, lo que cambiaría la rama de detención. El subtipo AGRAVADO del art. 557.3 (llevar armas ' +
+      'u otros objetos peligrosos, o cometer actos de pillaje) también eleva la pena; OJO: tras la LO ' +
+      '14/2022 el art. 557 bis dejó de ser esa agravación y pasó a castigar la invasión u ocupación ' +
+      'en grupo del domicilio de una persona jurídica, despacho, oficina o local (cotejado con la LO ' +
+      '14/2022). DISTINGUIR de la infracción administrativa de desórdenes (art. 36.1/36.3 LO ' +
       '4/2015), que exige alteración grave de la seguridad ciudadana SIN llegar a delito. Confirmar ' +
       'penas y encaje contra el texto consolidado del CP con el revisor jurídico.',
   }),

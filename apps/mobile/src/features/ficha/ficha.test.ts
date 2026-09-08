@@ -238,6 +238,63 @@ describe('tilesFicha — "solo con valor" y adaptación por tipo', () => {
     // El importe (501 €) va DE-ENFATIZADO: nunca como tile de acento (enfasis).
     expect(tiles.some((x) => x.enfasis)).toBe(false);
   });
+
+  // GC I1: los marcos de TRÁFICO que NO son cifra fija (seguro obligatorio, transporte/tacógrafo,
+  // alcohol/drogas y el CUADRO de velocidad) llevan `importeMaxEur` y NO se pintan como cifra fija
+  // enfatizada: van como rango, sin énfasis, pero conservan puntos.
+  it('tráfico "seguro obligatorio" (601–3.005 €): rango SIN énfasis, no cifra fija', () => {
+    const ficha = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'muy_grave',
+      normaCodigo: 'LRCSCVM',
+      ambito: 'estatal',
+      importeEur: 601,
+      importeReducidoEur: null,
+      importeMaxEur: 3005,
+      puntos: 0,
+    });
+    expect(ficha.fichaKind).toBe('trafico');
+    const tiles = tilesFicha(ficha, formatEuros);
+    const importe = tiles.find((x) => x.etiqueta === 'Importe');
+    expect(importe?.valor).toBe('601–3.005 €');
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+  });
+
+  it('tráfico "exceso de velocidad" (cuadro 100–600 €): rango SIN énfasis, no cifra fija', () => {
+    const ficha = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'grave',
+      normaCodigo: 'RGC',
+      ambito: 'estatal',
+      importeEur: 100,
+      importeReducidoEur: 50,
+      importeMaxEur: 600,
+      puntos: null,
+    });
+    expect(ficha.fichaKind).toBe('trafico');
+    const tiles = tilesFicha(ficha, formatEuros);
+    const importe = tiles.find((x) => x.etiqueta === 'Importe');
+    expect(importe?.valor).toBe('100–600 €');
+    expect(importe?.enfasis).toBeUndefined();
+    expect(tiles.some((x) => x.enfasis)).toBe(false);
+    // Conserva el pronto pago (marco de tráfico), pero SIN énfasis en el importe.
+    expect(tiles.some((x) => x.etiqueta === 'Pronto pago')).toBe(true);
+  });
+
+  it('tráfico con multa fija REAL (importeMaxEur null): SÍ énfasis en el importe (contraste)', () => {
+    const ficha = fichaDe({
+      tipo: 'administrativa',
+      gravedad: 'grave',
+      normaCodigo: 'RGV',
+      ambito: 'estatal',
+      importeEur: 200,
+      importeReducidoEur: 100,
+      importeMaxEur: null,
+      puntos: 0,
+    });
+    expect(ficha.fichaKind).toBe('trafico');
+    expect(tilesFicha(ficha, formatEuros)[0]).toMatchObject({ etiqueta: 'Importe', enfasis: true });
+  });
 });
 
 /**
@@ -406,6 +463,46 @@ describe('accionOperativaFrom — qué hace el agente con el vehículo/persona',
       consecuencias: [{ tipo: 'identificacion', fuente: 'LO 4/2000 art. 53' }],
     });
     expect(`${a?.titulo} ${a?.detalle}`).toMatch(/LOEX/);
+  });
+
+  // T-2 (QA B-2): una ficha NO penal cuya única consecuencia sea `proteccion` NO puede caer al
+  // estado verde tranquilizador "la persona sigue · solo denuncia". Con protección de víctima el
+  // banner debe salir destacado (tono distinto de `positivo`) y con etiqueta de protección.
+  it('T-2 · protección de la víctima (sin detención): banner NO verde, etiqueta de protección', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'seguridad_ciudadana',
+      consecuencias: [{ tipo: 'proteccion', fuente: 'LO 1/2004 art. 61' }],
+    });
+    expect(a?.kind).toBe('proteccion');
+    expect(a?.tono).not.toBe('positivo');
+    expect(a?.titulo).toMatch(/protecci[oó]n de la v[ií]ctima/i);
+    expect(a?.fuente).toBe('LO 1/2004 art. 61');
+  });
+
+  it('la detención manda sobre la protección de la víctima (concurrencia en un delito de VG)', () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'penal',
+      consecuencias: cons('proteccion', 'detencion'),
+    });
+    expect(a?.kind).toBe('detencion');
+  });
+
+  // T-1 (QA B-1): la ficha elige el MISMO tipo determinante que la lista del buscador para los
+  // casos que antes divergían.
+  it("T-1 · ['deposito','inmovilizacion'] → la ficha elige depósito", () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'trafico',
+      consecuencias: cons('deposito', 'inmovilizacion'),
+    });
+    expect(a?.kind).toBe('deposito');
+  });
+
+  it("T-1 · ['decomiso','retirada_permiso'] → la ficha elige decomiso", () => {
+    const a = accionOperativaFrom({
+      fichaKind: 'trafico',
+      consecuencias: cons('decomiso', 'retirada_permiso'),
+    });
+    expect(a?.kind).toBe('decomiso');
   });
 });
 

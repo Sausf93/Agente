@@ -669,15 +669,18 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'okupacion',
       'han okupado un piso',
       'ocupar la calle',
-      'venta ambulante sin permiso',
-      'top manta',
       'permanencia contra la voluntad del dueño',
     ],
+    // NOTA (revisor): "top manta"/"venta ambulante sin permiso" NO cuelgan de la ocupación de
+    // inmueble del art. 37.7: son materia de ORDENANZA municipal (venta ambulante) y, cuando hay
+    // marca falsificada, del art. 274 CP (falsificación de marca). Se desligan de esta ficha para
+    // no dar un encaje jurídico erróneo; su ficha propia queda para otra ronda.
     notaRevision:
       NOTA_LEVE_IMPORTE +
       ' A VERIFICAR la frontera con los delitos de allanamiento de morada (art. 202 CP) y usurpación ' +
       '(art. 245 CP): la infracción administrativa cubre la ocupación/permanencia que NO sea delito. ' +
-      'Confirmar el encaje del caso con el revisor jurídico.',
+      'Confirmar el encaje del caso con el revisor jurídico. Desligados los sinónimos "top manta"/' +
+      '"venta ambulante sin permiso" (ordenanza municipal / art. 274 CP), que NO son ocupación de inmueble.',
   }),
   construirInfraccion({
     id: 'sc-reunion-no-comunicada',

@@ -1,5 +1,6 @@
 import {
   Competencia,
+  ORDEN_COERCION,
   VarianteBoletin,
   type Ambito,
   type EstadoRevision,
@@ -214,10 +215,20 @@ export function tilesFicha(
     ficha.fichaKind === 'seguridad_ciudadana' ||
     ficha.ambito === 'autonomico' ||
     ficha.ambito === 'municipal';
+  // TRÁFICO no fijo (GC I1): seguro obligatorio, transporte/tacógrafo, alcohol/drogas y el CUADRO
+  // de velocidad no son una cifra cerrada sino un rango/cuadro graduado. La señal que viaja es el
+  // `importeMaxEur` (extremo del tramo): cuando está relleno, la multa se pinta SIN énfasis y como
+  // rango, igual que la horquilla, pero se conservan puntos (no "Tramo"). Una multa fija REAL de
+  // tráfico (matrícula, ITV, RGC) deja `importeMaxEur` en null y mantiene el énfasis.
+  const traficoNoFijo = ficha.fichaKind === 'trafico' && ficha.importeMaxEur !== null;
+  const importeNoFijo = esHorquilla || traficoNoFijo;
   const tiles: TileFicha[] = [];
   if (ficha.importeEur !== null) {
-    if (esHorquilla) {
-      tiles.push({ etiqueta: 'Multa', valor: rangoImporte(ficha.importeEur, ficha.importeMaxEur, formatEuros) });
+    if (importeNoFijo) {
+      tiles.push({
+        etiqueta: esHorquilla ? 'Multa' : 'Importe',
+        valor: rangoImporte(ficha.importeEur, ficha.importeMaxEur, formatEuros),
+      });
     } else {
       tiles.push({ etiqueta: 'Importe', valor: formatEuros(ficha.importeEur), enfasis: true });
     }
@@ -255,11 +266,13 @@ function rangoImporte(
  * agente en el arcén o la vía no es el importe, sino QUÉ HACE con el vehículo o la persona. Se
  * deriva del set de `consecuencias` de la ficha y se pinta ARRIBA DEL TODO como un chip grande.
  *
- * Reglas (de más a menos coercitiva; gana la primera que aparezca):
- *  detención → cese de actividad/desalojo/precinto → depósito/grúa → inmovilización → decomiso →
- *  retirada de permiso.
+ * Reglas (de más a menos coercitiva; gana la primera que aparezca): el orden es el
+ * `ORDEN_COERCION` COMPARTIDO de `@agente/shared` (fuente única, QA B-1):
+ *  detención → protección de la víctima → cese de actividad/desalojo/precinto → depósito/grúa →
+ *  inmovilización → decomiso → retirada de permiso.
  * (El `cese_actividad` es una medida ADMINISTRATIVA, no sancionadora ni coercitiva sobre persona/
- * vehículo, pero es lo DETERMINANTE en el ocio: sube destacado, por encima de la multa.)
+ * vehículo, pero es lo DETERMINANTE en el ocio: sube destacado, por encima de la multa. La
+ * `proteccion` de la víctima nunca cae al estado verde tranquilizador: QA B-2.)
  * Si NO hay ninguna medida coercitiva:
  *  - ficha `penal`: `null` (manda el bloque penal; no forzamos un "sigue" que sería falso).
  *  - resto: estado POSITIVO explícito `sigue`, tan visible como el rojo para que el agente no tenga
@@ -279,6 +292,7 @@ export type AccionOperativaKind =
   | 'retirada'
   | 'identificacion'
   | 'cese_actividad'
+  | 'proteccion'
   | 'detencion';
 
 export interface AccionOperativa {
@@ -297,26 +311,35 @@ export interface AccionOperativa {
 }
 
 /**
- * Orden de prioridad: la medida más determinante manda sobre el resto si concurren varias. Cada
- * entrada lleva su `tono` (color semántico FIJO del chip): rojo para las medidas coercitivas y
- * para el cese/desalojo/precinto (acción física destacada), aunque este último sea administrativo.
+ * Datos del chip por tipo de consecuencia. El ORDEN de prioridad NO vive aquí: es el
+ * `ORDEN_COERCION` COMPARTIDO de `@agente/shared` (fuente única, QA B-1), que también usa la lista
+ * del buscador (`pistaConsecuencia`). Cada entrada lleva su `tono` (color semántico FIJO del
+ * chip): rojo (`coercitivo`) para las medidas sobre persona/vehículo, para el cese/desalojo/
+ * precinto (acción física destacada, aunque sea administrativa) y para la PROTECCIÓN DE LA VÍCTIMA
+ * (jamás en verde tranquilizador: QA B-2).
  */
-const PRIORIDAD_COERCITIVA: {
-  tipo: TipoConsecuencia;
-  kind: AccionOperativaKind;
-  titulo: string;
-  detalle: string;
-  tono: 'coercitivo';
-}[] = [
-  {
-    tipo: 'detencion',
+const DETALLE_COERCION: Partial<
+  Record<
+    TipoConsecuencia,
+    { kind: AccionOperativaKind; titulo: string; detalle: string; tono: 'coercitivo' }
+  >
+> = {
+  detencion: {
     kind: 'detencion',
     titulo: 'Atestado + detención',
     detalle: 'Procede instruir atestado; valora la detención según el precepto citado.',
     tono: 'coercitivo',
   },
-  {
-    tipo: 'cese_actividad',
+  proteccion: {
+    kind: 'proteccion',
+    titulo: 'Protección de la víctima',
+    detalle:
+      'Procede activar las medidas de protección de la víctima (valoración del riesgo y, en su ' +
+      'caso, solicitud de orden de protección) conforme al precepto citado; la acuerda la ' +
+      'autoridad competente.',
+    tono: 'coercitivo',
+  },
+  cese_actividad: {
     kind: 'cese_actividad',
     titulo: 'Cese de actividad / desalojo / precinto',
     detalle:
@@ -324,35 +347,31 @@ const PRIORIDAD_COERCITIVA: {
       'administrativa, no sancionadora); la sanción la impone después el órgano competente.',
     tono: 'coercitivo',
   },
-  {
-    tipo: 'deposito',
+  deposito: {
     kind: 'deposito',
     titulo: 'Grúa y depósito',
     detalle: 'Procede la retirada del vehículo al depósito.',
     tono: 'coercitivo',
   },
-  {
-    tipo: 'inmovilizacion',
+  inmovilizacion: {
     kind: 'inmovilizacion',
     titulo: 'Inmovilizo el vehículo',
     detalle: 'El vehículo no continúa hasta subsanar la causa.',
     tono: 'coercitivo',
   },
-  {
-    tipo: 'decomiso',
+  decomiso: {
     kind: 'decomiso',
     titulo: 'Intervengo · decomiso',
     detalle: 'Procede la intervención del objeto o la sustancia.',
     tono: 'coercitivo',
   },
-  {
-    tipo: 'retirada_permiso',
+  retirada_permiso: {
     kind: 'retirada',
     titulo: 'Retirada de permiso',
     detalle: 'Procede la retirada del permiso o licencia según el precepto.',
     tono: 'coercitivo',
   },
-];
+};
 
 /**
  * Deriva la acción operativa de una ficha a partir de su `fichaKind` y del set de consecuencias.
@@ -362,8 +381,10 @@ export function accionOperativaFrom(input: {
   fichaKind: FichaKind;
   consecuencias: { tipo: TipoConsecuencia; fuente: string }[];
 }): AccionOperativa | null {
-  for (const regla of PRIORIDAD_COERCITIVA) {
-    const encontrada = input.consecuencias.find((c) => c.tipo === regla.tipo);
+  for (const tipo of ORDEN_COERCION) {
+    const regla = DETALLE_COERCION[tipo];
+    if (!regla) continue;
+    const encontrada = input.consecuencias.find((c) => c.tipo === tipo);
     if (encontrada) {
       return {
         kind: regla.kind,

@@ -1,4 +1,4 @@
-import { normalizarBusqueda, type TipoConsecuencia } from '@agente/shared';
+import { normalizarBusqueda, ORDEN_COERCION, type TipoConsecuencia } from '@agente/shared';
 
 /**
  * Lógica PURA de los "resultados vivos" del buscador (mejoras-usabilidad P0-4). Sin React Native,
@@ -51,19 +51,11 @@ export function resaltarCoincidencia(texto: string, consulta: string): SegmentoR
 }
 
 /**
- * Prioridad de las consecuencias para elegir la DETERMINANTE (la que se muestra como chip inline).
- * Cuanto más arriba, más "pesa" en la decisión de calle. `identificacion` no genera chip: es el
- * caso por defecto y no aporta señal.
+ * La prioridad de las consecuencias para elegir la DETERMINANTE (el chip inline) es el
+ * `ORDEN_COERCION` COMPARTIDO de `@agente/shared` (fuente única, QA B-1): así la lista del
+ * buscador y la ficha coinciden SIEMPRE en la acción determinante. `identificacion` no está en
+ * `ORDEN_COERCION`: es el caso por defecto y no genera chip.
  */
-const PRIORIDAD: TipoConsecuencia[] = [
-  'detencion',
-  'proteccion',
-  'cese_actividad',
-  'inmovilizacion',
-  'deposito',
-  'retirada_permiso',
-  'decomiso',
-];
 
 /** Consecuencia que se pinta con tono de PELIGRO (vía penal). */
 const PELIGRO = new Set<TipoConsecuencia>(['detencion']);
@@ -80,7 +72,7 @@ export interface PistaConsecuencia {
  * prioridad) para el chip inline, o `null` si ninguna merece chip.
  */
 export function pistaConsecuencia(tipos: TipoConsecuencia[]): PistaConsecuencia | null {
-  for (const tipo of PRIORIDAD) {
+  for (const tipo of ORDEN_COERCION) {
     if (tipos.includes(tipo)) {
       return { tipo, peligro: PELIGRO.has(tipo) };
     }

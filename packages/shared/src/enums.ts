@@ -64,6 +64,28 @@ export const TipoConsecuencia = z.enum([
 ]);
 export type TipoConsecuencia = z.infer<typeof TipoConsecuencia>;
 
+/**
+ * ORDEN DE COERCIÓN — FUENTE ÚNICA de la prioridad con la que se elige la consecuencia
+ * DETERMINANTE cuando concurren varias (QA B-1). De más a menos coercitiva/determinante en la
+ * calle. La consumen TANTO la LISTA del buscador (`pistaConsecuencia`) COMO la FICHA
+ * (`accionOperativaFrom`): así la misma infracción muestra SIEMPRE la misma acción determinante
+ * en ambos sitios (antes había dos tablas divergentes).
+ *
+ * Criterios acordados: la detención manda sobre todo; la protección de la víctima va destacada
+ * (nunca en verde tranquilizador); la grúa/depósito pesa por encima de la inmovilización; el
+ * decomiso por encima de la retirada de permiso. `identificacion` NO entra aquí: es el caso por
+ * defecto (no genera chip ni acción coercitiva) y se trata aparte.
+ */
+export const ORDEN_COERCION: readonly TipoConsecuencia[] = [
+  'detencion',
+  'proteccion',
+  'cese_actividad',
+  'deposito',
+  'inmovilizacion',
+  'decomiso',
+  'retirada_permiso',
+];
+
 /** Gravedad penal derivada de la pena (art. 33 CP), usada por el árbol de detención. */
 export const GravedadPenal = z.enum(['leve', 'menos_grave', 'grave']);
 export type GravedadPenal = z.infer<typeof GravedadPenal>;

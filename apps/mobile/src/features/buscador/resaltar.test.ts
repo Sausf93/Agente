@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import type { TipoConsecuencia } from '@agente/shared';
 import { pistaConsecuencia, resaltarCoincidencia } from './resaltar';
+import { accionOperativaFrom } from '../ficha/ficha';
 
 /**
  * Tests de la lógica de "resultados vivos" (P0-4). Son piezas puras y deterministas: el resaltado
@@ -53,9 +55,18 @@ describe('pistaConsecuencia', () => {
     });
   });
 
-  it('inmovilización pesa más que depósito', () => {
+  // ORDEN_COERCION (QA B-1): grúa/depósito pesa POR ENCIMA de la inmovilización (antes al revés).
+  it('depósito (grúa) pesa más que inmovilización', () => {
     expect(pistaConsecuencia(['deposito', 'inmovilizacion'])).toEqual({
-      tipo: 'inmovilizacion',
+      tipo: 'deposito',
+      peligro: false,
+    });
+  });
+
+  // ORDEN_COERCION (QA B-1): el decomiso pesa por encima de la retirada de permiso.
+  it('decomiso pesa más que retirada de permiso', () => {
+    expect(pistaConsecuencia(['retirada_permiso', 'decomiso'])).toEqual({
+      tipo: 'decomiso',
       peligro: false,
     });
   });
@@ -66,5 +77,52 @@ describe('pistaConsecuencia', () => {
 
   it('sin consecuencias devuelve null', () => {
     expect(pistaConsecuencia([])).toBeNull();
+  });
+});
+
+/**
+ * T-1 (QA B-1): la LISTA (`pistaConsecuencia`) y la FICHA (`accionOperativaFrom`) eligen el MISMO
+ * tipo determinante para el mismo conjunto de consecuencias. Antes divergían (dos tablas locales).
+ */
+describe('T-1 · lista y ficha coinciden en el tipo determinante', () => {
+  const casos: TipoConsecuencia[][] = [
+    ['deposito', 'inmovilizacion'],
+    ['decomiso', 'retirada_permiso'],
+  ];
+  it.each(casos)('mismo determinante para %j', (...tipos) => {
+    const lista = pistaConsecuencia(tipos)?.tipo;
+    const ficha = accionOperativaFrom({
+      fichaKind: 'trafico',
+      consecuencias: tipos.map((tipo) => ({ tipo, fuente: `art. X (${tipo})` })),
+    });
+    // El `kind` de la ficha normaliza `retirada_permiso`→`retirada`; el resto coincide con el tipo.
+    const kindEsperado = lista === 'retirada_permiso' ? 'retirada' : lista;
+    expect(ficha?.kind).toBe(kindEsperado);
+  });
+
+  it("depósito gana en AMBOS para ['deposito','inmovilizacion']", () => {
+    expect(pistaConsecuencia(['deposito', 'inmovilizacion'])?.tipo).toBe('deposito');
+    expect(
+      accionOperativaFrom({
+        fichaKind: 'trafico',
+        consecuencias: [
+          { tipo: 'deposito', fuente: 'a' },
+          { tipo: 'inmovilizacion', fuente: 'b' },
+        ],
+      })?.kind,
+    ).toBe('deposito');
+  });
+
+  it("decomiso gana en AMBOS para ['decomiso','retirada_permiso']", () => {
+    expect(pistaConsecuencia(['decomiso', 'retirada_permiso'])?.tipo).toBe('decomiso');
+    expect(
+      accionOperativaFrom({
+        fichaKind: 'trafico',
+        consecuencias: [
+          { tipo: 'decomiso', fuente: 'a' },
+          { tipo: 'retirada_permiso', fuente: 'b' },
+        ],
+      })?.kind,
+    ).toBe('decomiso');
   });
 });

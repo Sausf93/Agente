@@ -585,6 +585,7 @@ const ACCION_ICON: Record<AccionOperativaKind, ComponentType<LucideProps>> = {
   retirada: FileText,
   identificacion: Fingerprint,
   cese_actividad: DoorClosed,
+  proteccion: ShieldCheck,
   detencion: Gavel,
 };
 

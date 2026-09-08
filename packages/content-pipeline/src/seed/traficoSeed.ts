@@ -425,6 +425,12 @@ interface InfraccionSeedInput {
   tipo?: Infraccion['tipo'];
   importeEur: number | null;
   importeReducidoEur: number | null;
+  /**
+   * Extremo superior del tramo cuando el importe NO es cifra cerrada sino horquilla o cuadro
+   * graduado (seguro obligatorio, transporte/tacógrafo, alcohol/drogas, cuadro de velocidad). La
+   * ficha lo usa para pintar la multa como RANGO y SIN énfasis (GC I1). `null` en la multa fija.
+   */
+  importeMaxEur?: number | null;
   puntos: number | null;
   /** Pena legible del delito para el bloque "Marco penal" de la ficha (solo vía penal). */
   penaTexto?: string | null;
@@ -456,6 +462,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     tipo: input.tipo ?? 'administrativa',
     importeEur: input.importeEur,
     importeReducidoEur: input.importeReducidoEur,
+    importeMaxEur: input.importeMaxEur ?? null,
     puntos: input.puntos,
     penaTexto: input.penaTexto ?? null,
     gravedadPenal: input.gravedadPenal ?? null,
@@ -549,6 +556,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     gravedad: 'muy_grave',
     importeEur: 601,
     importeReducidoEur: null,
+    // Horquilla 601–3.005 € (LRCSCVM art. 3): NO es cifra fija. La ficha la pinta como rango, sin
+    // énfasis (GC I1).
+    importeMaxEur: 3005,
     puntos: 0,
     textoBoletin:
       'Circular con un vehículo a motor careciendo del seguro obligatorio de responsabilidad ' +
@@ -721,17 +731,22 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_RGC_48,
     tituloCorto: 'Exceso de velocidad',
     gravedad: 'grave',
-    // Cuadro graduado (LSV): 100 € sin puntos → 300/400/500/600 € con 2/4/6 puntos. Se
-    // sitúa un tramo intermedio (300 € / 2 puntos) como valor de referencia de la ficha; el
-    // cuadro completo va en el texto del boletín y en la nota de revisión.
-    importeEur: 300,
-    importeReducidoEur: 150,
-    puntos: 2,
+    // CUADRO graduado por exceso (LSV, cuadro de velocidad): 100 € sin puntos → 300/400/500/600 €
+    // con 2/4/6 puntos según los km/h de exceso. NO es cifra cerrada (GC I1): se ancla en el suelo
+    // del cuadro (100 €, sin puntos) y se marca el extremo (600 €) para que la ficha lo pinte como
+    // rango "según exceso, desde 100 €", SIN énfasis. Los puntos varían por tramo (0–6), por lo que
+    // NO se fija un valor único (un tile mostraría un número engañoso): el desglose vive en el
+    // boletín y la nota de revisión.
+    importeEur: 100,
+    importeReducidoEur: 50,
+    importeMaxEur: 600,
+    puntos: null,
     textoBoletin:
-      'Circular a velocidad superior a la permitida en la vía. La sanción se gradúa por el exceso ' +
-      'sobre el límite: 100 € (sin puntos), 300 € (2 puntos), 400 € (4 puntos), 500 € (6 puntos) y ' +
-      '600 € (6 puntos) en el tramo más alto. Superar el límite en más de 60 km/h en vía urbana o ' +
-      'en más de 80 km/h en vía interurbana puede ser delito (art. 379.1 CP).',
+      'Circular a velocidad superior a la permitida en la vía. La sanción es un CUADRO que se gradúa ' +
+      'según el exceso sobre el límite (desde 100 €): 100 € (sin puntos), 300 € (2 puntos), 400 € ' +
+      '(4 puntos), 500 € (6 puntos) y 600 € (6 puntos) en el tramo más alto. Superar el límite en ' +
+      'más de 60 km/h en vía urbana o en más de 80 km/h en vía interurbana puede ser delito ' +
+      '(art. 379.1 CP).',
     terminos: [
       'exceso de velocidad',
       'iba muy rapido',
@@ -747,9 +762,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     marcoImporte: 'velocidad',
     notaRevision:
       'A VERIFICAR el cuadro completo de tramos (importe y puntos por km/h de exceso, distinto ' +
-      'según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha muestra ' +
-      'un tramo de referencia (300 €/2 puntos). Confirmar también la frontera penal del art. 379.1 ' +
-      'CP (60 km/h urbana / 80 km/h interurbana sobre el límite). No publicar sin desglose por tramos.',
+      'según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha lo pinta ' +
+      'como rango "según exceso, desde 100 €" (100–600 €), SIN cifra fija enfatizada, y los puntos ' +
+      '(0–6) se detallan en el boletín porque varían por tramo. Confirmar también la frontera penal ' +
+      'del art. 379.1 CP (60 km/h urbana / 80 km/h interurbana sobre el límite). No publicar sin ' +
+      'desglose por tramos.',
   }),
   construirInfraccion({
     id: 'inf-alcoholemia',
@@ -757,9 +774,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     tituloCorto: 'Conducir bajo los efectos del alcohol',
     gravedad: 'muy_grave',
     // Cuadro DGT: 500 € (0,25–0,50 mg/l, 4 puntos) o 1.000 € (>0,50 mg/l, reincidencia o
-    // conductor profesional/novel, 6 puntos). Se toma el tramo bajo como referencia.
+    // conductor profesional/novel, 6 puntos). Se toma el tramo bajo como ancla y se marca el
+    // extremo (1.000 €): NO es cifra fija, la ficha lo pinta como rango 500–1.000 € sin énfasis (GC I1).
     importeEur: 500,
     importeReducidoEur: 250,
+    importeMaxEur: 1000,
     puntos: 4,
     textoBoletin:
       'Conducir con una tasa de alcohol superior a la permitida. En vía administrativa: 500 € y 4 ' +
@@ -1011,8 +1030,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Circular con un vehículo de movilidad personal (patinete eléctrico) incumpliendo las normas: ' +
       'por la acera o zona peatonal, sin alumbrado ni elementos reflectantes de noche, o con dos ' +
-      'ocupantes. Circular por la acera o sin alumbrado nocturno se sanciona con 200 €; llevar dos ' +
-      'personas, con 100 €. El VMP no detrae puntos porque no requiere permiso de conducción.',
+      'ocupantes. Circular por la acera o sin alumbrado nocturno se sanciona, de forma orientativa y ' +
+      'según la ordenanza municipal, con unos 200 €; llevar dos personas, con unos 100 €. El VMP no ' +
+      'detrae puntos porque no requiere permiso de conducción.',
     terminos: [
       'patinete',
       'patinete electrico',
@@ -1167,9 +1187,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
         tipo: 'detencion',
         textoCorto:
           'Ante un delito flagrante (art. 490 LECrim) procede valorar la detención; en un delito ' +
-          'menos grave la autoridad y sus agentes tienen el deber de detener cuando concurre una ' +
-          'causa del art. 490 (art. 492.1 LECrim). La valoración de los indicios y del riesgo ' +
-          'corresponde al agente y, en su caso, a la autoridad judicial.',
+          'menos grave el art. 492.1 LECrim prevé la obligación de detener cuando concurre una causa ' +
+          'del art. 490. Valórese según los indicios y el riesgo; la valoración final corresponde al ' +
+          'agente y, en su caso, a la autoridad judicial.',
         fuente: 'CP art. 380; LECrim arts. 490 y 492.1',
       },
       {
@@ -1193,9 +1213,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_140,
     tituloCorto: 'Manipulación del tacógrafo o exceso de tiempos',
     gravedad: 'muy_grave',
-    // LOTT art. 143: tramo muy grave (referencia 2.001 €); a verificar el importe exacto.
-    importeEur: 2001,
+    // LOTT art. 143: horquilla del tramo MUY GRAVE (1.001–6.000 €). NO es cifra fija: la ficha lo
+    // pinta como rango sin énfasis (GC I1). A verificar el importe exacto contra el texto consolidado.
+    importeEur: 1001,
     importeReducidoEur: null,
+    importeMaxEur: 6000,
     puntos: null,
     textoBoletin:
       'Manipular o falsear el tacógrafo, el limitador de velocidad o sus elementos (imanes, ' +
@@ -1228,8 +1250,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     marcoImporte: 'transporte',
     notaRevision:
       'A VERIFICAR el importe y la clasificación exactos: la LOTT (art. 140/143, reformada por la ' +
-      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija 2.001 € ' +
-      'como referencia del tramo, pendiente de confirmar contra el texto consolidado y su ' +
+      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija la horquilla ' +
+      '1.001–6.000 € del tramo muy grave, pendiente de confirmar contra el texto consolidado y su ' +
       'reglamento (RD 1211/1990). A VERIFICAR además la frontera penal: la manipulación puede ser ' +
       'delito de falsedad (arts. 390/395 CP), lo que abriría la vía penal. No detrae puntos DGT. ' +
       'Consúltese el artículo para el importe efectivo. Revisar con el revisor jurídico.',
