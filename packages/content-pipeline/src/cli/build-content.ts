@@ -118,9 +118,14 @@ async function main(): Promise<void> {
         'Nacional); delitos penales ampliados (atentado a agente, tráfico de drogas art. 368, ' +
         'amenazas, daños y robo con fuerza en casa habitada) con orientación de detención LECrim; ' +
         'extranjería (estancia irregular, LO 4/2000: NO es delito) y policía local (perro ' +
-        'peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015) y tabla de sustancias (§4.7). ' +
+        'peligroso, Ley 50/1999); seguridad ciudadana (LO 4/2015: desórdenes, drogas, armas, falta ' +
+        'de respeto, y ahora consumo de alcohol en vía pública art. 37.17 con la frontera del ' +
+        'botellón municipal), la entrada consultable de PROTECCIÓN del menor extranjero no ' +
+        'acompañado (MENA, LO 1/1996) y tabla de sustancias (§4.7). ' +
         'PILOTO de ORDENANZAS MUNICIPALES de Santa Cruz de Tenerife (capa municipal): VMP/patinetes, ' +
-        'zona azul, animales (perro suelto/excrementos/censo) y ruido, ligadas a su municipio. ' +
+        'animales (perro suelto/excrementos/censo), ruido y, como entradas consultables sin cuantía ' +
+        'inventada, terrazas/veladores y Zona de Bajas Emisiones (ZBE, régimen aún no aplicable), ' +
+        'ligadas a su municipio. ' +
         'PILOTO de NORMATIVA AUTONÓMICA de CANARIAS (capa autonómica): espectáculos y actividades ' +
         'clasificadas (Ley 7/2011: horario de cierre, ocio nocturno, sin licencia, alcohol a menores, ' +
         'ruidos), animales (Ley 8/1991) y las leyes de policía canaria (coordinación de policías ' +

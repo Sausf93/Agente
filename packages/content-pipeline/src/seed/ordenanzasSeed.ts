@@ -69,11 +69,17 @@ const COMPETENCIA_MUNICIPAL: CuerpoCompetente[] = ['policia_local', 'policia_aut
 const ID_OM_CIRC = 'OM-SCTF-CIRCULACION'; // Ordenanza municipal de circulación
 const ID_OM_ANIM = 'OM-SCTF-ANIMALES'; // Ordenanza de protección y tenencia de animales
 const ID_OM_RUIDO = 'OM-SCTF-RUIDOS'; // Ordenanza de ruidos y vibraciones
+const ID_OM_TERRAZAS = 'OM-SCTF-TERRAZAS'; // Ordenanza de ocupación de vía pública con mesas/sillas
+const ID_OM_ZBE = 'OM-SCTF-ZBE'; // Ordenanza reguladora de la Zona de Bajas Emisiones
 
 const URL_OM_CIRC = 'https://sede.santacruzdetenerife.es/sede/normativa/n647';
 const URL_OM_ANIM = 'https://sede.santacruzdetenerife.es/sede/normativa/n513';
 const URL_OM_RUIDO =
   'https://sede.santacruzdetenerife.es/fileadmin/user_upload/Sede/normativas/Ordenanzas_municipales/OMRuidosyVibraciones.pdf';
+const URL_OM_TERRAZAS =
+  'https://sede.santacruzdetenerife.es/sede/tramites/ocupacion-de-la-via-publica-con-mesas-sillas-y-parasoles';
+const URL_OM_ZBE =
+  'https://www.santacruzdetenerife.es/web/servicios-municipales/movilidad-y-accesibilidad-universal/zonas-de-bajas-emisiones';
 
 /** Construye una `Norma` municipal ligada al municipio del piloto. */
 function normaMunicipal(input: { id: string; codigo: string; titulo: string; url: string }): Norma {
@@ -110,6 +116,19 @@ export const NORMAS_ORDENANZAS_SEED: Norma[] = [
     titulo:
       'Ordenanza de protección del medioambiente contra la emisión de ruidos y vibraciones (Santa Cruz de Tenerife)',
     url: URL_OM_RUIDO,
+  }),
+  normaMunicipal({
+    id: ID_OM_TERRAZAS,
+    codigo: 'OM-TERRAZAS-SCTF',
+    titulo:
+      'Ordenanza reguladora de la ocupación del dominio público con mesas, sillas y parasoles (Santa Cruz de Tenerife)',
+    url: URL_OM_TERRAZAS,
+  }),
+  normaMunicipal({
+    id: ID_OM_ZBE,
+    codigo: 'OM-ZBE-SCTF',
+    titulo: 'Ordenanza reguladora de la Zona de Bajas Emisiones (Santa Cruz de Tenerife)',
+    url: URL_OM_ZBE,
   }),
 ];
 
@@ -187,11 +206,41 @@ const ART_RUIDO_CONV = articuloSeed({
     'consolidado en la sede electrónica del Ayuntamiento.',
 });
 
+const ART_TERRAZAS = articuloSeed({
+  normaId: ID_OM_TERRAZAS,
+  numero: 'OCUP',
+  titulo: 'Ocupación de la vía pública con terraza (mesas, sillas y parasoles) sin licencia o excediéndola',
+  texto:
+    'Exige licencia o autorización municipal para ocupar la vía pública con mesas, sillas, veladores y ' +
+    'parasoles al servicio de un establecimiento de hostelería, y ceñir la ocupación a la superficie, ' +
+    'los elementos y el horario autorizados. Instalar la terraza SIN licencia, o EXCEDER lo autorizado ' +
+    '(más mesas o superficie, invadir la acera o el paso de peatones), incumple la ordenanza. Como ' +
+    'medida orientativa procede requerir la retirada de mesas y sillas y el cese de la ocupación no ' +
+    'amparada. Resumen orientativo; consúltese el texto consolidado en la sede electrónica del ' +
+    'Ayuntamiento.',
+});
+
+const ART_ZBE = articuloSeed({
+  normaId: ID_OM_ZBE,
+  numero: 'ZBE',
+  titulo: 'Acceso o circulación indebida en la Zona de Bajas Emisiones (ZBE)',
+  texto:
+    'Regula el acceso y la circulación de vehículos en la Zona de Bajas Emisiones (ZBE) o área ' +
+    'restringida del municipio en función de su distintivo ambiental de la DGT y de las autorizaciones ' +
+    '(residentes, garajes, servicios). Acceder o circular por la ZBE sin el distintivo ambiental exigido ' +
+    'o sin autorización, cuando el régimen esté en vigor, incumple la ordenanza. IMPORTANTE: la ordenanza ' +
+    'de la ZBE de Santa Cruz de Tenerife está aprobada pero su RÉGIMEN SANCIONADOR aún NO es aplicable ' +
+    '(periodo transitorio); no procede sanción hasta que entre en vigor. Resumen orientativo; consúltese ' +
+    'el texto consolidado en la sede electrónica del Ayuntamiento.',
+});
+
 export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
   ART_ANIM_VIA,
   ART_ANIM_CENSO,
   ART_RUIDO_CONV,
+  ART_TERRAZAS,
+  ART_ZBE,
 ];
 
 // --- Constructor de una infracción MUNICIPAL con sus sinónimos y consecuencias --------------
@@ -200,15 +249,27 @@ interface InfraccionSeedInput {
   articulo: Articulo;
   tituloCorto: string;
   gravedad: Infraccion['gravedad'];
-  importeEur: number;
+  /**
+   * Importe base. `null` SOLO en entradas CONSULTABLES (`no_sancionador`): ordenanzas cuya norma
+   * existe pero cuyo régimen sancionador o cuantía NO podemos confirmar hoy (no se inventa cifra).
+   */
+  importeEur: number | null;
   importeReducidoEur: number | null;
   textoBoletin: string;
   terminos: string[];
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
   notaRevision: string;
+  /**
+   * Marco de validación. Por defecto `municipal` (con importe orientativo). Se pone
+   * `no_sancionador` en las entradas CONSULTABLES sin importe (norma existente pero sin cuantía
+   * confirmada, p. ej. ZBE aún no sancionable): así los validadores no exigen importe y mejor
+   * "sin cuantía + a verificar" que un dato falso (misma regla que aplicamos a la zona azul).
+   */
+  marcoImporte?: MarcoImporte;
 }
 
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
+  const marco = input.marcoImporte ?? ('municipal' satisfies MarcoImporte);
   const infraccion = Infraccion.parse({
     id: input.id,
     articuloId: input.articulo.id,
@@ -256,9 +317,10 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     infraccion,
     sinonimos,
     consecuencias,
-    // El marco de validación de una ordenanza es `municipal`: sin rango legal único (varía por
-    // ordenanza), solo se valida la coherencia (importe presente y reducido ≤ base). §8.3.
-    marcoImporte: 'municipal' satisfies MarcoImporte,
+    // El marco de validación de una ordenanza es `municipal` (sin rango legal único: varía por
+    // ordenanza, solo se valida coherencia: importe presente y reducido ≤ base) salvo las entradas
+    // CONSULTABLES sin cuantía confirmada, que van como `no_sancionador`. §8.3.
+    marcoImporte: marco,
     revision: 'pendiente_revision' satisfies EstadoRevision,
     notaRevision: input.notaRevision,
   };
@@ -436,6 +498,96 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'mínimo del tramo GRAVE de la Ley 37/2003 del Ruido; el importe (300/150 €) es ORIENTATIVO. ' +
       'Confirmar artículo, tramo y cuantía con el texto consolidado y el revisor jurídico. Puede requerir ' +
       'medición sonométrica para acreditar el exceso.',
+  }),
+  // TERRAZAS: la ordenanza de ocupación de vía pública con mesas/sillas/parasoles EXISTE y está en
+  // vigor, pero NO hemos podido confirmar el artículo del régimen sancionador ni la cuantía. Siguiendo
+  // la regla de la zona azul (mejor honesto que un dato falso), NO se inventa importe: se modela como
+  // entrada CONSULTABLE (`no_sancionador`, sin importe) con la orientación útil (requerir licencia,
+  // retirada/cese) y el importe/artículo marcados fuertemente "a verificar".
+  construirInfraccion({
+    id: 'ord-sctf-terrazas',
+    articulo: ART_TERRAZAS,
+    tituloCorto: 'Terraza/veladores sin licencia o excediendo lo autorizado',
+    gravedad: 'leve', // valor de relleno del modelo; lo determinante es que NO se afirma cuantía
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Ocupar la vía pública con una terraza (mesas, sillas, veladores, parasoles) SIN licencia ' +
+      'municipal, o EXCEDIENDO lo autorizado (más superficie o mesas, invadir la acera o el paso de ' +
+      'peatones), incumpliendo la ordenanza de ocupación del dominio público de Santa Cruz de Tenerife. ' +
+      'ORIENTACIÓN: procede requerir la licencia o autorización y, en su defecto, el cese de la ocupación ' +
+      'y la retirada de las mesas y sillas no amparadas. El importe y el artículo del régimen sancionador ' +
+      'NO están confirmados (a verificar en la ordenanza y su ordenanza fiscal). La valoración final ' +
+      'corresponde al agente y al órgano municipal competente.',
+    terminos: [
+      'terraza sin licencia',
+      'veladores',
+      'mesas y sillas',
+      'terraza',
+      'sombrillas en la acera',
+      'la terraza ocupa la acera',
+    ],
+    consecuencias: [
+      {
+        tipo: 'cese_actividad',
+        textoCorto:
+          'Procede requerir la licencia/autorización y, en su defecto, el cese de la ocupación y la ' +
+          'retirada de las mesas y sillas no amparadas por la licencia; la medida concreta la fija la ' +
+          'ordenanza y el órgano municipal.',
+        fuente: 'Ordenanza municipal de ocupación de vía pública (terrazas)',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE sin cuantía confirmada: la ordenanza de ocupación de vía pública con mesas, ' +
+      'sillas y parasoles de Santa Cruz de Tenerife EXISTE y está en vigor, pero NO se ha podido ' +
+      'confirmar el ARTÍCULO del régimen sancionador ni el IMPORTE, por lo que —igual que con la zona ' +
+      'azul— NO se inventa cuantía (marco `no_sancionador`, sin importe). A VERIFICAR fuertemente con el ' +
+      'texto consolidado de la ordenanza y su ordenanza fiscal, y con el revisor jurídico: artículo, ' +
+      'clasificación (leve/grave), cuantía, y el régimen de retirada/cese como medida cautelar o sanción ' +
+      'accesoria. No publicar hasta confirmar la fuente.',
+  }),
+  // ZBE: la ordenanza reguladora de la Zona de Bajas Emisiones de Santa Cruz de Tenerife está APROBADA
+  // (aprobación definitiva BOP nº 101/2026, 24-ago-2026), pero su RÉGIMEN SANCIONADOR NO es aplicable
+  // aún (periodo transitorio; la infraestructura de cámaras tardará ~18 meses y las sanciones se prevén
+  // hacia 2029). Como todavía NO procede sanción, se modela como entrada CONSULTABLE (`no_sancionador`)
+  // que informa de la restricción y de que aún no se multa; nada de cuantías inventadas.
+  construirInfraccion({
+    id: 'ord-sctf-zbe',
+    articulo: ART_ZBE,
+    tituloCorto: 'Zona de Bajas Emisiones (ZBE): acceso sin distintivo o autorización',
+    gravedad: 'leve', // valor de relleno del modelo; NO se afirma cuantía (régimen aún no aplicable)
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Acceder o circular por la Zona de Bajas Emisiones (ZBE) o área restringida de Santa Cruz de ' +
+      'Tenerife sin el distintivo ambiental de la DGT exigido o sin autorización (residente, garaje, ' +
+      'servicio). IMPORTANTE: la ordenanza de la ZBE está aprobada pero su RÉGIMEN SANCIONADOR aún NO es ' +
+      'aplicable (periodo transitorio; la infraestructura de control tardará en estar operativa), por lo ' +
+      'que HOY no procede sanción por este motivo. Entrada informativa para orientar al agente; la ' +
+      'valoración final corresponde al agente y al órgano municipal cuando el régimen entre en vigor.',
+    terminos: [
+      'zbe',
+      'zona de bajas emisiones',
+      'apr',
+      'area restringida',
+      'sin etiqueta ambiental',
+      'distintivo ambiental',
+      'sin etiqueta',
+    ],
+    // Sin consecuencia estructurada: el régimen sancionador aún no es aplicable, por lo que no hay
+    // medida (denuncia/decomiso/cese) que proceda hoy. La orientación va en el texto del boletín.
+    notaRevision:
+      'ENTRADA CONSULTABLE, régimen aún NO aplicable: la ordenanza de la ZBE de Santa Cruz de Tenerife ' +
+      'está APROBADA (aprobación definitiva BOP de Santa Cruz de Tenerife nº 101/2026, de 24-ago-2026; ' +
+      'aprobación inicial BOP nº 56/2026), pero su RÉGIMEN SANCIONADOR NO es aplicable hoy (periodo ' +
+      'transitorio; la infraestructura de cámaras tardará ~18 meses y las sanciones se prevén hacia ' +
+      '2029). Por eso NO se afirma importe (marco `no_sancionador`) —misma regla que la zona azul—. A ' +
+      'VERIFICAR fuertemente con el texto consolidado de la ordenanza en la sede electrónica y con el ' +
+      'revisor jurídico: fecha de entrada en vigor del régimen sancionador, artículo, clasificación, ' +
+      'cuantías y distintivos/autorizaciones exactos. Recordar el antecedente: el TSJ anuló en 2025 la ' +
+      'anterior ordenanza de movilidad. No convertir en ficha sancionadora hasta confirmar la vigencia.',
   }),
 ];
 

@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 11 entradas de calle de la LO 4/2015 (10 infracciones + identificación art. 16)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(11);
+  it('siembra 13 entradas de calle (10 infracciones LOSC + identificación art. 16 + consumo de alcohol 37.17 + MENA)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(13);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {
@@ -89,6 +89,31 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     expect(ident!.infraccion.textoBoletin).toMatch(/6 horas/);
     expect(cons!.textoCorto).toMatch(/6 horas/);
     expect(ident!.notaRevision).toMatch(/6 horas/);
+  });
+
+  it('el MENA es una entrada consultable de PROTECCIÓN, sin sanción ni importe', () => {
+    const mena = porId('sc-mena-consulta');
+    expect(mena).toBeDefined();
+    expect(mena!.marcoImporte).toBe('no_sancionador');
+    expect(mena!.infraccion.importeEur).toBeNull();
+    expect(mena!.infraccion.importeReducidoEur).toBeNull();
+    // Mensaje clave: es PROTECCIÓN (no sanción) y NUNCA procede calabozo por menor/extranjero.
+    expect(mena!.infraccion.textoBoletin.toLowerCase()).toMatch(/protecci/);
+    expect(mena!.infraccion.textoBoletin.toLowerCase()).toMatch(/nunca procede el calabozo|nunca procede calabozo/);
+    expect(mena!.infraccion.textoBoletin).toMatch(/Fiscal/);
+    const cons = mena!.consecuencias.find((c) => c.tipo === 'proteccion');
+    expect(cons).toBeDefined();
+    expect(cons!.textoCorto.toLowerCase()).toMatch(/procede/);
+  });
+
+  it('el consumo de alcohol (art. 37.17) es LEVE y marca la frontera con la ordenanza (botellón)', () => {
+    const alcohol = porId('sc-consumo-alcohol-via-publica');
+    expect(alcohol).toBeDefined();
+    expect(alcohol!.infraccion.gravedad).toBe('leve');
+    expect(alcohol!.infraccion.importeEur).toBe(100);
+    // El tipo estatal EXIGE perturbación grave; el botellón simple es materia de ORDENANZA municipal.
+    expect(alcohol!.infraccion.textoBoletin.toLowerCase()).toMatch(/perturbe gravemente|perturbaci/);
+    expect(alcohol!.infraccion.textoBoletin.toLowerCase()).toMatch(/ordenanza/);
   });
 });
 
@@ -242,6 +267,16 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
   it('"identificacion" resuelve al requerimiento de identificación (art. 16)', () => {
     expect(buscarSinonimoExacto('identificacion')).toContain('sc-identificacion-requerimiento');
     expect(buscarFts('identificacion')).toContain('sc-identificacion-requerimiento');
+  });
+
+  it('"botellon" resuelve al consumo de alcohol en la vía pública (art. 37.17)', () => {
+    expect(buscarSinonimoExacto('botellon')).toContain('sc-consumo-alcohol-via-publica');
+    expect(buscarFts('botellon')).toContain('sc-consumo-alcohol-via-publica');
+  });
+
+  it('"mena" resuelve a la entrada consultable de menor extranjero no acompañado', () => {
+    expect(buscarSinonimoExacto('mena')).toContain('sc-mena-consulta');
+    expect(buscarFts('mena')).toContain('sc-mena-consulta');
   });
 
   it('encuentra por número de artículo ("LOSC 36")', () => {

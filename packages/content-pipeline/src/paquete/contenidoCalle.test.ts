@@ -90,6 +90,12 @@ describe('contenido de calle: los términos priorizados por los validadores no s
     // T-7: capa AUTONÓMICA (Ley 7/2011 de Canarias) resuelta contra el `.db` construido en el test.
     ['ocio nocturno', 'can-esp-horario-cierre'],
     ['sin licencia', 'can-esp-sin-licencia'],
+    // Seguridad ciudadana y convivencia (LOSC 37.17, protección del menor) y ordenanzas municipales
+    // (SCTF): consultas de calle que antes salían vacías para los tres cuerpos.
+    ['botellon', 'sc-consumo-alcohol-via-publica'],
+    ['mena', 'sc-mena-consulta'],
+    ['terraza sin licencia', 'ord-sctf-terrazas'],
+    ['zbe', 'ord-sctf-zbe'],
   ];
 
   for (const [consulta, esperado] of casos) {

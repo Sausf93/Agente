@@ -41,6 +41,8 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 // --- Norma: LO 4/2015 de protección de la seguridad ciudadana -------------------------------
 const ID_LOSC = 'BOE-A-2015-3442'; // LO 4/2015, de 30 de marzo (legislación consolidada)
+// Norma de PROTECCIÓN DEL MENOR (para la entrada consultable MENA, no sancionadora).
+const ID_LOPJM = 'BOE-A-1996-1069'; // LO 1/1996, de 15 de enero, de Protección Jurídica del Menor
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
 
 export const NORMAS_SEGURIDAD_SEED: Norma[] = [
@@ -53,6 +55,15 @@ export const NORMAS_SEGURIDAD_SEED: Norma[] = [
     urlBoe: urlBoe(ID_LOSC),
     fechaConsolidacion: null,
   }),
+  Norma.parse({
+    id: ID_LOPJM,
+    codigo: 'LOPJM',
+    titulo: 'Ley Orgánica de Protección Jurídica del Menor (LO 1/1996)',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_LOPJM),
+    fechaConsolidacion: null,
+  }),
 ];
 
 // --- Artículos citados (resúmenes neutros propios) ------------------------------------------
@@ -62,10 +73,10 @@ interface ArticuloSeedInput {
   texto: string;
 }
 
-function articuloLosc({ numero, titulo, texto }: ArticuloSeedInput): Articulo {
+function articuloDe(normaId: string, { numero, titulo, texto }: ArticuloSeedInput): Articulo {
   return Articulo.parse({
-    id: `${ID_LOSC}:seed-a${numero.replace(/\s+/g, '')}`,
-    normaId: ID_LOSC,
+    id: `${normaId}:seed-a${numero.replace(/\s+/g, '')}`,
+    normaId,
     numero,
     titulo,
     texto,
@@ -75,6 +86,10 @@ function articuloLosc({ numero, titulo, texto }: ArticuloSeedInput): Articulo {
     validFrom: VALID_FROM,
     validTo: null,
   });
+}
+
+function articuloLosc(input: ArticuloSeedInput): Articulo {
+  return articuloDe(ID_LOSC, input);
 }
 
 const ART_LOSC_16 = articuloLosc({
@@ -184,6 +199,38 @@ const ART_LOSC_37_7 = articuloLosc({
     'pública con infracción de lo dispuesto en la ley o de la decisión de la autoridad. Resumen orientativo.',
 });
 
+const ART_LOSC_37_17 = articuloLosc({
+  numero: '37.17',
+  titulo: 'Consumo de bebidas alcohólicas en espacios públicos (leve)',
+  texto:
+    'Tipifica como infracción LEVE el consumo de bebidas alcohólicas en lugares, vías, ' +
+    'establecimientos o transportes públicos CUANDO PERTURBE GRAVEMENTE la tranquilidad ciudadana. ' +
+    'El tipo estatal exige, por tanto, esa perturbación grave: no basta el mero hecho de beber en la ' +
+    'calle. El "botellón" como consumo colectivo en la vía pública lo suele regular y sancionar la ' +
+    'ORDENANZA MUNICIPAL de convivencia; la LO 4/2015 solo entra cuando se produce la alteración grave ' +
+    'de la tranquilidad. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+// Artículo de PROTECCIÓN (no sancionador) para la entrada consultable MENA. Resume el marco de
+// protección del menor extranjero no acompañado citando LO 1/1996, LO 4/2000 (extranjería) y
+// LO 5/2000 (responsabilidad penal del menor). No es un tipo infractor: orienta sobre la actuación.
+const ART_LOPJM_MENA = articuloDe(ID_LOPJM, {
+  numero: 'MENA',
+  titulo: 'Menor extranjero no acompañado (MENA): marco de protección',
+  texto:
+    'El menor extranjero no acompañado (MENA) es, ante todo, un MENOR en situación de desamparo: su ' +
+    'tratamiento NO es sancionador, sino de PROTECCIÓN. El interés superior del menor rige toda ' +
+    'actuación (LO 1/1996, de Protección Jurídica del Menor). Cuando se localiza a un presunto menor ' +
+    'extranjero solo, procede su identificación con cautelas propias de menor, la puesta a disposición ' +
+    'de la Entidad Pública de protección de menores de la comunidad autónoma y la comunicación ' +
+    'inmediata al Ministerio Fiscal (Fiscalía de Menores), conforme al art. 35 de la LO 4/2000 de ' +
+    'extranjería y su desarrollo reglamentario. La determinación de la edad, cuando existan dudas, la ' +
+    'acuerda la autoridad competente (Fiscalía) mediante el procedimiento previsto —NO la valora la ' +
+    'app ni el agente—. El menor de 14 años es inimputable penalmente (queda fuera de la LO 5/2000, ' +
+    'reguladora de la responsabilidad penal de los menores). En ningún caso procede el calabozo o el ' +
+    'internamiento como adulto por su condición de menor o de extranjero. Resumen orientativo.',
+});
+
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_16,
   ART_LOSC_36_1,
@@ -195,6 +242,8 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_37_1,
   ART_LOSC_37_4,
   ART_LOSC_37_7,
+  ART_LOSC_37_17,
+  ART_LOPJM_MENA,
 ];
 
 // --- Constructor de una infracción de seguridad ciudadana -----------------------------------
@@ -709,6 +758,92 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'Distinguir de la infracción MUY GRAVE del art. 35.1 (reuniones o manifestaciones en ' +
       'infraestructuras críticas) y de la GRAVE del art. 36.8 (perturbación del desarrollo de una ' +
       'reunión o manifestación lícita). Punto sensible: confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-consumo-alcohol-via-publica',
+    articulo: ART_LOSC_37_17,
+    tituloCorto: 'Consumo de alcohol en la vía pública (perturbación grave)',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Consumir bebidas alcohólicas en lugares, vías, establecimientos o transportes públicos cuando ' +
+      'ese consumo PERTURBE GRAVEMENTE la tranquilidad ciudadana (art. 37.17 LO 4/2015). FRONTERA con la ' +
+      'ordenanza municipal: el "botellón" (consumo colectivo de alcohol en la calle) lo regula y sanciona ' +
+      'normalmente la ORDENANZA MUNICIPAL de convivencia; el tipo estatal del art. 37.17 solo procede ' +
+      'cuando se acredita la perturbación grave de la tranquilidad. Sin esa perturbación grave, el mero ' +
+      'consumo en vía pública no encaja en la LO 4/2015 y habrá que estar a la ordenanza local. La ' +
+      'valoración final corresponde al agente.',
+    terminos: [
+      'botellon',
+      'beber en la calle',
+      'litrona',
+      'botellona',
+      'consumo de alcohol via publica',
+      'beber en via publica',
+      'litros',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR con especial cuidado la FRONTERA con la ordenanza municipal: el art. 37.17 LO 4/2015 ' +
+      'EXIGE que el consumo perturbe GRAVEMENTE la tranquilidad ciudadana; el botellón simple lo suele ' +
+      'sancionar la ordenanza de convivencia del municipio (comprobar qué ordenanza aplica en cada ' +
+      'territorio). Confirmar que no se aplica el tipo estatal a un mero consumo sin perturbación grave. ' +
+      'Punto sensible: revisar con el revisor jurídico antes de publicar.',
+  }),
+  // ENTRADA CONSULTABLE (no sancionadora): MENA. NO es cuestión de sanción sino de PROTECCIÓN del
+  // menor. Se modela como `no_sancionador` (sin importe), igual que el requerimiento de
+  // identificación (art. 16). Sirve para que un agente que teclea "mena" reciba la orientación
+  // correcta (protección, Fiscalía, Entidad Pública) y el aviso de que NUNCA procede calabozo.
+  construirInfraccion({
+    id: 'sc-mena-consulta',
+    articulo: ART_LOPJM_MENA,
+    tituloCorto: 'Menor extranjero no acompañado (MENA): protección',
+    gravedad: 'leve', // valor de relleno exigido por el modelo; lo determinante es que NO sanciona
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Menor extranjero no acompañado (MENA): NO es una cuestión sancionadora sino de PROTECCIÓN. Un ' +
+      'presunto menor extranjero que se encuentra solo está, en principio, en situación de desamparo y ' +
+      'rige el interés superior del menor (LO 1/1996). ORIENTACIÓN: procede identificarlo con las ' +
+      'cautelas propias de un menor, ponerlo a disposición de la Entidad Pública de protección de ' +
+      'menores de la comunidad autónoma y comunicar de inmediato al Ministerio Fiscal (Fiscalía de ' +
+      'Menores), conforme al art. 35 LO 4/2000. La determinación de la edad, si hay dudas, la acuerda la ' +
+      'autoridad competente (Fiscalía) por el procedimiento legal —NO la valora la app ni el agente—. El ' +
+      'menor de 14 años es inimputable penalmente (fuera de la LO 5/2000). NUNCA procede el calabozo ni ' +
+      'el trato como adulto por su condición de menor o de extranjero. IN DUBIO PRO MINORE: en caso de ' +
+      'duda debe presumirse la minoría de edad y dispensarse el trato de menor mientras la autoridad no ' +
+      'determine lo contrario; y al que porta un pasaporte o documento de identidad válido NO se le ' +
+      'deben practicar pruebas de determinación de la edad salvo indicios claros de falsedad. La ' +
+      'valoración final corresponde a la autoridad competente (Fiscalía/Entidad Pública).',
+    terminos: [
+      'mena',
+      'menor extranjero no acompañado',
+      'menor sin familia',
+      'menor migrante solo',
+      'cria solo',
+    ],
+    consecuencias: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Procede identificar al menor con cautelas, ponerlo a disposición de la Entidad Pública de ' +
+          'protección de menores y comunicar al Ministerio Fiscal (Fiscalía de Menores). NUNCA procede ' +
+          'calabozo por su condición de menor/extranjero; la determinación de edad la acuerda la ' +
+          'autoridad competente, no la app.',
+        fuente: 'LO 1/1996 y LO 4/2000 art. 35',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE, no infracción: es materia de PROTECCIÓN del menor, no sancionadora (marco ' +
+      '`no_sancionador`, sin importe). A VERIFICAR con el revisor jurídico: (i) el circuito exacto de ' +
+      'puesta a disposición de la Entidad Pública de protección de menores y de comunicación a la ' +
+      'Fiscalía (art. 35 LO 4/2000 y su desarrollo reglamentario, RD 557/2011; Protocolo Marco MENA ' +
+      'de 2014), (ii) el procedimiento de determinación de la edad y sus garantías (competencia de la ' +
+      'Fiscalía; jurisprudencia del TS y del Comité de Derechos del Niño), (iii) la inimputabilidad del ' +
+      'menor de 14 años (fuera de la LO 5/2000) y (iv) la redacción del mensaje de que NUNCA procede ' +
+      'calabozo. Punto jurídicamente muy sensible: confirmar toda la redacción antes de publicar.',
   }),
 ];
 

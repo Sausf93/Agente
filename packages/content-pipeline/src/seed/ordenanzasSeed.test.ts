@@ -57,11 +57,16 @@ describe('SEED_ORDENANZAS: calidad de contenido (§8.3)', () => {
     }
   });
 
-  it('cada importe valida en el marco municipal y supera los mínimos de publicación', () => {
+  it('cada importe valida en su marco y supera los mínimos de publicación', () => {
     for (const { infraccion, sinonimos, marcoImporte } of SEED_ORDENANZAS.infracciones) {
-      expect(marcoImporte, infraccion.id).toBe('municipal');
+      // La mayoría son `municipal` (importe orientativo); las CONSULTABLES sin cuantía confirmada
+      // (terrazas, ZBE) van como `no_sancionador` (sin importe): mejor honesto que un dato falso.
+      expect(['municipal', 'no_sancionador'], infraccion.id).toContain(marcoImporte);
       expect(validarImporte(infraccion, marcoImporte), infraccion.id).toEqual([]);
-      expect(validarMinimosPublicacion(infraccion, sinonimos.length), infraccion.id).toEqual([]);
+      expect(
+        validarMinimosPublicacion(infraccion, sinonimos.length, marcoImporte),
+        infraccion.id,
+      ).toEqual([]);
     }
   });
 
@@ -93,5 +98,32 @@ describe('SEED_ORDENANZAS: cobertura de lo más usado por un Local', () => {
     const ruido = porId('ord-sctf-ruido-convivencia')!;
     expect(ruido.infraccion.gravedad).toBe('leve');
     expect(ruido.infraccion.importeEur).toBe(300);
+  });
+
+  it('siembra terrazas y ZBE como CONSULTABLES sin cuantía inventada (norma real, importe a verificar)', () => {
+    const terrazas = porId('ord-sctf-terrazas');
+    const zbe = porId('ord-sctf-zbe');
+    expect(terrazas).toBeDefined();
+    expect(zbe).toBeDefined();
+    // Sin importe fabricado: marco `no_sancionador` (misma regla honesta que la zona azul).
+    for (const item of [terrazas!, zbe!]) {
+      expect(item.marcoImporte, item.infraccion.id).toBe('no_sancionador');
+      expect(item.infraccion.importeEur, item.infraccion.id).toBeNull();
+      expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
+    }
+    // Terrazas: orientación de retirada/cese de la ocupación.
+    expect(terrazas!.consecuencias.some((c) => c.tipo === 'cese_actividad')).toBe(true);
+    // ZBE: se advierte que el régimen sancionador aún NO es aplicable.
+    expect(zbe!.infraccion.textoBoletin.toLowerCase()).toMatch(/no es aplicable|no procede sanci/);
+  });
+
+  it('los sinónimos clave de terrazas y ZBE enganchan a su ficha', () => {
+    const porTermino = (t: string) =>
+      SEED_ORDENANZAS.infracciones
+        .filter((i) => i.sinonimos.some((s) => s.termino === t))
+        .map((i) => i.infraccion.id);
+    expect(porTermino('terraza sin licencia')).toContain('ord-sctf-terrazas');
+    expect(porTermino('zbe')).toContain('ord-sctf-zbe');
+    expect(porTermino('zona de bajas emisiones')).toContain('ord-sctf-zbe');
   });
 });
