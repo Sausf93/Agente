@@ -48,14 +48,32 @@ probará la beta en iPhone. Precio previsto 2,99 €/mes; primero beta gratis en
 ## Estado técnico (2026-09-09)
 - Monorepo pnpm: `apps/mobile` (Expo SDK 57 + RN + TS), `packages/shared` (Zod), `packages/content-pipeline`
   (ingesta BOE → paquete SQLite). Contenido offline en `apps/mobile/assets/content/contenido-0.1.0.db`.
-- 26 normas (articulado completo del BOE), **105 infracciones** (todas pendiente_revision), 4 capas.
-- Suite verde (~466 mobile, ~232 content-pipeline, ~199 shared). Todo en `main` y en GitHub
+- 26 normas (articulado completo del BOE), **109 infracciones** (todas pendiente_revision), 4 capas.
+- Suite verde (~468 mobile, ~231 content-pipeline, ~199 shared). Todo en `main` y en GitHub
   (https://github.com/Sausf93/Agente). Publicado en Expo canal `preview`.
 
+## Sesión de mudanza + mejora autónoma (2026-09-09, tarde)
+Tras mover el repo de `C:\Users\Public\Agente` a `Documents\Saulo\repos\Agente` (mudanza segura,
+copia antigua borrada, identidades git personal/trabajo configuradas por repo), se hizo:
+- **Ola 2 de Transporte revisada y publicada** (estaba pendiente); exceso de dimensiones retirado
+  (era tráfico, no LOTT). 105 → 104 infracciones.
+- **Evaluación de 4 agentes** (Local/GC/PN + diseño) usando la app como cada cuerpo → detectó dos
+  quejas reales del fundador y un backlog (ver `ESTADO-HANDOFF.md`).
+- **4 rondas de UX de Normas** (todas publicadas): franja "solicitar normativa" honesta y por cuerpo
+  (GC/PN ya no la ven, sin share a terceros); el detalle de materia y el índice muestran las FICHAS
+  (Seguridad Ciudadana ya no parece vacía); Ajustes ya no pierde el municipio.
+- **5 olas de contenido, cada una vía `revisor-juridico`** (104 → 109 infracciones): sinónimos (A),
+  Lesiones agravadas 148 (B), Extranjería trabajar sin autorización 53.1.b (C), Abandono del lugar
+  del accidente 382 bis (D), Coacciones 172 + Receptación 298 (E).
+- **Lección**: los agentes EXAGERAN los huecos (estafa, falsedad, reunión, botellón, temeraria penal
+  YA existían). Verificar siempre contra el seed antes de crear una ficha.
+
 ## Lo siguiente (empezar por aquí)
-1. **Revisor de la Ola 2 de Transporte** (commit 59321bd) y, tras corregir, publicar en Expo (aún no
-   publicada porque no ha pasado el revisor).
-2. Olas 3-4 del catálogo (Seguridad Ciudadana/Penal a fondo; Armas/Extranjería/Animales) + el
-   **derivador LSV** (Anexo II/IV + arts. 76-80) para dar volumen fiable de golpe.
-3. Construir **"Explorar por temas"** (los submenús) cuando los sub-temas tengan densidad.
-4. Usuario: pagar Apple + TestFlight con el socio; probar audio/gestos en el iPhone.
+1. **Backlog de la evaluación de calle** en `ESTADO-HANDOFF.md`. Contenido de más retorno pendiente:
+   Armas administrativas (RA, ojo: encaje sancionador vía LOSC/RA, murky), más fichas penales de nicho.
+2. **Features grandes** (necesitan decisión del fundador): **Mapa + Punto Kilométrico** offline con
+   volcado al atestado (razón nº1-2 del GC de Tráfico para pagar); alcoholemia guiada en una pantalla;
+   documentos de PN (acta de lectura de derechos 520 LECrim).
+3. Olas 3-4 del catálogo + el **derivador LSV** (Anexo II/IV + arts. 76-80) para volumen de golpe.
+4. Usuario: pagar Apple + TestFlight con el socio; probar audio/gestos en el iPhone; que el cofundador
+   GC valide en la beta el lote de contenido nuevo (todo `pendiente_revision` / "Borrador beta").
