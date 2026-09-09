@@ -196,14 +196,17 @@ function norma(
 }
 
 describe('materiaDeNorma', () => {
-  // Los 23 códigos REALES del catálogo/seeds actual → su materia esperada (mapa interino en la app).
+  // Los 26 códigos REALES del catálogo/seeds actual → su materia esperada (mapa interino en la app).
   const casos: Array<[string, Materia]> = [
-    // Estatales (14).
+    // Estatales (17).
     ['RGC', 'trafico'],
     ['LSV', 'trafico'],
     ['RGV', 'trafico'],
     ['LRCSCVM', 'trafico'],
     ['LOTT', 'trafico'],
+    ['RGCond', 'trafico'],
+    ['REPC', 'trafico'],
+    ['RSORC', 'trafico'],
     ['LOSC', 'seguridad'],
     ['CP', 'penal'],
     ['LECrim', 'penal'],

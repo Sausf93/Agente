@@ -83,6 +83,52 @@ export const CATALOGO_TRAFICO: Record<string, EntradaCatalogo> = {
     cuerpos: CUERPOS_TRAFICO,
     implementada: true,
   },
+  RGCond: {
+    // Reglamento General de Conductores (RD 818/2009): permisos y licencias, vigencia, canjes y
+    // el permiso por puntos. Es el tile "R. Conductores" de la app de referencia. Vigente
+    // (consolidada verificada en el BOE, última actualización 2023).
+    codigo: 'RGCond',
+    idBoe: 'BOE-A-2009-9481',
+    tipo: 'reglamento',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TRAFICO,
+    implementada: true,
+  },
+  LOTT: {
+    // Ley de Ordenación de los Transportes Terrestres (Ley 16/1987): transporte por carretera,
+    // tacógrafo/tiempos de conducción, masas y régimen sancionador. El seed la declaraba con
+    // id = idBoe y solo 3 artículos de referencia; al enriquecer se le añade su articulado
+    // COMPLETO (mismo id). Vigente (consolidada verificada en el BOE).
+    codigo: 'LOTT',
+    idBoe: 'BOE-A-1987-17803',
+    tipo: 'ley',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TRAFICO,
+    implementada: true,
+  },
+  REPC: {
+    // Reglamento regulador de las escuelas particulares de conductores (RD 1295/2003): autoescuelas.
+    // Es el tile "Escuela de conductores" de la app de referencia. Vigente (consolidada verificada
+    // en el BOE, última actualización 2025).
+    codigo: 'REPC',
+    idBoe: 'BOE-A-2003-19801',
+    tipo: 'reglamento',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TRAFICO,
+    implementada: true,
+  },
+  RSORC: {
+    // Reglamento del seguro obligatorio de responsabilidad civil en la circulación de vehículos a
+    // motor (RD 1507/2008): desarrolla la LRCSCVM (tile "Seguro obligatorio" de la app de
+    // referencia). Vigente en su mayor parte (arts. 1, 2 y 14.3 derogados por leyes posteriores);
+    // la consolidada del BOE ya refleja esas derogaciones.
+    codigo: 'RSORC',
+    idBoe: 'BOE-A-2008-14915',
+    tipo: 'reglamento',
+    ambito: 'estatal',
+    cuerpos: CUERPOS_TRAFICO,
+    implementada: true,
+  },
 };
 
 /**
@@ -169,6 +215,10 @@ export const ENTRADAS_A_ENRIQUECER: EntradaCatalogo[] = [
   CATALOGO_TRAFICO.LSV!,
   CATALOGO_TRAFICO.RGV!,
   CATALOGO_TRAFICO.LRCSCVM!,
+  CATALOGO_TRAFICO.RGCond!,
+  CATALOGO_TRAFICO.LOTT!,
+  CATALOGO_TRAFICO.REPC!,
+  CATALOGO_TRAFICO.RSORC!,
   CATALOGO_PENAL.CP!,
   CATALOGO_PENAL.LECrim!,
   CATALOGO_PENAL.LOSC!,

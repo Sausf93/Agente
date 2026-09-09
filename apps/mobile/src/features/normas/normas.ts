@@ -284,7 +284,7 @@ export const MATERIA_ORDEN: readonly Materia[] = (Object.keys(MATERIA_INFO) as M
 );
 
 /**
- * Mapa de código estatal EXACTO → materia. Cubre los 14 códigos estatales del catálogo actual.
+ * Mapa de código estatal EXACTO → materia. Cubre los 17 códigos estatales del catálogo actual.
  * AJUSTE respecto al spec: no hay materia "Transporte"; el transporte por carretera (LOTT) va a
  * `trafico`, que es el cajón completo de tráfico y seguridad vial.
  */
@@ -294,6 +294,9 @@ const MATERIA_POR_CODIGO: Record<string, Materia> = {
   RGV: 'trafico',
   LRCSCVM: 'trafico',
   LOTT: 'trafico',
+  RGCond: 'trafico', // Reglamento General de Conductores (RD 818/2009)
+  REPC: 'trafico', // Reglamento de escuelas particulares de conductores (RD 1295/2003)
+  RSORC: 'trafico', // Reglamento del seguro obligatorio de RC (RD 1507/2008)
   LOSC: 'seguridad',
   CP: 'penal',
   LECrim: 'penal',
