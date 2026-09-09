@@ -1,5 +1,13 @@
 # Agente — app para Fuerzas y Cuerpos de Seguridad (España)
 
+> **AL EMPEZAR UNA SESIÓN NUEVA, LEE PRIMERO (retoma el trabajo sin perder el hilo):**
+> 1. `docs/CONVERSACION-RESUMEN.md` — resumen de todo lo hecho con Claude y el porqué.
+> 2. `docs/ESTADO-HANDOFF.md` — estado actual, cómo arrancar y el SIGUIENTE PASO.
+> 3. `docs/paridad-spplb.md` — plan de contenido frente a SPPLB (olas).
+>
+> Pendiente inmediato: pasar la **Ola 2 de Transporte** (commit 59321bd, en `main`) por el
+> `revisor-juridico` y, tras corregir, publicar en Expo (aún no publicada).
+
 Lee `docs/ESPECIFICACION.md` antes de cualquier tarea. Es la fuente de verdad del producto.
 Lee `docs/PLANIFICACION.md` para el plan maestro y el estado actual de construcción.
 
