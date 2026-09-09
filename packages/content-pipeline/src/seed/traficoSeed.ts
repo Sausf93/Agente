@@ -354,6 +354,21 @@ const ART_CP_384 = articuloSeed({
     'renovar), que es sanción administrativa (art. 77 LSV). Resumen orientativo; consúltese el BOE.',
 });
 
+const ART_CP_382_BIS = articuloSeed({
+  normaId: ID_CP,
+  numero: '382 bis',
+  titulo: 'Abandono del lugar del accidente (delito contra la seguridad vial)',
+  texto:
+    'Castiga como delito que el conductor, voluntariamente y sin que concurra riesgo propio o de ' +
+    'terceros, abandone el lugar de los hechos tras causar un accidente en el que fallezca una o varias ' +
+    'personas o se cause alguna de las lesiones de los arts. 147.1, 149 o 150 CP. Se distingue de la ' +
+    'omisión del deber de ' +
+    'socorro (art. 195): aquí se castiga la HUIDA del lugar, aunque no hubiera a quién socorrer (p. ej. ' +
+    'para eludir el control de alcohol o drogas), y ambos delitos pueden concurrir. La pena es mayor si ' +
+    'el accidente se debió a imprudencia del conductor que si fue fortuito, y lleva privación del ' +
+    'derecho a conducir. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_RGC_14 = articuloSeed({
   normaId: ID_RGC,
   numero: '14',
@@ -766,6 +781,7 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_CP_379,
   ART_CP_379_1,
   ART_CP_384,
+  ART_CP_382_BIS,
   ART_CP_383,
   ART_CP_380,
 ];
@@ -1449,6 +1465,61 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'suele ser administrativo. Redacción de la detención a validar por el revisor jurídico (§4.6, ' +
       'lenguaje NUNCA imperativo). No lleva importe (vía penal). CONFIRMADO por fuente oficial el ' +
       'texto del art. 384 CP (tres supuestos y pena); revisar antes de publicar.',
+  }),
+  // --- Abandono del lugar del accidente (382 bis): distinto de la omisión de socorro del 195 -----
+  construirInfraccion({
+    id: 'del-abandono-accidente',
+    articulo: ART_CP_382_BIS,
+    tituloCorto: 'Abandono del lugar del accidente (delito)',
+    gravedad: 'delito',
+    tipo: 'penal',
+    importeEur: null,
+    importeReducidoEur: null,
+    puntos: null,
+    penaTexto:
+      'Prisión de 6 meses a 4 años y privación del derecho a conducir de 1 a 4 años si el accidente lo ' +
+      'causó la imprudencia del conductor; prisión de 3 a 6 meses y privación de 6 meses a 2 años si fue ' +
+      'fortuito (art. 382 bis CP). A verificar',
+    gravedadPenal: 'menos_grave',
+    textoBoletin:
+      'Es DELITO (art. 382 bis CP) que el conductor abandone voluntariamente el lugar del accidente, sin ' +
+      'que concurra riesgo propio o de terceros, tras haber causado un accidente en el que fallece una o ' +
+      'varias personas o se causa alguna de las lesiones de los arts. 147.1, 149 o 150 CP (las que ' +
+      'requieren tratamiento médico o quirúrgico, o causan deformidad o pérdida de un órgano o miembro). ' +
+      'Abandonar tras un accidente con SOLO daños materiales NO es este delito. Se distingue de la omisión ' +
+      'del deber de socorro (art. 195, ver ficha `del-omision-socorro`): aquí se castiga la HUIDA del lugar ' +
+      'aunque no hubiera a quién socorrer (p. ej. para eludir el control de alcohol o drogas), y ambos ' +
+      'delitos pueden concurrir. La pena es mayor si el accidente se debió a imprudencia del conductor. ' +
+      'Procede instruir ATESTADO. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'abandono del lugar del accidente',
+      'se fue tras el accidente',
+      'huyo tras el choque',
+      'positivo y se va',
+      'se fuga tras el accidente',
+      'abandonar el accidente',
+      'huir del accidente',
+      'se marcho del accidente',
+    ],
+    consecuencias: [
+      {
+        tipo: 'detencion',
+        textoCorto:
+          'Ante un delito flagrante procede valorar la detención conforme a los arts. 490 y 492 LECrim; ' +
+          'la valoración de los indicios y del riesgo corresponde al agente y, en su caso, a la autoridad ' +
+          'judicial.',
+        fuente: 'CP art. 382 bis; LECrim arts. 490 y 492',
+      },
+    ],
+    marcoImporte: 'penal',
+    notaRevision:
+      'A VERIFICAR contra el texto consolidado del CP: el art. 382 bis (redacción vigente de la LO 11/2022) ' +
+      'exige que el accidente haya causado la MUERTE de una o varias personas o alguna de las lesiones de ' +
+      'los arts. 147.1, 149 y 150 CP, y que el abandono sea voluntario y sin riesgo propio o de terceros. Penas: por imprudencia del ' +
+      'conductor → prisión 6 meses-4 años + privación 1-4 años; fortuito → prisión 3-6 meses + privación ' +
+      '6 meses-2 años (MENOS GRAVE en ambos, art. 33.3). Distinguir de la omisión del deber de socorro ' +
+      '(art. 195, `del-omision-socorro`), con la que puede concurrir. El abandono tras accidente con SOLO ' +
+      'daños materiales NO es este delito (vía administrativa/civil). Confirmar penas y encaje.',
   }),
   construirInfraccion({
     id: 'inf-estacionamiento-indebido',

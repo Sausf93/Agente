@@ -98,6 +98,24 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
      parecer vacía). `listarInfraccionesDeMateria` + `MateriaDetalleScreen.tsx`.
   3. La tarjeta del índice muestra **"N normas · M fichas"**. `contarInfraccionesPorMateria` + `MateriasScreen.tsx`.
 
+### YA HECHO en el run autónomo (2026-09-09, tras reinicio) — commit + push + Expo, contenido con revisor
+- **UX Ajustes** (`70d07fb`): el municipio ya no se pierde al volver atrás (input controlado).
+- **Ola A · Buscador** (`a92a2b7`): +11 sinónimos de calle a fichas existentes (ADR por clase, erratas
+  alcolemia/patinet/estacionamento, mani/concentracion). Sin revisor (no es dato legal, solo búsqueda).
+- **Ola B · Penal** (`443b287`): ficha `del-lesiones-agravadas` (art. 148 CP), pasada por `revisor-juridico`
+  y corregida (faltaba "o alevosía" en 148.2º; 148.4º es "esposa o mujer…"; "física o psíquica"; "navajazo"
+  en 147 y 148 porque el 148 es potestativo).
+- **Ola C · Extranjería** (`60037e7`): ficha `ext-trabajo-sin-autorizacion` (art. 53.1.b LOEX), revisada
+  (canal Inspección de Trabajo art. 55.2; la carga sancionadora fuerte recae en el empleador 54.1.d).
+- **Ola D · Tráfico penal**: ficha `del-abandono-accidente` (art. 382 bis CP), revisada (penas confirmadas
+  exactas; corregida la remisión de la lesión a los arts. 147.1/149/150 —no al 152.2— tras la LO 11/2022).
+- **NOTA DE MÉTODO (importante)**: varias "carencias" que reportaron los agentes NO eran reales —
+  `del-estafa`, `del-falsedad-documental`, la reunión (LOSC), el botellón y "PN arranca con filtro" YA
+  existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
+  EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
+  la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
+- Paquete: **107 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis).
+
 ### BACKLOG priorizado de la evaluación de calle (4 agentes) — SIGUIENTE
 Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar sin revisor).
 - **Contenido (mayor retorno):**

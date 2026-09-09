@@ -295,6 +295,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '379.1',
       '379.2',
       '380',
+      '382 bis',
       '383',
       '384',
       '392',
