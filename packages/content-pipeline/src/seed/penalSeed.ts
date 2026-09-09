@@ -112,6 +112,19 @@ const ART_CP_147 = articuloCp({
     'maltrato de obra sin causar lesión se castigan con pena leve. Resumen orientativo.',
 });
 
+const ART_CP_148 = articuloCp({
+  numero: '148',
+  titulo: 'Lesiones agravadas',
+  texto:
+    'Las lesiones del art. 147.1 podrán castigarse con prisión de dos a cinco años, atendiendo al ' +
+    'resultado causado o al riesgo producido, cuando concurra alguna agravación: haberse utilizado en la ' +
+    'agresión armas, instrumentos, objetos, medios, métodos o formas concretamente peligrosos para la ' +
+    'vida o la salud, física o psíquica, del lesionado; ensañamiento o alevosía; ser la víctima menor de ' +
+    'catorce años o persona con discapacidad necesitada de especial protección; ser o haber sido la ' +
+    'víctima esposa o mujer ligada al autor por análoga relación de afectividad, aun sin convivencia; o ' +
+    'ser una persona especialmente vulnerable que conviva con el autor. Resumen orientativo.',
+});
+
 const ART_CP_468 = articuloCp({
   numero: '468',
   titulo: 'Quebrantamiento de condena, medida cautelar o de seguridad',
@@ -339,6 +352,7 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_234,
   ART_CP_242,
   ART_CP_147,
+  ART_CP_148,
   ART_CP_468,
   ART_CP_550,
   ART_CP_368,
@@ -557,6 +571,51 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'MENOS GRAVE. Los supuestos de menor entidad (art. 147.2) y el maltrato de obra sin lesión ' +
       '(art. 147.3) son DELITO LEVE (multa de 1 a 3 / de 1 a 2 meses) y cambiarían la rama de ' +
       'detención al art. 495 LECrim. Confirmar penas y subtipo contra el texto consolidado del CP.',
+  }),
+  // --- Lesiones AGRAVADAS (art. 148): arma/medio peligroso, ensañamiento, víctima menor/vulnerable ---
+  construirDelito({
+    id: 'del-lesiones-agravadas',
+    articulo: ART_CP_148,
+    tituloCorto: 'Lesiones agravadas (arma o medio peligroso)',
+    // Art. 148: prisión de 2 a 5 años → MENOS GRAVE (tope del menos grave, art. 33.3 CP).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 2 a 5 años (lesiones del art. 147.1 agravadas por el art. 148 CP). A verificar',
+    textoBoletin:
+      'Causar a otra persona una lesión que requiere tratamiento médico o quirúrgico (art. 147.1) ' +
+      'concurriendo una circunstancia que la agrava (art. 148 CP): haberse usado en la agresión armas, ' +
+      'instrumentos, objetos, medios, métodos o formas concretamente peligrosos para la vida o la salud, ' +
+      'física o psíquica; ensañamiento o alevosía; ser la víctima menor de catorce años o persona con ' +
+      'discapacidad necesitada de especial protección; ser o haber sido la víctima esposa o mujer ligada ' +
+      'al autor por análoga relación de afectividad, aun sin convivencia; o ser una persona especialmente ' +
+      'vulnerable que conviva con el autor. La apreciación de la agravante y la calificación final ' +
+      'corresponden a la autoridad judicial.',
+    terminos: [
+      'lesiones con arma',
+      'agresion con arma',
+      'agresion con arma blanca',
+      'navajazo',
+      'cuchillada',
+      'puñalada',
+      'le pego con un palo',
+      'le dio con una botella',
+      'lesiones con objeto peligroso',
+      'lesiones a un menor',
+      'agresion con ensañamiento',
+      'paliza con ensañamiento',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la agravante: el art. 148 CP eleva las lesiones del art. 147.1 a ' +
+      'prisión de 2 a 5 años (potestativo, "podrán ser castigadas") cuando concurren armas/medios ' +
+      'peligrosos para la vida o salud física o psíquica (148.1º), ensañamiento o alevosía (148.2º), ' +
+      'víctima menor de 14 años o con discapacidad necesitada de especial protección (148.3º), víctima ' +
+      'esposa o mujer ligada al autor por análoga relación de afectividad, aun sin convivencia (148.4º), o ' +
+      'persona especialmente vulnerable conviviente (148.5º). Sigue siendo MENOS GRAVE (≤ 5 años, art. 33.3). ' +
+      'Distinguir de las lesiones básicas del art. 147.1 (`del-lesiones`), de las lesiones graves de los ' +
+      'arts. 149-150 (deformidad, pérdida de órgano o miembro → GRAVE) y del maltrato del art. 153 ' +
+      '(violencia de género/doméstica sin lesión que requiera tratamiento). "navajazo"/"cuchillada" figuran ' +
+      'en AMBAS fichas (147.1 y 148): el arma blanca es medio peligroso del 148.1º, pero el 148 es ' +
+      'potestativo y la calificación final es judicial. Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
   construirDelito({
     id: 'del-quebrantamiento',
