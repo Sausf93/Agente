@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { Building2, ChevronRight, Landmark, Send } from 'lucide-react-native';
 import { ccaaPorId } from '@agente/shared';
@@ -69,58 +69,72 @@ export function FranjaTerritorial({
   const municipioId = useSettingsStore((s) => s.municipioId);
   const municipioNombre = useSettingsStore((s) => s.municipioNombre);
   const addFeedback = useFeedbackStore((s) => s.add);
-  const enviarPendientes = useFeedbackStore((s) => s.sendPending);
+  const feedbackItems = useFeedbackStore((s) => s.items);
+  const feedbackLoaded = useFeedbackStore((s) => s.loaded);
+  const loadFeedback = useFeedbackStore((s) => s.load);
+
+  // Las peticiones se guardan como feedback LOCAL; cargamos la lista para no duplicar y para poder
+  // mostrar el estado "en lista de espera".
+  useEffect(() => {
+    if (!feedbackLoaded) void loadFeedback();
+  }, [feedbackLoaded, loadFeedback]);
 
   const ccaaNombre = useMemo(() => (ccaaId ? (ccaaPorId(ccaaId)?.nombre ?? null) : null), [ccaaId]);
 
-  const puedeSolicitarAutonomica = ccaaId !== null && !hayAutonomica;
-  const puedeSolicitarMunicipal = municipioId !== null && !hayMunicipal;
+  // La normativa autonómica/municipal la trabajan los cuerpos TERRITORIALES: a Guardia Civil y
+  // Policía Nacional (marco estatal) esta franja les sería ruido, así que NO se muestra (feedback
+  // coincidente de los tres cuerpos). Lo municipal es propio del Local.
+  const cuerpoTrabajaAutonomica = cuerpo === 'policia_local' || cuerpo === 'policia_autonomica';
+  const puedeSolicitarAutonomica = cuerpoTrabajaAutonomica && ccaaId !== null && !hayAutonomica;
+  const puedeSolicitarMunicipal =
+    cuerpo === 'policia_local' && municipioId !== null && !hayMunicipal;
+
+  const territorioAutonomico = ccaaNombre?.trim() || 'mi comunidad';
+  const territorioMunicipal = municipioNombre?.trim() || 'mi municipio';
+  const yaEnListaAutonomica = feedbackItems.some(
+    (f) => f.tipo === 'sugerencia' && f.territorio === territorioAutonomico,
+  );
+  const yaEnListaMunicipal = feedbackItems.some(
+    (f) => f.tipo === 'sugerencia' && (f.territorio ?? '').startsWith(territorioMunicipal),
+  );
 
   const [solicitandoAutonomica, setSolicitandoAutonomica] = useState(false);
   const [solicitandoMunicipal, setSolicitandoMunicipal] = useState(false);
 
+  // IMPORTANTE: la petición se REGISTRA en el dispositivo y NO se envía a nadie (nada de mailto ni
+  // de hoja de compartir a terceros, que confundía —"se lo puedo mandar a quien sea"—). El envío
+  // opcional a los creadores vive aparte, en Más › Mis sugerencias.
   async function solicitarNormativaAutonomica() {
-    if (solicitandoAutonomica) return;
+    if (solicitandoAutonomica || yaEnListaAutonomica) return;
     setSolicitandoAutonomica(true);
     hapticSelection();
     try {
-      const { texto, territorio } = construirSolicitudNormativaAutonomica(
-        ccaaNombre ?? 'mi comunidad',
-      );
+      const { texto, territorio } = construirSolicitudNormativaAutonomica(territorioAutonomico);
       await addFeedback({ tipo: 'sugerencia', texto, territorio, ...(cuerpo ? { cuerpo } : {}) });
-      const resultado = await enviarPendientes();
       Alert.alert(
-        'Solicitud registrada',
-        resultado === 'cancelled'
-          ? 'La hemos guardado. Puedes enviárnosla cuando quieras desde Más › Mis sugerencias.'
-          : 'Gracias. La tendremos en cuenta para priorizar tu comunidad.',
+        'Anotado en tu móvil',
+        `Cuando ampliemos ${territorio}, lo verás en la app. Puedes gestionarlo en Más › Mis sugerencias. No se envía nada a nadie.`,
       );
     } catch {
-      Alert.alert('No se pudo registrar', 'Inténtalo de nuevo en un momento.');
+      Alert.alert('No se pudo anotar', 'Inténtalo de nuevo en un momento.');
     } finally {
       setSolicitandoAutonomica(false);
     }
   }
 
   async function solicitarOrdenanza() {
-    if (solicitandoMunicipal) return;
+    if (solicitandoMunicipal || yaEnListaMunicipal) return;
     setSolicitandoMunicipal(true);
     hapticSelection();
     try {
-      const { texto, territorio } = construirSolicitudOrdenanza(
-        municipioNombre ?? 'mi municipio',
-        ccaaNombre,
-      );
+      const { texto, territorio } = construirSolicitudOrdenanza(territorioMunicipal, ccaaNombre);
       await addFeedback({ tipo: 'sugerencia', texto, territorio, ...(cuerpo ? { cuerpo } : {}) });
-      const resultado = await enviarPendientes();
       Alert.alert(
-        'Solicitud registrada',
-        resultado === 'cancelled'
-          ? 'La hemos guardado. Puedes enviárnosla cuando quieras desde Más › Mis sugerencias.'
-          : 'Gracias. La tendremos en cuenta para priorizar tu municipio.',
+        'Anotado en tu móvil',
+        `Cuando carguemos ${territorio}, lo verás en la app. Puedes gestionarlo en Más › Mis sugerencias. No se envía nada a nadie.`,
       );
     } catch {
-      Alert.alert('No se pudo registrar', 'Inténtalo de nuevo en un momento.');
+      Alert.alert('No se pudo anotar', 'Inténtalo de nuevo en un momento.');
     } finally {
       setSolicitandoMunicipal(false);
     }
@@ -134,11 +148,25 @@ export function FranjaTerritorial({
         <BloqueSolicitud
           t={t}
           icon={<Landmark size={18} color={t.color.accent} strokeWidth={2.2} />}
-          encabezado={`Tu comunidad: ${ccaaNombre?.trim() || 'tu comunidad'}`}
-          titulo={`La normativa de ${ccaaNombre?.trim() || 'tu comunidad'} aún no está cargada`}
-          mensaje="Estamos ampliando comunidad a comunidad. Pídenos la tuya y la priorizaremos; solo enviaremos el nombre de la comunidad, nada más."
-          boton={solicitandoAutonomica ? 'Enviando…' : 'Solicitar la normativa de mi comunidad'}
-          enviando={solicitandoAutonomica}
+          encabezado={`Tu comunidad: ${territorioAutonomico}`}
+          titulo={
+            yaEnListaAutonomica
+              ? `Anotada · te avisaremos cuando esté ${territorioAutonomico}`
+              : `La normativa de ${territorioAutonomico} aún no está cargada`
+          }
+          mensaje={
+            yaEnListaAutonomica
+              ? 'Ya está en tu lista. Cuando la publiquemos, aparecerá aquí. Puedes gestionarla en Más › Mis sugerencias.'
+              : 'Estamos ampliando comunidad a comunidad. Anótala y la priorizaremos; se guarda en tu móvil, no se envía a nadie.'
+          }
+          boton={
+            yaEnListaAutonomica
+              ? 'En lista de espera ✓'
+              : solicitandoAutonomica
+                ? 'Anotando…'
+                : 'Avísame cuando esté disponible'
+          }
+          enviando={solicitandoAutonomica || yaEnListaAutonomica}
           onSolicitar={solicitarNormativaAutonomica}
         />
       ) : null}
@@ -146,11 +174,25 @@ export function FranjaTerritorial({
         <BloqueSolicitud
           t={t}
           icon={<Building2 size={18} color={t.color.accent} strokeWidth={2.2} />}
-          encabezado={`Tu municipio: ${municipioNombre?.trim() || 'tu municipio'}`}
-          titulo={`La ordenanza de ${municipioNombre?.trim() || 'tu municipio'} aún no está cargada`}
-          mensaje="Estamos ampliando municipio a municipio. Pídenos el tuyo y lo priorizaremos; solo enviaremos el municipio y la comunidad, nada más."
-          boton={solicitandoMunicipal ? 'Enviando…' : 'Solicitar mi ordenanza'}
-          enviando={solicitandoMunicipal}
+          encabezado={`Tu municipio: ${territorioMunicipal}`}
+          titulo={
+            yaEnListaMunicipal
+              ? `Anotada · te avisaremos cuando esté ${territorioMunicipal}`
+              : `La ordenanza de ${territorioMunicipal} aún no está cargada`
+          }
+          mensaje={
+            yaEnListaMunicipal
+              ? 'Ya está en tu lista. Cuando la carguemos, aparecerá aquí. Puedes gestionarla en Más › Mis sugerencias.'
+              : 'Estamos ampliando municipio a municipio. Anótalo y lo priorizaremos; se guarda en tu móvil, no se envía a nadie.'
+          }
+          boton={
+            yaEnListaMunicipal
+              ? 'En lista de espera ✓'
+              : solicitandoMunicipal
+                ? 'Anotando…'
+                : 'Avísame cuando esté disponible'
+          }
+          enviando={solicitandoMunicipal || yaEnListaMunicipal}
           onSolicitar={solicitarOrdenanza}
         />
       ) : null}
