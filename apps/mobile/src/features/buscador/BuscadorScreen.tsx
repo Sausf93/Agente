@@ -59,8 +59,6 @@ export function BuscadorScreen() {
   const municipioNombre = useSettingsStore((s) => s.municipioNombre);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Autofoco solo en arranque en frío (sin texto previo). No se re-enfoca al volver de una ficha.
-  const autoFocusInicial = useRef(consulta.trim().length === 0).current;
 
   // Debounce: se ejecuta la búsqueda un poco después de la última tecla.
   useEffect(() => {
@@ -95,10 +93,11 @@ export function BuscadorScreen() {
     <View style={{ flex: 1, backgroundColor: t.color.bg }}>
       <ScreenHeader title="Buscar">
         {/* Sin micrófono en la beta: la búsqueda por voz aún no existe (P2-15) y prometerla resta. */}
+        {/* Sin autoFocus al abrir la app: el teclado NO sube solo; solo cuando el agente toca la
+            barra (evita que abrir la app fuerce el teclado si solo quiere ver el cuadrante). */}
         <SearchBar
           value={consulta}
           onChangeText={setConsulta}
-          autoFocus={autoFocusInicial}
         />
       </ScreenHeader>
 

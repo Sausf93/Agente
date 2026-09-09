@@ -10,7 +10,8 @@ import { useReduceMotion } from '@/ui/motion';
  * Barra de búsqueda (02-ui.md §5.1) — el buscador ES el producto (mejoras-usabilidad P0-3).
  *
  * Novedades de dinamismo:
- *  - `autoFocus` en arranque en frío: el teclado ya sube y el cursor está listo (01-ux F2).
+ *  - `autoFocus` OPCIONAL (por defecto `false`): la app NO sube el teclado sola al abrirse; el foco
+ *    solo se produce cuando el agente toca la barra. Se puede activar por prop donde tenga sentido.
  *  - PLACEHOLDER rotatorio con ejemplos "de calle" (fade cada ~3 s; estático con reduce-motion).
  *  - Botón de MICRÓFONO OCULTO por defecto: la voz llega en un dev build (P2-15). En la beta no se
  *    pinta para no prometer algo que no está (promete-y-no-está resta). Se activa con `showMic`

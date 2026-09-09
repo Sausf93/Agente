@@ -15,6 +15,11 @@ export default function NormasLayout() {
         headerTintColor: t.color.accent,
         headerTitleStyle: { color: t.color.textPrimary },
         contentStyle: { backgroundColor: t.color.bg },
+        // Toda la pila de Normas (materia → norma → artículo) entra desde la derecha y vuelve con
+        // el swipe de borde izquierdo → derecha (gesto estándar de iOS), coherente con el resto.
+        presentation: 'card',
+        animation: 'slide_from_right',
+        gestureEnabled: true,
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Normas' }} />

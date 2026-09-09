@@ -68,10 +68,11 @@ export default function RootLayout() {
           name="ajustes"
           options={{ headerShown: true, title: 'Ajustes', presentation: 'card' }}
         />
-        {/* La ficha se presenta como modal: gesto de arrastrar hacia abajo para cerrarla (P1-9). */}
+        {/* La ficha entra desde la derecha (card) y se cierra con el gesto estándar de iOS: swipe
+            desde el borde izquierdo hacia la derecha (antes era modal con arrastre vertical). */}
         <Stack.Screen
           name="ficha/[id]"
-          options={{ headerShown: true, title: 'Infracción', presentation: 'modal', gestureEnabled: true }}
+          options={{ headerShown: true, title: 'Infracción', presentation: 'card', gestureEnabled: true }}
         />
         <Stack.Screen
           name="feedback"
