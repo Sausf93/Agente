@@ -206,8 +206,22 @@ export default function AjustesScreen() {
           </Text>
           <TextInput
             accessibilityLabel="Municipio"
-            defaultValue={municipioNombre ?? ''}
+            value={municipioNombre ?? ''}
+            onChangeText={(text) => {
+              // Controlado y persistido en CADA cambio: si el usuario vuelve atrás con el gesto sin
+              // desenfocar, el municipio NO se pierde (antes era un input no controlado con
+              // `onEndEditing`, que solo guardaba al desenfocar). Se guarda el texto crudo para poder
+              // teclear espacios; el slug de emparejamiento con la ordenanza usa el `trim`.
+              const trimmed = text.trim();
+              void setTerritorio({
+                ccaaId: ccaaActual,
+                provinciaId,
+                municipioId: trimmed ? slugMunicipio(trimmed) : null,
+                municipioNombre: text.length > 0 ? text : null,
+              });
+            }}
             onEndEditing={(e) => {
+              // Al desenfocar, normaliza (quita espacios sobrantes) para dejar el valor limpio.
               const nombre = e.nativeEvent.text.trim();
               void setTerritorio({
                 ccaaId: ccaaActual,
