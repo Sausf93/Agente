@@ -17,6 +17,14 @@ Windows o de máquina) continúe el trabajo sin perder contexto. Complementa a
 5. Puerta de calidad antes de tocar nada: `corepack pnpm lint`, `corepack pnpm -r typecheck` (3 Done),
    `corepack pnpm -r test` (verde).
 
+### Identidades de git/GitHub en esta máquina (usuario `SaulodelaSantacruz`) — IMPORTANTE
+El PC tiene DOS cuentas: la **personal** (dueña del repo, GitHub `Sausf93`, `saulodlsf@gmail.com`) y la del
+**trabajo** (`Sausf1993` / capitole-consulting.com), que es la identidad global por defecto. Ya está resuelto
+POR REPO en Agente (config local): commits como `Sausf93 <saulodlsf@gmail.com>` y el remote enruta el push a la
+personal (`https://Sausf93@github.com/...` + `git config credential.username Sausf93`). Si tras clonar/reiniciar
+`git push` da **403 (denied to Sausf1993)**: `gh auth login` con la cuenta personal, o borra la credencial
+`git:https://github.com` en el Administrador de credenciales de Windows y reintenta. Claude NO introduce credenciales.
+
 ### Carpeta compartida entre usuarios del mismo PC (opcional)
 `C:\Users\Public\Agente` es legible/escribible por todos los usuarios del PC (incluidos los NO admin).
 Sirve para que dos usuarios de Windows compartan la MISMA carpeta sin re-clonar. Aviso: `_deploy/`
@@ -64,7 +72,7 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - `SendMessage` a subagentes está deshabilitado: no se puede inyectar a un agente en vuelo → serializar.
 
 ## Estado del producto (2026-09-09)
-- **Contenido**: 26 normas (articulado completo del BOE), **105 infracciones** (todas pendiente_revision),
+- **Contenido**: 26 normas (articulado completo del BOE), **104 infracciones** (todas pendiente_revision),
   sustancias, 4 capas (estatal, autonómica Canarias, municipal SCTF). Tráfico = 10 leyes.
 - **Herramientas**: buscador FTS, Normas **por materia** (materia→ley→artículo), ficha adaptativa
   (consecuencia primero, marco correcto, "Borrador beta"), Documentos **ágil** (genera el acta correcta:
@@ -76,18 +84,42 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - Suite verde: ~466 mobile · ~232 content-pipeline · ~199 shared.
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
-1. **Ola 2 de Transporte (commit 59321bd) AÚN NO ha pasado el revisor** y por eso NO se ha publicado en
-   Expo. Acción: lanzar `revisor-juridico` sobre las 13 infracciones nuevas de transporte de
-   `packages/content-pipeline/src/seed/traficoSeed.ts` (transporte público/privado sin título, viajeros
-   VTC/taxi/plazas, escolar, ADR, perecederas ATP, obligaciones documentales, tacógrafo). Aplicar
-   correcciones → puerta → commit → push → **publicar en Expo** (hasta ahora todas las olas se publican
-   tras el revisor).
-2. Seguir el plan de olas de [`docs/paridad-spplb.md`](./paridad-spplb.md): Ola 3 (Seguridad Ciudadana y
-   Penal a fondo), Ola 4 (Armas RA, Extranjería, Animales). Acelerador: **derivador LSV→catálogo**
-   (Anexo II puntos + Anexo IV velocidad + arts. 76-80) para volumen fiable de golpe.
-3. Construir **"Explorar por temas"** (los submenús estilo SPPLB) cuando los sub-temas tengan densidad
-   (regla anti-vacío: fusionar sub-temas flacos; "en ampliación" solo para allowlist). Spec de diseño ya
-   acordada (materia→sub-tema→lista→ficha, acceso desde el estado vacío de Buscar, NO pestaña nueva).
+
+### YA HECHO el 2026-09-09 (tarde) — todo en `main` y publicado en Expo `preview`
+- **Ola 2 de Transporte revisada y publicada** (commit `879d55e`): `revisor-juridico` + verificación BOE.
+  5 horquillas ajustadas al subtramo del art. 143 LOTT; **visado→leve** (142.1, 301–400 €); **exceso de
+  viajeros** con aviso de escalada a muy grave (140.26); **exceso de dimensiones RETIRADO** (no es LOTT,
+  es tráfico RGV/LSV → reintroducir como ficha de TRÁFICO en una ola futura). Paquete: 105 → **104 infracciones**.
+- **3 rondas de UX** (commits `81f7a2f`, `9bbbbed`, `c790dc7`), a partir de una evaluación simulada de 4
+  agentes (Local/GC/PN + diseño). Publicadas:
+  1. Franja "Solicitar normativa/ordenanza": **gateada por cuerpo** (GC/PN ya no la ven) + **sin Share/mailto
+     a terceros** (registro local honesto, estado "en lista de espera"). `apps/mobile/src/features/normas/normasUi.tsx`.
+  2. El detalle de materia muestra las **fichas de calle**, no solo leyes (Seguridad Ciudadana dejaba de
+     parecer vacía). `listarInfraccionesDeMateria` + `MateriaDetalleScreen.tsx`.
+  3. La tarjeta del índice muestra **"N normas · M fichas"**. `contarInfraccionesPorMateria` + `MateriasScreen.tsx`.
+
+### BACKLOG priorizado de la evaluación de calle (4 agentes) — SIGUIENTE
+Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar sin revisor).
+- **Contenido (mayor retorno):**
+  - **Aparcamiento desglosado** (Local, ~40% de su turno): zona azul, doble fila, vado, PMR, acera, paso de
+    peatones, carga/descarga — cada una con su decisión de grúa. Hoy solo `inf-estacionamiento-indebido`.
+  - **Armas (RA)** y **Extranjería (LOEX)**: hoy solo articulado, sin fichas de infracción propias (GC/PN).
+  - **Penal que falta** (PN): Falsedad documental (390-399), Estafa/uso fraudulento de tarjeta (248/249),
+    Lesiones agravadas (148); hoy sus sinónimos apuntan a vacío.
+  - **Sinónimos de calle**: los 4 agentes dieron listas (aparcamiento; armas por clase/nº ONU; ROTT; etc.).
+  - **Reintroducir exceso de dimensiones** como ficha de TRÁFICO (RGV/LSV), sacada de la Ola 2.
+- **Features:** **Mapa + Punto Kilométrico offline** con volcado al atestado (GC Tráfico: razón nº1-2 para
+  pagar). Alcoholemia guiada en una pantalla. Documentos de PN (acta 520 LECrim, diligencia de detención).
+  Búsqueda por voz.
+- **UX P1 (diseño):** selector de municipio (no texto libre), toasts con deshacer en vez de `Alert`,
+  municipio controlado en Ajustes, "mi ordenanza personal" editable en el dispositivo (Local).
+- Los informes completos de los 4 agentes viven en el transcript de la conversación (`.claude`).
+
+### Seguir el plan de olas
+[`docs/paridad-spplb.md`](./paridad-spplb.md): Ola 3 (Seguridad Ciudadana y Penal a fondo), Ola 4 (Armas RA,
+Extranjería, Animales). Acelerador: **derivador LSV→catálogo** (Anexo II puntos + Anexo IV velocidad +
+arts. 76-80). **"Explorar por temas"** (submenús estilo SPPLB) cuando los sub-temas tengan densidad
+(regla anti-vacío: fusionar sub-temas flacos; "en ampliación" solo para allowlist).
 
 ## Pendiente del usuario (no lo puede hacer Claude)
 - Pagar el Apple Developer Program (99 €) y, con el socio delante, montar el build de TestFlight

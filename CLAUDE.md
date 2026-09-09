@@ -5,8 +5,9 @@
 > 2. `docs/ESTADO-HANDOFF.md` — estado actual, cómo arrancar y el SIGUIENTE PASO.
 > 3. `docs/paridad-spplb.md` — plan de contenido frente a SPPLB (olas).
 >
-> Pendiente inmediato: pasar la **Ola 2 de Transporte** (commit 59321bd, en `main`) por el
-> `revisor-juridico` y, tras corregir, publicar en Expo (aún no publicada).
+> Pendiente inmediato: ver el **BACKLOG** en `docs/ESTADO-HANDOFF.md`. La Ola 2 de Transporte ya se
+> revisó y publicó (2026-09-09); ahora toca el contenido de calle (aparcamiento desglosado, fichas de
+> Armas/Extranjería/Penal, sinónimos) vía `nueva-infraccion` + `revisor-juridico`, y features (Mapa/PK).
 
 Lee `docs/ESPECIFICACION.md` antes de cualquier tarea. Es la fuente de verdad del producto.
 Lee `docs/PLANIFICACION.md` para el plan maestro y el estado actual de construcción.
