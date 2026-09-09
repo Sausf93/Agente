@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 26 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(26);
+  it('siembra 41 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(41);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -295,6 +295,92 @@ describe('SEED_TRAFICO: los sinónimos clave resuelven a su ficha', () => {
       .filter((i) => i.sinonimos.some((s) => s.termino === termino))
       .map((i) => i.infraccion.id);
     expect(duenos).toEqual([id]);
+  });
+});
+
+describe('SEED_TRAFICO: ampliación del catálogo de calle (14 conductas nuevas)', () => {
+  const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+
+  // Las 14 fichas añadidas para que ningún sub-tema (conducta, estado, señales, docs) quede a 1.
+  const IDS_NUEVAS = [
+    'inf-sin-senalizar-maniobra',
+    'inf-carril-reservado',
+    'inf-distancia-seguridad',
+    'inf-claxon-indebido',
+    'inf-circular-arcen',
+    'inf-marcha-atras-indebida',
+    'inf-lunas-tintadas',
+    'inf-escape-ruido',
+    'inf-luces-no-homologadas',
+    'inf-parada-lugar-peligroso',
+    'inf-stop-ceda-el-paso',
+    'inf-prioridad-peatones',
+    'inf-sin-documentacion',
+    'inf-auriculares-conduciendo',
+  ];
+
+  it('las 14 existen, son administrativas y quedan pendientes de revisión con nota', () => {
+    for (const id of IDS_NUEVAS) {
+      const item = find(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('administrativa');
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.length, id).toBeGreaterThan(0);
+    }
+  });
+
+  it('todas validan su importe en el marco tráfico (grave = 200 €, leve ≤ 100 €)', () => {
+    for (const id of IDS_NUEVAS) {
+      const item = find(id)!;
+      expect(validarImporte(item.infraccion, item.marcoImporte), id).toEqual([]);
+      expect(validarMinimosPublicacion(item.infraccion, item.sinonimos.length), id).toEqual([]);
+    }
+  });
+
+  it('citan su artículo del RGC/RGV sembrado (fuente visible en la ficha)', () => {
+    const idsArt = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
+    for (const id of IDS_NUEVAS) {
+      expect(idsArt.has(find(id)!.infraccion.articuloId), id).toBe(true);
+    }
+  });
+
+  // Cada ficha nueva debe resolver por su término clave, y ese término no puede colisionar con
+  // ninguna otra ficha (buscador sin ruido). Son los términos de calle que el agente teclea.
+  it.each([
+    ['sin intermitente', 'inf-sin-senalizar-maniobra'],
+    ['carril vao', 'inf-carril-reservado'],
+    ['distancia de seguridad', 'inf-distancia-seguridad'],
+    ['pitar sin motivo', 'inf-claxon-indebido'],
+    ['circular por el arcen', 'inf-circular-arcen'],
+    ['marcha atras en autovia', 'inf-marcha-atras-autopista'],
+    ['lunas tintadas', 'inf-lunas-tintadas'],
+    ['escape libre', 'inf-escape-ruido'],
+    ['neones', 'inf-luces-no-homologadas'],
+    ['parado en curva', 'inf-parada-lugar-peligroso'],
+    ['se salto el stop', 'inf-stop-ceda-el-paso'],
+    ['no cedio el paso al peaton', 'inf-prioridad-peatones'],
+    ['sin la documentacion', 'inf-sin-documentacion'],
+    ['airpods', 'inf-auriculares-conduciendo'],
+  ])('«%s» resuelve SOLO a %s', (termino, id) => {
+    const duenos = SEED_TRAFICO.infracciones
+      .filter((i) => i.sinonimos.some((s) => s.termino === termino))
+      .map((i) => i.infraccion.id);
+    expect(duenos).toEqual([id]);
+  });
+
+  it('auriculares es GRAVE con 3 puntos (art. 18.2 RGC, dato confirmado)', () => {
+    const item = find('inf-auriculares-conduciendo')!;
+    expect(item.infraccion.gravedad).toBe('grave');
+    expect(item.infraccion.importeEur).toBe(200);
+    expect(item.infraccion.puntos).toBe(3);
+  });
+
+  it('el claxon y la documentación son LEVES (≤ 100 €) — no todo es 200 €', () => {
+    for (const id of ['inf-claxon-indebido', 'inf-sin-documentacion']) {
+      const item = find(id)!;
+      expect(item.infraccion.gravedad, id).toBe('leve');
+      expect(item.infraccion.importeEur!, id).toBeLessThanOrEqual(100);
+    }
   });
 });
 

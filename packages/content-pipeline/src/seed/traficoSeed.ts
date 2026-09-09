@@ -442,6 +442,133 @@ const ART_RGV_25 = articuloSeed({
     'Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// --- Artículos añadidos en la AMPLIACIÓN del catálogo de calle (conducta, estado, señales) ----
+const ART_RGC_109 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '109',
+  titulo: 'Advertencias ópticas: señalización de las maniobras (intermitentes)',
+  texto:
+    'Obliga al conductor a advertir con suficiente antelación, mediante las luces indicadoras de ' +
+    'dirección (intermitentes) o, en su defecto, con el brazo, cualquier maniobra lateral: cambio de ' +
+    'carril, giro, incorporación, adelantamiento, cambio de sentido o salida de una rotonda; y a ' +
+    'mantener la señal hasta terminar la maniobra. No señalizar la maniobra dificulta la previsión del ' +
+    'resto de usuarios y es infracción de circulación (concordante con el art. 44 LSV). Resumen orientativo.',
+});
+
+const ART_RGC_110 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '110',
+  titulo: 'Advertencias acústicas: uso del claxon',
+  texto:
+    'Regula el empleo de las señales acústicas (claxon): solo pueden utilizarse para evitar un ' +
+    'posible accidente, en vías interurbanas para advertir un adelantamiento cuando sea necesario, o ' +
+    'para reclamar auxilio urgente. Se prohíbe su uso inmotivado, excesivo o molesto, así como emplear ' +
+    'aparatos de sonido estridentes o no homologados. Su uso indebido es infracción de circulación. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_54 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '54',
+  titulo: 'Distancia de seguridad entre vehículos',
+  texto:
+    'Exige al conductor dejar entre su vehículo y el que le precede una distancia que le permita ' +
+    'detenerse, sin colisionar, ante un frenazo brusco, atendiendo a la velocidad, las condiciones de ' +
+    'adherencia y frenado y demás circunstancias. Circular sin mantener la distancia de seguridad ' +
+    '(«pegado») es una de las causas más frecuentes de alcance y es infracción grave de circulación. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_56 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '56',
+  titulo: 'Prioridad de paso y señales de STOP y ceda el paso',
+  texto:
+    'Establece las normas de prioridad de paso en intersecciones y la obligación de respetar las ' +
+    'señales que la regulan: ante una señal de STOP (R-2) el conductor debe detener por completo el ' +
+    'vehículo en el lugar previsto y ceder el paso; ante un ceda el paso (R-1) debe ceder el paso sin ' +
+    'necesidad de detenerse si no hay riesgo. No respetar la prioridad de paso es infracción grave de ' +
+    'circulación. Resumen orientativo; consúltese el texto consolidado y la señalización aplicable.',
+});
+
+const ART_RGC_65 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '65',
+  titulo: 'Pasos para peatones y prioridad de paso de los peatones',
+  texto:
+    'Regula la prioridad de paso de los peatones: el conductor debe cederles el paso cuando cruzan por ' +
+    'un paso de peatones debidamente señalizado, cuando vayan a cruzar una calzada por la que el ' +
+    'vehículo va a girar para entrar en otra vía, y en las demás situaciones que fija el reglamento. No ' +
+    'respetar la prioridad del peatón es infracción grave de circulación. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_80 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '80',
+  titulo: 'Marcha atrás y cambio de sentido',
+  texto:
+    'Regula la maniobra de marcha atrás: solo se admite como maniobra complementaria y auxiliar de ' +
+    'otra que la exija, o en un lugar donde no sea posible el cambio de sentido, efectuándola lentamente, ' +
+    'durante el menor recorrido posible, con las señales preceptivas y tras cerciorarse de que no hay ' +
+    'peligro. Se prohíbe recorrer largos tramos marcha atrás o hacerla en autopistas y autovías. La ' +
+    'marcha atrás o el cambio de sentido antirreglamentarios son infracción de circulación; cuando ' +
+    'equivalgan a circular en sentido contrario, pueden ser muy graves. Resumen orientativo (concordante ' +
+    'con el art. 31 LSV).',
+});
+
+const ART_RGC_36 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '36',
+  titulo: 'Utilización del arcén',
+  texto:
+    'Regula la utilización del arcén: como norma general, los vehículos de motor no deben circular por ' +
+    'el arcén, reservado a peatones, ciclos y a los vehículos obligados a ello. Circular indebidamente ' +
+    'por el arcén es infracción de circulación. Existen excepciones tasadas (p. ej. vehículos que por su ' +
+    'lentitud deban hacerlo, o supuestos habilitados y señalizados). Resumen orientativo; consúltese el ' +
+    'texto consolidado en el BOE.',
+});
+
+const ART_RGC_41 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '41',
+  titulo: 'Carriles reservados (bus, VAO, bici)',
+  texto:
+    'Regula la utilización de los carriles especialmente reservados a determinados vehículos o usos: ' +
+    'carril bus, carril para vehículos de alta ocupación (VAO) y carril bici. Circular por un carril ' +
+    'reservado sin tener derecho a ello (p. ej. entrar en el VAO sin el número mínimo de ocupantes, o ' +
+    'invadir el carril bus o el carril bici) es infracción de circulación. Resumen orientativo; ' +
+    'consúltese el texto consolidado y la señalización aplicable.',
+});
+
+const ART_RGC_5 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '5',
+  titulo: 'Documentación que debe llevarse y exhibirse',
+  texto:
+    'El conductor debe llevar consigo y exhibir a requerimiento de los agentes la documentación del ' +
+    'vehículo y la del propio conductor: permiso o licencia de conducción en vigor, permiso de ' +
+    'circulación del vehículo y tarjeta de inspección técnica (ficha técnica), además del justificante ' +
+    'del seguro obligatorio. No llevarla o no exhibirla dificulta la identificación y el control, y es ' +
+    'infracción leve, sin perjuicio de la comprobación de los datos por otros medios. Resumen orientativo; ' +
+    'consúltese el texto consolidado y el Reglamento General de Conductores.',
+});
+
+const ART_RGV_7 = articuloSeed({
+  normaId: ID_RGV,
+  numero: '7',
+  titulo: 'Condiciones técnicas, reformas y homologación de los elementos del vehículo',
+  texto:
+    'Exige que los vehículos y sus elementos reúnan las condiciones técnicas reglamentarias y estén ' +
+    'debidamente homologados, y que las reformas de importancia (cambios que alteren las características ' +
+    'del vehículo) se aprueben y anoten en la documentación. Entran aquí los cristales/lunas con láminas ' +
+    'o tintados no homologados que reduzcan la visibilidad o la transparencia reglamentaria, el sistema ' +
+    'de escape no homologado o que supere los niveles de ruido, y las luces adicionales o de un color/uso ' +
+    'no permitido. Circular con elementos no homologados es infracción y puede motivar la inmovilización ' +
+    'hasta subsanar. Resumen orientativo; consúltese el texto consolidado, el RD 866/2010 de reformas y ' +
+    'el Manual de Procedimiento de ITV.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_99,
   ART_RGC_18,
@@ -452,9 +579,19 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_94,
   ART_RGC_121,
   ART_RGC_33,
+  ART_RGC_109,
+  ART_RGC_110,
+  ART_RGC_54,
+  ART_RGC_56,
+  ART_RGC_65,
+  ART_RGC_80,
+  ART_RGC_36,
+  ART_RGC_41,
+  ART_RGC_5,
   ART_RGV_10,
   ART_RGV_12,
   ART_RGV_25,
+  ART_RGV_7,
   ART_RGC_14,
   ART_LRCSCVM_3,
   ART_LSV_104,
@@ -1728,6 +1865,468 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'clasificación exactos (RGV placas de matrícula; ocultación deliberada para eludir controles ' +
       'puede ser MUY GRAVE, e incluso conectar con delitos de falsedad si la placa está falsificada). ' +
       'Confirmar contra el codificado DGT y con el revisor jurídico antes de publicar.',
+  }),
+  // === AMPLIACIÓN del catálogo de calle (ronda "catálogo pobre vs SPPLB") ====================
+  // 14 conductas FRECUENTES que faltaban, para que ningún sub-tema quede a una sola ficha.
+  // Fuente: RGC (RD 1428/2003), LSV (RDL 6/2015), RGV (RD 2822/1998) ya ingeridos + cuadro DGT.
+  // TODO queda `pendiente_revision`; los importes/puntos dudosos van marcados "a verificar".
+  // --- Conducta al volante -------------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-sin-senalizar-maniobra',
+    articulo: ART_RGC_109,
+    tituloCorto: 'No señalizar la maniobra (intermitentes)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'No advertir con las luces indicadoras de dirección (intermitentes), con la debida antelación, ' +
+      'una maniobra lateral —cambio de carril, giro, incorporación, adelantamiento, cambio de sentido o ' +
+      'salida de rotonda—, o no mantener la señal hasta completarla.',
+    terminos: [
+      'sin intermitente',
+      'no puso el intermitente',
+      'sin poner el intermitente',
+      'no señalizo la maniobra',
+      'sin señalizar',
+      'cambio de carril sin avisar',
+      'giro sin intermitente',
+      'no aviso el giro',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y clasificación por supuesto contra el codificado DGT: no señalizar la ' +
+      'maniobra se cita como GRAVE (200 €) cuando NO se usa ningún tipo de señal; señalizar de forma ' +
+      'DEFECTUOSA o sin antelación suficiente suele ser LEVE (unos 80 €). El seed ancla el supuesto ' +
+      'grave (200 €). A VERIFICAR los puntos (el seed fija 0). Base: art. 109 RGC y art. 44 LSV. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-carril-reservado',
+    articulo: ART_RGC_41,
+    tituloCorto: 'Circular por carril reservado (bus, VAO o bici)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular o invadir un carril especialmente reservado sin tener derecho a ello: entrar en el ' +
+      'carril VAO sin el número mínimo de ocupantes exigido, circular por el carril bus o invadir el ' +
+      'carril bici.',
+    terminos: [
+      'carril bus',
+      'carril vao',
+      'vao',
+      'carril bici',
+      'me meti en el carril bus',
+      'invadir el carril bici',
+      'carril reservado',
+      'circular por el carril bus',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe (200 €, grave) y precepto exacto contra el codificado DGT: la infracción no ' +
+      'suele detraer puntos (el seed fija 0). Base: utilización de carriles reservados (art. 41 y ss. ' +
+      'RGC / señalización). Distinguir el carril bus/VAO/bici por supuesto y ordenanza local. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-distancia-seguridad',
+    articulo: ART_RGC_54,
+    tituloCorto: 'No mantener la distancia de seguridad',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'Circular sin dejar entre el vehículo y el que le precede la distancia que permita detenerse, sin ' +
+      'colisionar, ante un frenazo brusco («ir pegado»). Es una de las causas más frecuentes de alcance.',
+    terminos: [
+      'distancia de seguridad',
+      'sin distancia de seguridad',
+      'iba pegado',
+      'pegado al de delante',
+      'no guardar distancia',
+      'muy cerca del coche de delante',
+      'pegado detras',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave, art. 54 RGC). A VERIFICAR los puntos: la falta de distancia de seguridad ' +
+      'se cita con 4 puntos en el cuadro DGT (el seed fija 4); confirmar por supuesto contra el ' +
+      'codificado DGT antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-claxon-indebido',
+    articulo: ART_RGC_110,
+    tituloCorto: 'Uso indebido del claxon o señales acústicas',
+    gravedad: 'leve',
+    importeEur: 80,
+    importeReducidoEur: 40,
+    puntos: 0,
+    textoBoletin:
+      'Utilizar el claxon o las señales acústicas de forma inmotivada, excesiva o molesta, fuera de los ' +
+      'casos permitidos (evitar un accidente, advertir un adelantamiento en vía interurbana o reclamar ' +
+      'auxilio urgente), o emplear aparatos de sonido estridentes o no homologados.',
+    terminos: [
+      'pitar sin motivo',
+      'uso del claxon',
+      'claxon',
+      'pitando',
+      'toca el claxon sin parar',
+      'bocina',
+      'pitido molesto',
+      'claxon no homologado',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y clasificación contra el codificado DGT: el uso indebido del claxon se cita ' +
+      'como LEVE (el seed ancla unos 80 €, sin puntos). Base: art. 110 RGC (advertencias acústicas). ' +
+      'Distinguir del uso de dispositivos/aparatos sonoros no homologados. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-circular-arcen',
+    articulo: ART_RGC_36,
+    tituloCorto: 'Circular indebidamente por el arcén',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo de motor por el arcén sin estar obligado ni autorizado a ello. El arcén ' +
+      'se reserva a peatones, ciclos y a los vehículos obligados a utilizarlo, salvo supuestos habilitados ' +
+      'y señalizados.',
+    terminos: [
+      'circular por el arcen',
+      'por el arcen',
+      'iba por el arcen',
+      'adelantar por el arcen',
+      'conducir por el arcen',
+      'se metio en el arcen',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe (200 €, grave) y precepto exacto contra el codificado DGT: circular ' +
+      'indebidamente por el arcén no suele detraer puntos (el seed fija 0). Base: utilización del arcén ' +
+      '(art. 36 y ss. RGC). Atención a las excepciones tasadas (vehículos lentos, tramos habilitados y ' +
+      'señalizados p. ej. para motos en retención). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-marcha-atras-indebida',
+    articulo: ART_RGC_80,
+    tituloCorto: 'Marcha atrás o cambio de sentido antirreglamentarios',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'Efectuar la marcha atrás fuera de los casos permitidos (recorrer largos tramos, hacerla como ' +
+      'maniobra principal, o para retroceder a una salida ya rebasada) o realizar un cambio de sentido en ' +
+      'lugar prohibido o sin la debida seguridad. Cuando la maniobra equivale a circular en sentido ' +
+      'contrario, puede calificarse como muy grave.',
+    terminos: [
+      'marcha atras',
+      'dar marcha atras',
+      'cambio de sentido prohibido',
+      'cambiar de sentido donde no se debe',
+      'dio marcha atras en la salida',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave, art. 80 RGC / art. 31 LSV) y 4 puntos como referencia del cuadro DGT para ' +
+      'la marcha atrás indebida GENERAL. El caso de marcha atrás en autopista/autovía (equivale a ' +
+      'circular en sentido contrario) se modela aparte como MUY GRAVE en `inf-marcha-atras-autopista`. ' +
+      'Confirmar importe y puntos por supuesto contra el codificado DGT. Revisar.',
+  }),
+  construirInfraccion({
+    // Variante MUY GRAVE (revisor Ola 1): la marcha atrás / retroceso en autopista o autovía equivale
+    // a circular en sentido contrario → muy grave 500 € / 6 puntos (no los 200/4 de la marcha atrás
+    // común). Se separa para que el agente no infravalore el caso al copiar el boletín.
+    id: 'inf-marcha-atras-autopista',
+    articulo: ART_RGC_80,
+    tituloCorto: 'Marcha atrás en autopista o autovía (sentido contrario)',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 6,
+    textoBoletin:
+      'Efectuar la marcha atrás o retroceder en autopista o autovía. Por prohibición expresa (art. 80 ' +
+      'RGC) y por equivaler a circular en sentido contrario al establecido, es infracción MUY GRAVE, ' +
+      'con retirada de 6 puntos. Distíngase de la marcha atrás indebida común en vía ordinaria (grave, ' +
+      '200 €).',
+    terminos: [
+      'marcha atras en autovia',
+      'marcha atras en autopista',
+      'retroceder en la autopista',
+      'retroceder en autovia',
+      'sentido contrario en autopista',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'MUY GRAVE 500 € / 6 puntos (art. 80 RGC en relación con la prohibición de circular en sentido ' +
+      'contrario). A VERIFICAR el precepto sancionador exacto (art. 77 LSV, apartado de sentido ' +
+      'contrario) y los puntos (Anexo II LSV) contra el codificado DGT. Distinta de la marcha atrás ' +
+      'indebida común (`inf-marcha-atras-indebida`, grave). Revisar.',
+  }),
+  // --- Estado del vehículo (RGV: condiciones técnicas, reformas y homologación) --------------
+  construirInfraccion({
+    id: 'inf-lunas-tintadas',
+    articulo: ART_RGV_7,
+    tituloCorto: 'Lunas tintadas o láminas no homologadas',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con las lunas del vehículo cubiertas con láminas o tintados no homologados, o que reduzcan ' +
+      'la transparencia por debajo de lo reglamentario o la visibilidad del conductor. Los tintados solo se ' +
+      'admiten en las lunas permitidas y con homologación, anotada como reforma cuando proceda.',
+    terminos: [
+      'lunas tintadas',
+      'cristales tintados',
+      'laminas en las lunas',
+      'tintado no homologado',
+      'lunas negras',
+      'vinilo en las lunas',
+      'cristales oscuros',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el tintado reduzca de forma relevante la ' +
+          'visibilidad del conductor y suponga un riesgo, hasta que se subsane (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe (200 €, grave) y precepto exacto contra el codificado DGT y el RGV/RD 866/2010 ' +
+      'de reformas: distinguir el tintado en lunas PERMITIDAS con homologación (no sancionable) del tintado ' +
+      'NO homologado o en lunas delanteras/parabrisas (sancionable, sin puntos según el seed). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-escape-ruido',
+    articulo: ART_RGV_7,
+    tituloCorto: 'Escape no homologado o ruido excesivo',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con el sistema de escape no homologado, manipulado o suprimido, o superando los niveles de ' +
+      'ruido reglamentarios (habitualmente en torno a los límites que fija la ficha técnica). Incluye el ' +
+      'escape «libre» y los silenciosos alterados.',
+    terminos: [
+      'escape libre',
+      'tubo de escape ruidoso',
+      'escape no homologado',
+      'mucho ruido la moto',
+      'escape modificado',
+      'tubarro',
+      'ruido excesivo',
+      'petardeo del escape',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el escape o el ruido supongan una ' +
+          'deficiencia relevante, hasta que se subsane (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y clasificación por supuesto contra el codificado DGT: el escape no homologado ' +
+      'se cita como GRAVE (200 €, el seed lo ancla ahí, sin puntos); el RUIDO por encima de los límites ' +
+      'legales puede elevar la sanción (se citan hasta ~600 €). Base: condiciones técnicas y reformas ' +
+      '(RGV / RD 866/2010). Confirmar el importe efectivo por decibelios/supuesto. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-luces-no-homologadas',
+    articulo: ART_RGV_7,
+    tituloCorto: 'Luces adicionales o no homologadas',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con luces adicionales, de un color o uso no permitido, o no homologadas (por ejemplo, ' +
+      'neones, luces de colores en la parte delantera o trasera, o dispositivos luminosos que puedan ' +
+      'deslumbrar o confundirse con los de los vehículos prioritarios).',
+    terminos: [
+      'neones',
+      'luces no homologadas',
+      'luces de colores',
+      'faros led no homologados',
+      'luces azules',
+      'tira de led',
+      'luces tuneadas',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe (200 €, grave) y precepto exacto contra el codificado DGT y el RGV/RD 866/2010: ' +
+      'distinguir las luces homologadas y anotadas como reforma (no sancionable) de las no homologadas o de ' +
+      'color/uso prohibido. Las luces AZULES o que imiten a vehículos prioritarios pueden agravar la ' +
+      'clasificación. El seed no detrae puntos; confirmar por supuesto. Revisar.',
+  }),
+  // --- Estacionamiento y parada --------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-parada-lugar-peligroso',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Parada o estacionamiento en lugar peligroso',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Parar o estacionar el vehículo en un lugar peligroso o que obstaculice gravemente la circulación: ' +
+      'en curvas o cambios de rasante de visibilidad reducida, en túneles, en un carril reservado (bus, ' +
+      'VAO o bici), en la calzada de una autovía o autopista, o donde se impida la visibilidad de la ' +
+      'señalización. Se distingue del estacionamiento indebido común (acera, doble fila, vado) por el ' +
+      'riesgo que genera.',
+    terminos: [
+      'parado en curva',
+      'parado en un tunel',
+      'parado en la autovia',
+      'parada peligrosa',
+      'estacionar en sitio peligroso',
+      'parado en cambio de rasante',
+      'parado en el carril bus',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Procede valorar la retirada del vehículo por la grúa al depósito cuando su parada o ' +
+          'estacionamiento genere riesgo u obstaculice gravemente la circulación (art. 105 LSV).',
+        fuente: 'LSV art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe (200 €, grave) y clasificación por supuesto contra el codificado DGT: la ' +
+      'parada/estacionamiento en lugar PELIGROSO o que obstaculice GRAVEMENTE la circulación es grave; ' +
+      'algunos supuestos (autopista/autovía, túnel) pueden endurecerse. Se modela distinta del ' +
+      '`inf-estacionamiento-indebido` (acera/doble fila/vado) por el riesgo. Base: art. 94 RGC. Revisar.',
+  }),
+  // --- Señales y prioridad -------------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-stop-ceda-el-paso',
+    articulo: ART_RGC_56,
+    tituloCorto: 'No respetar el STOP o el ceda el paso',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'No respetar la prioridad de paso señalizada: no detener por completo el vehículo ante una señal de ' +
+      'STOP (R-2) antes de ceder el paso, o no ceder el paso ante un ceda el paso (R-1) cuando otro usuario ' +
+      'tiene preferencia.',
+    terminos: [
+      'se salto el stop',
+      'no respeto el stop',
+      'no hizo el stop',
+      'stop',
+      'ceda el paso',
+      'no cedio el paso',
+      'se comio el ceda',
+      'no paro en el stop',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave) y 4 puntos como referencia del cuadro DGT (misma sanción que saltarse un ' +
+      'semáforo en rojo). A VERIFICAR el precepto exacto de la señalización de prioridad (arts. 56 y ss. ' +
+      'RGC; señales R-1 y R-2) y confirmar puntos contra el codificado DGT. Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-prioridad-peatones',
+    articulo: ART_RGC_65,
+    tituloCorto: 'No respetar la prioridad de paso de los peatones',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'No ceder el paso a los peatones cuando tienen prioridad: en un paso de peatones debidamente ' +
+      'señalizado, al girar el vehículo para entrar en otra vía por la que cruzan peatones, o en las demás ' +
+      'situaciones en que el reglamento les reconoce preferencia.',
+    terminos: [
+      'no cedio el paso al peaton',
+      'no respeto el paso de peatones',
+      'no dejo pasar al peaton',
+      'prioridad del peaton',
+      'atropello en paso de cebra',
+      'no freno en el paso de peatones',
+      'no dio paso al peaton',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave) y 4 puntos como referencia del cuadro DGT. A VERIFICAR el precepto exacto ' +
+      'de la prioridad del peatón (el seed cita el art. 65 RGC; algunas fuentes citan el art. 21 RGC): ' +
+      'confirmar el artículo y los puntos contra el texto consolidado y el codificado DGT. Distinguir del ' +
+      'atropello con resultado lesivo (posible delito). Revisar.',
+  }),
+  // --- Documentación -------------------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-sin-documentacion',
+    articulo: ART_RGC_5,
+    tituloCorto: 'No llevar o no exhibir la documentación',
+    gravedad: 'leve',
+    importeEur: 10,
+    importeReducidoEur: 5,
+    puntos: 0,
+    textoBoletin:
+      'No llevar consigo o no exhibir a requerimiento de los agentes la documentación exigible: permiso o ' +
+      'licencia de conducción, permiso de circulación del vehículo o tarjeta de inspección técnica (ficha ' +
+      'técnica). Es distinto de carecer del documento en vigor (p. ej. permiso caducado o ITV caducada), que ' +
+      'tiene su propia sanción.',
+    terminos: [
+      'sin la documentacion',
+      'sin papeles',
+      'no lleva la documentacion',
+      'sin el permiso de circulacion',
+      'sin ficha tecnica',
+      'no lleva el carnet encima',
+      'olvido la documentacion',
+      'sin documentacion del coche',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe exacto por documento contra el codificado DGT: no LLEVAR la documentación es ' +
+      'LEVE (se cita en torno a 10 € por documento); el seed ancla 10 €. NO confundir con CARECER del ' +
+      'documento en vigor: permiso caducado/no vigencia (art. 77 LSV, ver `inf-sin-permiso`) o ITV caducada ' +
+      '(200 €, ver `inf-itv-caducada`). La falta de seguro tiene su propio régimen. Base: art. 5 RGC y ' +
+      'Reglamento General de Conductores. Revisar antes de publicar.',
+  }),
+  // --- Seguridad: auriculares/cascos mientras se conduce -------------------------------------
+  construirInfraccion({
+    id: 'inf-auriculares-conduciendo',
+    articulo: ART_RGC_18,
+    tituloCorto: 'Conducir con auriculares o cascos de sonido',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 3,
+    textoBoletin:
+      'Conducir utilizando auriculares o cascos conectados a dispositivos reproductores o receptores de ' +
+      'sonido. La prohibición es total y se aplica en cualquier vía, con independencia del volumen o de que ' +
+      'se lleve un solo auricular.',
+    terminos: [
+      'auriculares',
+      'con auriculares conduciendo',
+      'cascos en los oidos',
+      'airpods',
+      'conducir con cascos',
+      'auriculares al volante',
+      'escuchando musica con cascos',
+      'con los cascos puestos',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'Importe 200 € (grave) y 3 puntos verificados (art. 18.2 RGC: prohíbe conducir utilizando ' +
+      'auriculares o cascos conectados a dispositivos de sonido). Pendiente de visto bueno del revisor. ' +
+      'NOTA: los sistemas de comunicación integrados y homologados del casco de moto que no aíslan del ' +
+      'entorno quedan fuera; confirmar el matiz.',
   }),
 ];
 
