@@ -8,10 +8,11 @@ import { EmptyState } from '@/ui/components/EmptyState';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
-import { FilaNorma } from './normasUi';
+import { FilaNorma, FranjaTerritorial } from './normasUi';
 import {
   agruparPorAmbito,
   listarNormas,
+  materiaAdmiteTerritorio,
   materiaDeNorma,
   normaRelevantePara,
   MATERIA_INFO,
@@ -93,6 +94,14 @@ export function MateriaDetalleScreen({
     });
   }, [deLaMateria, ccaaNombre, municipioNombre]);
 
+  // Franja "solicítala" DENTRO de la materia: solo en materias que admiten contenido territorial
+  // (Tráfico, Ocio, Organización, Animales) y solo para la capa (autonómica/municipal) que ESTA
+  // materia aún no trae para el perfil. Así no hay silencio cuando el municipio/CCAA no tiene norma
+  // de esa materia, ni ruido en materias puramente estatales. `FranjaTerritorial` decide el resto.
+  const territorial = materiaAdmiteTerritorio(materia);
+  const hayAutonomica = useMemo(() => deLaMateria.some((n) => n.ambito === 'autonomico'), [deLaMateria]);
+  const hayMunicipal = useMemo(() => deLaMateria.some((n) => n.ambito === 'municipal'), [deLaMateria]);
+
   if (estado === 'cargando') {
     return (
       <View style={{ flex: 1, backgroundColor: t.color.bg, paddingTop: t.spacing.md }}>
@@ -146,6 +155,11 @@ export function MateriaDetalleScreen({
         renderItem={({ item }) => (
           <FilaNorma item={item} onPress={(id) => router.push(`/normas/norma/${id}`)} />
         )}
+        ListFooterComponent={
+          territorial ? (
+            <FranjaTerritorial hayAutonomica={hayAutonomica} hayMunicipal={hayMunicipal} />
+          ) : null
+        }
         ListEmptyComponent={
           <View style={{ paddingTop: t.spacing.xxl }}>
             <EmptyState

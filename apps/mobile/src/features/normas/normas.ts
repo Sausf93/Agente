@@ -264,12 +264,15 @@ export interface MateriaInfo {
 /** Tabla de materias (etiqueta, icono, orden). Fuente única de la taxonomía de Normas. */
 export const MATERIA_INFO: Record<Materia, MateriaInfo> = {
   trafico: { label: 'Tráfico y seguridad vial', icono: 'Car', orden: 1 },
-  seguridad: { label: 'Seguridad ciudadana', icono: 'ShieldAlert', orden: 2 },
+  // `Siren` (no `ShieldAlert`): un escudo roza la regla innegociable "nada de escudos" (§10).
+  seguridad: { label: 'Seguridad ciudadana', icono: 'Siren', orden: 2 },
   penal: { label: 'Penal y procesal', icono: 'Gavel', orden: 3 },
   extranjeria: { label: 'Extranjería', icono: 'Globe', orden: 4 },
-  armas: { label: 'Armas', icono: 'Crosshair', orden: 5 },
+  // `Target` (no `Crosshair`, que evoca una mira de francotirador): más neutro para la materia Armas.
+  armas: { label: 'Armas', icono: 'Target', orden: 5 },
   animales: { label: 'Animales', icono: 'PawPrint', orden: 6 },
-  ocio: { label: 'Espectáculos, ocio y convivencia', icono: 'PartyPopper', orden: 7 },
+  // `Music` (no `PartyPopper`, demasiado "fiesta") para espectáculos/ocio/convivencia.
+  ocio: { label: 'Espectáculos, ocio y convivencia', icono: 'Music', orden: 7 },
   victimaMenores: { label: 'Víctima y menores', icono: 'HeartHandshake', orden: 8 },
   organizacion: { label: 'Organización policial', icono: 'Users', orden: 9 },
   otras: { label: 'Otras normas', icono: 'BookOpen', orden: 10 },
@@ -335,6 +338,22 @@ export function materiaDeNorma(codigo: string): Materia {
   const om = /^OM-([A-Z]+)-[A-Z]+$/.exec(codigo);
   if (om?.[1]) return MATERIA_POR_TEMA[om[1]] ?? 'otras';
   return 'otras';
+}
+
+/**
+ * Materias que PUEDEN tener contenido territorial (autonómico/municipal) y, por tanto, en las que
+ * tiene sentido ofrecer la franja "solicítala" cuando el CCAA/municipio del perfil aún no lo trae.
+ * Se DERIVA de `MATERIA_POR_TEMA` (los temas de las normas territoriales): hoy Tráfico (circulación,
+ * ZBE), Ocio/convivencia (espectáculos, ruido, terrazas), Organización policial (coordinación de
+ * PL, policía autonómica) y Animales. Materias puramente estatales (Penal, Extranjería, Seguridad
+ * ciudadana, Armas, Víctima y menores) quedan fuera: allí la franja sería ruido. Fuente única, para
+ * que una futura norma territorial de otra materia habilite la franja sin tocar la pantalla.
+ */
+const MATERIAS_TERRITORIALES: ReadonlySet<Materia> = new Set(Object.values(MATERIA_POR_TEMA));
+
+/** `true` si la materia admite contenido autonómico/municipal (ver `MATERIAS_TERRITORIALES`). */
+export function materiaAdmiteTerritorio(materia: Materia): boolean {
+  return MATERIAS_TERRITORIALES.has(materia);
 }
 
 /** Recuento de una materia para el índice (grid de tarjetas de Normas). */

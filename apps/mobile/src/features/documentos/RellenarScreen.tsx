@@ -201,6 +201,10 @@ export function RellenarScreen({ plantillaId, prefill, origenTitulo }: RellenarS
 
   const fechaValor = campoFecha ? (values[campoFecha.clave] ?? '') : '';
   const horaValor = campoHora ? (values[campoHora.clave] ?? '') : '';
+  // "Hoy" SOLO si la fecha del valor es de verdad la de hoy: si el agente la edita a otro día, el
+  // prefijo desaparece (antes decía "Hoy" siempre, mintiendo cuando cambiaba la fecha).
+  const fechaEsHoy = fechaValor.length > 0 && fechaValor === formatearFecha(new Date());
+  const prefijoFecha = fechaEsHoy ? 'Hoy ' : '';
 
   return (
     <KeyboardAvoidingView
@@ -261,16 +265,19 @@ export function RellenarScreen({ plantillaId, prefill, origenTitulo }: RellenarS
             volver a mandarlo o compartirlo, y para ver los huecos que quedaron en blanco. */}
         {pdfUri ? (
           <View style={{ gap: t.spacing.md }}>
-            <Banner tone="success" title="PDF listo en tu móvil">
-              Ya lo tienes. Mándatelo a tu correo o compártelo; lo imprimes en la oficina y solo
-              pones la fecha y un par de datos a mano.
-            </Banner>
+            {/* Si quedaron huecos, el banner NO puede ser el verde "listo" (leería como "hecho" y
+                empujaría a mandar un acta incompleta): pasa a `warning` y lo dice en el título. */}
             {faltantes.length > 0 ? (
-              <Banner tone="info" title="Quedan huecos por rellenar">
-                Se han dejado líneas en blanco para: {faltantes.join(', ')}. Puedes rellenarlas a
-                mano o completar los campos y volver a generar.
+              <Banner tone="warning" title="PDF generado — quedan huecos">
+                Se han dejado líneas en blanco para: {faltantes.join(', ')}. Rellénalas a mano al
+                imprimirlo, o completa los campos y vuelve a generar antes de mandarlo.
               </Banner>
-            ) : null}
+            ) : (
+              <Banner tone="success" title="PDF listo en tu móvil">
+                Ya lo tienes. Mándatelo a tu correo o compártelo; lo imprimes en la oficina y solo
+                pones la fecha y un par de datos a mano.
+              </Banner>
+            )}
             <Button
               title="Enviarme a mi correo"
               onPress={() => abrirHojaCompartir('Enviarme a mi correo')}
@@ -353,7 +360,7 @@ export function RellenarScreen({ plantillaId, prefill, origenTitulo }: RellenarS
               <View style={{ gap: t.spacing.sm }}>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Hoy ${fechaValor} a las ${horaValor}. Tocar para editar la fecha y la hora`}
+                  accessibilityLabel={`${prefijoFecha}${fechaValor} a las ${horaValor}. Tocar para editar la fecha y la hora`}
                   accessibilityState={{ expanded: editarFechaHora }}
                   onPress={() => setEditarFechaHora((v) => !v)}
                   style={{
@@ -365,7 +372,8 @@ export function RellenarScreen({ plantillaId, prefill, origenTitulo }: RellenarS
                 >
                   <CalendarClock size={18} color={t.color.textSecondary} strokeWidth={2} />
                   <Text style={{ flex: 1, color: t.color.textSecondary, ...t.typography.scale.body }}>
-                    Hoy {fechaValor}
+                    {prefijoFecha}
+                    {fechaValor}
                     {horaValor ? ` · ${horaValor}` : ''}
                   </Text>
                   <Text style={{ color: t.color.brand, ...t.typography.scale.label }}>

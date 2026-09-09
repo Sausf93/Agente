@@ -9,6 +9,9 @@ import {
   FlaskConical,
   IdCard,
   Languages,
+  Lock,
+  Truck,
+  Wine,
   type LucideProps,
 } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
@@ -23,6 +26,8 @@ const ICONO_PLANTILLA: Record<string, ComponentType<LucideProps>> = {
   'seed-acta-inmovilizacion': Ban,
   'seed-diligencia-identificacion': IdCard,
   'seed-acta-intervencion-sustancias': FlaskConical,
+  'seed-acta-prueba-alcoholemia': Wine,
+  'seed-acta-deposito-grua': Truck,
 };
 
 /**
@@ -95,15 +100,19 @@ export function DocumentosScreen() {
         </Text>
       </View>
 
-      <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md }}>
+      <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.sm }}>
         <Banner tone="info" title="Lo más rápido: desde la infracción">
           Abre una infracción en Buscar o Normas y pulsa "Generar documento": el boletín llega con
           norma, artículo, importe y texto ya rellenos, listo para mandártelo en un gesto.
         </Banner>
-        <Banner tone="warning" title="Solo en este dispositivo">
-          Las matrículas, nombres y DNI que escribas viven únicamente en tu teléfono. Ni esos datos
-          ni el PDF se envían a ningún servidor.
-        </Banner>
+        {/* Privacidad a UNA línea (antes un segundo banner grande que empujaba la lista cada vez). */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
+          <Lock size={16} color={t.color.textTertiary} strokeWidth={2} />
+          <Text style={{ flex: 1, color: t.color.textTertiary, ...t.typography.scale.caption }}>
+            Matrículas, nombres, DNI y el PDF viven solo en tu teléfono; nada se envía a ningún
+            servidor.
+          </Text>
+        </View>
       </View>
 
       {/* Secundario: empezar de cero. Baja la lista de plantillas frente a la vía "desde la ficha". */}

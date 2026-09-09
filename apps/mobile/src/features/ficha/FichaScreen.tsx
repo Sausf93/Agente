@@ -54,6 +54,11 @@ import {
   type TileFicha,
 } from './ficha';
 import { DetencionTree } from './DetencionTree';
+import {
+  plantillaParaFicha,
+  plantillasSecundariasParaFicha,
+  PLANTILLA_ACTA_DEPOSITO_GRUA,
+} from './plantillaDoc';
 import { reportarErrorFichaLink } from './reportarError';
 import {
   CONSECUENCIA_LABEL,
@@ -85,26 +90,24 @@ const TIPO_LABEL: Record<TipoInfraccion, string> = {
 /**
  * El bloque de copia habla el idioma de la vía (D4 del rediseño): un delito NO se denuncia con
  * "boletín" ni arrastra importe/puntos (que en penal no existen), se documenta en diligencia/
- * atestado. `plantillaId` es la plantilla que prerrellena "Generar documento": la vía penal abre
- * la DILIGENCIA de identificación (sin campos de importe/puntos), la administrativa el boletín.
+ * atestado. El TÍTULO del botón "Generar" mantiene el idioma de la vía; la PLANTILLA concreta que se
+ * abre la decide `plantillaParaFicha` según las señales de la infracción (una alcoholemia penal abre
+ * el ACTA DE LA PRUEBA, no la diligencia), no este mapa fijo por vía.
  */
 const COPIA: Record<TipoInfraccion, {
   label: string;
   copiar: string;
   generar: string;
-  plantillaId: string;
 }> = {
   administrativa: {
     label: 'Texto para el boletín',
     copiar: 'Copiar boletín',
     generar: 'Generar boletín',
-    plantillaId: 'seed-boletin-denuncia',
   },
   penal: {
     label: 'Texto para el atestado',
     copiar: 'Copiar para el atestado',
     generar: 'Generar diligencia',
-    plantillaId: 'seed-diligencia-identificacion',
   },
 };
 
@@ -216,6 +219,11 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   // identificación del art. 16 LOSC): sin chip de gravedad ni tile de tramo (no hay sanción).
   const consultable = esConsultableSinSancion(ficha);
   const copia = COPIA[ficha.tipo];
+  // Plantilla PRINCIPAL de "Generar documento" según las señales de la infracción (id/marco/norma/
+  // artículo): p. ej. una alcoholemia abre el ACTA DE LA PRUEBA, no la diligencia. Y las actas
+  // SECUNDARIAS que arrastran las consecuencias operativas (inmovilización → acta; grúa → acta).
+  const plantillaPrincipal = plantillaParaFicha(ficha);
+  const plantillasSecundarias = plantillasSecundariasParaFicha(ficha);
   // Tiles adaptativos (solo con valor; ninguno en un delito → usa el "Marco penal").
   const tiles = tilesFicha(ficha, formatEuros);
   // ACCIÓN OPERATIVA (leer-primero): QUÉ HACE el agente con el vehículo/persona. Se deriva del set
@@ -388,23 +396,25 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
           onPress={() => {
             const precepto = `${ficha.normaCodigo} art. ${ficha.articuloNumero}`;
             if (esPenal) {
-              // Vía PENAL → diligencia: NADA de importe/puntos/gravedad administrativa (no existen
-              // en un delito). Se prerrellena el motivo con el hecho y el amparo con el precepto.
+              // Vía PENAL → diligencia/acta: NADA de importe/puntos/gravedad administrativa (no
+              // existen en un delito). Se prerrellena el motivo con el hecho y el amparo/precepto.
               router.push({
                 pathname: '/documento/[plantillaId]',
                 params: {
-                  plantillaId: copia.plantillaId,
+                  plantillaId: plantillaPrincipal,
                   motivo: textoCopiable,
                   amparo: precepto,
+                  // El precepto también en `articulo` para las actas que lo llevan (alcoholemia).
+                  articulo: `art. ${ficha.articuloNumero}`,
                   // Título corto de la infracción para la línea "Nace de:" (dato del agente).
                   origenTitulo: ficha.tituloCorto,
                 },
               });
               return;
             }
-            // Vía ADMINISTRATIVA → boletín: norma, artículo, hecho e importe/puntos si los hay.
+            // Vía ADMINISTRATIVA → boletín/acta: norma, artículo, hecho e importe/puntos si los hay.
             const params: Record<string, string> = {
-              plantillaId: copia.plantillaId,
+              plantillaId: plantillaPrincipal,
               norma: ficha.normaCodigo,
               articulo: `art. ${ficha.articuloNumero}`,
               hecho: textoCopiable,
@@ -417,6 +427,33 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
             router.push({ pathname: '/documento/[plantillaId]', params });
           }}
         />
+
+        {/* Actas SECUNDARIAS: si la ficha lleva una consecuencia operativa (inmovilización / grúa),
+            se ofrece su acta prerrellenada con el precepto y el hecho (validación de calle: la
+            medida arrastra su documento). Solo aparecen cuando esa consecuencia está presente. */}
+        {plantillasSecundarias.map((sec) => (
+          <Button
+            key={sec.plantillaId}
+            title={sec.label}
+            variant="secondary"
+            icon={sec.plantillaId === PLANTILLA_ACTA_DEPOSITO_GRUA ? Truck : Lock}
+            accessibilityHint="Abre el acta con el precepto y el hecho ya rellenos"
+            onPress={() => {
+              // Actas de vehículo: el precepto va en `articulo` y el hecho en `hecho`/`causa`; se
+              // pasa también la norma y el origen. Sin importe/puntos (no proceden en estas actas).
+              router.push({
+                pathname: '/documento/[plantillaId]',
+                params: {
+                  plantillaId: sec.plantillaId,
+                  norma: ficha.normaCodigo,
+                  articulo: `${ficha.normaCodigo} art. ${ficha.articuloNumero}`,
+                  hecho: textoCopiable,
+                  origenTitulo: ficha.tituloCorto,
+                },
+              });
+            }}
+          />
+        ))}
       </View>
 
       {/* 6. Consecuencias con su fuente (orientativas, §4.6). En un delito, la detención ya se

@@ -22,8 +22,9 @@ function tieneCampo(campos: CampoPlantilla[], clave: string): boolean {
 
 /**
  * Resumen del bloque LEGAL: los valores críticos en el orden en que importan, separados por " · ":
- * norma · artículo · gravedad · importe, y "texto ✓" si el hecho/motivo viene relleno. Devuelve
- * cadena vacía si no hay nada que resumir (entrada en frío, sin prefill de la ficha).
+ * norma · artículo · gravedad · importe · puntos, y "texto ✓" si el hecho/motivo viene relleno. Los
+ * PUNTOS se etiquetan ("6 puntos") porque en Tráfico son tan determinantes como el importe y un "6"
+ * suelto no se entiende. Devuelve cadena vacía si no hay nada que resumir (entrada en frío).
  */
 export function resumenLegal(campos: CampoPlantilla[], values: Record<string, string>): string {
   const partes: string[] = [];
@@ -33,6 +34,11 @@ export function resumenLegal(campos: CampoPlantilla[], values: Record<string, st
       const v = valor(values, clave);
       if (v) partes.push(v);
     }
+  }
+  // Puntos: tras el importe y etiquetados para que se lean solos ("6 puntos").
+  if (tieneCampo(campos, 'puntos')) {
+    const p = valor(values, 'puntos');
+    if (p) partes.push(`${p} puntos`);
   }
   // El texto largo (hecho denunciado / motivo) no cabe en una línea: se marca como presente.
   const tieneTexto = ['hecho', 'motivo'].some(

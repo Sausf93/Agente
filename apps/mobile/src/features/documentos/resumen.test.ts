@@ -19,6 +19,22 @@ describe('resumenLegal', () => {
     expect(resumenLegal(camposLegales, values)).toBe('RGC · art. 18 · Muy grave · 200 € · texto ✓');
   });
 
+  it('añade los puntos etiquetados tras el importe ("… · 6 puntos")', () => {
+    const values = {
+      norma: 'LSV',
+      articulo: 'art. 14',
+      gravedad: 'Muy grave',
+      importe: '1.000 €',
+      puntos: '6',
+    };
+    expect(resumenLegal(camposLegales, values)).toBe('LSV · art. 14 · Muy grave · 1.000 € · 6 puntos');
+  });
+
+  it('sin puntos rellenos: no añade el sufijo de puntos', () => {
+    const values = { norma: 'LSV', articulo: 'art. 14', importe: '500 €' };
+    expect(resumenLegal(camposLegales, values)).toBe('LSV · art. 14 · 500 €');
+  });
+
   it('vacío (entrada en frío): devuelve cadena vacía', () => {
     expect(resumenLegal(camposLegales, {})).toBe('');
   });

@@ -6,6 +6,7 @@ import {
   estadoCambio,
   filtroTerritorialSql,
   filtrarArticulos,
+  materiaAdmiteTerritorio,
   materiaDeNorma,
   normaRelevantePara,
   numeroSortKey,
@@ -243,6 +244,20 @@ describe('materiaDeNorma', () => {
     expect(materiaDeNorma('ZZZ')).toBe('otras');
     expect(materiaDeNorma('OM-DESCONOCIDA-SCTF')).toBe('otras');
     expect(materiaDeNorma('CAN-XYZ')).toBe('otras');
+  });
+});
+
+describe('materiaAdmiteTerritorio', () => {
+  it('las materias con normas territoriales (tráfico, ocio, organización, animales) sí', () => {
+    for (const m of ['trafico', 'ocio', 'organizacion', 'animales'] as Materia[]) {
+      expect(materiaAdmiteTerritorio(m)).toBe(true);
+    }
+  });
+
+  it('las materias puramente estatales no ofrecen franja territorial', () => {
+    for (const m of ['penal', 'extranjeria', 'seguridad', 'armas', 'victimaMenores'] as Materia[]) {
+      expect(materiaAdmiteTerritorio(m)).toBe(false);
+    }
   });
 });
 
