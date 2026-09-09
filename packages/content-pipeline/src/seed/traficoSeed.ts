@@ -408,6 +408,167 @@ const ART_LOTT_140 = articuloSeed({
     'fija el art. 143 y su reglamento. Resumen orientativo; consúltese el texto consolidado.',
 });
 
+// --- Artículos de la LOTT/ROTT para la OLA 2 del catálogo (submenú Transporte) --------------
+// El submenú Transporte de la app cubre: título habilitante, viajeros, escolar, ADR, perecederas
+// (ATP), documentación/visado, dimensiones y tacógrafo. Cada bloque cita su artículo de la LOTT
+// (Ley 16/1987, arts. 140-143, ya ingerida del BOE) con un RESUMEN NEUTRO redactado por nosotros;
+// el subapartado/letra concreto y la cuantía quedan "a verificar" en la nota de cada infracción.
+const ART_LOTT_140_TITULO = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140 (título habilitante)',
+  titulo: 'Infracciones muy graves: transporte público sin título habilitante',
+  texto:
+    'Tipifica como infracción muy grave de la ordenación del transporte la realización de ' +
+    'transporte público de mercancías o de viajeros, o de actividades auxiliares, careciendo de ' +
+    'la preceptiva autorización, título habilitante o tarjeta de transporte, así como seguir ' +
+    'prestándolo tras su caducidad, revocación o suspensión. Alcanza al transporte de viajeros en ' +
+    'autobús, al de mercancías y a los vehículos de arrendamiento con conductor (VTC) y al taxi ' +
+    'cuando operan sin la autorización exigible. La cuantía y el régimen de precinto/inmovilización ' +
+    'los concretan el art. 143 LOTT y su reglamento (ROTT, RD 1211/1990). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_141_PRIVADO = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (transporte privado)',
+  titulo: 'Infracciones graves: transporte privado excediendo sus límites',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte la realización de transporte privado ' +
+    'complementario excediendo los límites que lo definen (por ejemplo, transportando mercancías o ' +
+    'personas ajenas a la propia actividad de la empresa, o mediante precio como si fuera transporte ' +
+    'público) sin disponer del título habilitante que correspondería al transporte público. La ' +
+    'cuantía la concreta el art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el ' +
+    'texto consolidado en el BOE.',
+});
+
+const ART_LOTT_141_VIAJEROS = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (viajeros: plazas)',
+  titulo: 'Infracciones graves: exceso de viajeros sobre las plazas autorizadas',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte de viajeros el transportar un número de ' +
+    'viajeros superior al de plazas autorizadas del vehículo. El número de plazas es el que figura en ' +
+    'la ficha técnica y la tarjeta de transporte. La cuantía la concreta el art. 143 LOTT y su ' +
+    'reglamento (ROTT). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_142_VIAJEROS = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '142 (viajeros: billetes)',
+  titulo: 'Infracciones leves: billetes y hojas de reclamación en el transporte de viajeros',
+  texto:
+    'Tipifica como infracción leve de la ordenación del transporte de viajeros el incumplimiento de ' +
+    'las obligaciones formales de documentación del servicio, entre ellas carecer de billetes u otro ' +
+    'título de transporte de los viajeros o de las hojas de reclamación a disposición de los usuarios, ' +
+    'o no expedirlos. La cuantía la concreta el art. 143 LOTT y su reglamento (ROTT). Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_ESCOLAR = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140 (transporte escolar y de menores)',
+  titulo: 'Infracciones muy graves: transporte escolar y de menores incumpliendo sus condiciones',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el incumplimiento de las condiciones de ' +
+    'seguridad exigibles al transporte escolar y de menores: presencia del acompañante o monitor ' +
+    'cuando es obligatorio, antigüedad e inspección técnica (ITV) del vehículo, señalización ' +
+    'específica del transporte escolar y número de plazas. En España estas condiciones las desarrolla ' +
+    'el RD 443/2001, de condiciones de seguridad en el transporte escolar y de menores. La cuantía y ' +
+    'el régimen de inmovilización los concretan el art. 143 LOTT y su reglamento (ROTT). Resumen ' +
+    'orientativo; consúltese el texto consolidado y el RD 443/2001.',
+});
+
+const ART_LOTT_ADR_DOC = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (documentación ADR)',
+  titulo: 'Infracciones graves: documentación del transporte de mercancías peligrosas (ADR)',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el transporte de mercancías peligrosas ' +
+    'con deficiencias documentales del ADR distintas de las que constituyen infracción muy grave: por ' +
+    'ejemplo, transportar sin las instrucciones escritas de seguridad o con ellas incompletas, o con ' +
+    'la documentación de la mercancía deficiente cuando el hecho no comprometa gravemente la ' +
+    'seguridad. Se distingue de la ausencia total de paneles, etiquetado, autorización o formación ' +
+    '(muy grave, ver `inf-adr-mercancias-peligrosas`). La cuantía la concreta el art. 143 LOTT y su ' +
+    'reglamento; el régimen técnico, el RD 97/2014 y el ADR vigente. Resumen orientativo.',
+});
+
+const ART_LOTT_ADR_FORMACION = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140 (formación ADR del conductor)',
+  titulo: 'Infracciones muy graves: conductor sin la formación ADR exigible',
+  texto:
+    'Tipifica como infracción muy grave de la ordenación del transporte el transporte de mercancías ' +
+    'peligrosas por un conductor que carece del certificado de formación ADR en vigor exigible para ' +
+    'la clase de mercancía y vehículo, o llevándolo caducado. La formación del conductor es un ' +
+    'requisito esencial de seguridad del ADR. La cuantía y el precinto/inmovilización los concretan el ' +
+    'art. 143 LOTT y su reglamento; el régimen técnico, el RD 97/2014 y el ADR vigente. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_ATP = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (perecederas ATP)',
+  titulo: 'Infracciones graves: transporte de perecederas sin certificado ATP o con frío deficiente',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el transporte de mercancías perecederas ' +
+    '(alimentos que requieren temperatura controlada) sin el certificado ATP en vigor del vehículo o ' +
+    'contenedor, o con el equipo de frío (refrigeración/conservación) averiado o incumpliendo las ' +
+    'temperaturas exigidas. El régimen técnico lo fija el Acuerdo ATP (transporte internacional de ' +
+    'productos alimenticios perecederos). La cuantía la concreta el art. 143 LOTT y su reglamento ' +
+    '(ROTT). Resumen orientativo; consúltese el texto consolidado y el Acuerdo ATP.',
+});
+
+const ART_LOTT_142_DOCS = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '142 (documentación de control)',
+  titulo: 'Infracciones leves: no llevar o no exhibir la documentación de control',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el no llevar a bordo o no exhibir a los ' +
+    'servicios de inspección la documentación de control del transporte: la tarjeta de transporte o ' +
+    'autorización, y los demás documentos de control exigibles. Se distingue de CARECER del título ' +
+    'habilitante (muy grave, ver `inf-transporte-sin-titulo`): aquí el transportista sí dispone del ' +
+    'título pero no lo lleva o no lo exhibe, supuesto por lo general leve y subsanable. La cuantía la ' +
+    'concreta el art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOTT_141_VISADO = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (visado de la autorización)',
+  titulo: 'Infracciones graves: incumplimiento del visado de la autorización de transporte',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el mantener en explotación un vehículo o ' +
+    'una autorización sin haber realizado el visado periódico exigible, o incumpliendo las condiciones ' +
+    'a las que se sujeta la vigencia de la autorización de transporte. La cuantía la concreta el ' +
+    'art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_141_DIMENSIONES = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (exceso de dimensiones)',
+  titulo: 'Infracciones graves: exceso de dimensiones del vehículo o del conjunto',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el circular excediendo las dimensiones ' +
+    'máximas reglamentarias (longitud, anchura o altura) del vehículo o del conjunto, o el transporte ' +
+    'que requiere autorización especial de circulación por sus dimensiones sin disponer de ella. Se ' +
+    'distingue del exceso de MASA máxima autorizada (ver `inf-exceso-mma`). Los límites los fija el ' +
+    'Reglamento General de Vehículos (RD 2822/1998); la cuantía, el art. 143 LOTT y su reglamento. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_141_TACOGRAFO = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (hojas y registros del tacógrafo)',
+  titulo: 'Infracciones graves: no llevar o no conservar las hojas, la tarjeta o los registros del tacógrafo',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el no llevar a bordo las hojas de ' +
+    'registro o la tarjeta de conductor del tacógrafo, o el no conservar y presentar los registros de ' +
+    'los tiempos de conducción y descanso durante el periodo exigido. Se distingue de la MANIPULACIÓN ' +
+    'o el falseamiento del tacógrafo y del exceso de tiempos (muy grave, ver `inf-tacografo`): aquí se ' +
+    'trata del incumplimiento documental de conservación/porte. El régimen técnico lo fija el ' +
+    'Reglamento (UE) 165/2014 (tacógrafo) y el Rgto (CE) 561/2006; la cuantía, el art. 143 LOTT y su ' +
+    'reglamento. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_RGC_33 = articuloSeed({
   normaId: ID_RGC,
   numero: '33',
@@ -601,6 +762,18 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_LOTT_140,
   ART_LOTT_141,
   ART_LOTT_MMPP,
+  ART_LOTT_140_TITULO,
+  ART_LOTT_141_PRIVADO,
+  ART_LOTT_141_VIAJEROS,
+  ART_LOTT_142_VIAJEROS,
+  ART_LOTT_ESCOLAR,
+  ART_LOTT_ADR_DOC,
+  ART_LOTT_ADR_FORMACION,
+  ART_LOTT_ATP,
+  ART_LOTT_142_DOCS,
+  ART_LOTT_141_VISADO,
+  ART_LOTT_141_DIMENSIONES,
+  ART_LOTT_141_TACOGRAFO,
   ART_CP_379,
   ART_CP_379_1,
   ART_CP_384,
@@ -1766,6 +1939,490 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'sube a 6.001–18.000 € (fuera del rango del validador `transporte`, por eso solo se anota, no se ' +
       'modela como importe). Distinguir los distintos incumplimientos (paneles, carta de porte, ' +
       'formación, cisterna). El precinto/inmovilización es la medida operativa habitual. Revisar.',
+  }),
+  // === OLA 2 del catálogo: submenú TRANSPORTE (LOTT arts. 140-143, marco `transporte`) ========
+  // Cubre los sub-temas del submenú de transporte de SPPLB que aún no teníamos: título habilitante,
+  // viajeros, escolar, ADR (variantes), perecederas (ATP), documentación/visado, dimensiones y
+  // tacógrafo (variante documental). NO duplican las de Ola 1 (`inf-tacografo` manipulación/tiempos,
+  // `inf-exceso-mma` masa, `inf-adr-mercancias-peligrosas` ADR general). Sanciones LOTT = HORQUILLAS
+  // amplias (importeEur = mínimo del tramo + importeMaxEur = extremo), NO cifra fija; sin pronto pago
+  // modelado (importeReducidoEur null, a verificar); sin puntos DGT (el transporte LOTT no detrae
+  // puntos). TODO `pendiente_revision`: la nota marca "a verificar" el apartado/letra, la gravedad y
+  // la horquilla. Consecuencia habitual: inmovilización/precinto.
+  // --- Título habilitante (transporte público/privado) --------------------------------------
+  construirInfraccion({
+    id: 'inf-transporte-sin-titulo',
+    articulo: ART_LOTT_140_TITULO,
+    tituloCorto: 'Transporte público sin título habilitante',
+    gravedad: 'muy_grave',
+    // Horquilla del tramo alto del muy grave LOTT (4.001–6.000 €): NO cifra fija. Se pinta como rango.
+    importeEur: 4001,
+    importeReducidoEur: null,
+    importeMaxEur: 6000,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte público de mercancías o de viajeros careciendo de la autorización, título ' +
+      'habilitante o tarjeta de transporte, o seguir prestándolo tras su caducidad, revocación o ' +
+      'suspensión. Es infracción muy grave de la LOTT, sancionable con multa y con la posibilidad de ' +
+      'inmovilizar o precintar el vehículo hasta que se subsane. La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'sin tarjeta de transporte',
+      'camion sin tarjeta',
+      'transporte sin autorizacion',
+      'sin titulo de transporte',
+      'transportista sin licencia',
+      'transporte publico ilegal',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo hasta que se acredite el ' +
+          'título habilitante o cese la prestación, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto del art. 140 LOTT (carecer de título habilitante para el ' +
+      'transporte público; reformado por la Ley 13/2021) y la GRAVEDAD por supuesto contra el texto ' +
+      'consolidado y el ROTT (RD 1211/1990). El seed ancla el tramo ALTO del muy grave (4.001–6.000 €) ' +
+      'como horquilla; A VERIFICAR el importe efectivo por supuesto. Sin pronto pago modelado (a ' +
+      'verificar la reducción del 30 %). No detrae puntos DGT. Revisar por supuesto antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-transporte-privado-excede',
+    articulo: ART_LOTT_141_PRIVADO,
+    tituloCorto: 'Transporte privado excediendo sus límites',
+    gravedad: 'grave',
+    // Horquilla del tramo grave LOTT (401–1.000 €): NO cifra fija. Se pinta como rango.
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte privado complementario excediendo los límites que lo definen: transportar ' +
+      'mercancías o personas ajenas a la propia actividad de la empresa, o mediante precio, como si ' +
+      'fuera transporte público, sin disponer del título habilitante que este exigiría. La cuantía y ' +
+      'las medidas se rigen por la LOTT. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'transporte privado ilegal',
+      'transporte por cuenta propia excedido',
+      'privado como si fuera publico',
+      'transporte sin ser publico',
+      'cobrar por transportar sin licencia',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que cese la actividad no amparada por ' +
+          'el título, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
+      '140-142, reformada por la Ley 13/2021) y el ROTT: exceder los límites del transporte privado ' +
+      'complementario puede ser grave o, según el caso (ánimo de lucro, reiteración), reconducirse a la ' +
+      'falta de título habilitante (muy grave). El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR ' +
+      'la horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+  }),
+  // --- Viajeros (autobús / VTC / taxi) -------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-viajeros-sin-autorizacion',
+    articulo: ART_LOTT_140_TITULO,
+    tituloCorto: 'Transporte de viajeros sin autorización',
+    gravedad: 'muy_grave',
+    importeEur: 4001,
+    importeReducidoEur: null,
+    importeMaxEur: 6000,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte de viajeros (autobús, autocar, vehículo de arrendamiento con conductor ' +
+      '—VTC— o taxi) careciendo de la autorización o licencia exigible, o excediendo su ámbito. Es ' +
+      'infracción muy grave de la LOTT, sancionable con multa y con la posibilidad de inmovilizar o ' +
+      'precintar el vehículo. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'autobus sin licencia',
+      'vtc sin autorizacion',
+      'taxi sin licencia',
+      'bus sin autorizacion',
+      'transporte de viajeros ilegal',
+      'llevar pasajeros sin licencia',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo hasta que se acredite la ' +
+          'autorización o cese la prestación, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra del art. 140 LOTT (transporte público de viajeros sin título) y su ' +
+      'gravedad contra el texto consolidado (Ley 13/2021) y el ROTT. Distinguir el régimen del TAXI y ' +
+      'del VTC (competencias autonómicas/locales y RD 1076/2017 para VTC) del transporte en autobús. El ' +
+      'seed ancla el tramo alto del muy grave (4.001–6.000 €); A VERIFICAR importe y horquilla por ' +
+      'supuesto. Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-viajeros-exceso-plazas',
+    articulo: ART_LOTT_141_VIAJEROS,
+    tituloCorto: 'Exceso de viajeros sobre las plazas autorizadas',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'Transportar un número de viajeros superior al de plazas autorizadas del vehículo (las que ' +
+      'figuran en la ficha técnica y la tarjeta de transporte). Es infracción de la LOTT; procede ' +
+      'valorar la regularización del exceso de ocupantes antes de reanudar la marcha.',
+    terminos: [
+      'exceso de viajeros',
+      'mas pasajeros de la cuenta',
+      'bus con exceso de plazas',
+      'autobus sobreocupado',
+      'demasiados pasajeros',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se regularice el número de ' +
+          'ocupantes al de plazas autorizadas, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto (exceso de viajeros sobre plazas autorizadas) y la GRAVEDAD contra ' +
+      'el texto consolidado de la LOTT (arts. 140-142, Ley 13/2021) y el ROTT: el exceso puede graduarse ' +
+      'según su porcentaje. El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la horquilla. Sin ' +
+      'pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+  }),
+  construirInfraccion({
+    id: 'inf-viajeros-sin-billete',
+    articulo: ART_LOTT_142_VIAJEROS,
+    tituloCorto: 'Viajeros sin billetes ni hojas de reclamación',
+    gravedad: 'leve',
+    // Horquilla del tramo leve LOTT (100–200 €): NO cifra fija. Se pinta como rango.
+    importeEur: 100,
+    importeReducidoEur: null,
+    importeMaxEur: 200,
+    puntos: null,
+    textoBoletin:
+      'Prestar transporte de viajeros careciendo de los billetes u otro título de transporte de los ' +
+      'usuarios, no expedirlos, o carecer de las hojas de reclamación a disposición de los viajeros. Es ' +
+      'infracción leve de la LOTT por incumplimiento de las obligaciones formales del servicio.',
+    terminos: [
+      'sin billetes',
+      'sin hojas de reclamacion',
+      'sin billete el autobus',
+      'no da billete',
+      'sin titulo de transporte del viajero',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto del art. 142 LOTT (obligaciones formales de billetes/hojas de ' +
+      'reclamación) contra el texto consolidado (Ley 13/2021) y el ROTT. El seed ancla el tramo LEVE ' +
+      '(100–200 €) como horquilla; A VERIFICAR el importe efectivo. Sin pronto pago modelado. No detrae ' +
+      'puntos DGT. Revisar por supuesto antes de publicar.',
+  }),
+  // --- Transporte escolar y de menores -------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-transporte-escolar',
+    articulo: ART_LOTT_ESCOLAR,
+    tituloCorto: 'Transporte escolar incumpliendo sus condiciones',
+    gravedad: 'muy_grave',
+    // Horquilla del tramo medio del muy grave LOTT (2.001–4.000 €): NO cifra fija. Se pinta como rango.
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte escolar o de menores incumpliendo las condiciones de seguridad exigibles: ' +
+      'falta del acompañante o monitor cuando es obligatorio, vehículo que supera la antigüedad máxima ' +
+      'o sin la ITV específica, ausencia de la señalización de transporte escolar, o exceso sobre las ' +
+      'plazas autorizadas. Estas condiciones las desarrolla el RD 443/2001. Procede valorar la ' +
+      'inmovilización hasta subsanar. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'escolar sin acompañante',
+      'autobus escolar sin monitor',
+      'transporte escolar sin señalizar',
+      'bus escolar sin itv',
+      'ruta escolar sin acompañante',
+      'transporte de menores sin monitor',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se subsane la condición de ' +
+          'seguridad incumplida (acompañante, señalización, plazas), conforme al régimen de la LOTT.',
+        fuente: 'LOTT art. 143 (y RD 443/2001, transporte escolar y de menores)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD por supuesto contra el texto consolidado de la ' +
+      'LOTT (arts. 140-142, Ley 13/2021), el ROTT y el RD 443/2001 (condiciones de seguridad del ' +
+      'transporte escolar y de menores): algunas condiciones (acompañante, señalización) pueden ser ' +
+      'graves y otras muy graves. El seed ancla el tramo medio del muy grave (2.001–4.000 €); A ' +
+      'VERIFICAR importe y horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar.',
+  }),
+  // --- Mercancías peligrosas (ADR): variantes distintas de la general muy grave --------------
+  construirInfraccion({
+    id: 'inf-adr-documentacion',
+    articulo: ART_LOTT_ADR_DOC,
+    tituloCorto: 'ADR: documentación deficiente (instrucciones escritas / carta de porte)',
+    gravedad: 'grave',
+    // Horquilla del tramo alto del grave LOTT (601–1.000 €): NO cifra fija. Se pinta como rango.
+    importeEur: 601,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'Transportar mercancías peligrosas con deficiencias documentales del ADR distintas de las que ' +
+      'constituyen infracción muy grave: sin las instrucciones escritas de seguridad o con ellas ' +
+      'incompletas, o con la documentación de la mercancía incompleta cuando el hecho no comprometa ' +
+      'gravemente la seguridad. Se distingue de la ausencia total de paneles, etiquetado, autorización ' +
+      'o formación (muy grave). Procede valorar la subsanación antes de reanudar la marcha.',
+    terminos: [
+      'sin instrucciones escritas adr',
+      'documentacion de peligrosas incompleta',
+      'papeles adr incompletos',
+      'instrucciones escritas de seguridad',
+      'documentacion adr deficiente',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se aporte o complete la ' +
+          'documentación ADR, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y RD 97/2014, mercancías peligrosas por carretera)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
+      '(arts. 140-142, Ley 13/2021), el ROTT, el RD 97/2014 y el ADR vigente: distinguir la deficiencia ' +
+      'documental (grave o leve) de la ausencia total de documentación esencial (muy grave, ver ' +
+      '`inf-adr-mercancias-peligrosas`). El seed ancla el tramo alto del grave (601–1.000 €); A ' +
+      'VERIFICAR la horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+  }),
+  construirInfraccion({
+    id: 'inf-adr-conductor-formacion',
+    articulo: ART_LOTT_ADR_FORMACION,
+    tituloCorto: 'ADR: conductor sin la formación exigible',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Transportar mercancías peligrosas con un conductor que carece del certificado de formación ADR ' +
+      'en vigor exigible para la clase de mercancía y de vehículo, o llevándolo caducado. La formación ' +
+      'del conductor es un requisito esencial de seguridad del ADR. Es infracción muy grave de la LOTT; ' +
+      'procede valorar la inmovilización o el precinto. La valoración final corresponde a la autoridad.',
+    terminos: [
+      'sin certificado adr',
+      'conductor sin formacion adr',
+      'carnet adr caducado',
+      'sin curso adr',
+      'chofer sin adr',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo hasta que conduzca un chofer ' +
+          'con la formación ADR en vigor, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y RD 97/2014, mercancías peligrosas por carretera)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto del art. 140 LOTT (conductor sin formación ADR) y la ' +
+      'gravedad contra el texto consolidado (Ley 13/2021), el ROTT, el RD 97/2014 y el ADR vigente. El ' +
+      'seed ancla el tramo medio del muy grave (2.001–4.000 €); A VERIFICAR importe y horquilla por ' +
+      'supuesto. Distinta de la deficiencia documental (`inf-adr-documentacion`) y del ADR general ' +
+      '(`inf-adr-mercancias-peligrosas`). Sin pronto pago modelado. No detrae puntos DGT. Revisar.',
+  }),
+  // --- Mercancías perecederas (ATP) ----------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-perecederas-atp',
+    articulo: ART_LOTT_ATP,
+    tituloCorto: 'Perecederas sin certificado ATP o con frío deficiente',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'Transportar mercancías perecederas (alimentos a temperatura controlada) sin el certificado ATP ' +
+      'en vigor del vehículo o contenedor, o con el equipo de frío averiado o incumpliendo las ' +
+      'temperaturas exigidas. El régimen técnico lo fija el Acuerdo ATP. Es infracción de la LOTT; ' +
+      'procede valorar la subsanación para preservar la cadena de frío de los alimentos.',
+    terminos: [
+      'sin certificado atp',
+      'camion de perecederas sin atp',
+      'sin atp',
+      'equipo de frio averiado',
+      'cadena de frio rota',
+      'frigorifico sin atp',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el incumplimiento comprometa la ' +
+          'cadena de frío o la seguridad alimentaria, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y Acuerdo ATP)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
+      '(arts. 140-142, Ley 13/2021), el ROTT y el Acuerdo ATP: distinguir la falta de certificado ATP ' +
+      'del incumplimiento de temperaturas o del equipo de frío averiado (pueden graduarse distinto). El ' +
+      'seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la horquilla. Sin pronto pago modelado. No ' +
+      'detrae puntos DGT. Revisar por supuesto antes de publicar.',
+  }),
+  // --- Obligaciones con la Administración (documentación de control / visado) ----------------
+  construirInfraccion({
+    id: 'inf-documentacion-control',
+    articulo: ART_LOTT_142_DOCS,
+    tituloCorto: 'No llevar o no exhibir la documentación de control',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: null,
+    importeMaxEur: 400,
+    puntos: null,
+    textoBoletin:
+      'No llevar a bordo o no exhibir a los servicios de inspección la documentación de control del ' +
+      'transporte: la tarjeta de transporte o autorización y los demás documentos de control exigibles. ' +
+      'Se distingue de CARECER del título habilitante (muy grave): aquí el transportista sí lo tiene ' +
+      'pero no lo lleva o no lo exhibe, supuesto por lo general leve y subsanable.',
+    terminos: [
+      'no lleva la documentacion de transporte',
+      'no exhibe la tarjeta de transporte',
+      'sin los documentos de control',
+      'no enseña la autorizacion de transporte',
+      'olvido la tarjeta de transporte',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
+      '140-142, Ley 13/2021) y el ROTT: NO llevar o NO exhibir la documentación de control suele ser ' +
+      'LEVE y subsanable, pero la NEGATIVA a exhibirla o la obstrucción a la inspección puede ser grave ' +
+      'o muy grave. NO confundir con CARECER del título (muy grave, `inf-transporte-sin-titulo`). El ' +
+      'seed ancla el tramo LEVE (100–400 €); A VERIFICAR el importe. Sin pronto pago modelado. No detrae ' +
+      'puntos DGT. Revisar por supuesto.',
+  }),
+  construirInfraccion({
+    id: 'inf-visado-transporte',
+    articulo: ART_LOTT_141_VISADO,
+    tituloCorto: 'Autorización de transporte sin visar',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 800,
+    puntos: null,
+    textoBoletin:
+      'Mantener en explotación un vehículo o una autorización de transporte sin haber realizado el ' +
+      'visado periódico exigible, o incumpliendo las condiciones a las que se sujeta su vigencia. Es ' +
+      'infracción de la LOTT relacionada con el mantenimiento de los requisitos de la autorización.',
+    terminos: [
+      'sin visar la tarjeta de transporte',
+      'visado caducado',
+      'autorizacion sin visar',
+      'tarjeta de transporte sin visar',
+      'no ha pasado el visado del transporte',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
+      '140-142, Ley 13/2021) y el ROTT: la falta de visado en plazo puede ser leve o grave según su ' +
+      'alcance y la reiteración. El seed ancla el tramo GRAVE (401–800 €); A VERIFICAR la horquilla. Sin ' +
+      'pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
+  }),
+  // --- Pesos y dimensiones: exceso de dimensiones (además del exceso de MMA de Ola 1) --------
+  construirInfraccion({
+    id: 'inf-exceso-dimensiones',
+    articulo: ART_LOTT_141_DIMENSIONES,
+    tituloCorto: 'Exceso de dimensiones del vehículo o conjunto',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'Circular excediendo las dimensiones máximas reglamentarias (longitud, anchura o altura) del ' +
+      'vehículo o del conjunto, o realizar un transporte que por sus dimensiones requiere autorización ' +
+      'especial de circulación sin disponer de ella. Se distingue del exceso de MASA máxima autorizada. ' +
+      'Procede valorar la inmovilización hasta subsanar.',
+    terminos: [
+      'exceso de dimensiones',
+      'camion demasiado largo',
+      'exceso de longitud',
+      'transporte especial sin autorizacion',
+      'carga que sobresale',
+      'vehiculo demasiado ancho',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se ajusten las dimensiones o se ' +
+          'obtenga la autorización especial de circulación, conforme al régimen de la LOTT.',
+        fuente: 'LOTT art. 143 (y RD 2822/1998, Reglamento General de Vehículos)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD por supuesto contra el texto consolidado de la ' +
+      'LOTT (arts. 140-142, Ley 13/2021), el ROTT y los límites de dimensiones del Reglamento General de ' +
+      'Vehículos (RD 2822/1998): el exceso puede graduarse por su porcentaje y por la necesidad de ' +
+      'autorización de transporte especial. El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la ' +
+      'horquilla. Distinta del exceso de MMA (`inf-exceso-mma`). Sin pronto pago modelado. No detrae ' +
+      'puntos DGT. Revisar por supuesto.',
+  }),
+  // --- Tacógrafo: variante documental (distinta de la manipulación muy grave de Ola 1) -------
+  construirInfraccion({
+    id: 'inf-tacografo-sin-registros',
+    articulo: ART_LOTT_141_TACOGRAFO,
+    tituloCorto: 'No llevar o no conservar los registros del tacógrafo',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 1000,
+    puntos: null,
+    textoBoletin:
+      'No llevar a bordo las hojas de registro o la tarjeta de conductor del tacógrafo, o no conservar ' +
+      'y presentar los registros de los tiempos de conducción y descanso durante el periodo exigido. Se ' +
+      'distingue de la MANIPULACIÓN o el falseamiento del tacógrafo y del exceso de tiempos (muy grave): ' +
+      'aquí se trata del incumplimiento documental de porte y conservación de los registros.',
+    terminos: [
+      'sin hojas del tacografo',
+      'sin tarjeta de tacografo',
+      'no conserva los discos',
+      'sin registros del tacografo',
+      'no lleva la tarjeta de conductor',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
+      '140-142, Ley 13/2021), el ROTT, el Reglamento (UE) 165/2014 (tacógrafo) y el Rgto (CE) 561/2006: ' +
+      'no llevar/no conservar registros suele ser grave, distinto de la manipulación o el exceso de ' +
+      'tiempos (muy grave, `inf-tacografo`). El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la ' +
+      'horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
   }),
   construirInfraccion({
     id: 'inf-adelantamiento-antirreglamentario',

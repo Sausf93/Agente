@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 41 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(41);
+  it('siembra 54 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(54);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -380,6 +380,121 @@ describe('SEED_TRAFICO: ampliación del catálogo de calle (14 conductas nuevas)
       const item = find(id)!;
       expect(item.infraccion.gravedad, id).toBe('leve');
       expect(item.infraccion.importeEur!, id).toBeLessThanOrEqual(100);
+    }
+  });
+});
+
+describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)', () => {
+  const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+
+  // Las 13 fichas nuevas del submenú Transporte (título habilitante, viajeros, escolar, ADR,
+  // perecederas, documentación/visado, dimensiones y tacógrafo documental). NO duplican las de
+  // Ola 1 (`inf-tacografo`, `inf-exceso-mma`, `inf-adr-mercancias-peligrosas`).
+  const IDS_OLA2 = [
+    'inf-transporte-sin-titulo',
+    'inf-transporte-privado-excede',
+    'inf-viajeros-sin-autorizacion',
+    'inf-viajeros-exceso-plazas',
+    'inf-viajeros-sin-billete',
+    'inf-transporte-escolar',
+    'inf-adr-documentacion',
+    'inf-adr-conductor-formacion',
+    'inf-perecederas-atp',
+    'inf-documentacion-control',
+    'inf-visado-transporte',
+    'inf-exceso-dimensiones',
+    'inf-tacografo-sin-registros',
+  ];
+
+  it('las 13 existen, son administrativas del marco transporte y quedan pendientes de revisión', () => {
+    for (const id of IDS_OLA2) {
+      const item = find(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('administrativa');
+      expect(item!.marcoImporte, id).toBe('transporte');
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.length, id).toBeGreaterThan(0);
+      // La nota debe marcar explícitamente qué queda "a verificar" (apartado/gravedad/horquilla).
+      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+    }
+  });
+
+  it('todas son HORQUILLA del tramo (importeMaxEur ≥ importeEur), sin puntos DGT ni pronto pago', () => {
+    for (const id of IDS_OLA2) {
+      const item = find(id)!;
+      expect(item.infraccion.importeMaxEur, id).not.toBeNull();
+      expect(item.infraccion.importeMaxEur!, id).toBeGreaterThanOrEqual(item.infraccion.importeEur!);
+      // El transporte LOTT no detrae puntos DGT ni se modela con pronto pago.
+      expect(item.infraccion.puntos, id).toBeNull();
+      expect(item.infraccion.importeReducidoEur, id).toBeNull();
+    }
+  });
+
+  it('sus importes caen en el rango legal del marco transporte (100–6.000 €) y superan mínimos', () => {
+    for (const id of IDS_OLA2) {
+      const item = find(id)!;
+      expect(validarImporte(item.infraccion, 'transporte'), id).toEqual([]);
+      expect(validarMinimosPublicacion(item.infraccion, item.sinonimos.length), id).toEqual([]);
+    }
+  });
+
+  it('citan un artículo de la LOTT sembrado (fuente visible en la ficha)', () => {
+    for (const id of IDS_OLA2) {
+      const articulo = SEED_TRAFICO.articulos.find((a) => a.id === find(id)!.infraccion.articuloId);
+      expect(articulo, id).toBeDefined();
+      expect(articulo!.normaId, id).toBe('BOE-A-1987-17803');
+    }
+  });
+
+  // Cada ficha nueva resuelve por su término de calle, sin colisionar con NINGUNA otra ficha
+  // (incluidas las de transporte de Ola 1). Son los términos que el agente teclea en el buscador.
+  it.each([
+    ['sin tarjeta de transporte', 'inf-transporte-sin-titulo'],
+    ['transporte privado ilegal', 'inf-transporte-privado-excede'],
+    ['autobus sin licencia', 'inf-viajeros-sin-autorizacion'],
+    ['exceso de viajeros', 'inf-viajeros-exceso-plazas'],
+    ['sin hojas de reclamacion', 'inf-viajeros-sin-billete'],
+    ['escolar sin acompañante', 'inf-transporte-escolar'],
+    ['sin instrucciones escritas adr', 'inf-adr-documentacion'],
+    ['sin certificado adr', 'inf-adr-conductor-formacion'],
+    ['camion de perecederas sin atp', 'inf-perecederas-atp'],
+    ['no exhibe la tarjeta de transporte', 'inf-documentacion-control'],
+    ['visado caducado', 'inf-visado-transporte'],
+    ['exceso de dimensiones', 'inf-exceso-dimensiones'],
+    ['sin hojas del tacografo', 'inf-tacografo-sin-registros'],
+  ])('«%s» resuelve SOLO a %s (sin colisión con Ola 1)', (termino, id) => {
+    const duenos = SEED_TRAFICO.infracciones
+      .filter((i) => i.sinonimos.some((s) => s.termino === termino))
+      .map((i) => i.infraccion.id);
+    expect(duenos).toEqual([id]);
+  });
+
+  it('las que precintan/inmovilizan llevan la consecuencia con lenguaje orientativo', () => {
+    // Título, viajeros sin autorización, escolar, ADR y dimensiones llevan inmovilización/precinto.
+    for (const id of [
+      'inf-transporte-sin-titulo',
+      'inf-viajeros-sin-autorizacion',
+      'inf-transporte-escolar',
+      'inf-adr-conductor-formacion',
+      'inf-exceso-dimensiones',
+    ]) {
+      const inmov = find(id)!.consecuencias.find((c) => c.tipo === 'inmovilizacion');
+      expect(inmov, id).toBeDefined();
+      expect(inmov!.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+      expect(inmov!.textoCorto.toLowerCase(), id).not.toMatch(/\bdeten\b|\bdetén\b/);
+    }
+  });
+
+  it('las variantes NO duplican las de Ola 1 (ids distintos, artículos distintos)', () => {
+    // Tacógrafo, ADR y masa/dimensiones de Ola 2 usan artículos LOTT propios (numero distinto),
+    // no los de las fichas de Ola 1.
+    const ola1 = ['inf-tacografo', 'inf-exceso-mma', 'inf-adr-mercancias-peligrosas'];
+    for (const id of ola1) {
+      expect(IDS_OLA2, id).not.toContain(id);
+    }
+    const artOla2 = new Set(IDS_OLA2.map((id) => find(id)!.infraccion.articuloId));
+    for (const id of ola1) {
+      expect(artOla2.has(find(id)!.infraccion.articuloId), id).toBe(false);
     }
   });
 });
