@@ -13,8 +13,8 @@ const porId = (id: string) =>
   SEED_EXTRANJERIA_LOCAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_EXTRANJERIA_LOCAL: integridad', () => {
-  it('siembra 3 infracciones administrativas (extranjería + PPP)', () => {
-    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(3);
+  it('siembra 4 infracciones administrativas (extranjería + PPP)', () => {
+    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(4);
     for (const { infraccion } of SEED_EXTRANJERIA_LOCAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('administrativa');
     }

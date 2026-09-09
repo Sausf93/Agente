@@ -105,6 +105,19 @@ const ART_LOEX_53 = articuloSeed({
     'consúltese el texto consolidado en el BOE.',
 });
 
+const ART_LOEX_53_TRABAJO = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '53.1.b',
+  titulo: 'Infracciones graves: trabajar sin autorización',
+  texto:
+    'Tipifica como infracción GRAVE (administrativa, no penal) encontrarse trabajando en España sin ' +
+    'haber obtenido autorización de trabajo o autorización administrativa previa para trabajar, cuando ' +
+    'además no se cuente con autorización de residencia válida. Es la infracción del TRABAJADOR ' +
+    'extranjero, distinta de la del EMPLEADOR que le da ocupación (infracción muy grave del art. ' +
+    '54.1.d). No es delito ni conlleva por sí sola detención penal: su tratamiento es administrativo ' +
+    '(multa o expulsión). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_PPP_13 = articuloSeed({
   normaId: ID_PPP,
   numero: '13',
@@ -117,7 +130,11 @@ const ART_PPP_13 = articuloSeed({
     '(art. 13.5) y pueden incluir el comiso o el sacrificio del animal. Resumen orientativo.',
 });
 
-export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [ART_LOEX_53, ART_PPP_13];
+export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
+  ART_LOEX_53,
+  ART_LOEX_53_TRABAJO,
+  ART_PPP_13,
+];
 
 // --- Constructor de una infracción administrativa con sus sinónimos y consecuencias ---------
 interface InfraccionSeedInput {
@@ -240,6 +257,57 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'principal suele ser la EXPULSIÓN (art. 57), que además puede sustituir a la multa; y el ' +
       'régimen del internamiento cautelar (art. 61-62, autorización judicial, plazo máximo). Punto ' +
       'jurídicamente sensible: confirmar toda la redacción con el revisor jurídico antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'ext-trabajo-sin-autorizacion',
+    articulo: ART_LOEX_53_TRABAJO,
+    tituloCorto: 'Trabajar sin autorización (extranjería)',
+    gravedad: 'grave',
+    // LO 4/2000 art. 55.1.b: infracciones graves, multa de 501 a 10.000 €. Se fija el mínimo como
+    // referencia; la sanción puede sustituirse por expulsión (art. 57).
+    importeEur: 501,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Encontrarse un extranjero trabajando en España sin haber obtenido autorización de trabajo o ' +
+      'autorización administrativa previa para trabajar, cuando además no cuenta con autorización de ' +
+      'residencia válida (art. 53.1.b LO 4/2000). Es infracción GRAVE ADMINISTRATIVA del TRABAJADOR, ' +
+      'distinta de la del empleador que le da ocupación (infracción muy grave del art. 54.1.d). ' +
+      'MENSAJE CLAVE: no es delito y NO procede detención penal por ella; su tratamiento es ' +
+      'administrativo (multa o, en su caso, expulsión de los arts. 57 y 58). La valoración final ' +
+      'corresponde a la autoridad administrativa (y judicial en su caso).',
+    terminos: [
+      'trabajando sin papeles',
+      'trabajar sin autorizacion',
+      'sin permiso de trabajo',
+      'currando sin papeles',
+      'extranjero trabajando sin permiso',
+      'sin autorizacion de trabajo',
+      'trabajar sin residencia',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede la identificación y la comprobación documental; el agente identifica y da parte. La ' +
+          'sanción por trabajar sin autorización se tramita por vía administrativa mediante acta de la ' +
+          'Inspección de Trabajo (art. 55.2 LO 4/2000), y la carga sancionadora principal recae en el ' +
+          'EMPLEADOR (art. 54.1.d). NO procede detención penal por la mera situación; cualquier medida ' +
+          'cautelar la acuerda la autoridad competente.',
+        fuente: 'LO 4/2000 arts. 53.1.b, 54.1.d, 55 y 57',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: (i) el apartado exacto —art. 53.1.b LO 4/2000 (trabajar sin autorización) frente a ' +
+      'la infracción del EMPLEADOR del art. 54.1.d (MUY GRAVE)—; (ii) el importe (grave, multa de 501 a ' +
+      '10.000 €, art. 55.1.b) como orientativo, sabiendo que puede sustituirse por expulsión (art. 57). ' +
+      'El expediente por 53.1.b se inicia por acta de la INSPECCIÓN DE TRABAJO (art. 55.2 LO 4/2000), no ' +
+      'por el agente; y la carga sancionadora fuerte recae en el EMPLEADOR (art. 54.1.d, hasta 100.000 € ' +
+      'y cierre; posible delito del art. 311 bis CP si es reiterado). ' +
+      'MENSAJE CLAVE a preservar: es infracción ADMINISTRATIVA, NO delito; NO procede detención penal ' +
+      'por ella. Punto jurídicamente sensible: confirmar toda la redacción con el revisor jurídico antes ' +
+      'de publicar.',
   }),
   construirInfraccion({
     id: 'ppp-sin-licencia',
