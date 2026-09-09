@@ -812,6 +812,8 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'manifestacion sin avisar',
       'concentracion no comunicada',
       'protesta espontanea',
+      'mani',
+      'concentracion',
     ],
     notaRevision:
       NOTA_LEVE_IMPORTE +

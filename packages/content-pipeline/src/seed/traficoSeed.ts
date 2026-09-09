@@ -1181,6 +1181,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'test de alcohol',
       'conducir bebido',
       'tasa de alcohol',
+      'alcolemia',
     ],
     consecuencias: [
       {
@@ -1484,6 +1485,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'carga y descarga',
       'c/d',
       'aparcado en carga y descarga',
+      'estacionamento',
+      'aparcamiendo',
     ],
     consecuencias: [
       {
@@ -1576,6 +1579,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'patinete a dos',
       'patinete sin luz',
       'patinete tuneado',
+      'patinet',
     ],
     consecuencias: [
       {
@@ -1905,6 +1909,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'numero onu',
       'carta de porte adr',
       'sin adr',
+      'panel naranja',
+      'clase 3',
+      'clase 7',
+      'mercancia peligrosa',
+      'etiqueta de peligro',
     ],
     consecuencias: [
       {
