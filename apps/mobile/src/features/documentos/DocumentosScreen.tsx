@@ -90,20 +90,30 @@ export function DocumentosScreen() {
           </Text>
         </View>
         <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-          Elige un acta y genera el PDF en tu móvil. El texto legal ya viene hecho: tú pones fecha,
-          lugar y lo específico.
+          Lo más rápido es que el documento nazca de una infracción. Aquí empiezas un acta en blanco
+          cuando no partes de una consulta concreta.
         </Text>
       </View>
 
       <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md }}>
         <Banner tone="info" title="Lo más rápido: desde la infracción">
           Abre una infracción en Buscar o Normas y pulsa "Generar documento": el boletín llega con
-          norma, artículo, importe y texto ya rellenos. Aquí empiezas de cero cuando lo necesites.
+          norma, artículo, importe y texto ya rellenos, listo para mandártelo en un gesto.
         </Banner>
         <Banner tone="warning" title="Solo en este dispositivo">
           Las matrículas, nombres y DNI que escribas viven únicamente en tu teléfono. Ni esos datos
           ni el PDF se envían a ningún servidor.
         </Banner>
+      </View>
+
+      {/* Secundario: empezar de cero. Baja la lista de plantillas frente a la vía "desde la ficha". */}
+      <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.xxs }}>
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
+          Empezar un acta en blanco
+        </Text>
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+          Elige la plantilla; tú pones fecha, lugar y lo específico.
+        </Text>
       </View>
 
       <View>

@@ -396,6 +396,8 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
                   plantillaId: copia.plantillaId,
                   motivo: textoCopiable,
                   amparo: precepto,
+                  // Título corto de la infracción para la línea "Nace de:" (dato del agente).
+                  origenTitulo: ficha.tituloCorto,
                 },
               });
               return;
@@ -407,6 +409,8 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
               articulo: `art. ${ficha.articuloNumero}`,
               hecho: textoCopiable,
               gravedad: severityMeta[severityFromGravedad(ficha.gravedad)].label,
+              // Título corto de la infracción para la línea "Nace de:" (dato del agente).
+              origenTitulo: ficha.tituloCorto,
             };
             if (ficha.importeEur !== null) params.importe = formatEuros(ficha.importeEur);
             if (ficha.puntos !== null) params.puntos = String(ficha.puntos);

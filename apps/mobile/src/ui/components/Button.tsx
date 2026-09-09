@@ -36,6 +36,8 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   /** Icono Lucide opcional a la izquierda del texto (p. ej. `FileDown` en "Generar documento"). */
   icon?: ComponentType<LucideProps>;
+  /** Acción HÉROE: más alto (56 pt) y texto mayor, para la acción principal de una pantalla. */
+  large?: boolean;
   /** Háptico al pulsar: `selection` (por defecto), `success` (confirmaciones) o `none`. */
   haptic?: 'selection' | 'success' | 'none';
   accessibilityLabel?: string;
@@ -50,6 +52,7 @@ export function Button({
   disabled = false,
   variant = 'primary',
   icon: Icon,
+  large = false,
   haptic = 'selection',
   accessibilityLabel,
   accessibilityHint,
@@ -84,7 +87,7 @@ export function Button({
   });
 
   const base: ViewStyle = {
-    minHeight: t.touch.primaryHeight,
+    minHeight: large ? t.touch.searchHeight : t.touch.primaryHeight,
     borderRadius: t.radius.md,
     flexDirection: 'row',
     alignItems: 'center',
@@ -123,7 +126,14 @@ export function Button({
           <Icon size={20} color={textColor} strokeWidth={2} />
         </View>
       ) : null}
-      <Text maxFontSizeMultiplier={1.6} style={{ color: textColor, ...t.typography.scale.bodyStrong }}>
+      <Text
+        maxFontSizeMultiplier={1.6}
+        style={{
+          color: textColor,
+          ...(large ? t.typography.scale.bodyL : t.typography.scale.bodyStrong),
+          fontWeight: '600',
+        }}
+      >
         {title}
       </Text>
     </AnimatedPressable>

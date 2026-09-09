@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CircleCheck, Lock, Plus } from 'lucide-react-native';
+import { CalendarClock, CircleCheck, IdCard, Lock, Plus } from 'lucide-react-native';
 import { renderPlantilla } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
@@ -24,29 +24,42 @@ import { formatearFecha, formatearHora, valoresIniciales, valoresRecordables } f
 import { buildDocumentHtml } from './html';
 import { generarPdf } from './generarPdf';
 import { compartirPdf, enviarPorCorreo } from './compartir';
+import { SeccionPlegable } from './SeccionPlegable';
+import { origenDesdePrefill, resumenIdentidad, resumenLegal } from './resumen';
 
 /**
- * Formulario de un DOCUMENTO (§4.8). El documento NACE de la consulta: cuando se abre desde la
- * ficha, la app trae ya rellenado todo lo legal (norma, artículo, texto/hecho, importe, puntos,
- * gravedad) y el agente solo pone lo específico. La pantalla se agrupa por lo que significa cada
- * hueco:
+ * Formulario de un DOCUMENTO (§4.8), rediseñado para ser ÁGIL en la calle. El documento NACE de la
+ * consulta: cuando se abre desde la ficha, la app trae ya rellenado todo lo legal (norma, artículo,
+ * texto/hecho, importe, puntos, gravedad) y fecha/hora. Lo que de verdad quiere el agente es
+ * MANDÁRSELO/COMPARTIRLO en un gesto para imprimirlo en la oficina y allí poner la fecha y un par
+ * de cosas a mano. Por eso la jerarquía se INVIERTE respecto al formulario largo de antes:
  *
- *   1. "Ya rellenado por la app" — lo legal, que el agente NO reescribe (solo edita si procede).
- *   2. "Tus datos" — cuerpo, unidad y nº TIP; se recuerdan para no teclearlos cada vez.
- *   3. "Lo del servicio" — fecha, hora, lugar/PK y lo propio del acta. Lo mínimo a mano.
- *   4. "Datos de vehículo o persona" — SIEMPRE aparte, con aviso fijo: solo en este dispositivo.
+ *   1. Cabecera + "Nace de:" (contexto de origen) + ACCIÓN HÉROE: "Generar y enviarme" /
+ *      "Generar y compartir". Encadenan generar el PDF y abrir la hoja de compartir.
+ *   2. Bloque LEGAL: plegado a un resumen de una línea si viene de la ficha (revisar de un vistazo),
+ *      expandido en frío.
+ *   3. Tus datos (identidad): plegado a "Cuerpo · TIP 12345" si ya están recordados, expandido la
+ *      primera vez.
+ *   4. Lo del servicio: fecha/hora de-enfatizadas (ya vienen puestas), Lugar como único input
+ *      destacado, y el resto tras un "+ añadir" discreto.
+ *   5. Datos de vehículo o persona: SIEMPRE aparte, plegados, con aviso fijo de privacidad.
  *
- * Tras generar el PDF, lo grande es "Enviarme a mi correo" y "Compartir": el agente se lo manda o
- * lo comparte y lo imprime luego en la oficina. Los datos de terceros y el PDF NUNCA se memorizan
- * ni salen a un servidor (no hay servidor): solo viajan si el agente los comparte desde su móvil.
+ * Los datos de terceros y el PDF NUNCA se memorizan ni salen a un servidor (no hay servidor): solo
+ * viajan si el agente los comparte desde su móvil.
  */
 export interface RellenarScreenProps {
   plantillaId: string;
   /** Prefill que llega de la ficha (norma, artículo, importe…). Solo campos del agente. */
   prefill?: Record<string, string> | undefined;
+  /**
+   * Título corto de la infracción de la que nace el documento, para la línea "Nace de:". Es un dato
+   * del AGENTE (nombre de la infracción), NUNCA de tercero. Opcional: si no llega, "Nace de:" se
+   * deriva del prefill (norma · artículo).
+   */
+  origenTitulo?: string | undefined;
 }
 
-export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
+export function RellenarScreen({ plantillaId, prefill, origenTitulo }: RellenarScreenProps) {
   const t = useAppTheme();
   const insets = useSafeAreaInsets();
   const plantilla = useMemo(() => plantillaPorId(plantillaId), [plantillaId]);
@@ -57,8 +70,11 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [textoPlano, setTextoPlano] = useState('');
   const [faltantes, setFaltantes] = useState<string[]>([]);
-  // Los datos de tercero son OPCIONALES (solo si el caso los necesita): van plegados por defecto
-  // para no dar la sensación de que hay que rellenar mucho. Se abren con un toque.
+  // Fecha y hora ya vienen puestas: se muestran de-enfatizadas y solo se abren si hay que ajustarlas.
+  const [editarFechaHora, setEditarFechaHora] = useState(false);
+  // "El resto" del servicio (nº boletín, observaciones…) y los datos de tercero van plegados por
+  // defecto para que la pantalla no parezca un muro de campos. Se abren con un toque.
+  const [mostrarMasServicio, setMostrarMasServicio] = useState(false);
   const [mostrarTerceros, setMostrarTerceros] = useState(false);
 
   useEffect(() => {
@@ -77,6 +93,8 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
       vivo = false;
     };
   }, [plantilla, prefill]);
+
+  const origen = useMemo(() => origenDesdePrefill(prefill, origenTitulo), [prefill, origenTitulo]);
 
   if (!plantilla) {
     return (
@@ -97,8 +115,19 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
   const camposServicio = doc.campos.filter((c) => !c.esDatoTercero && seccionDe(c) === 'servicio');
   const camposTercero = doc.campos.filter((c) => c.esDatoTercero);
 
-  // ¿La app ya trajo lo legal relleno (viene de una ficha)? Cambia el tono del bloque legal.
-  const legalPrerrelleno = camposLegales.some((c) => (values[c.clave] ?? '').trim().length > 0);
+  // El servicio se reparte: fecha/hora (de-enfatizadas), lugar (único destacado) y "el resto".
+  const campoFecha = camposServicio.find((c) => c.tipo === 'fecha');
+  const campoHora = camposServicio.find((c) => c.tipo === 'hora');
+  const campoLugar = camposServicio.find((c) => c.clave === 'lugar');
+  const otrosServicio = camposServicio.filter(
+    (c) => c.tipo !== 'fecha' && c.tipo !== 'hora' && c.clave !== 'lugar',
+  );
+
+  // ¿La app ya trajo lo legal relleno (viene de una ficha)? Y ¿la identidad ya está recordada?
+  const resumenLeg = resumenLegal(camposLegales, values);
+  const resumenId = resumenIdentidad(camposIdentidad, values);
+  const legalPrerrelleno = resumenLeg.length > 0;
+  const identidadRellena = resumenId.length > 0;
 
   function actualizar(clave: string, valor: string) {
     setValues((prev) => ({ ...prev, [clave]: valor }));
@@ -106,7 +135,11 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
     setPdfUri(null);
   }
 
-  async function onGenerar() {
+  /**
+   * Genera el PDF EN EL DISPOSITIVO y devuelve su URI (o `null` si falla). Separado del encadenado
+   * para poder reutilizarlo desde las dos acciones héroe y desde "Regenerar".
+   */
+  async function generar(): Promise<string | null> {
     setGenerando(true);
     try {
       const { texto, camposFaltantes } = renderPlantilla(doc.markdownConVariables, values);
@@ -119,21 +152,36 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
       setTextoPlano(texto);
       setFaltantes(camposFaltantes);
       setPdfUri(uri);
-      // Feedback inmediato: el PDF ya está en el móvil. No abrimos nada automáticamente; el agente
-      // decide si se lo manda a su correo, lo comparte o lo imprime (botones grandes de abajo).
       hapticSuccess();
+      return uri;
     } catch {
       Alert.alert('No se pudo generar el PDF', 'Inténtalo de nuevo en un dispositivo (iOS/Android).');
+      return null;
     } finally {
       setGenerando(false);
     }
   }
 
-  /** Hoja de compartir con el PDF adjunto. El título adapta la hoja al gesto del agente. */
-  async function abrirHojaCompartir(dialogTitle: string) {
-    if (!pdfUri) return;
+  /** Acción héroe: genera y, en cuanto hay PDF, abre la hoja para MANDÁRSELO al propio correo. */
+  async function onGenerarYEnviar() {
+    const uri = await generar();
+    if (uri) await abrirHojaCompartir('Enviarme a mi correo', uri);
+  }
+
+  /** Acción héroe: genera y abre la hoja de compartir (WhatsApp, Archivos, imprimir…). */
+  async function onGenerarYCompartir() {
+    const uri = await generar();
+    if (uri) await abrirHojaCompartir('Compartir o imprimir', uri);
+  }
+
+  /**
+   * Hoja de compartir con el PDF adjunto. Acepta el `uri` explícito (para encadenar justo tras
+   * generar, sin esperar al re-render del estado) o cae al `pdfUri` ya en estado (reintentos).
+   */
+  async function abrirHojaCompartir(dialogTitle: string, uri: string | null = pdfUri) {
+    if (!uri) return;
     try {
-      const r = await compartirPdf(pdfUri, dialogTitle);
+      const r = await compartirPdf(uri, dialogTitle);
       if (r === 'no-disponible') {
         Alert.alert('Compartir no disponible', 'Este dispositivo no permite compartir archivos.');
       }
@@ -151,6 +199,9 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
     }
   }
 
+  const fechaValor = campoFecha ? (values[campoFecha.clave] ?? '') : '';
+  const horaValor = campoHora ? (values[campoHora.clave] ?? '') : '';
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: t.color.bg }}
@@ -164,7 +215,7 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
         }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Cabecera: título + el FLUJO que quiere el agente (genera → mándate/comparte → imprime). */}
+        {/* Cabecera: título + de dónde nace el documento. */}
         <View style={{ gap: t.spacing.xs }}>
           <Text
             accessibilityRole="header"
@@ -172,91 +223,210 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
           >
             {doc.titulo}
           </Text>
-          <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
-            Genera aquí el PDF, mándatelo a tu correo o compártelo, y lo imprimes en la oficina para
-            poner la fecha y un par de datos a mano.
+          {origen ? (
+            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
+              Nace de: <Text style={{ color: t.color.textPrimary }}>{origen}</Text>
+            </Text>
+          ) : (
+            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body }}>
+              Genera el PDF, mándatelo o compártelo, y lo imprimes en la oficina para terminarlo a
+              mano.
+            </Text>
+          )}
+        </View>
+
+        {/* 1. ACCIÓN HÉROE arriba: lo que quiere el agente (generar → mándate/comparte → imprime). */}
+        <View style={{ gap: t.spacing.sm }}>
+          <Button
+            title={generando ? 'Generando…' : 'Generar y enviarme'}
+            large
+            haptic="success"
+            disabled={generando || !listo}
+            onPress={onGenerarYEnviar}
+            accessibilityHint="Crea el PDF en tu móvil y abre tu correo para mandártelo a ti mismo"
+          />
+          <Button
+            title="Generar y compartir"
+            variant="secondary"
+            disabled={generando || !listo}
+            onPress={onGenerarYCompartir}
+            accessibilityHint="Crea el PDF en tu móvil y abre la hoja de compartir: WhatsApp, Archivos o imprimir"
+          />
+          <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+            Se crea en tu móvil; solo sale si tú lo compartes.
           </Text>
         </View>
 
-        {/* 1. Bloque LEGAL: lo rellena la app desde la infracción. El agente no lo reescribe. */}
-        {camposLegales.length > 0 ? (
-          <View
-            style={{
-              gap: t.spacing.md,
-              borderRadius: t.radius.md,
-              borderWidth: 1,
-              borderColor: legalPrerrelleno ? t.color.accent : t.color.border,
-              backgroundColor: legalPrerrelleno ? t.color.accentWeak : t.color.surface,
-              padding: t.spacing.md,
-            }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
-              <CircleCheck size={20} color={t.color.accent} strokeWidth={2} />
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
-                {legalPrerrelleno ? 'Ya rellenado por la app' : 'Datos legales'}
+        {/* Resultado tras generar: banner + faltantes + reintentos. Queda "debajo" del héroe para
+            volver a mandarlo o compartirlo, y para ver los huecos que quedaron en blanco. */}
+        {pdfUri ? (
+          <View style={{ gap: t.spacing.md }}>
+            <Banner tone="success" title="PDF listo en tu móvil">
+              Ya lo tienes. Mándatelo a tu correo o compártelo; lo imprimes en la oficina y solo
+              pones la fecha y un par de datos a mano.
+            </Banner>
+            {faltantes.length > 0 ? (
+              <Banner tone="info" title="Quedan huecos por rellenar">
+                Se han dejado líneas en blanco para: {faltantes.join(', ')}. Puedes rellenarlas a
+                mano o completar los campos y volver a generar.
+              </Banner>
+            ) : null}
+            <Button
+              title="Enviarme a mi correo"
+              onPress={() => abrirHojaCompartir('Enviarme a mi correo')}
+              accessibilityHint="Abre tu correo con el PDF adjunto para mandártelo a ti mismo"
+            />
+            <Button
+              title="Compartir o imprimir"
+              variant="secondary"
+              onPress={() => abrirHojaCompartir('Compartir o imprimir')}
+              accessibilityHint="Abre la hoja de compartir: WhatsApp, AirDrop, Archivos o imprimir"
+            />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Enviar solo el texto por correo, sin el PDF"
+              onPress={onCorreoTexto}
+              style={{ minHeight: t.touch.min, justifyContent: 'center' }}
+            >
+              <Text style={{ color: t.color.brand, ...t.typography.scale.label }}>
+                Enviar solo el texto (sin PDF)
               </Text>
-            </View>
-            <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-              {legalPrerrelleno
+            </Pressable>
+          </View>
+        ) : null}
+
+        {/* 2. Bloque LEGAL: plegado a un resumen si viene de la ficha; expandido en frío. */}
+        {listo && camposLegales.length > 0 ? (
+          <SeccionPlegable
+            t={t}
+            titulo={legalPrerrelleno ? 'Ya rellenado por la app' : 'Datos legales'}
+            resumen={resumenLeg}
+            initialOpen={!legalPrerrelleno}
+            resaltado={legalPrerrelleno}
+            icon={CircleCheck}
+            accessibilityLabel="los datos legales"
+            hint={
+              legalPrerrelleno
                 ? 'Norma, artículo, importe y texto vienen de la infracción. Edítalo solo si procede.'
-                : 'Si abres el documento desde una infracción, la app rellena esto por ti.'}
+                : 'Si abres el documento desde una infracción, la app rellena esto por ti.'
+            }
+          >
+            {camposLegales.map((c) => (
+              <CampoInput
+                key={c.clave}
+                t={t}
+                campo={c}
+                valor={values[c.clave] ?? ''}
+                onChange={actualizar}
+                resaltado={legalPrerrelleno}
+              />
+            ))}
+          </SeccionPlegable>
+        ) : null}
+
+        {/* 3. Tus datos (identidad): plegado a "Cuerpo · TIP 12345" si ya se recuerdan. */}
+        {listo && camposIdentidad.length > 0 ? (
+          <SeccionPlegable
+            t={t}
+            titulo="Tus datos"
+            resumen={resumenId}
+            initialOpen={!identidadRellena}
+            icon={IdCard}
+            accessibilityLabel="tus datos de identidad"
+            hint="Se recuerdan en este teléfono para la próxima vez. No son datos de terceros."
+          >
+            {camposIdentidad.map((c) => (
+              <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
+            ))}
+          </SeccionPlegable>
+        ) : null}
+
+        {/* 4. Lo del servicio al mínimo: fecha/hora de-enfatizadas, lugar destacado, resto plegado. */}
+        {listo && camposServicio.length > 0 ? (
+          <View style={{ gap: t.spacing.md }}>
+            <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
+              Lo del servicio
             </Text>
-            {listo
-              ? camposLegales.map((c) => (
-                  <CampoInput
-                    key={c.clave}
-                    t={t}
-                    campo={c}
-                    valor={values[c.clave] ?? ''}
-                    onChange={actualizar}
-                    resaltado={legalPrerrelleno}
-                  />
-                ))
-              : null}
+
+            {/* Fecha y hora ya puestas: fila compacta y tenue; se abre solo para ajustar. */}
+            {campoFecha || campoHora ? (
+              <View style={{ gap: t.spacing.sm }}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Hoy ${fechaValor} a las ${horaValor}. Tocar para editar la fecha y la hora`}
+                  accessibilityState={{ expanded: editarFechaHora }}
+                  onPress={() => setEditarFechaHora((v) => !v)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: t.spacing.sm,
+                    minHeight: t.touch.min,
+                  }}
+                >
+                  <CalendarClock size={18} color={t.color.textSecondary} strokeWidth={2} />
+                  <Text style={{ flex: 1, color: t.color.textSecondary, ...t.typography.scale.body }}>
+                    Hoy {fechaValor}
+                    {horaValor ? ` · ${horaValor}` : ''}
+                  </Text>
+                  <Text style={{ color: t.color.brand, ...t.typography.scale.label }}>
+                    {editarFechaHora ? 'Ocultar' : 'Editar'}
+                  </Text>
+                </Pressable>
+                {editarFechaHora ? (
+                  <View style={{ gap: t.spacing.md }}>
+                    {campoFecha ? (
+                      <CampoInput t={t} campo={campoFecha} valor={fechaValor} onChange={actualizar} />
+                    ) : null}
+                    {campoHora ? (
+                      <CampoInput t={t} campo={campoHora} valor={horaValor} onChange={actualizar} />
+                    ) : null}
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
+
+            {/* Lugar: el ÚNICO input del servicio destacado siempre visible. */}
+            {campoLugar ? (
+              <CampoInput
+                t={t}
+                campo={campoLugar}
+                valor={values[campoLugar.clave] ?? ''}
+                onChange={actualizar}
+              />
+            ) : null}
+
+            {/* El resto del servicio (nº boletín, observaciones, causa…) tras un "+ añadir". */}
+            {otrosServicio.length > 0 ? (
+              mostrarMasServicio ? (
+                <View style={{ gap: t.spacing.md }}>
+                  {otrosServicio.map((c) => (
+                    <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
+                  ))}
+                </View>
+              ) : (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Añadir más datos del servicio: ${otrosServicio.map((c) => c.etiqueta).join(', ')}`}
+                  onPress={() => setMostrarMasServicio(true)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: t.spacing.sm,
+                    minHeight: t.touch.min,
+                  }}
+                >
+                  <Plus size={18} color={t.color.brand} strokeWidth={2} />
+                  <Text style={{ flex: 1, color: t.color.brand, ...t.typography.scale.label }}>
+                    Añadir más datos del servicio
+                  </Text>
+                </Pressable>
+              )
+            ) : null}
           </View>
         ) : null}
 
-        {/* 2. Tus datos (cuerpo, unidad, nº TIP): se recuerdan para no reescribirlos cada vez. */}
-        {camposIdentidad.length > 0 ? (
-          <View style={{ gap: t.spacing.md }}>
-            <View style={{ gap: t.spacing.xxs }}>
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
-                Tus datos
-              </Text>
-              <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-                Se recuerdan en este teléfono para la próxima vez. No son datos de terceros.
-              </Text>
-            </View>
-            {listo
-              ? camposIdentidad.map((c) => (
-                  <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
-                ))
-              : null}
-          </View>
-        ) : null}
-
-        {/* 3. Lo del servicio (fecha, hora, lugar/PK y lo propio del acta): lo mínimo a mano. */}
-        {camposServicio.length > 0 ? (
-          <View style={{ gap: t.spacing.md }}>
-            <View style={{ gap: t.spacing.xxs }}>
-              <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM }}>
-                Lo del servicio
-              </Text>
-              <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
-                Fecha y hora ya vienen puestas; ajústalas y añade el lugar. Puedes dejar huecos y
-                terminarlos a mano sobre el papel.
-              </Text>
-            </View>
-            {listo
-              ? camposServicio.map((c) => (
-                  <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
-                ))
-              : null}
-          </View>
-        ) : null}
-
-        {/* 4. Datos de terceros: OPCIONALES y plegados por defecto (SIEMPRE aparte, con aviso). */}
-        {camposTercero.length > 0 ? (
+        {/* 5. Datos de terceros: OPCIONALES y plegados por defecto (SIEMPRE aparte, con aviso). */}
+        {listo && camposTercero.length > 0 ? (
           mostrarTerceros ? (
             <View style={{ gap: t.spacing.md }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
@@ -269,11 +439,9 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
                 Rellena solo lo que necesites en el documento; puedes dejarlo en blanco y ponerlo a
                 mano. Matrículas, nombres y DNI no se guardan ni se envían a ningún servidor.
               </Banner>
-              {listo
-                ? camposTercero.map((c) => (
-                    <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
-                  ))
-                : null}
+              {camposTercero.map((c) => (
+                <CampoInput key={c.clave} t={t} campo={c} valor={values[c.clave] ?? ''} onChange={actualizar} />
+              ))}
             </View>
           ) : (
             <Pressable
@@ -307,52 +475,6 @@ export function RellenarScreen({ plantillaId, prefill }: RellenarScreenProps) {
             </Pressable>
           )
         ) : null}
-
-        <Button
-          title={generando ? 'Generando…' : pdfUri ? 'Regenerar PDF' : 'Generar PDF'}
-          onPress={onGenerar}
-          disabled={generando}
-          accessibilityHint="Crea el PDF en este dispositivo"
-        />
-
-        {pdfUri ? (
-          <View style={{ gap: t.spacing.md }}>
-            <Banner tone="success" title="PDF listo en tu móvil">
-              Ya lo tienes. Mándatelo a tu correo o compártelo; lo imprimes en la oficina y solo
-              pones la fecha y un par de datos a mano.
-            </Banner>
-            {faltantes.length > 0 ? (
-              <Banner tone="info" title="Quedan huecos por rellenar">
-                Se han dejado líneas en blanco para: {faltantes.join(', ')}. Puedes rellenarlas a
-                mano o completar los campos y regenerar.
-              </Banner>
-            ) : null}
-            <Button
-              title="Enviarme a mi correo"
-              onPress={() => abrirHojaCompartir('Enviarme a mi correo')}
-              accessibilityHint="Abre tu correo con el PDF adjunto para mandártelo a ti mismo"
-            />
-            <Button
-              title="Compartir o imprimir"
-              variant="secondary"
-              onPress={() => abrirHojaCompartir('Compartir o imprimir')}
-              accessibilityHint="Abre la hoja de compartir: WhatsApp, AirDrop, Archivos o imprimir"
-            />
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Enviar solo el texto por correo, sin el PDF"
-              onPress={onCorreoTexto}
-              style={{ minHeight: t.touch.min, justifyContent: 'center' }}
-            >
-              <Text style={{ color: t.color.brand, ...t.typography.scale.label }}>
-                Enviar solo el texto (sin PDF)
-              </Text>
-            </Pressable>
-            <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
-              El PDF se ha creado en tu móvil. Solo saldrá de aquí si tú lo compartes.
-            </Text>
-          </View>
-        ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -369,7 +491,7 @@ function CampoInput({
   campo: CampoPlantilla;
   valor: string;
   onChange: (clave: string, valor: string) => void;
-  /** Campo prerrellenado por la app (bloque legal): fondo tenue y etiqueta "lo pone la app". */
+  /** Campo prerrellenado por la app (bloque legal): etiqueta "lo pone la app". */
   resaltado?: boolean;
 }) {
   const multilinea = campo.tipo === 'multilinea';

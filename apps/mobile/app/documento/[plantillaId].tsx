@@ -31,5 +31,8 @@ export default function DocumentoRoute() {
     if (typeof v === 'string' && v.length > 0) prefill[clave] = v;
   }
 
-  return <RellenarScreen plantillaId={plantillaId} prefill={prefill} />;
+  // Título corto de la infracción de origen (dato del AGENTE, nunca de tercero) para "Nace de:".
+  const origenTitulo = typeof params.origenTitulo === 'string' ? params.origenTitulo : undefined;
+
+  return <RellenarScreen plantillaId={plantillaId} prefill={prefill} origenTitulo={origenTitulo} />;
 }
