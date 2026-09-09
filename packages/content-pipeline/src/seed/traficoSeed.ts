@@ -717,11 +717,17 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'itv vencida',
       'itv fuera de plazo',
       'no ha pasado la itv',
+      // Argot de calle (validación GC): resultado DESFAVORABLE de la ITV, no solo la caducada.
+      'itv en rojo',
+      'itv desfavorable',
+      'paso la itv mal',
     ],
     marcoImporte: 'trafico',
     notaRevision:
       'Importe 200 € (grave) verificado; no detrae puntos. A VERIFICAR: si el retraso supera un ' +
-      'año la infracción pasa a muy grave (500 €). Considerar modelarlo como variante.',
+      'año la infracción pasa a muy grave (500 €). Considerar modelarlo como variante. ' +
+      'A VALORAR ficha propia para la ITV con resultado DESFAVORABLE (distinta de la caducada): ' +
+      'por ahora los términos «itv en rojo/desfavorable/paso la itv mal» resuelven a esta ficha.',
   }),
   construirInfraccion({
     id: 'inf-sin-cinturon',
@@ -1109,6 +1115,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'nunca ha tenido carnet',
       'privado del carnet por el juez',
       'conducir sin carnet delito',
+      // Argot de calle (validación GC): «sin carne»/«sin carnet» son AMBIGUOS (pueden ser el art.
+      // 77 LSV administrativo o el delito del 384): es correcto que surjan también aquí, igual que
+      // ya lo hacen «conducir sin puntos» y «nunca ha tenido carnet».
+      'sin carne',
+      'sin carnet',
       '384',
     ],
     consecuencias: [
@@ -1205,6 +1216,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'una privación judicial del permiso o sin haberlo obtenido nunca.',
     terminos: [
       'sin carnet',
+      // Argot de calle (validación GC): «sin carne» sin la «t» final, muy frecuente.
+      'sin carne',
       'sin carne de conducir',
       'conducir sin carnet',
       'no tiene carnet',
@@ -1349,6 +1362,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'se niega al test',
       'rechaza la prueba de alcohol',
       'no se somete a la prueba',
+      // Argot de calle (validación GC): en pasado, como lo cuenta el agente en el atestado.
+      'se nego a soplar',
+      'no quiso soplar',
     ],
     consecuencias: [
       {
