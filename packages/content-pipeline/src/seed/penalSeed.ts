@@ -125,6 +125,30 @@ const ART_CP_148 = articuloCp({
     'ser una persona especialmente vulnerable que conviva con el autor. Resumen orientativo.',
 });
 
+const ART_CP_172 = articuloCp({
+  numero: '172',
+  titulo: 'Coacciones',
+  texto:
+    'Castiga al que, sin estar legítimamente autorizado, impidiere a otro con violencia hacer lo que la ' +
+    'ley no prohíbe, o le compeliere a efectuar lo que no quiere, sea justo o injusto. La pena base es ' +
+    'prisión de 6 meses a 3 años o multa de 12 a 24 meses. Se agrava si la coacción se dirige a impedir ' +
+    'el ejercicio de un derecho fundamental o el legítimo disfrute de la vivienda; la coacción de ' +
+    'carácter leve es delito leve (multa). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_298 = articuloCp({
+  numero: '298',
+  titulo: 'Receptación',
+  texto:
+    'Castiga al que, con ánimo de lucro y con conocimiento de la comisión de un delito contra el ' +
+    'patrimonio o el orden socioeconómico en el que no ha intervenido ni como autor ni como cómplice, ' +
+    'ayuda a los responsables a aprovecharse de los efectos del delito, o recibe, adquiere u oculta tales ' +
+    'efectos. La pena base es prisión de 6 meses a 2 años; se agrava (mitad superior) si se reciben, ' +
+    'adquieren u ocultan los efectos para traficar con ellos, y con multa si el tráfico se hace con ' +
+    'establecimiento o local comercial (art. 298.2). La pena nunca puede exceder de la señalada al ' +
+    'delito encubierto (art. 298.3). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_468 = articuloCp({
   numero: '468',
   titulo: 'Quebrantamiento de condena, medida cautelar o de seguridad',
@@ -353,6 +377,8 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_242,
   ART_CP_147,
   ART_CP_148,
+  ART_CP_172,
+  ART_CP_298,
   ART_CP_468,
   ART_CP_550,
   ART_CP_368,
@@ -740,7 +766,6 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'me ha amenazado',
       'amenaza de muerte',
       'te voy a matar',
-      'coaccion',
       'amenaza con un cuchillo',
       'intimidacion',
       'amenaza condicional',
@@ -1267,6 +1292,87 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'exhibir o usar armas prohibidas —navaja, porra, spray— o armas fuera del domicilio) y del ' +
       'depósito de armas de guerra (arts. 566-567, pena MÁS grave). Confirmar penas y encaje contra el ' +
       'texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Coacciones (172): doblegar la voluntad ahora, distinto de las amenazas (169) ---------------
+  construirDelito({
+    id: 'del-coacciones',
+    articulo: ART_CP_172,
+    tituloCorto: 'Coacciones',
+    // Art. 172.1: prisión 6 meses a 3 años o multa → MENOS GRAVE (art. 33.3 CP).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 3 años o multa de 12 a 24 meses (coacciones del art. 172.1 CP). A verificar',
+    textoBoletin:
+      'Impedir a otra persona, sin estar legítimamente autorizado y empleando violencia (sobre las ' +
+      'personas o las cosas), hacer lo que la ley no prohíbe, o compelerla a hacer lo que no quiere, sea ' +
+      'justo o injusto (art. 172 CP). Se distingue de las amenazas (anunciar un mal futuro, art. 169) en ' +
+      'que aquí se DOBLEGA la voluntad en el momento. La coacción de carácter leve es delito leve (multa); ' +
+      'hay subtipos agravados (impedir un derecho fundamental, acoso, violencia de género). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'coacciones',
+      'coaccion',
+      'me esta obligando',
+      'no me deja salir',
+      'no me deja pasar',
+      'me obliga a la fuerza',
+      'me esta forzando',
+      'no me deja irme',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: coacciones del art. 172.1 CP → prisión de 6 meses a 3 ' +
+      'años o multa de 12 a 24 meses → MENOS GRAVE. La coacción LEVE es delito leve del art. 172.3 (multa ' +
+      'de 1 a 3 meses) → cambia la rama de detención al art. 495 LECrim. Subtipos agravados: impedir el ' +
+      'ejercicio de un derecho fundamental (172.1 pár. 2) o el legítimo disfrute de la vivienda (172.1 ' +
+      'pár. 3), acoso (172 ter) y ' +
+      'coacciones en el ámbito de violencia de género/doméstica (172.2). Distinguir de las amenazas ' +
+      '(art. 169, `del-amenazas`). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Receptación (298): aprovecharse de lo robado (perista) ------------------------------------
+  construirDelito({
+    id: 'del-receptacion',
+    articulo: ART_CP_298,
+    tituloCorto: 'Receptación (aprovecharse de lo robado)',
+    // Art. 298.1: prisión 6 meses a 2 años → MENOS GRAVE (art. 33.3 CP).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 2 años (receptación del art. 298.1 CP); se agrava según el valor y el caso. ' +
+      'A verificar',
+    textoBoletin:
+      'Con ánimo de lucro y sabiendo que proceden de un delito contra el patrimonio o el orden ' +
+      'socioeconómico en el que no se ha participado, ayudar a los responsables a aprovecharse de los ' +
+      'efectos, o recibir, adquirir u ocultar ' +
+      'esos efectos (art. 298 CP): p. ej. comprar o revender género que se sabe robado. Exige conocimiento ' +
+      'del origen delictivo y ánimo de lucro. Se distingue del blanqueo de capitales (art. 301) y del ' +
+      'encubrimiento (art. 451). Procede la intervención de los efectos. La calificación final corresponde ' +
+      'a la autoridad judicial.',
+    terminos: [
+      'receptacion',
+      'comprar lo robado',
+      'vender lo robado',
+      'genero robado',
+      'sabe que es robado',
+      'perista',
+      'compra de objetos robados',
+      'revender robado',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la intervención de los efectos presuntamente procedentes del delito, a disposición de ' +
+          'la autoridad judicial (comiso, art. 127 CP). La valoración final corresponde a la autoridad judicial.',
+        fuente: 'CP art. 127 (comiso de efectos del delito)',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y los subtipos: receptación del art. 298.1 CP → prisión de 6 meses a 2 ' +
+      'años → MENOS GRAVE. Se AGRAVA (298.2) si se reciben/adquieren/ocultan los efectos para TRAFICAR con ' +
+      'ellos (pena en su mitad superior) o si el tráfico se hace con establecimiento o local comercial ' +
+      '(multa e inhabilitación/clausura). La pena NUNCA puede exceder de la señalada al delito encubierto ' +
+      '(art. 298.3). Exige DOLO ' +
+      '(conocimiento del origen) y ánimo de lucro. Distinguir del blanqueo de capitales (art. 301) y del ' +
+      'encubrimiento (art. 451). Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
 ];
 
