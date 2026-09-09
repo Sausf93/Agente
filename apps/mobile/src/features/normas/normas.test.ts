@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import {
-  agruparNormasPorBloque,
+  agruparPorAmbito,
+  contarPorMateria,
   esResumenOrientativo,
   estadoCambio,
   filtroTerritorialSql,
   filtrarArticulos,
+  materiaDeNorma,
   normaRelevantePara,
   numeroSortKey,
   ordenarArticulos,
   parseCuerpos,
+  MATERIA_ORDEN,
   type ArticuloResumen,
+  type Materia,
   type NormaResumen,
 } from './normas';
 
@@ -165,21 +169,123 @@ describe('filtrado por cuerpo y bloques', () => {
     expect(normaRelevantePara(['guardia_civil', 'policia_local'], 'policia_nacional')).toBe(false);
   });
 
-  it('agruparNormasPorBloque: agrupa por bloque, respeta el orden y omite vacíos', () => {
-    const norma = (codigo: string): NormaResumen => ({
-      id: `n-${codigo}`,
-      codigo,
-      titulo: codigo,
-      tipo: 'ley',
-      ambito: 'estatal',
-      territorioId: null,
-      urlBoe: null,
-      numArticulos: 1,
-      cuerpos: [],
-    });
-    const secciones = agruparNormasPorBloque([norma('CP'), norma('RGC'), norma('LOSC')]);
-    expect(secciones.map((s) => s.bloque)).toEqual(['trafico', 'penal', 'seguridad']);
-    expect(secciones[0]?.data.map((n) => n.codigo)).toEqual(['RGC']);
+});
+
+// ---------------------------------------------------------------------------
+// Taxonomía POR MATERIA (navegación estilo SPPLB)
+// ---------------------------------------------------------------------------
+
+/** Construye una `NormaResumen` de prueba a partir del código (+ ámbito/territorio/cuerpos). */
+function norma(
+  codigo: string,
+  extra: Partial<NormaResumen> = {},
+): NormaResumen {
+  return {
+    id: `n-${codigo}`,
+    codigo,
+    titulo: codigo,
+    tipo: 'ley',
+    ambito: 'estatal',
+    territorioId: null,
+    urlBoe: null,
+    numArticulos: 1,
+    cuerpos: [],
+    ...extra,
+  };
+}
+
+describe('materiaDeNorma', () => {
+  // Los 23 códigos REALES del catálogo/seeds actual → su materia esperada (mapa interino en la app).
+  const casos: Array<[string, Materia]> = [
+    // Estatales (14).
+    ['RGC', 'trafico'],
+    ['LSV', 'trafico'],
+    ['RGV', 'trafico'],
+    ['LRCSCVM', 'trafico'],
+    ['LOTT', 'trafico'],
+    ['LOSC', 'seguridad'],
+    ['CP', 'penal'],
+    ['LECrim', 'penal'],
+    ['LORPM', 'penal'],
+    ['LOEX', 'extranjeria'],
+    ['RA', 'armas'],
+    ['LPPP', 'animales'],
+    ['EVD', 'victimaMenores'],
+    ['LOPJM', 'victimaMenores'],
+    // Autonómicas (Canarias, 4): se clasifica por el <TEMA> de CAN-<TEMA>.
+    ['CAN-ESP', 'ocio'],
+    ['CAN-ANIM', 'animales'],
+    ['CAN-CPL', 'organizacion'],
+    ['CAN-PCAN', 'organizacion'],
+    // Municipales (SCTF, 5): se clasifica por el <TEMA> de OM-<TEMA>-<MUN>.
+    ['OM-CIRC-SCTF', 'trafico'],
+    ['OM-ZBE-SCTF', 'trafico'],
+    ['OM-ANIM-SCTF', 'animales'],
+    ['OM-RUIDO-SCTF', 'ocio'],
+    ['OM-TERRAZAS-SCTF', 'ocio'],
+  ];
+
+  it.each(casos)('clasifica %s en la materia %s', (codigo, materia) => {
+    expect(materiaDeNorma(codigo)).toBe(materia);
+  });
+
+  it('NINGUNA norma del catálogo actual cae en "otras" (fallback vacío hoy)', () => {
+    expect(casos.some(([, materia]) => materia === 'otras')).toBe(false);
+    expect(casos.every(([codigo]) => materiaDeNorma(codigo) !== 'otras')).toBe(true);
+  });
+
+  it('un código futuro reutiliza el tema (CCAA/municipio nuevos heredan la clasificación)', () => {
+    expect(materiaDeNorma('OM-CIRC-MADRID')).toBe('trafico');
+    expect(materiaDeNorma('CAN-ANIM')).toBe('animales');
+  });
+
+  it('un código desconocido cae en "otras" (fallback conservador)', () => {
+    expect(materiaDeNorma('ZZZ')).toBe('otras');
+    expect(materiaDeNorma('OM-DESCONOCIDA-SCTF')).toBe('otras');
+    expect(materiaDeNorma('CAN-XYZ')).toBe('otras');
+  });
+});
+
+describe('contarPorMateria', () => {
+  it('respeta MATERIA_ORDEN y omite las materias con count 0', () => {
+    const conteo = contarPorMateria([norma('CP'), norma('RGC'), norma('LSV'), norma('LOSC')]);
+    // Tráfico (2) va antes que Seguridad (1) y que Penal (1) por su orden en la taxonomía.
+    expect(conteo.map((c) => c.materia)).toEqual(['trafico', 'seguridad', 'penal']);
+    expect(conteo.find((c) => c.materia === 'trafico')?.count).toBe(2);
+    // No aparece ninguna materia vacía (extranjería, armas, etc.).
+    expect(conteo.every((c) => c.count > 0)).toBe(true);
+  });
+
+  it('cuenta lo que recibe (el filtro por cuerpo se aplica ANTES): una lista filtrada da menos', () => {
+    const todas = [norma('CP'), norma('RGC')];
+    // Simula "Solo mi cuerpo" de un perfil para el que RGC no es relevante: se pasa ya filtrado.
+    const soloMio = todas.filter((n) => n.codigo !== 'RGC');
+    const conteo = contarPorMateria(soloMio);
+    expect(conteo.map((c) => c.materia)).toEqual(['penal']);
+  });
+
+  it('el orden devuelto es un subconjunto en el mismo orden que MATERIA_ORDEN', () => {
+    const conteo = contarPorMateria([norma('RA'), norma('CP'), norma('RGC')]);
+    const materias = conteo.map((c) => c.materia);
+    const indices = materias.map((m) => MATERIA_ORDEN.indexOf(m));
+    expect(indices).toEqual([...indices].sort((a, b) => a - b));
+  });
+});
+
+describe('agruparPorAmbito', () => {
+  it('ordena Estatal → Autonómico → Municipal y omite los ámbitos vacíos', () => {
+    const secciones = agruparPorAmbito([
+      norma('OM-ANIM-SCTF', { ambito: 'municipal', territorioId: 'mun-x' }),
+      norma('LPPP', { ambito: 'estatal' }),
+      norma('CAN-ANIM', { ambito: 'autonomico', territorioId: 'es-ccaa-05' }),
+    ]);
+    expect(secciones.map((s) => s.ambito)).toEqual(['estatal', 'autonomico', 'municipal']);
+    expect(secciones[0]?.data.map((n) => n.codigo)).toEqual(['LPPP']);
+  });
+
+  it('sin normas de un ámbito, ese ámbito no aparece', () => {
+    const secciones = agruparPorAmbito([norma('CP'), norma('RGC')]);
+    expect(secciones.map((s) => s.ambito)).toEqual(['estatal']);
   });
 });
 

@@ -18,6 +18,7 @@ export default function NormasLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Normas' }} />
+      <Stack.Screen name="materia/[materia]" options={{ title: 'Materia' }} />
       <Stack.Screen name="norma/[normaId]" options={{ title: 'Norma' }} />
       <Stack.Screen name="articulo/[articuloId]" options={{ title: 'Artículo' }} />
       <Stack.Screen name="marcadores" options={{ title: 'Mis marcadores' }} />

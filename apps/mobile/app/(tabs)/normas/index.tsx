@@ -1,6 +1,6 @@
-import { NormasListScreen } from '@/features/normas/NormasListScreen';
+import { MateriasScreen } from '@/features/normas/MateriasScreen';
 
-/** Ruta raíz de NORMAS: lista de normas del paquete de contenido (§4.5). */
+/** Ruta raíz de NORMAS: índice de materias (navegación por materia, §4.5). */
 export default function NormasIndexRoute() {
-  return <NormasListScreen />;
+  return <MateriasScreen />;
 }

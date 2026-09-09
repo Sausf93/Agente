@@ -229,53 +229,156 @@ export function normaRelevantePara(cuerpos: readonly Cuerpo[], cuerpo: Cuerpo | 
   return cuerpos.includes(cuerpo);
 }
 
-/** Bloque temático para agrupar la lista de Normas (mejora la lectura, §4.5). */
-export type BloqueNorma = 'trafico' | 'penal' | 'seguridad' | 'otras';
+/**
+ * MATERIA de una norma para la navegación POR MATERIA de la pestaña Normas (estilo SPPLB: "elijo
+ * Tráfico y salen TODAS sus leyes"). Sustituye a la antigua agrupación temática por bloque. La
+ * clasificación vive en la app (mapa interino) mientras el pipeline no la produce; NO toca el
+ * modelo de datos de `@agente/shared`.
+ */
+export type Materia =
+  | 'trafico'
+  | 'seguridad'
+  | 'penal'
+  | 'extranjeria'
+  | 'armas'
+  | 'animales'
+  | 'ocio'
+  | 'victimaMenores'
+  | 'organizacion'
+  | 'otras';
 
-/** Etiqueta legible de cada bloque (cabecera de sección). */
-export const BLOQUE_LABEL: Record<BloqueNorma, string> = {
-  trafico: 'Tráfico y seguridad vial',
-  penal: 'Penal y procesal',
-  seguridad: 'Seguridad ciudadana',
-  otras: 'Otras normas',
+/** Metadatos de una materia: etiqueta legible + nombre del icono lucide + orden de presentación. */
+export interface MateriaInfo {
+  /** Etiqueta legible (cabecera de tarjeta y título de la pantalla de detalle). */
+  label: string;
+  /**
+   * Nombre del icono de `lucide-react-native` (p. ej. "Car"). Se guarda como STRING para que este
+   * módulo siga siendo lógica PURA (sin importar componentes de React Native, que romperían los
+   * tests en Node): la pantalla resuelve el nombre a su componente.
+   */
+  icono: string;
+  /** Orden de presentación (los más consultados primero). */
+  orden: number;
+}
+
+/** Tabla de materias (etiqueta, icono, orden). Fuente única de la taxonomía de Normas. */
+export const MATERIA_INFO: Record<Materia, MateriaInfo> = {
+  trafico: { label: 'Tráfico y seguridad vial', icono: 'Car', orden: 1 },
+  seguridad: { label: 'Seguridad ciudadana', icono: 'ShieldAlert', orden: 2 },
+  penal: { label: 'Penal y procesal', icono: 'Gavel', orden: 3 },
+  extranjeria: { label: 'Extranjería', icono: 'Globe', orden: 4 },
+  armas: { label: 'Armas', icono: 'Crosshair', orden: 5 },
+  animales: { label: 'Animales', icono: 'PawPrint', orden: 6 },
+  ocio: { label: 'Espectáculos, ocio y convivencia', icono: 'PartyPopper', orden: 7 },
+  victimaMenores: { label: 'Víctima y menores', icono: 'HeartHandshake', orden: 8 },
+  organizacion: { label: 'Organización policial', icono: 'Users', orden: 9 },
+  otras: { label: 'Otras normas', icono: 'BookOpen', orden: 10 },
 };
 
-/** Orden de presentación de los bloques (los más consultados primero). */
-export const BLOQUE_ORDEN: readonly BloqueNorma[] = ['trafico', 'penal', 'seguridad', 'otras'];
+/** Materias ordenadas por `orden` (fuente única del orden de presentación). */
+export const MATERIA_ORDEN: readonly Materia[] = (Object.keys(MATERIA_INFO) as Materia[]).sort(
+  (a, b) => MATERIA_INFO[a].orden - MATERIA_INFO[b].orden,
+);
 
-/** Mapa código de norma → bloque. Lo desconocido cae en 'otras' (no se pierde ninguna norma). */
-const BLOQUE_POR_CODIGO: Record<string, BloqueNorma> = {
+/**
+ * Mapa de código estatal EXACTO → materia. Cubre los 14 códigos estatales del catálogo actual.
+ * AJUSTE respecto al spec: no hay materia "Transporte"; el transporte por carretera (LOTT) va a
+ * `trafico`, que es el cajón completo de tráfico y seguridad vial.
+ */
+const MATERIA_POR_CODIGO: Record<string, Materia> = {
   RGC: 'trafico',
   LSV: 'trafico',
   RGV: 'trafico',
   LRCSCVM: 'trafico',
+  LOTT: 'trafico',
+  LOSC: 'seguridad',
   CP: 'penal',
   LECrim: 'penal',
-  LOSC: 'seguridad',
+  LORPM: 'penal',
+  LOEX: 'extranjeria',
+  RA: 'armas',
+  LPPP: 'animales',
+  EVD: 'victimaMenores',
+  LOPJM: 'victimaMenores',
 };
 
-/** Bloque temático de una norma por su código. Fallback conservador: 'otras'. */
-export function bloqueDeNorma(codigo: string): BloqueNorma {
-  return BLOQUE_POR_CODIGO[codigo] ?? 'otras';
+/**
+ * Mapa por TEMA para las normas territoriales, cuyo código lleva el tema embebido:
+ *  - Autonómicas: `CAN-<TEMA>` (Canarias) → se clasifica por `<TEMA>`.
+ *  - Municipales: `OM-<TEMA>-<MUN>` (ordenanza de un municipio) → se clasifica por `<TEMA>`.
+ * Así, futuras CCAA/municipios heredan la clasificación sin tocar código (basta reutilizar el tema).
+ */
+const MATERIA_POR_TEMA: Record<string, Materia> = {
+  // Temas autonómicos (Canarias): CAN-ESP, CAN-CPL, CAN-PCAN.
+  ESP: 'ocio', // espectáculos públicos y actividades recreativas
+  CPL: 'organizacion', // coordinación de policías locales
+  PCAN: 'organizacion', // Cuerpo General de la Policía Canaria
+  // Temas de ordenanza municipal: OM-CIRC-*, OM-ZBE-*, OM-RUIDO-*, OM-TERRAZAS-*.
+  CIRC: 'trafico', // circulación
+  ZBE: 'trafico', // zona de bajas emisiones
+  RUIDO: 'ocio', // ruidos y vibraciones (convivencia)
+  TERRAZAS: 'ocio', // terrazas / ocupación de vía pública (convivencia)
+  // Tema compartido por CAN-ANIM y OM-ANIM-* (protección y tenencia de animales).
+  ANIM: 'animales',
+};
+
+/**
+ * Materia de una norma por su código. Estatales: coincidencia EXACTA. Territoriales: se extrae el
+ * `<TEMA>` de `CAN-<TEMA>` o `OM-<TEMA>-<MUN>` y se clasifica por él. Fallback conservador: 'otras'
+ * (con el catálogo actual NINGUNA norma cae aquí; lo verifica el test). Pura y determinista.
+ */
+export function materiaDeNorma(codigo: string): Materia {
+  const exacta = MATERIA_POR_CODIGO[codigo];
+  if (exacta) return exacta;
+  const can = /^CAN-([A-Z]+)$/.exec(codigo);
+  if (can?.[1]) return MATERIA_POR_TEMA[can[1]] ?? 'otras';
+  const om = /^OM-([A-Z]+)-[A-Z]+$/.exec(codigo);
+  if (om?.[1]) return MATERIA_POR_TEMA[om[1]] ?? 'otras';
+  return 'otras';
 }
 
-/** Sección de normas de un mismo bloque, lista para pintar en `SectionList`. */
-export interface SeccionNormas {
-  bloque: BloqueNorma;
+/** Recuento de una materia para el índice (grid de tarjetas de Normas). */
+export interface ConteoMateria {
+  materia: Materia;
+  label: string;
+  icono: string;
+  count: number;
+}
+
+/**
+ * Cuenta cuántas normas hay en cada materia, en el orden de `MATERIA_ORDEN`, OMITIENDO las materias
+ * sin normas (count 0). Cuenta lo que se le pasa: el filtro por cuerpo/territorio se aplica ANTES
+ * (la pantalla decide qué normas entran). Pura y determinista.
+ */
+export function contarPorMateria(normas: readonly NormaResumen[]): ConteoMateria[] {
+  return MATERIA_ORDEN.map((materia) => {
+    const info = MATERIA_INFO[materia];
+    const count = normas.filter((n) => materiaDeNorma(n.codigo) === materia).length;
+    return { materia, label: info.label, icono: info.icono, count };
+  }).filter((c) => c.count > 0);
+}
+
+/** Sección de una materia agrupada por ámbito, para la pantalla de detalle de materia. */
+export interface SeccionAmbito {
+  ambito: Ambito;
   titulo: string;
   data: NormaResumen[];
 }
 
+/** Orden de los ámbitos en el detalle de materia: primero lo estatal, luego autonómico y municipal. */
+const AMBITO_ORDEN: readonly Ambito[] = ['estatal', 'autonomico', 'municipal'];
+
 /**
- * Agrupa las normas por bloque temático respetando el orden de `BLOQUE_ORDEN` y, dentro de cada
- * bloque, el orden de entrada (que ya llega estatal→autonómico→municipal y por código). Omite los
- * bloques vacíos. Pura y determinista.
+ * Agrupa las normas de UNA materia por ámbito (Estatal → Autonómico → Municipal), respetando dentro
+ * de cada ámbito el orden de entrada (ya llega por código). Omite los ámbitos vacíos. El `titulo`
+ * es la etiqueta base del ámbito; la pantalla puede enriquecerlo con el territorio ("En Canarias").
+ * Pura y determinista.
  */
-export function agruparNormasPorBloque(normas: readonly NormaResumen[]): SeccionNormas[] {
-  return BLOQUE_ORDEN.map((bloque) => ({
-    bloque,
-    titulo: BLOQUE_LABEL[bloque],
-    data: normas.filter((n) => bloqueDeNorma(n.codigo) === bloque),
+export function agruparPorAmbito(normas: readonly NormaResumen[]): SeccionAmbito[] {
+  return AMBITO_ORDEN.map((ambito) => ({
+    ambito,
+    titulo: NORMA_AMBITO_LABEL[ambito],
+    data: normas.filter((n) => n.ambito === ambito),
   })).filter((s) => s.data.length > 0);
 }
 

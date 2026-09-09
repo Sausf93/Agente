@@ -5,12 +5,15 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SqlRunner } from '@/db/sqlRunner';
 import {
+  agruparPorAmbito,
   cargarArticulo,
+  contarPorMateria,
   filtrarArticulos,
   listarArticulos,
   listarCcaaConContenido,
   listarMunicipiosConOrdenanza,
   listarNormas,
+  materiaDeNorma,
 } from './normas';
 
 /** Cadena territorial de un Policía Local de Santa Cruz de Tenerife (Canarias). */
@@ -189,6 +192,49 @@ suite('normas contra el paquete real', () => {
     expect(ccaas).toContain('es-ccaa-05'); // Canarias, con Ley 7/2011 cargada
     // Madrid (es-ccaa-13) no tiene normativa autonómica sembrada: cae al estado "no disponible".
     expect(ccaas).not.toContain('es-ccaa-13');
+  });
+
+  // NAVEGACIÓN POR MATERIA (rediseño estilo SPPLB): la clasificación por materia (mapa interino en
+  // la app) debe cubrir TODAS las normas del paquete real, sin caer ninguna en "otras".
+  it('ninguna norma del paquete real cae en la materia "otras"', async () => {
+    const todas = await listarNormas(runner, CADENA_SCTF);
+    const enOtras = todas.filter((n) => materiaDeNorma(n.codigo) === 'otras');
+    expect(enOtras.map((n) => n.codigo)).toEqual([]);
+  });
+
+  it('un Local de SCTF ve las materias con sus normas territoriales dentro (CAN-* y OM-*)', async () => {
+    const normas = await listarNormas(runner, CADENA_SCTF);
+    const materias = contarPorMateria(normas);
+    const porMateria = new Map(materias.map((m) => [m.materia, m.count]));
+
+    // Tráfico contiene el codificado estatal Y la ordenanza municipal de circulación/ZBE.
+    expect(porMateria.get('trafico') ?? 0).toBeGreaterThan(0);
+    const trafico = normas.filter((n) => materiaDeNorma(n.codigo) === 'trafico');
+    expect(trafico.some((n) => n.codigo === 'RGC' && n.ambito === 'estatal')).toBe(true);
+    expect(trafico.some((n) => n.ambito === 'municipal')).toBe(true);
+
+    // Ocio (espectáculos/convivencia) reúne la ley canaria de espectáculos y las ordenanzas de
+    // ruidos/terrazas: al menos una autonómica y una municipal.
+    const ocio = normas.filter((n) => materiaDeNorma(n.codigo) === 'ocio');
+    expect(ocio.some((n) => n.codigo === 'CAN-ESP' && n.ambito === 'autonomico')).toBe(true);
+    expect(ocio.some((n) => n.ambito === 'municipal')).toBe(true);
+
+    // Organización policial es exclusivamente autonómica canaria (CAN-CPL / CAN-PCAN).
+    const organizacion = normas.filter((n) => materiaDeNorma(n.codigo) === 'organizacion');
+    expect(organizacion.length).toBeGreaterThan(0);
+    expect(organizacion.every((n) => n.ambito === 'autonomico')).toBe(true);
+  });
+
+  it('agruparPorAmbito de una materia mixta ordena estatal → autonómico → municipal', async () => {
+    const normas = await listarNormas(runner, CADENA_SCTF);
+    const animales = normas.filter((n) => materiaDeNorma(n.codigo) === 'animales');
+    const secciones = agruparPorAmbito(animales);
+    const ambitos = secciones.map((s) => s.ambito);
+    // El orden es el fijado; y no debe repetirse ni aparecer un ámbito vacío.
+    expect(ambitos).toEqual([...ambitos].filter((a, i) => ambitos.indexOf(a) === i));
+    const orden = ['estatal', 'autonomico', 'municipal'];
+    const indices = ambitos.map((a) => orden.indexOf(a));
+    expect(indices).toEqual([...indices].sort((a, b) => a - b));
   });
 
   it('cargarArticulo devuelve texto, fuente y fecha; id inexistente → null', async () => {
