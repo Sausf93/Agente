@@ -537,6 +537,32 @@ export async function listarInfraccionesDeMateria(
 }
 
 /**
+ * Cuenta las INFRACCIONES (fichas) por materia, respetando la cadena territorial del perfil. Sirve
+ * para el subtítulo de la tarjeta del índice ("N normas · M fichas"): así una materia con pocas
+ * leyes pero muchas fichas (Seguridad ciudadana) no aparenta estar vacía ya desde el índice.
+ */
+export async function contarInfraccionesPorMateria(
+  runner: SqlRunner,
+  cadena: readonly string[] = [],
+): Promise<Map<Materia, number>> {
+  const filtro = filtroTerritorialSql(cadena, 'i.territorio_id');
+  const filas = await runner.getAll<{ norma_codigo: string }>(
+    `SELECT n.codigo AS norma_codigo
+       FROM infraccion i
+       JOIN articulo a ON a.id = i.articulo_id
+       JOIN norma    n ON n.id = a.norma_id
+      WHERE ${filtro.sql}`,
+    filtro.params,
+  );
+  const conteo = new Map<Materia, number>();
+  for (const f of filas) {
+    const materia = materiaDeNorma(f.norma_codigo);
+    conteo.set(materia, (conteo.get(materia) ?? 0) + 1);
+  }
+  return conteo;
+}
+
+/**
  * Carga los artículos vigentes de una norma, ya ORDENADOS para lectura. Cada uno trae la cadena
  * `textoBusqueda` (normalizada) para que el buscador dentro de la norma funcione en memoria, sin
  * más consultas y sin red.

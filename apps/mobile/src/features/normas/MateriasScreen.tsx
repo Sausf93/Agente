@@ -27,11 +27,13 @@ import { useSettingsStore } from '@/store/settings';
 import { useMarcadoresStore } from './marcadoresStore';
 import { FranjaTerritorial } from './normasUi';
 import {
+  contarInfraccionesPorMateria,
   contarPorMateria,
   listarNormas,
   normaRelevantePara,
   normasOcultasLabel,
   type ConteoMateria,
+  type Materia,
   type NormaResumen,
 } from './normas';
 
@@ -67,12 +69,18 @@ function normasLabel(n: number): string {
   return `${n} ${n === 1 ? 'norma' : 'normas'}`;
 }
 
+/** "· 17 fichas" para el subtítulo de la tarjeta (cadena vacía si no hay fichas). */
+function fichasLabel(n: number): string {
+  return n > 0 ? ` · ${n} ${n === 1 ? 'ficha' : 'fichas'}` : '';
+}
+
 export function MateriasScreen() {
   const t = useAppTheme();
   const router = useRouter();
 
   const [estado, setEstado] = useState<Estado>('cargando');
   const [normas, setNormas] = useState<NormaResumen[]>([]);
+  const [fichasPorMateria, setFichasPorMateria] = useState<Map<Materia, number>>(new Map());
   const [filtro, setFiltro] = useState<Filtro>('mio');
 
   const cuerpo = useSettingsStore((s) => s.cuerpo);
@@ -102,9 +110,13 @@ export function MateriasScreen() {
         setEstado('sin-contenido');
         return;
       }
-      const lista = await listarNormas(runner, cadena);
+      const [lista, fichas] = await Promise.all([
+        listarNormas(runner, cadena),
+        contarInfraccionesPorMateria(runner, cadena),
+      ]);
       if (!vivo) return;
       setNormas(lista);
+      setFichasPorMateria(fichas);
       setEstado('ok');
     })();
     return () => {
@@ -192,6 +204,7 @@ export function MateriasScreen() {
           <MateriaCard
             t={t}
             item={item}
+            fichas={fichasPorMateria.get(item.materia) ?? 0}
             onPress={() =>
               router.push({
                 pathname: '/normas/materia/[materia]',
@@ -217,18 +230,20 @@ export function MateriasScreen() {
 function MateriaCard({
   t,
   item,
+  fichas,
   onPress,
 }: {
   t: ReturnType<typeof useAppTheme>;
   item: ConteoMateria;
+  fichas: number;
   onPress: () => void;
 }) {
   const Icono = ICONO_POR_NOMBRE[item.icono] ?? BookOpen;
   return (
     <PressableScale
       accessibilityRole="button"
-      accessibilityLabel={`${item.label}. ${normasLabel(item.count)}.`}
-      accessibilityHint="Abre las normas de esta materia"
+      accessibilityLabel={`${item.label}. ${normasLabel(item.count)}${fichasLabel(fichas)}.`}
+      accessibilityHint="Abre las normas y fichas de esta materia"
       onPress={onPress}
       style={{
         flex: 1,
@@ -257,6 +272,7 @@ function MateriaCard({
           style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}
         >
           {normasLabel(item.count)}
+          {fichasLabel(fichas)}
         </Text>
       </View>
     </PressableScale>
