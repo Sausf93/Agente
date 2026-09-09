@@ -8,14 +8,16 @@ import { EmptyState } from '@/ui/components/EmptyState';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
-import { FilaNorma, FranjaTerritorial } from './normasUi';
+import { FilaInfraccion, FilaNorma, FranjaTerritorial } from './normasUi';
 import {
   agruparPorAmbito,
+  listarInfraccionesDeMateria,
   listarNormas,
   materiaAdmiteTerritorio,
   materiaDeNorma,
   normaRelevantePara,
   MATERIA_INFO,
+  type InfraccionResumen,
   type Materia,
   type NormaResumen,
 } from './normas';
@@ -40,6 +42,7 @@ export function MateriaDetalleScreen({
 
   const [estado, setEstado] = useState<Estado>('cargando');
   const [normas, setNormas] = useState<NormaResumen[]>([]);
+  const [infracciones, setInfracciones] = useState<InfraccionResumen[]>([]);
 
   const cuerpo = useSettingsStore((s) => s.cuerpo);
   const ccaaId = useSettingsStore((s) => s.ccaaId);
@@ -64,15 +67,19 @@ export function MateriaDetalleScreen({
         setEstado('sin-contenido');
         return;
       }
-      const lista = await listarNormas(runner, cadena);
+      const [lista, fichas] = await Promise.all([
+        listarNormas(runner, cadena),
+        listarInfraccionesDeMateria(runner, materia, cadena),
+      ]);
       if (!vivo) return;
       setNormas(lista);
+      setInfracciones(fichas);
       setEstado('ok');
     })();
     return () => {
       vivo = false;
     };
-  }, [cadena]);
+  }, [cadena, materia]);
 
   // Normas de ESTA materia, respetando el filtro por cuerpo con el que se navegó (coincide con el
   // recuento de la tarjeta del índice). Con `todas` no se filtra por cuerpo.
@@ -131,6 +138,38 @@ export function MateriaDetalleScreen({
         sections={secciones}
         keyExtractor={(n) => n.id}
         stickySectionHeadersEnabled={false}
+        ListHeaderComponent={
+          infracciones.length > 0 ? (
+            <View>
+              <View
+                style={{
+                  paddingHorizontal: t.spacing.base,
+                  paddingTop: t.spacing.lg,
+                  paddingBottom: t.spacing.xs,
+                  backgroundColor: t.color.bg,
+                }}
+              >
+                <Text
+                  style={{
+                    color: t.color.textSecondary,
+                    ...t.typography.scale.label,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.6,
+                  }}
+                >
+                  Fichas de calle · {infracciones.length}
+                </Text>
+              </View>
+              {infracciones.map((inf) => (
+                <FilaInfraccion
+                  key={inf.id}
+                  item={inf}
+                  onPress={(id) => router.push(`/ficha/${id}`)}
+                />
+              ))}
+            </View>
+          ) : null
+        }
         renderSectionHeader={({ section }) => (
           <View
             style={{
@@ -161,13 +200,15 @@ export function MateriaDetalleScreen({
           ) : null
         }
         ListEmptyComponent={
-          <View style={{ paddingTop: t.spacing.xxl }}>
-            <EmptyState
-              icon={BookOpen}
-              title="Sin normas en esta materia"
-              message="Aún no hay normas cargadas para esta materia en tu territorio."
-            />
-          </View>
+          infracciones.length === 0 ? (
+            <View style={{ paddingTop: t.spacing.xxl }}>
+              <EmptyState
+                icon={BookOpen}
+                title="Sin normas en esta materia"
+                message="Aún no hay normas cargadas para esta materia en tu territorio."
+              />
+            </View>
+          ) : null
         }
       />
     </View>

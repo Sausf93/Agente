@@ -11,6 +11,7 @@ import {
   filtrarArticulos,
   listarArticulos,
   listarCcaaConContenido,
+  listarInfraccionesDeMateria,
   listarMunicipiosConOrdenanza,
   listarNormas,
   materiaDeNorma,
@@ -56,6 +57,23 @@ if (!hayPaquete) {
 
 suite('normas contra el paquete real', () => {
   const runner = runnerDesdeArchivo(RUTA_DB);
+
+  // La navegación por materia debe mostrar FICHAS, no solo leyes: "Seguridad ciudadana" tiene una
+  // sola norma (LOSC) pero muchos tipos, y sin las fichas parecía vacía (feedback del fundador).
+  it('listarInfraccionesDeMateria: Seguridad ciudadana trae varias fichas (no está vacía)', async () => {
+    const fichas = await listarInfraccionesDeMateria(runner, 'seguridad', CADENA_CANARIAS);
+    expect(fichas.length).toBeGreaterThan(3);
+    for (const f of fichas) {
+      expect(materiaDeNorma(f.normaCodigo)).toBe('seguridad');
+      expect(f.tituloCorto.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('listarInfraccionesDeMateria: Tráfico también trae fichas y todas son de su materia', async () => {
+    const fichas = await listarInfraccionesDeMateria(runner, 'trafico', CADENA_CANARIAS);
+    expect(fichas.length).toBeGreaterThan(10);
+    expect(fichas.every((f) => materiaDeNorma(f.normaCodigo) === 'trafico')).toBe(true);
+  });
 
   it('listarNormas trae las normas de tráfico con recuento de artículos', async () => {
     const normas = await listarNormas(runner);

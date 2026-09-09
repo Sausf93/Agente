@@ -18,8 +18,17 @@ import {
   articulosLabel,
   NORMA_AMBITO_LABEL,
   NORMA_TIPO_LABEL,
+  type InfraccionResumen,
   type NormaResumen,
 } from './normas';
+
+/** Etiqueta corta de gravedad para la fila de ficha (no legal: solo orienta la lectura). */
+const GRAVEDAD_CORTA: Record<string, string> = {
+  leve: 'Leve',
+  grave: 'Grave',
+  muy_grave: 'Muy grave',
+  delito: 'Delito',
+};
 
 type Theme = ReturnType<typeof useAppTheme>;
 
@@ -43,6 +52,35 @@ export function FilaNorma({
       leading={<MonogramPill label={item.codigo} />}
       accessibilityLabel={`${item.codigo}. ${item.titulo}. ${articulosLabel(item.numArticulos)}`}
       accessibilityHint="Abre el articulado de la norma"
+      onPress={() => onPress(item.id)}
+      right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
+    />
+  );
+}
+
+/**
+ * Fila de una INFRACCIÓN (ficha de calle) dentro de una materia. Muestra el título de calle, la
+ * gravedad y la norma de la que cuelga; tocar abre la ficha (`/ficha/:id`). Se usa en el detalle de
+ * materia para que la navegación no muestre solo leyes, sino también las fichas (ADR: que "Seguridad
+ * ciudadana" no parezca vacía teniendo una sola ley con muchos tipos).
+ */
+export function FilaInfraccion({
+  item,
+  onPress,
+}: {
+  item: InfraccionResumen;
+  onPress: (id: string) => void;
+}) {
+  const t = useAppTheme();
+  const gravedad = GRAVEDAD_CORTA[item.gravedad] ?? item.gravedad;
+  const via = item.tipo === 'penal' ? 'Penal' : 'Administrativa';
+  return (
+    <ListRow
+      title={item.tituloCorto}
+      subtitle={`${gravedad} · ${via} · ${item.normaCodigo}`}
+      leading={<MonogramPill label={item.normaCodigo} />}
+      accessibilityLabel={`${item.tituloCorto}. ${gravedad}. Norma ${item.normaCodigo}.`}
+      accessibilityHint="Abre la ficha de la infracción"
       onPress={() => onPress(item.id)}
       right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
     />

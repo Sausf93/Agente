@@ -483,6 +483,59 @@ export async function listarCcaaConContenido(runner: SqlRunner): Promise<string[
   return filas.map((f) => f.territorio_id).filter((id): id is string => id !== null);
 }
 
+/** Ficha (infracción) para el listado por materia: lo mínimo para pintar la fila y abrir la ficha. */
+export interface InfraccionResumen {
+  id: string;
+  tituloCorto: string;
+  /** Gravedad del paquete ('leve' | 'grave' | 'muy_grave' | 'delito' | ...). Se pinta como etiqueta. */
+  gravedad: string;
+  /** 'administrativa' | 'penal' (para distinguir la vía en la fila). */
+  tipo: string;
+  /** Código de la norma de la que cuelga (p. ej. `LOSC`, `CP`), para la pastilla y el subtítulo. */
+  normaCodigo: string;
+}
+
+interface FilaInfraccionMateria {
+  id: string;
+  titulo_corto: string;
+  gravedad: string;
+  tipo: string;
+  norma_codigo: string;
+}
+
+/**
+ * Lista las INFRACCIONES (fichas de calle) cuya norma pertenece a `materia`, respetando la cadena
+ * territorial del perfil (estatal siempre; territorial solo si está en la cadena). Sirve para que la
+ * navegación por materia muestre TAMBIÉN las fichas, no solo el articulado: así una materia como
+ * "Seguridad ciudadana" —una sola ley (LOSC) pero con muchos tipos— deja de PARECER vacía. La
+ * clasificación por materia se hace con `materiaDeNorma` sobre el código (mismo mapa que las normas).
+ */
+export async function listarInfraccionesDeMateria(
+  runner: SqlRunner,
+  materia: Materia,
+  cadena: readonly string[] = [],
+): Promise<InfraccionResumen[]> {
+  const filtro = filtroTerritorialSql(cadena, 'i.territorio_id');
+  const filas = await runner.getAll<FilaInfraccionMateria>(
+    `SELECT i.id, i.titulo_corto, i.gravedad, i.tipo, n.codigo AS norma_codigo
+       FROM infraccion i
+       JOIN articulo a ON a.id = i.articulo_id
+       JOIN norma    n ON n.id = a.norma_id
+      WHERE ${filtro.sql}
+      ORDER BY i.titulo_corto`,
+    filtro.params,
+  );
+  return filas
+    .filter((f) => materiaDeNorma(f.norma_codigo) === materia)
+    .map((f) => ({
+      id: f.id,
+      tituloCorto: f.titulo_corto,
+      gravedad: f.gravedad,
+      tipo: f.tipo,
+      normaCodigo: f.norma_codigo,
+    }));
+}
+
 /**
  * Carga los artículos vigentes de una norma, ya ORDENADOS para lectura. Cada uno trae la cadena
  * `textoBusqueda` (normalizada) para que el buscador dentro de la norma funcione en memoria, sin
