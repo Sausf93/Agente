@@ -17,6 +17,28 @@ Windows o de máquina) continúe el trabajo sin perder contexto. Complementa a
 5. Puerta de calidad antes de tocar nada: `corepack pnpm lint`, `corepack pnpm -r typecheck` (3 Done),
    `corepack pnpm -r test` (verde).
 
+### Carpeta compartida entre usuarios del mismo PC (opcional)
+`C:\Users\Public\Agente` es legible/escribible por todos los usuarios del PC (incluidos los NO admin).
+Sirve para que dos usuarios de Windows compartan la MISMA carpeta sin re-clonar. Aviso: `_deploy/`
+(token de Expo) puesto en Public lo puede leer cualquier usuario del PC. GitHub sigue siendo el respaldo.
+
+### MCPs y equipo (qué viaja y qué hay que instalar)
+Viajan con el repo (en Git): `.mcp.json` (engram, playwright, graphify) y `.claude/` (8 agentes + 3 skills).
+Al abrir el proyecto, Claude Code pregunta si habilitar los MCPs del proyecto → aceptar.
+- **playwright**: se autoinstala (npx), no requiere nada.
+- **engram** (memoria): el comando `engram` debe estar instalado en el usuario nuevo y con su cuenta/proyecto
+  `Agente`. Si no está, Claude avisa "engram no cargado" y se sigue igual (la memoria fiable está en
+  `docs/` y en Git). Instalar/loguear engram solo si se quiere la memoria persistente entre sesiones.
+- **graphify** (`graphify-mcp`): binario aparte + un `graphify-out/graph.json`. Opcional; no se usa en el
+  ciclo normal de trabajo.
+- Reiniciar Claude Code tras habilitar MCPs (los tools se cargan al arrancar).
+NINGÚN MCP es imprescindible para: construir contenido, pasar la puerta, commitear, pushear y publicar en Expo.
+
+### La CONVERSACIÓN literal (chat) — solo si se quiere conservar el historial
+Vive en el perfil de Windows viejo: copiar `C:\Users\<viejo>\.claude\` → `C:\Users\<nuevo>\.claude\`.
+Con la misma ruta del proyecto, `claude --resume` reabre la conversación. Si no, una sesión nueva
+retoma leyendo este documento (no se pierde el hilo del trabajo, solo el texto del chat anterior).
+
 ## Qué es esto (resumen de 10 s)
 App móvil (Expo SDK 57 + RN + TS, monorepo pnpm) de suscripción para las FCSE (GC, PN, local,
 autonómica) que sustituye a SPPLB: normativa offline, buscador de calle, ficha con consecuencia
