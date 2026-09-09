@@ -443,13 +443,14 @@ const ART_LOTT_141_PRIVADO = articuloSeed({
 
 const ART_LOTT_141_VIAJEROS = articuloSeed({
   normaId: ID_LOTT,
-  numero: '141 (viajeros: plazas)',
-  titulo: 'Infracciones graves: exceso de viajeros sobre las plazas autorizadas',
+  numero: '140.26 / 141 (exceso de viajeros)',
+  titulo: 'Exceso de viajeros sobre las plazas autorizadas (graduable grave/muy grave)',
   texto:
     'Tipifica como infracción de la ordenación del transporte de viajeros el transportar un número de ' +
-    'viajeros superior al de plazas autorizadas del vehículo. El número de plazas es el que figura en ' +
-    'la ficha técnica y la tarjeta de transporte. La cuantía la concreta el art. 143 LOTT y su ' +
-    'reglamento (ROTT). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+    'viajeros superior al de plazas autorizadas del vehículo (las que figuran en la ficha técnica y la ' +
+    'tarjeta de transporte). Se GRADÚA por la magnitud del exceso: el exceso elevado es MUY GRAVE ' +
+    '(art. 140.26 LOTT, en relación con el art. 197 del ROTT); el exceso menor se sanciona como grave. ' +
+    'La cuantía la concreta el art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el BOE.',
 });
 
 const ART_LOTT_142_VIAJEROS = articuloSeed({
@@ -533,26 +534,15 @@ const ART_LOTT_142_DOCS = articuloSeed({
 
 const ART_LOTT_141_VISADO = articuloSeed({
   normaId: ID_LOTT,
-  numero: '141 (visado de la autorización)',
-  titulo: 'Infracciones graves: incumplimiento del visado de la autorización de transporte',
+  numero: '142.1 (autorización sin visar en plazo)',
+  titulo: 'Infracciones leves: transporte con la autorización de transporte sin visar en plazo',
   texto:
-    'Tipifica como infracción de la ordenación del transporte el mantener en explotación un vehículo o ' +
-    'una autorización sin haber realizado el visado periódico exigible, o incumpliendo las condiciones ' +
-    'a las que se sujeta la vigencia de la autorización de transporte. La cuantía la concreta el ' +
-    'art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el texto consolidado en el BOE.',
-});
-
-const ART_LOTT_141_DIMENSIONES = articuloSeed({
-  normaId: ID_LOTT,
-  numero: '141 (exceso de dimensiones)',
-  titulo: 'Infracciones graves: exceso de dimensiones del vehículo o del conjunto',
-  texto:
-    'Tipifica como infracción de la ordenación del transporte el circular excediendo las dimensiones ' +
-    'máximas reglamentarias (longitud, anchura o altura) del vehículo o del conjunto, o el transporte ' +
-    'que requiere autorización especial de circulación por sus dimensiones sin disponer de ella. Se ' +
-    'distingue del exceso de MASA máxima autorizada (ver `inf-exceso-mma`). Los límites los fija el ' +
-    'Reglamento General de Vehículos (RD 2822/1998); la cuantía, el art. 143 LOTT y su reglamento. ' +
-    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+    'Tipifica como infracción LEVE (art. 142.1 LOTT) el realizar transporte con la autorización o tarjeta ' +
+    'de transporte sin haber pasado el visado en el plazo exigible, cuando el transportista sí cumple los ' +
+    'requisitos de fondo. Queda exento de sanción si acredita que reunía todos los requisitos y solicita ' +
+    'el visado en los 15 días siguientes a la notificación. Si NO mantiene los requisitos, deja de ser un ' +
+    'simple visado y puede reconducirse a la falta de título habilitante (muy grave). La cuantía la ' +
+    'concreta el art. 143 LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el BOE.',
 });
 
 const ART_LOTT_141_TACOGRAFO = articuloSeed({
@@ -772,7 +762,6 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_LOTT_ATP,
   ART_LOTT_142_DOCS,
   ART_LOTT_141_VISADO,
-  ART_LOTT_141_DIMENSIONES,
   ART_LOTT_141_TACOGRAFO,
   ART_CP_379,
   ART_CP_379_1,
@@ -1996,10 +1985,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_141_PRIVADO,
     tituloCorto: 'Transporte privado excediendo sus límites',
     gravedad: 'grave',
-    // Horquilla del tramo grave LOTT (401–1.000 €): NO cifra fija. Se pinta como rango.
-    importeEur: 401,
+    // Horquilla ajustada al subtramo grave del art. 143 LOTT (601–800 €; art. 141.14 s/ revisión jurídica): NO cifra fija.
+    importeEur: 601,
     importeReducidoEur: null,
-    importeMaxEur: 1000,
+    importeMaxEur: 800,
     puntos: null,
     textoBoletin:
       'Realizar transporte privado complementario excediendo los límites que lo definen: transportar ' +
@@ -2027,8 +2016,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
       '140-142, reformada por la Ley 13/2021) y el ROTT: exceder los límites del transporte privado ' +
       'complementario puede ser grave o, según el caso (ánimo de lucro, reiteración), reconducirse a la ' +
-      'falta de título habilitante (muy grave). El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR ' +
-      'la horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+      'falta de título habilitante (muy grave). Horquilla ajustada al subtramo grave 601–800 € (art. 141.14, ' +
+      'baremo art. 143) en revisión jurídica; A VERIFICAR el apartado exacto. Sin pronto pago modelado. No ' +
+      'detrae puntos DGT. Revisar por supuesto.',
   }),
   // --- Viajeros (autobús / VTC / taxi) -------------------------------------------------------
   construirInfraccion({
@@ -2075,9 +2065,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_141_VIAJEROS,
     tituloCorto: 'Exceso de viajeros sobre las plazas autorizadas',
     gravedad: 'grave',
+    // Base grave (subtramo 401–600 €); el exceso ELEVADO es MUY GRAVE (art. 140.26 LOTT). Horquilla, no cifra fija.
     importeEur: 401,
     importeReducidoEur: null,
-    importeMaxEur: 1000,
+    importeMaxEur: 600,
     puntos: null,
     textoBoletin:
       'Transportar un número de viajeros superior al de plazas autorizadas del vehículo (las que ' +
@@ -2101,10 +2092,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado exacto (exceso de viajeros sobre plazas autorizadas) y la GRAVEDAD contra ' +
-      'el texto consolidado de la LOTT (arts. 140-142, Ley 13/2021) y el ROTT: el exceso puede graduarse ' +
-      'según su porcentaje. El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la horquilla. Sin ' +
-      'pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+      'Verificado en BOE/ROTT: el exceso de viajeros se GRADÚA por magnitud —el exceso elevado es MUY ' +
+      'GRAVE (art. 140.26 LOTT, en relación con el art. 197 ROTT) y el menor, grave—. El seed muestra la ' +
+      'base grave (subtramo 401–600 €) y avisa de la escalada a muy grave. A VERIFICAR el umbral exacto de ' +
+      'porcentaje que salta a muy grave y su importe. Sin pronto pago modelado. No detrae puntos DGT.',
   }),
   construirInfraccion({
     id: 'inf-viajeros-sin-billete',
@@ -2140,10 +2131,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_ESCOLAR,
     tituloCorto: 'Transporte escolar incumpliendo sus condiciones',
     gravedad: 'muy_grave',
-    // Horquilla del tramo medio del muy grave LOTT (2.001–4.000 €): NO cifra fija. Se pinta como rango.
-    importeEur: 2001,
+    // Horquilla ajustada al subtramo bajo del muy grave del art. 143 LOTT (1.001–2.000 €; art. 140.29/30 s/ revisión): NO cifra fija.
+    importeEur: 1001,
     importeReducidoEur: null,
-    importeMaxEur: 4000,
+    importeMaxEur: 2000,
     puntos: null,
     textoBoletin:
       'Realizar transporte escolar o de menores incumpliendo las condiciones de seguridad exigibles: ' +
@@ -2173,8 +2164,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'A VERIFICAR el apartado/letra exacto y la GRAVEDAD por supuesto contra el texto consolidado de la ' +
       'LOTT (arts. 140-142, Ley 13/2021), el ROTT y el RD 443/2001 (condiciones de seguridad del ' +
       'transporte escolar y de menores): algunas condiciones (acompañante, señalización) pueden ser ' +
-      'graves y otras muy graves. El seed ancla el tramo medio del muy grave (2.001–4.000 €); A ' +
-      'VERIFICAR importe y horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar.',
+      'graves y otras muy graves. Horquilla corregida al subtramo bajo del muy grave 1.001–2.000 € (art. ' +
+      '140.29/30, baremo art. 143) tras revisión jurídica —antes sobrevaloraba el mínimo—; A VERIFICAR el ' +
+      'apartado por supuesto. Sin pronto pago modelado. No detrae puntos DGT. Revisar.',
   }),
   // --- Mercancías peligrosas (ADR): variantes distintas de la general muy grave --------------
   construirInfraccion({
@@ -2182,8 +2174,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_ADR_DOC,
     tituloCorto: 'ADR: documentación deficiente (instrucciones escritas / carta de porte)',
     gravedad: 'grave',
-    // Horquilla del tramo alto del grave LOTT (601–1.000 €): NO cifra fija. Se pinta como rango.
-    importeEur: 601,
+    // Horquilla ajustada al subtramo alto del grave del art. 143 LOTT (801–1.000 €; art. 141.5 s/ revisión): NO cifra fija.
+    importeEur: 801,
     importeReducidoEur: null,
     importeMaxEur: 1000,
     puntos: null,
@@ -2214,8 +2206,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
       '(arts. 140-142, Ley 13/2021), el ROTT, el RD 97/2014 y el ADR vigente: distinguir la deficiencia ' +
       'documental (grave o leve) de la ausencia total de documentación esencial (muy grave, ver ' +
-      '`inf-adr-mercancias-peligrosas`). El seed ancla el tramo alto del grave (601–1.000 €); A ' +
-      'VERIFICAR la horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+      '`inf-adr-mercancias-peligrosas`). Horquilla ajustada al subtramo alto del grave 801–1.000 € (art. ' +
+      '141.5, baremo art. 143) en revisión; A VERIFICAR el apartado. Sin pronto pago modelado. No detrae ' +
+      'puntos DGT. Revisar por supuesto.',
   }),
   construirInfraccion({
     id: 'inf-adr-conductor-formacion',
@@ -2261,9 +2254,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_ATP,
     tituloCorto: 'Perecederas sin certificado ATP o con frío deficiente',
     gravedad: 'grave',
+    // Horquilla ajustada al subtramo grave del art. 143 LOTT (401–600 €; art. 141.21 s/ revisión): NO cifra fija.
     importeEur: 401,
     importeReducidoEur: null,
-    importeMaxEur: 1000,
+    importeMaxEur: 600,
     puntos: null,
     textoBoletin:
       'Transportar mercancías perecederas (alimentos a temperatura controlada) sin el certificado ATP ' +
@@ -2291,8 +2285,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
       '(arts. 140-142, Ley 13/2021), el ROTT y el Acuerdo ATP: distinguir la falta de certificado ATP ' +
-      'del incumplimiento de temperaturas o del equipo de frío averiado (pueden graduarse distinto). El ' +
-      'seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la horquilla. Sin pronto pago modelado. No ' +
+      'del incumplimiento de temperaturas o del equipo de frío averiado (pueden graduarse distinto). ' +
+      'Horquilla ajustada al subtramo grave 401–600 € (art. 141.21, baremo art. 143) en revisión; A ' +
+      'VERIFICAR el apartado. Sin pronto pago modelado. No ' +
       'detrae puntos DGT. Revisar por supuesto antes de publicar.',
   }),
   // --- Obligaciones con la Administración (documentación de control / visado) ----------------
@@ -2330,10 +2325,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     id: 'inf-visado-transporte',
     articulo: ART_LOTT_141_VISADO,
     tituloCorto: 'Autorización de transporte sin visar',
-    gravedad: 'grave',
-    importeEur: 401,
+    gravedad: 'leve',
+    // Subtramo leve del art. 143 LOTT (301–400 €; art. 142.1 s/ verificación BOE): NO cifra fija.
+    importeEur: 301,
     importeReducidoEur: null,
-    importeMaxEur: 800,
+    importeMaxEur: 400,
     puntos: null,
     textoBoletin:
       'Mantener en explotación un vehículo o una autorización de transporte sin haber realizado el ' +
@@ -2348,51 +2344,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
-      '140-142, Ley 13/2021) y el ROTT: la falta de visado en plazo puede ser leve o grave según su ' +
-      'alcance y la reiteración. El seed ancla el tramo GRAVE (401–800 €); A VERIFICAR la horquilla. Sin ' +
-      'pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
-  }),
-  // --- Pesos y dimensiones: exceso de dimensiones (además del exceso de MMA de Ola 1) --------
-  construirInfraccion({
-    id: 'inf-exceso-dimensiones',
-    articulo: ART_LOTT_141_DIMENSIONES,
-    tituloCorto: 'Exceso de dimensiones del vehículo o conjunto',
-    gravedad: 'grave',
-    importeEur: 401,
-    importeReducidoEur: null,
-    importeMaxEur: 1000,
-    puntos: null,
-    textoBoletin:
-      'Circular excediendo las dimensiones máximas reglamentarias (longitud, anchura o altura) del ' +
-      'vehículo o del conjunto, o realizar un transporte que por sus dimensiones requiere autorización ' +
-      'especial de circulación sin disponer de ella. Se distingue del exceso de MASA máxima autorizada. ' +
-      'Procede valorar la inmovilización hasta subsanar.',
-    terminos: [
-      'exceso de dimensiones',
-      'camion demasiado largo',
-      'exceso de longitud',
-      'transporte especial sin autorizacion',
-      'carga que sobresale',
-      'vehiculo demasiado ancho',
-    ],
-    consecuencias: [
-      {
-        tipo: 'inmovilizacion',
-        textoCorto:
-          'Procede valorar la inmovilización del vehículo hasta que se ajusten las dimensiones o se ' +
-          'obtenga la autorización especial de circulación, conforme al régimen de la LOTT.',
-        fuente: 'LOTT art. 143 (y RD 2822/1998, Reglamento General de Vehículos)',
-      },
-    ],
-    marcoImporte: 'transporte',
-    notaRevision:
-      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD por supuesto contra el texto consolidado de la ' +
-      'LOTT (arts. 140-142, Ley 13/2021), el ROTT y los límites de dimensiones del Reglamento General de ' +
-      'Vehículos (RD 2822/1998): el exceso puede graduarse por su porcentaje y por la necesidad de ' +
-      'autorización de transporte especial. El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la ' +
-      'horquilla. Distinta del exceso de MMA (`inf-exceso-mma`). Sin pronto pago modelado. No detrae ' +
-      'puntos DGT. Revisar por supuesto.',
+      'Reclasificada a LEVE (art. 142.1 LOTT, subtramo 301–400 €) tras verificación en BOE/fuentes ' +
+      'oficiales: realizar transporte con la autorización sin visar en plazo es leve y subsanable (exención ' +
+      'si acredita requisitos y solicita el visado en 15 días). A VERIFICAR si, al no mantener los ' +
+      'requisitos de fondo, el supuesto se reconduce a la falta de título (muy grave). Sin pronto pago ' +
+      'modelado. No detrae puntos DGT.',
   }),
   // --- Tacógrafo: variante documental (distinta de la manipulación muy grave de Ola 1) -------
   construirInfraccion({
@@ -2400,9 +2356,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LOTT_141_TACOGRAFO,
     tituloCorto: 'No llevar o no conservar los registros del tacógrafo',
     gravedad: 'grave',
-    importeEur: 401,
+    // Horquilla ajustada al subtramo grave del art. 143 LOTT (601–800 €; art. 141.13 s/ revisión): NO cifra fija.
+    importeEur: 601,
     importeReducidoEur: null,
-    importeMaxEur: 1000,
+    importeMaxEur: 800,
     puntos: null,
     textoBoletin:
       'No llevar a bordo las hojas de registro o la tarjeta de conductor del tacógrafo, o no conservar ' +
@@ -2421,8 +2378,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
       '140-142, Ley 13/2021), el ROTT, el Reglamento (UE) 165/2014 (tacógrafo) y el Rgto (CE) 561/2006: ' +
       'no llevar/no conservar registros suele ser grave, distinto de la manipulación o el exceso de ' +
-      'tiempos (muy grave, `inf-tacografo`). El seed ancla el tramo GRAVE (401–1.000 €); A VERIFICAR la ' +
-      'horquilla. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
+      'tiempos (muy grave, `inf-tacografo`). Horquilla ajustada al subtramo grave 601–800 € (art. 141.13, ' +
+      'baremo art. 143) en revisión; A VERIFICAR el apartado y si la carencia significativa sube a muy grave. ' +
+      'Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
   }),
   construirInfraccion({
     id: 'inf-adelantamiento-antirreglamentario',

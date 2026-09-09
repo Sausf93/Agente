@@ -13,7 +13,7 @@ const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
   it('siembra 54 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(54);
+    expect(SEED_TRAFICO.infracciones).toHaveLength(53);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -387,8 +387,8 @@ describe('SEED_TRAFICO: ampliación del catálogo de calle (14 conductas nuevas)
 describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)', () => {
   const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
 
-  // Las 13 fichas nuevas del submenú Transporte (título habilitante, viajeros, escolar, ADR,
-  // perecederas, documentación/visado, dimensiones y tacógrafo documental). NO duplican las de
+  // Las 12 fichas nuevas del submenú Transporte (título habilitante, viajeros, escolar, ADR,
+  // perecederas, documentación/visado y tacógrafo documental). NO duplican las de
   // Ola 1 (`inf-tacografo`, `inf-exceso-mma`, `inf-adr-mercancias-peligrosas`).
   const IDS_OLA2 = [
     'inf-transporte-sin-titulo',
@@ -402,11 +402,10 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
     'inf-perecederas-atp',
     'inf-documentacion-control',
     'inf-visado-transporte',
-    'inf-exceso-dimensiones',
     'inf-tacografo-sin-registros',
   ];
 
-  it('las 13 existen, son administrativas del marco transporte y quedan pendientes de revisión', () => {
+  it('las 12 existen, son administrativas del marco transporte y quedan pendientes de revisión', () => {
     for (const id of IDS_OLA2) {
       const item = find(id);
       expect(item, id).toBeDefined();
@@ -460,7 +459,6 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
     ['camion de perecederas sin atp', 'inf-perecederas-atp'],
     ['no exhibe la tarjeta de transporte', 'inf-documentacion-control'],
     ['visado caducado', 'inf-visado-transporte'],
-    ['exceso de dimensiones', 'inf-exceso-dimensiones'],
     ['sin hojas del tacografo', 'inf-tacografo-sin-registros'],
   ])('«%s» resuelve SOLO a %s (sin colisión con Ola 1)', (termino, id) => {
     const duenos = SEED_TRAFICO.infracciones
@@ -470,13 +468,12 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
   });
 
   it('las que precintan/inmovilizan llevan la consecuencia con lenguaje orientativo', () => {
-    // Título, viajeros sin autorización, escolar, ADR y dimensiones llevan inmovilización/precinto.
+    // Título, viajeros sin autorización, escolar y ADR llevan inmovilización/precinto.
     for (const id of [
       'inf-transporte-sin-titulo',
       'inf-viajeros-sin-autorizacion',
       'inf-transporte-escolar',
       'inf-adr-conductor-formacion',
-      'inf-exceso-dimensiones',
     ]) {
       const inmov = find(id)!.consecuencias.find((c) => c.tipo === 'inmovilizacion');
       expect(inmov, id).toBeDefined();
@@ -486,7 +483,7 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
   });
 
   it('las variantes NO duplican las de Ola 1 (ids distintos, artículos distintos)', () => {
-    // Tacógrafo, ADR y masa/dimensiones de Ola 2 usan artículos LOTT propios (numero distinto),
+    // Tacógrafo y ADR de Ola 2 usan artículos LOTT propios (numero distinto),
     // no los de las fichas de Ola 1.
     const ola1 = ['inf-tacografo', 'inf-exceso-mma', 'inf-adr-mercancias-peligrosas'];
     for (const id of ola1) {
