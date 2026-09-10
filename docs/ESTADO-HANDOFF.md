@@ -140,8 +140,34 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **118 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
-  + Coacciones 172 + Receptación 298 + Detención ilegal 163 + Maltrato animal 340 bis + **7 de la ola de Armas**).
+- Paquete: **155 infracciones, 29 normas, 1365 sinónimos** (sprint del 2026-09-10, ver bloque siguiente).
+- **SPRINT 2026-09-10 (tarde): +44 fichas en 6 olas** para llegar a pseudo-producción el lunes (petición del
+  fundador: "ser mejores que SPPLB, no tener menos"). Cada ola: ingesta-normativa (borrador verificado) →
+  revisor-juridico (gate; cazó errores reales en TODAS) → validador-calle (simulación 3 cuerpos) → build →
+  tests → commit → Expo. Olas:
+  1. **Armas** (7, commit `bc3021a`, publicada): régimen LO 4/2015, sección "Armas" encendida vía
+     `MATERIA_OVERRIDE_POR_INFRACCION` (patrón nuevo, ver abajo).
+  2. **Tráfico** (10, commit `3894f5f`, publicada): sentido contrario, línea continua, adelantar a ciclista
+     sin 1,5 m, carril bus/bici, arrojar objetos, detector de radar, exceso de ocupantes… El revisor cazó
+     que la colilla con riesgo de incendio es MUY GRAVE/6 puntos (no grave/4) y que en turismo no hay tramo
+     muy grave de ocupantes.
+  3. **Delitos violentos y libertad sexual** (8, commit `3894f5f`, publicada): homicidio 138, asesinato 139,
+     agresión sexual 178-180, agresión sexual a menor 181, trato degradante 173.1, torturas 174, acoso 172
+     ter, revelación de secretos/difusión de imágenes 197. Revisor: la violación (179) tiene 2 tramos tras
+     la LO 4/2023 (179.1 4-12; 179.2 6-12) y agresión sexual se modela GRAVE (no menos_grave) para no
+     infra-orientar la detención; añadido el fin de "castigo" a torturas. Validador: sinónimos de AVISO
+     ("hay un muerto", "una violación") + protocolo de ESCENA en homicidio/asesinato + pasos operativos en
+     agresión sexual (no lavarse, no reiterar declaración, UFAM).
+  4. **Ordenanzas SCTF / Canarias** (10, commit `7c10a8e`, publicada): convivencia/limpieza/playas/venta
+     ambulante (orinar, pintadas, enseres, contenedores, vertidos, fumar/residuos en playa; botellón,
+     acampada montes y top manta como consultables). 3 ordenanzas nuevas (residuos, policía y buen gobierno,
+     venta). Es lo que desbloquea VENDER a policía local. Importes = techo del tramo (art. 52.2) donde
+     confirmado; consultable donde la cuantía no es pública.
+  5. **Frontera penal** (9, commit `4d8f5e4`, **EN GIT, NO PUBLICADA hasta pasar revisor** — muy sensible):
+     conducción con desprecio a la vida 381 (kamikaze penal), odio 510, grooming 183, pornografía infantil
+     189, exhibicionismo 185-186, denuncia falsa 457, sustracción de menores 225 bis, allanamiento de local
+     203, usurpación de funciones/falso policía 402-403. **SIGUIENTE PASO al retomar: aplicar el veredicto del
+     revisor de esta ola y, si APTO, publicar en Expo.**
 - **Ola de ARMAS** (2026-09-10, commit `bc3021a`): enciende la sección "Armas" de SPPLB, que teníamos casi
   vacía. 7 fichas del régimen de armas reglamentadas (sin licencia/guía, licencia caducada, portar fuera de
   supuestos, transporte indebido, fogueo/aire/réplica, custodia, documentación perdida). Punto jurídico clave
