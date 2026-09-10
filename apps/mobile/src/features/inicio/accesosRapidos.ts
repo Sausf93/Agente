@@ -54,7 +54,7 @@ export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [buscar('Zona azul')
 export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
   buscar('Desobediencia'),
   buscar('Drogas en vía pública'),
-  buscar('Identificación', 'identificacion'),
+  { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   buscar('Falta de respeto', 'falta de respeto'),
   buscar('Armas prohibidas', 'arma prohibida'),
 ];
@@ -86,7 +86,7 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   // "Identificación" lleva a la ficha del REQUERIMIENTO de identificación (art. 16 LOSC), la
   // consulta diaria de PN/GC/Local: 'identificacion' es el sinónimo que la devuelve primero (antes
   // era 'no se identifica', que abría la NEGATIVA del art. 36.6, otra cosa distinta).
-  buscar('Identificación', 'identificacion'),
+  { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
 ];
 
 /**
@@ -104,7 +104,7 @@ export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
   buscar('Sin seguro'),
   buscar('Tacógrafo', 'tacografo'),
   buscar('Extranjería', 'estancia irregular'),
-  buscar('Identificación', 'identificacion'),
+  { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
 ];
 

@@ -111,6 +111,10 @@ export default function RootLayout() {
           options={{ headerShown: true, title: 'Control de carretera', presentation: 'card' }}
         />
         <Stack.Screen
+          name="guia-identificacion"
+          options={{ headerShown: true, title: 'Identificación y cacheo', presentation: 'card' }}
+        />
+        <Stack.Screen
           name="vehiculos/index"
           options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
         />
