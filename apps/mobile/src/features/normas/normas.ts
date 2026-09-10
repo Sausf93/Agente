@@ -751,6 +751,16 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-torturas': 'pen-personas',
   'del-acoso-stalking': 'pen-personas',
   'del-revelacion-secretos': 'pen-otros',
+  // Ola de frontera penal (odio, online a menores, falso policía, kamikaze penal) 2026-09-10.
+  'del-conduccion-temeraria-desprecio': 'pen-otros',
+  'del-odio-discriminacion': 'pen-personas',
+  'del-grooming-menores': 'pen-personas',
+  'del-pornografia-infantil': 'pen-personas',
+  'del-exhibicionismo': 'pen-personas',
+  'del-simulacion-delito': 'pen-otros',
+  'del-sustraccion-menores': 'pen-personas',
+  'del-allanamiento-establecimiento': 'pen-personas',
+  'del-usurpacion-funciones': 'pen-autoridad',
   // Seguridad ciudadana
   'sc-identificacion-requerimiento': 'seg-orden-identidad',
   'sc-cacheo-registro': 'seg-orden-identidad',

@@ -507,7 +507,124 @@ const ART_CP_197 = articuloCp({
     'orientativo; consúltese el texto consolidado del CP.',
 });
 
+// --- Artículos de la OLA DE FRONTERA PENAL (odio, grooming, falso policía…) 2026-09-10 ----------
+const ART_CP_381 = articuloCp({
+  numero: '381',
+  titulo: 'Conducción con manifiesto desprecio por la vida',
+  texto:
+    'Castiga a quien, con manifiesto desprecio por la vida de los demás, realiza la conducción temeraria ' +
+    'del art. 380 (temeridad manifiesta poniendo en concreto peligro la vida o la integridad de las ' +
+    'personas): prisión de dos a cinco años, multa de doce a veinticuatro meses y privación del derecho a ' +
+    'conducir de seis a diez años (art. 381.1). Si con esa conducta no se pone en concreto peligro la vida ' +
+    'o la integridad, la pena es de prisión de uno a dos años (art. 381.2). Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_510 = articuloCp({
+  numero: '510',
+  titulo: 'Delitos de odio y discriminación',
+  texto:
+    'Castiga fomentar, promover o incitar pública y directa o indirectamente al odio, la hostilidad, la ' +
+    'discriminación o la violencia contra un grupo o una persona por motivos racistas, antisemitas, de ' +
+    'ideología, religión, etnia, origen, sexo, orientación o identidad sexual, edad, enfermedad o ' +
+    'discapacidad, entre otros; así como producir o difundir material con ese contenido y negar o enaltecer ' +
+    'delitos de genocidio (art. 510.1: prisión de uno a cuatro años y multa). El art. 510.2 castiga la ' +
+    'humillación o el enaltecimiento (prisión de seis meses a dos años). Se agrava por medios de ' +
+    'comunicación o internet y cuando sea idóneo para alterar la paz pública. El art. 510 bis prevé la ' +
+    'responsabilidad de la persona jurídica. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_183 = articuloCp({
+  numero: '183',
+  titulo: 'Ciberacoso sexual a menor (grooming)',
+  texto:
+    'Castiga a quien, a través de internet, teléfono o cualquier tecnología, contacta con un menor de ' +
+    'dieciséis años y le propone concertar un encuentro para cometer un delito sexual, acompañando la ' +
+    'propuesta de un acto material de acercamiento (art. 183.1: prisión de uno a tres años o multa de doce ' +
+    'a veinticuatro meses, en su mitad superior si media coacción, intimidación o engaño); o le embauca ' +
+    'para que le facilite material pornográfico o le muestre imágenes pornográficas (art. 183.2). Es un ' +
+    'delito de peligro. NO confundir con el art. 183 bis (cláusula de proximidad de edad). Resumen ' +
+    'orientativo; consúltese el CP.',
+});
+
+const ART_CP_189 = articuloCp({
+  numero: '189',
+  titulo: 'Pornografía infantil',
+  texto:
+    'Castiga captar o utilizar a menores o personas con discapacidad con fines pornográficos, y producir, ' +
+    'vender, distribuir, difundir, exhibir o facilitar material pornográfico elaborado con ellos, así como ' +
+    'su financiación (art. 189.1: prisión de uno a cinco años). Los supuestos agravados (art. 189.2: menor ' +
+    'de dieciséis años, carácter degradante o violento, organización…) se castigan con prisión de cinco a ' +
+    'nueve años. La mera posesión para uso propio o el acceso a sabiendas se castigan aparte (art. 189.5). ' +
+    'Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_185 = articuloCp({
+  numero: '185',
+  titulo: 'Exhibicionismo y provocación sexual',
+  texto:
+    'Castiga ejecutar o hacer ejecutar actos de exhibición obscena ante menores de edad o personas con ' +
+    'discapacidad necesitadas de especial protección (art. 185), y vender, difundir o exhibir material ' +
+    'pornográfico entre esas personas (art. 186): prisión de seis meses a un año o multa de doce a ' +
+    'veinticuatro meses. No hay contacto físico. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_457 = articuloCp({
+  numero: '457',
+  titulo: 'Simulación de delito / denuncia falsa',
+  texto:
+    'Castiga a quien, ante funcionario judicial o administrativo, simula ser responsable o víctima de una ' +
+    'infracción penal o denuncia una inexistente, provocando actuaciones procesales: multa de seis a doce ' +
+    'meses (art. 457). Distinto de la acusación y denuncia falsas del art. 456 (cuando se imputa a persona ' +
+    'concreta). Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_225_BIS = articuloCp({
+  numero: '225 bis',
+  titulo: 'Sustracción de menores por un progenitor',
+  texto:
+    'Castiga al progenitor que sin causa justificada sustrae a su hijo menor: traslada al menor de su ' +
+    'residencia habitual sin consentimiento del otro progenitor o de quien tenga su guarda, o lo retiene ' +
+    'incumpliendo gravemente una resolución judicial o administrativa (art. 225 bis): prisión de dos a ' +
+    'cuatro años e inhabilitación especial para la patria potestad de cuatro a diez años, en su mitad ' +
+    'superior si el menor sale de España o se exige una condición para su restitución. Se atenúa si ' +
+    'comunica el paradero en 24 horas o restituye en 15 días. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_203 = articuloCp({
+  numero: '203',
+  titulo: 'Allanamiento de local, oficina o establecimiento',
+  texto:
+    'Castiga entrar contra la voluntad de su titular en el domicilio de una persona jurídica, despacho, ' +
+    'oficina o establecimiento o local abierto al público fuera de las horas de apertura (art. 203.1: ' +
+    'prisión de seis meses a un año y multa de seis a diez meses); mantenerse en ellos fuera del horario ' +
+    'contra la voluntad del titular (art. 203.2: multa de uno a tres meses); y hacerlo con violencia o ' +
+    'intimidación (art. 203.3: prisión de seis meses a tres años). Se distingue del allanamiento de morada ' +
+    '(art. 202) y de la usurpación (art. 245). Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_402 = articuloCp({
+  numero: '402',
+  titulo: 'Usurpación de funciones públicas e intrusismo',
+  texto:
+    'La usurpación de funciones (art. 402) castiga ejercer ilegítimamente actos propios de una autoridad o ' +
+    'funcionario atribuyéndose carácter oficial (p. ej. hacerse pasar por policía): prisión de uno a tres ' +
+    'años. El uso público e indebido de uniforme, traje o insignia oficial es el art. 402 bis (multa). El ' +
+    'intrusismo (art. 403) castiga ejercer actos propios de una profesión sin el título exigido: multa de ' +
+    'doce a veinticuatro meses (sin título académico) o de seis a doce meses (sin título oficial ' +
+    'habilitante); prisión de seis meses a dos años si el autor se anuncia como profesional o abre local ' +
+    'al público. Resumen orientativo; consúltese el CP.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_381,
+  ART_CP_510,
+  ART_CP_183,
+  ART_CP_189,
+  ART_CP_185,
+  ART_CP_457,
+  ART_CP_225_BIS,
+  ART_CP_203,
+  ART_CP_402,
   ART_CP_138,
   ART_CP_139,
   ART_CP_178,
@@ -1984,6 +2101,347 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'de 6 a 12 meses, agravante (mitad superior) si víctima pareja/expareja, menor o con discapacidad, o ' +
       'ánimo de lucro. Confirmar penas y redacción vigente contra el texto consolidado del CP. La prueba ' +
       'suele ser digital: recordar la regla de no subir datos de terceros al servidor.',
+  }),
+  // --- OLA DE FRONTERA PENAL (odio, online a menores, falso policía, kamikaze penal) 2026-09-10 ----
+  // Cierra fronteras penales que dejaron abiertas otras olas (kamikaze -> 381) y cubre el hueco de
+  // delitos ONLINE/actuales (odio 510, grooming 183, pornografia infantil 189). MUY sensible.
+  construirDelito({
+    id: 'del-conduccion-temeraria-desprecio',
+    articulo: ART_CP_381,
+    tituloCorto: 'Conducción con manifiesto desprecio por la vida',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 2 a 5 años, multa de 12 a 24 meses y privación del derecho a conducir de 6 a 10 años ' +
+      '(art. 381.1 CP); si no se puso en concreto peligro la vida/integridad, prisión de 1 a 2 años (381.2)',
+    textoBoletin:
+      'Conducir con MANIFIESTO DESPRECIO por la vida de los demás realizando la conducción temeraria del ' +
+      'art. 380 (temeridad manifiesta poniendo en concreto peligro la vida o integridad de las personas). ' +
+      'Es el escalón PENAL superior del kamikaze/sentido contrario cuando se busca o se acepta el choque ' +
+      'frontal (art. 381.1). Si con esa conducta NO se pone en concreto peligro la vida o integridad de ' +
+      'otro, la pena baja (art. 381.2). Frontera: el art. 380 (temeraria con concreto peligro) es el ' +
+      'escalón inferior. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'kamikaze',
+      'sentido contrario en autopista',
+      'va de frente contra los coches',
+      'conducir contra direccion aposta',
+      'quiere provocar un choque',
+      'conductor suicida',
+      'va a matar a alguien con el coche',
+      'circula por el carril contrario',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras persista la situación de riesgo (art. ' +
+          '104 LSV) y la intervención del permiso de conducción.',
+        fuente: 'LSV art. 104',
+      },
+      {
+        tipo: 'retirada_permiso',
+        textoCorto:
+          'El delito lleva aparejada la privación del derecho a conducir de 6 a 10 años, que impone el ' +
+          'juez (art. 381.1 CP); procede valorar la intervención cautelar del permiso.',
+        fuente: 'CP art. 381.1',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR pena y deslinde 380/381. Art. 381.1 → prisión 2-5 años + multa 12-24 meses + privación ' +
+      'de conducir 6-10 años (manifiesto desprecio por la vida + conducta del 380). Art. 381.2 → 1-2 años ' +
+      'si no se puso en concreto peligro. Ambos MENOS GRAVE (art. 33.3). Enlaza con la ficha de tráfico ' +
+      '"sentido contrario/kamikaze". Confirmar con el revisor contra el CP.',
+  }),
+  construirDelito({
+    id: 'del-odio-discriminacion',
+    articulo: ART_CP_510,
+    tituloCorto: 'Delito de odio / discriminación',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 4 años y multa de 6 a 12 meses (art. 510.1); prisión de 6 meses a 2 años en los ' +
+      'supuestos del 510.2; persona jurídica: multa de 2 a 5 años (art. 510 bis)',
+    textoBoletin:
+      'Fomentar, promover o incitar públicamente al odio, la hostilidad, la discriminación o la violencia ' +
+      'contra un grupo o una persona por motivos racistas, antisemitas, de ideología, religión, etnia, ' +
+      'origen, sexo, orientación o identidad sexual, edad, enfermedad o discapacidad, entre otros, o ' +
+      'producir/difundir material con ese contenido (art. 510.1). El 510.2 castiga la humillación o el ' +
+      'enaltecimiento. La pena sube (mitad superior) si se difunde por medios o internet y cuando sea ' +
+      'idóneo para alterar la paz pública. Cuidado con el deslinde con la libertad de expresión. La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'delito de odio',
+      'pintadas racistas',
+      'insultos racistas',
+      'amenazas homofobas',
+      'incitar al odio',
+      'mensajes de odio en redes',
+      'agresion por ser gay',
+      'discriminacion',
+    ],
+    notaRevision:
+      'A VERIFICAR penas y encaje. Art. 510.1 → 1-4 años y multa 6-12 meses; 510.2 → 6 meses-2 años; ' +
+      'agravaciones 510.3 (medios/internet), 510.4 (paz pública), 510.5, 510.6 (comiso); 510 bis (persona ' +
+      'jurídica, multa 2-5 años). Modela el tipo básico → MENOS GRAVE. El revisor debe cuidar el lenguaje ' +
+      'orientativo y el deslinde con la libertad de expresión. Fuente: CP arts. 510 y 510 bis.',
+  }),
+  construirDelito({
+    id: 'del-grooming-menores',
+    articulo: ART_CP_183,
+    tituloCorto: 'Ciberacoso sexual a menor (grooming)',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 3 años o multa de 12 a 24 meses, en su mitad superior si media coacción, ' +
+      'intimidación o engaño (art. 183 CP), sin perjuicio de las penas de los delitos sexuales cometidos',
+    textoBoletin:
+      'Contactar con un menor de dieciséis años por internet, teléfono o cualquier tecnología y proponerle ' +
+      'un encuentro para cometer un delito sexual, con un acto material de acercamiento (art. 183.1); o ' +
+      'embaucarle para que facilite material pornográfico o le muestre imágenes pornográficas (art. 183.2). ' +
+      'Es un delito de PELIGRO: se castiga el acercamiento con fines sexuales aunque no llegue a haber ' +
+      'contacto físico. Máxima cautela con la prueba digital (dispositivos, conversaciones). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'grooming',
+      'un adulto contacta con un menor por internet',
+      'le pide fotos a una menor',
+      'ciberacoso sexual',
+      'contacto sexual con menor por redes',
+      'acoso a menor por whatsapp',
+      'quiere quedar con una nina',
+      'adulto se hace pasar por nino',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Procede valorar medidas de protección del menor (prohibición de aproximación y comunicación, ' +
+          'art. 544 bis LECrim) y la comunicación inmediata al Ministerio Fiscal / juzgado y a la unidad ' +
+          'especializada. Lo acuerda la autoridad judicial.',
+        fuente: 'LECrim art. 544 bis; art. 773 (Fiscal)',
+      },
+    ],
+    notaRevision:
+      'MUY SENSIBLE. A VERIFICAR numeración y penas. Tras la LO 10/2022 el grooming es el art. 183 CP ' +
+      '(183.1 propuesta de encuentro + acto material; 183.2 embaucamiento para material pornográfico). ' +
+      'Pena base 1-3 años o multa 12-24 meses; mitad superior con coacción/intimidación/engaño; sin ' +
+      'perjuicio de los delitos sexuales cometidos. NO confundir con el art. 183 bis (proximidad de edad) ' +
+      'ni con la antigua numeración 183 ter. MENOS GRAVE. Lenguaje orientativo estricto. Fuente: CP art. 183.',
+  }),
+  construirDelito({
+    id: 'del-pornografia-infantil',
+    articulo: ART_CP_189,
+    tituloCorto: 'Pornografía infantil',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 5 años (producción/difusión, art. 189.1); de 5 a 9 años en los agravados (art. ' +
+      '189.2); posesión para uso propio o acceso a sabiendas: prisión de 3 meses a 1 año o multa (189.5)',
+    textoBoletin:
+      'Captar o utilizar a menores o personas con discapacidad con fines pornográficos, y producir, vender, ' +
+      'distribuir, difundir, exhibir o facilitar material pornográfico elaborado con ellos, así como su ' +
+      'financiación (art. 189.1). Se agrava (art. 189.2) cuando el material usa a menores de dieciséis años ' +
+      'o tiene carácter degradante o violento. La mera posesión para uso propio y el acceso a sabiendas se ' +
+      'castigan aparte (art. 189.5). Extrema la cautela con los soportes y la cadena de custodia. La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'pornografia infantil',
+      'pedofilia',
+      'fotos de menores',
+      'videos de abusos a ninos',
+      'material de abuso sexual infantil',
+      'tiene imagenes de ninos en el movil',
+      'difusion de pornografia infantil',
+      'descargar pornografia de menores',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención y puesta a disposición judicial de los dispositivos y soportes ' +
+          '(móvil, ordenador, discos) como piezas de convicción y efectos del delito, con especial ' +
+          'cuidado de la cadena de custodia (arts. 334 y 338 LECrim; comiso, art. 127 CP).',
+        fuente: 'LECrim arts. 334 y 338; CP art. 127',
+      },
+    ],
+    notaRevision:
+      'MUY SENSIBLE. A VERIFICAR penas y subtipo. Art. 189.1 → 1-5 años → MENOS GRAVE; art. 189.2 ' +
+      '(agravados: menor de 16, degradante/violento, organización…) → 5-9 años → GRAVE (cambia la rama de ' +
+      'detención); art. 189.5 (posesión/acceso) → 3 meses-1 año o multa. La ficha modela el tipo básico ' +
+      '(189.1). El revisor decide si separa el agravado 189.2 en ficha propia. Lenguaje orientativo ' +
+      'estricto. Fuente: CP art. 189.',
+  }),
+  construirDelito({
+    id: 'del-exhibicionismo',
+    articulo: ART_CP_185,
+    tituloCorto: 'Exhibicionismo y provocación sexual',
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 1 año o multa de 12 a 24 meses (arts. 185 y 186 CP)',
+    textoBoletin:
+      'Ejecutar o hacer ejecutar actos de exhibición obscena ante menores de edad o personas con ' +
+      'discapacidad necesitadas de especial protección (art. 185), o vender, difundir o exhibir material ' +
+      'pornográfico entre esas personas (art. 186). No hay contacto físico: se castiga exponer al menor o a ' +
+      'la persona con discapacidad a la conducta obscena o al material. Se distingue de la agresión sexual ' +
+      '(178-181, hay acto sexual) y de la pornografía infantil (189). La calificación final es del juez.',
+    terminos: [
+      'exhibicionista',
+      'se ha bajado los pantalones delante de ninos',
+      'se masturba en publico',
+      'ensena sus partes a menores',
+      'un tio ensenandose en el parque',
+      'provocacion sexual a menores',
+      'ensena porno a ninos',
+      'exhibicionismo',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Cuando la víctima es menor o persona con discapacidad, procede valorar medidas de protección ' +
+          '(prohibición de aproximación, art. 544 bis LECrim) y la comunicación al Ministerio Fiscal.',
+        fuente: 'LECrim art. 544 bis',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR penas. Arts. 185 y 186 CP → prisión 6 meses-1 año o multa 12-24 meses → MENOS GRAVE. ' +
+      'Distinguir de la agresión sexual (178-181) y de la pornografía infantil (189). Fuente: CP 185/186.',
+  }),
+  construirDelito({
+    id: 'del-simulacion-delito',
+    articulo: ART_CP_457,
+    tituloCorto: 'Denuncia falsa / simulación de delito',
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Multa de 6 a 12 meses (art. 457 CP)',
+    textoBoletin:
+      'Simular ante un funcionario judicial o administrativo (p. ej. un agente) ser responsable o víctima ' +
+      'de una infracción penal, o denunciar una inexistente, provocando actuaciones procesales (art. 457). ' +
+      'Es el clásico de comisaría: la denuncia inventada de un robo que no existió (a menudo para el seguro) ' +
+      'o la agresión simulada. IMPORTANTE: al llevar solo pena de MULTA, la detención es EXCEPCIONAL (art. ' +
+      '495 LECrim). Si se imputa falsamente a una PERSONA CONCRETA, es acusación/denuncia falsas del art. ' +
+      '456. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'denuncia falsa',
+      'se ha inventado el robo',
+      'simula un robo para el seguro',
+      'denuncia un robo que no existio',
+      'finge que le han atracado',
+      'denunciar en falso',
+      'invento que le robaron el movil',
+      'autolesion para denunciar',
+    ],
+    notaRevision:
+      'A VERIFICAR pena y deslinde 456/457, y el COMPORTAMIENTO DEL MOTOR DE DETENCIÓN: el art. 457 es ' +
+      'pena de MULTA (6-12 meses), por lo que la detención es excepcional (art. 495 LECrim: no procede por ' +
+      'delitos solo con pena de multa salvo domicilio desconocido o falta de garantías). El revisor debe ' +
+      'confirmar que la ficha NO sobre-oriente a detener. Si se imputa a persona concreta → art. 456 ' +
+      '(acusación y denuncia falsas), que exige sentencia firme o sobreseimiento previos. Fuente: CP 456/457.',
+  }),
+  construirDelito({
+    id: 'del-sustraccion-menores',
+    articulo: ART_CP_225_BIS,
+    tituloCorto: 'Sustracción de menores (por un progenitor)',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 2 a 4 años e inhabilitación especial para la patria potestad de 4 a 10 años (art. 225 ' +
+      'bis CP); mitad superior si el menor sale de España o se exige condición para su restitución',
+    textoBoletin:
+      'El progenitor que, sin causa justificada, sustrae a su hijo menor: lo traslada de su residencia ' +
+      'habitual sin el consentimiento del otro progenitor o de quien tenga su guarda, o lo retiene ' +
+      'incumpliendo gravemente lo acordado por resolución judicial o administrativa (art. 225 bis). Es el ' +
+      'conflicto de custodia que se convierte en delito. La pena se atenúa si comunica el paradero del ' +
+      'menor en 24 horas o lo restituye en 15 días. La calificación final corresponde al juez.',
+    terminos: [
+      'sustraccion de menores',
+      'el padre se ha llevado al nino',
+      'no devuelve al nino a la madre',
+      'se lleva al hijo sin permiso',
+      'secuestro parental',
+      'no lo trae despues de la visita',
+      'se ha ido con el nino al extranjero',
+      'incumple las visitas llevandose al menor',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Procede valorar la comunicación inmediata al juzgado (de familia y/o de guardia) y al ' +
+          'Ministerio Fiscal y las medidas civiles urgentes de restitución y protección del menor (art. ' +
+          '158 CC), además de activar el protocolo de menor desaparecido cuando proceda.',
+        fuente: 'CC art. 158; LECrim art. 544 bis',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR pena y modalidades. Art. 225 bis → prisión 2-4 años + inhabilitación patria potestad ' +
+      '4-10 años; mitad superior si sale de España o se exige condición. Atenuaciones: comunicar paradero ' +
+      'en 24 h o restituir en 15 días. Sujeto activo: el progenitor (ascendientes/parientes hasta 2º grado ' +
+      'se equiparan, 225 bis.5). MENOS GRAVE. La "protección" aquí es más medida civil (158 CC) que orden ' +
+      'del 544 ter: confirmar con el revisor. Fuente: CP art. 225 bis.',
+  }),
+  construirDelito({
+    id: 'del-allanamiento-establecimiento',
+    articulo: ART_CP_203,
+    tituloCorto: 'Allanamiento de local, oficina o establecimiento',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 1 año y multa de 6 a 10 meses (art. 203.1); multa de 1 a 3 meses por ' +
+      'mantenerse fuera de horas (203.2); prisión de 6 meses a 3 años con violencia o intimidación (203.3)',
+    textoBoletin:
+      'Entrar contra la voluntad de su titular en el domicilio de una persona jurídica, un despacho u ' +
+      'oficina, o un establecimiento o local abierto al público fuera de las horas de apertura (art. ' +
+      '203.1); o mantenerse en ellos, fuera del horario, contra la voluntad del titular (203.2). Con ' +
+      'violencia o intimidación, la pena es mayor (203.3). Se distingue del allanamiento de MORADA (art. ' +
+      '202, vivienda) y de la usurpación/ocupación de inmueble (art. 245). La calificación final es del juez.',
+    terminos: [
+      'allanamiento de local',
+      'se ha colado en una oficina',
+      'entra en un comercio cerrado',
+      'okupas en una nave',
+      'se mete en un local fuera de horario',
+      'no quiere salir del local cerrado',
+      'entra en la empresa sin permiso',
+      'invasion de establecimiento',
+    ],
+    notaRevision:
+      'A VERIFICAR penas. Art. 203.1 → prisión 6 meses-1 año y multa 6-10 meses; 203.2 → multa 1-3 meses; ' +
+      '203.3 → prisión 6 meses-3 años (violencia/intimidación). MENOS GRAVE. Deslinde con art. 202 (morada), ' +
+      '245 (usurpación de inmueble no morada) y 557 bis (invasión en grupo). Fuente: CP art. 203.',
+  }),
+  construirDelito({
+    id: 'del-usurpacion-funciones',
+    articulo: ART_CP_402,
+    tituloCorto: 'Usurpación de funciones (falso policía) e intrusismo',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Usurpación de funciones públicas: prisión de 1 a 3 años (art. 402). Intrusismo: multa de 12 a 24 ' +
+      'meses o de 6 a 12 meses, o prisión de 6 meses a 2 años en el agravado (art. 403)',
+    textoBoletin:
+      'Usurpación de funciones (art. 402): ejercer ilegítimamente actos propios de una autoridad o ' +
+      'funcionario atribuyéndose carácter oficial (el clásico "falso policía"). Intrusismo (art. 403): ' +
+      'ejercer actos propios de una profesión sin el título académico u oficial exigido (falso médico, ' +
+      'falso abogado), agravado si se anuncia como profesional o abre local al público. El uso indebido de ' +
+      'uniforme o insignia oficial es el art. 402 bis. La calificación final corresponde al juez.',
+    terminos: [
+      'se hace pasar por policia',
+      'falso policia',
+      'suplanta a un agente',
+      'ejerce de medico sin serlo',
+      'falso abogado',
+      'intrusismo',
+      'lleva placa falsa de policia',
+      'se hace pasar por funcionario',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención de los efectos empleados para aparentar el carácter oficial o ' +
+          'profesional (placas, uniformes, distintivos, documentación) como piezas de convicción y efectos ' +
+          'del delito (arts. 334 y 338 LECrim; comiso, art. 127 CP).',
+        fuente: 'LECrim arts. 334 y 338; CP art. 127',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR penas y deslinde. Art. 402 (usurpación de funciones) → prisión 1-3 años; art. 402 bis ' +
+      '(uso indebido de uniforme/insignia oficial) → multa, típico del "falso policía" —valorar mención—; ' +
+      'art. 403 (intrusismo) → multa 12-24 meses (sin título académico), multa 6-12 meses (sin título ' +
+      'oficial), o prisión 6 meses-2 años en el agravado. MENOS GRAVE. Fuente: CP arts. 402, 402 bis y 403.',
   }),
 ];
 
