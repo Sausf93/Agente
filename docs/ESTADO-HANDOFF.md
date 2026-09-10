@@ -149,8 +149,10 @@ Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar si
   - **Sinónimos de calle**: los 4 agentes dieron listas (aparcamiento; armas por clase/nº ONU; ROTT; etc.).
   - **Reintroducir exceso de dimensiones** como ficha de TRÁFICO (RGV/LSV), sacada de la Ola 2.
 - **Features:** **Mapa + Punto Kilométrico offline** con volcado al atestado (GC Tráfico: razón nº1-2 para
-  pagar). Alcoholemia guiada en una pantalla. Documentos de PN (acta 520 LECrim, diligencia de detención).
-  Búsqueda por voz.
+  pagar) — sigue pendiente (necesita datos de carreteras, no están en el paquete). ~~Alcoholemia guiada~~
+  **HECHA** (commit `30467e3`: `/guia-alcoholemia`, tasas + frontera penal + procedimiento, revisada; el
+  revisor cazó y se corrigió que el coste del análisis de sangre estaba invertido). Pendientes: documentos
+  de PN (acta 520 LECrim, diligencia de detención) y búsqueda por voz.
 - **UX P1 (diseño):** selector de municipio (no texto libre), toasts con deshacer en vez de `Alert`,
   municipio controlado en Ajustes, "mi ordenanza personal" editable en el dispositivo (Local).
 - Los informes completos de los 4 agentes viven en el transcript de la conversación (`.claude`).
