@@ -562,6 +562,227 @@ export async function contarInfraccionesPorMateria(
   return conteo;
 }
 
+// ---------------------------------------------------------------------------
+// Sub-temas (submenús estilo SPPLB): materia → sub-tema → fichas. Solo para las
+// materias DENSAS (tráfico, penal, seguridad ciudadana); el resto se navegan
+// planas. La taxonomía es un MAPA INTERINO en la app (igual que MATERIA_POR_CODIGO),
+// por id de infracción, sin tocar el content-pipeline ni el esquema Zod. Regla
+// anti-vacío (docs/paridad-spplb.md): ningún grupo VISIBLE con menos de 3 fichas.
+// ---------------------------------------------------------------------------
+
+export type SubTemaId = string;
+
+export interface SubTemaInfo {
+  materia: Materia;
+  label: string;
+  /** Nombre de icono lucide (mismo patrón que MATERIA_INFO.icono). */
+  icono: string;
+  orden: number;
+  /** Cajón "Otras/General": recoge lo no clasificado y va siempre al final. */
+  esCajon?: boolean;
+}
+
+/** Materias que se navegan con submenú de sub-temas; el resto, planas. */
+export const MATERIA_CON_SUBTEMAS: ReadonlySet<Materia> = new Set<Materia>([
+  'trafico',
+  'penal',
+  'seguridad',
+]);
+
+export function materiaTieneSubtemas(materia: Materia): boolean {
+  return MATERIA_CON_SUBTEMAS.has(materia);
+}
+
+export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
+  // --- Tráfico ---
+  'traf-alcohol-velocidad': { materia: 'trafico', label: 'Alcohol, drogas y velocidad', icono: 'Gauge', orden: 1 },
+  'traf-maniobras-senales': { materia: 'trafico', label: 'Maniobras, señales y prioridad', icono: 'Signpost', orden: 2 },
+  'traf-documentacion': { materia: 'trafico', label: 'Documentación y seguro', icono: 'FileText', orden: 3 },
+  'traf-estado-vehiculo': { materia: 'trafico', label: 'Estado, equipamiento y carga', icono: 'Wrench', orden: 4 },
+  'traf-seguridad-pasiva': { materia: 'trafico', label: 'Cinturón, casco y sillita', icono: 'LifeBuoy', orden: 5 },
+  'traf-distracciones': { materia: 'trafico', label: 'Móvil y distracciones', icono: 'Smartphone', orden: 6 },
+  'traf-estacionamiento': { materia: 'trafico', label: 'Parada, estacionamiento y VMP', icono: 'SquareParking', orden: 7 },
+  'traf-transporte': { materia: 'trafico', label: 'Transporte (LOTT)', icono: 'Truck', orden: 8 },
+  'traf-delitos': { materia: 'trafico', label: 'Delitos contra la seguridad vial', icono: 'Gavel', orden: 9 },
+  'traf-otras': { materia: 'trafico', label: 'Otras de tráfico', icono: 'BookOpen', orden: 99, esCajon: true },
+  // --- Penal ---
+  'pen-patrimonio': { materia: 'penal', label: 'Patrimonio', icono: 'Package', orden: 1 },
+  'pen-personas': { materia: 'penal', label: 'Personas, violencia y libertad', icono: 'HeartPulse', orden: 2 },
+  'pen-autoridad': { materia: 'penal', label: 'Autoridad y orden público', icono: 'Siren', orden: 3 },
+  'pen-otros': { materia: 'penal', label: 'Otros delitos', icono: 'BookOpen', orden: 4, esCajon: true },
+  // --- Seguridad ciudadana (sub-temas provisionales: es la materia más justa en volumen) ---
+  'seg-orden-identidad': { materia: 'seguridad', label: 'Orden público e identificación', icono: 'IdCard', orden: 1 },
+  'seg-drogas-armas': { materia: 'seguridad', label: 'Drogas, alcohol y armas', icono: 'Pill', orden: 2 },
+  'seg-reuniones': { materia: 'seguridad', label: 'Reuniones, espectáculos y ocupación', icono: 'Megaphone', orden: 3 },
+  'seg-otras': { materia: 'seguridad', label: 'Otras de seguridad ciudadana', icono: 'BookOpen', orden: 99, esCajon: true },
+};
+
+/** Mapa interino id de infracción → sub-tema (fuente única de la taxonomía). */
+export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
+  // Tráfico
+  'inf-alcoholemia': 'traf-alcohol-velocidad',
+  'inf-drogas-volante': 'traf-alcohol-velocidad',
+  'inf-exceso-velocidad': 'traf-alcohol-velocidad',
+  'inf-semaforo-rojo': 'traf-maniobras-senales',
+  'inf-adelantamiento-antirreglamentario': 'traf-maniobras-senales',
+  'inf-sin-senalizar-maniobra': 'traf-maniobras-senales',
+  'inf-carril-reservado': 'traf-maniobras-senales',
+  'inf-distancia-seguridad': 'traf-maniobras-senales',
+  'inf-circular-arcen': 'traf-maniobras-senales',
+  'inf-marcha-atras-indebida': 'traf-maniobras-senales',
+  'inf-marcha-atras-autopista': 'traf-maniobras-senales',
+  'inf-stop-ceda-el-paso': 'traf-maniobras-senales',
+  'inf-prioridad-peatones': 'traf-maniobras-senales',
+  'inf-sin-seguro': 'traf-documentacion',
+  'inf-sin-permiso': 'traf-documentacion',
+  'inf-sin-documentacion': 'traf-documentacion',
+  'inf-matricula-oculta': 'traf-documentacion',
+  'inf-alumbrado-deficiente': 'traf-estado-vehiculo',
+  'inf-itv-caducada': 'traf-estado-vehiculo',
+  'inf-neumaticos-mal-estado': 'traf-estado-vehiculo',
+  'inf-lunas-tintadas': 'traf-estado-vehiculo',
+  'inf-escape-ruido': 'traf-estado-vehiculo',
+  'inf-luces-no-homologadas': 'traf-estado-vehiculo',
+  'inf-sujecion-carga': 'traf-estado-vehiculo',
+  'inf-sin-cinturon': 'traf-seguridad-pasiva',
+  'inf-sin-casco': 'traf-seguridad-pasiva',
+  'inf-menor-sin-sri': 'traf-seguridad-pasiva',
+  'inf-movil-conduciendo': 'traf-distracciones',
+  'inf-auriculares-conduciendo': 'traf-distracciones',
+  'inf-claxon-indebido': 'traf-distracciones',
+  'inf-estacionamiento-indebido': 'traf-estacionamiento',
+  'inf-parada-lugar-peligroso': 'traf-estacionamiento',
+  'inf-vmp-patinete': 'traf-estacionamiento',
+  'inf-tacografo': 'traf-transporte',
+  'inf-exceso-mma': 'traf-transporte',
+  'inf-adr-mercancias-peligrosas': 'traf-transporte',
+  'inf-transporte-sin-titulo': 'traf-transporte',
+  'inf-transporte-privado-excede': 'traf-transporte',
+  'inf-viajeros-sin-autorizacion': 'traf-transporte',
+  'inf-viajeros-exceso-plazas': 'traf-transporte',
+  'inf-viajeros-sin-billete': 'traf-transporte',
+  'inf-transporte-escolar': 'traf-transporte',
+  'inf-adr-documentacion': 'traf-transporte',
+  'inf-adr-conductor-formacion': 'traf-transporte',
+  'inf-perecederas-atp': 'traf-transporte',
+  'inf-documentacion-control': 'traf-transporte',
+  'inf-visado-transporte': 'traf-transporte',
+  'inf-tacografo-sin-registros': 'traf-transporte',
+  'del-alcoholemia-penal': 'traf-delitos',
+  'del-velocidad-penal': 'traf-delitos',
+  'del-conduccion-sin-permiso': 'traf-delitos',
+  'del-abandono-accidente': 'traf-delitos',
+  'inf-negativa-prueba': 'traf-delitos',
+  'inf-conduccion-temeraria': 'traf-delitos',
+  // Penal
+  'del-hurto': 'pen-patrimonio',
+  'del-robo-violencia': 'pen-patrimonio',
+  'del-robo-fuerza-casa-habitada': 'pen-patrimonio',
+  'del-danos': 'pen-patrimonio',
+  'del-estafa': 'pen-patrimonio',
+  'del-sustraccion-vehiculo': 'pen-patrimonio',
+  'del-usurpacion': 'pen-patrimonio',
+  'del-receptacion': 'pen-patrimonio',
+  'del-lesiones': 'pen-personas',
+  'del-lesiones-agravadas': 'pen-personas',
+  'del-amenazas': 'pen-personas',
+  'del-coacciones': 'pen-personas',
+  'del-detencion-ilegal': 'pen-personas',
+  'del-allanamiento-morada': 'pen-personas',
+  'del-omision-socorro': 'pen-personas',
+  'del-violencia-genero': 'pen-personas',
+  'del-quebrantamiento': 'pen-personas',
+  'del-atentado-agente': 'pen-autoridad',
+  'del-resistencia-desobediencia': 'pen-autoridad',
+  'del-desordenes-publicos': 'pen-autoridad',
+  'del-trafico-drogas': 'pen-otros',
+  'del-tenencia-armas': 'pen-otros',
+  'del-falsedad-documental': 'pen-otros',
+  'del-maltrato-animal': 'pen-otros',
+  // Seguridad ciudadana
+  'sc-identificacion-requerimiento': 'seg-orden-identidad',
+  'sc-cacheo-registro': 'seg-orden-identidad',
+  'sc-desobediencia-resistencia': 'seg-orden-identidad',
+  'sc-negativa-identificarse': 'seg-orden-identidad',
+  'sc-falta-respeto-agente': 'seg-orden-identidad',
+  'sc-desordenes-obstaculizar-via': 'seg-orden-identidad',
+  'sc-uso-imagenes-agentes': 'seg-orden-identidad',
+  'sc-drogas-via-publica': 'seg-drogas-armas',
+  'sc-consumo-alcohol-via-publica': 'seg-drogas-armas',
+  'sc-armas-prohibidas': 'seg-drogas-armas',
+  'sc-perturbacion-actos-espectaculos': 'seg-reuniones',
+  'sc-reunion-no-comunicada': 'seg-reuniones',
+  'sc-ocupacion-inmueble': 'seg-reuniones',
+};
+
+/** Sub-tema de una infracción por su id (mapa interino); `null` si no está clasificada. */
+export function subtemaDeInfraccion(infId: string): SubTemaId | null {
+  return SUBTEMA_POR_INFRACCION[infId] ?? null;
+}
+
+/** Un grupo de fichas bajo un sub-tema, listo para pintar (fila del submenú o pantalla). */
+export interface GrupoSubtema {
+  key: SubTemaId;
+  label: string;
+  icono: string;
+  fichas: InfraccionResumen[];
+}
+
+const MIN_FICHAS_SUBTEMA = 3;
+
+/**
+ * Agrupa las fichas de una materia por sub-tema, ORDENADAS por `orden`, aplicando la regla
+ * ANTI-VACÍO sobre las fichas realmente presentes (así la variabilidad territorial se resuelve
+ * sola): ningún grupo con <3 fichas se muestra; las fichas de grupos flacos y las no clasificadas
+ * caen al cajón "Otras"; si el cajón tampoco llega a 3, se funden en el grupo temático mayor (nunca
+ * se emite un grupo de <3). Función PURA → cubierta por tests, sin RN ni SQLite.
+ */
+export function agruparPorSubtema(
+  fichas: readonly InfraccionResumen[],
+  materia: Materia,
+): GrupoSubtema[] {
+  const porTema = new Map<SubTemaId, InfraccionResumen[]>();
+  const cajon: InfraccionResumen[] = [];
+  for (const f of fichas) {
+    const st = subtemaDeInfraccion(f.id);
+    const info = st ? SUBTEMA_INFO[st] : undefined;
+    if (st && info && info.materia === materia && !info.esCajon) {
+      const arr = porTema.get(st);
+      if (arr) arr.push(f);
+      else porTema.set(st, [f]);
+    } else {
+      cajon.push(f); // no clasificada o mapeada al cajón
+    }
+  }
+  const grupos: GrupoSubtema[] = [];
+  for (const [st, fs] of porTema) {
+    const info = SUBTEMA_INFO[st];
+    if (!info) continue;
+    if (fs.length < MIN_FICHAS_SUBTEMA) {
+      cajon.push(...fs); // anti-vacío: grupo flaco → cajón
+      continue;
+    }
+    grupos.push({ key: st, label: info.label, icono: info.icono, fichas: fs });
+  }
+  grupos.sort((a, b) => (SUBTEMA_INFO[a.key]?.orden ?? 0) - (SUBTEMA_INFO[b.key]?.orden ?? 0));
+  if (cajon.length > 0) {
+    const cajonId = Object.keys(SUBTEMA_INFO).find((id) => {
+      const s = SUBTEMA_INFO[id];
+      return s !== undefined && s.materia === materia && s.esCajon === true;
+    });
+    const cajonInfo = cajonId ? SUBTEMA_INFO[cajonId] : undefined;
+    if (cajon.length >= MIN_FICHAS_SUBTEMA && cajonId && cajonInfo) {
+      grupos.push({ key: cajonId, label: cajonInfo.label, icono: cajonInfo.icono, fichas: cajon });
+    } else if (grupos.length > 0) {
+      const mayor = grupos.reduce((a, b) => (b.fichas.length > a.fichas.length ? b : a));
+      mayor.fichas.push(...cajon);
+    } else if (cajonId && cajonInfo) {
+      grupos.push({ key: cajonId, label: cajonInfo.label, icono: cajonInfo.icono, fichas: cajon });
+    }
+  }
+  return grupos;
+}
+
 /**
  * Carga los artículos vigentes de una norma, ya ORDENADOS para lectura. Cada uno trae la cadena
  * `textoBusqueda` (normalizada) para que el buscador dentro de la norma funcione en memoria, sin

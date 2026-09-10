@@ -8,13 +8,15 @@ import { EmptyState } from '@/ui/components/EmptyState';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
-import { FilaInfraccion, FilaNorma, FranjaTerritorial } from './normasUi';
+import { FilaInfraccion, FilaNorma, FilaSubtema, FranjaTerritorial } from './normasUi';
 import {
   agruparPorAmbito,
+  agruparPorSubtema,
   listarInfraccionesDeMateria,
   listarNormas,
   materiaAdmiteTerritorio,
   materiaDeNorma,
+  materiaTieneSubtemas,
   normaRelevantePara,
   MATERIA_INFO,
   type InfraccionResumen,
@@ -101,6 +103,14 @@ export function MateriaDetalleScreen({
     });
   }, [deLaMateria, ccaaNombre, municipioNombre]);
 
+  // Submenú estilo SPPLB: en las materias densas, las fichas se agrupan por SUB-TEMA (con anti-vacío);
+  // en el resto, se listan planas. `agruparPorSubtema` es pura y respeta el territorio (fichas presentes).
+  const subtemas = useMemo(
+    () => (materiaTieneSubtemas(materia) ? agruparPorSubtema(infracciones, materia) : null),
+    [infracciones, materia],
+  );
+  const usaSubtemas = subtemas !== null && subtemas.length > 0;
+
   // Franja "solicítala" DENTRO de la materia: solo en materias que admiten contenido territorial
   // (Tráfico, Ocio, Organización, Animales) y solo para la capa (autonómica/municipal) que ESTA
   // materia aún no trae para el perfil. Así no hay silencio cuando el municipio/CCAA no tiene norma
@@ -139,27 +149,25 @@ export function MateriaDetalleScreen({
         keyExtractor={(n) => n.id}
         stickySectionHeadersEnabled={false}
         ListHeaderComponent={
-          infracciones.length > 0 ? (
+          usaSubtemas ? (
             <View>
-              <View
-                style={{
-                  paddingHorizontal: t.spacing.base,
-                  paddingTop: t.spacing.lg,
-                  paddingBottom: t.spacing.xs,
-                  backgroundColor: t.color.bg,
-                }}
-              >
-                <Text
-                  style={{
-                    color: t.color.textSecondary,
-                    ...t.typography.scale.label,
-                    textTransform: 'uppercase',
-                    letterSpacing: 0.6,
-                  }}
-                >
-                  Fichas de calle · {infracciones.length}
-                </Text>
-              </View>
+              <SeccionLabel t={t} texto="Explorar por temas" />
+              {subtemas!.map((g) => (
+                <FilaSubtema
+                  key={g.key}
+                  item={g}
+                  onPress={(key) =>
+                    router.push({
+                      pathname: '/normas/subtema/[materia]/[subtema]',
+                      params: { materia, subtema: key },
+                    })
+                  }
+                />
+              ))}
+            </View>
+          ) : infracciones.length > 0 ? (
+            <View>
+              <SeccionLabel t={t} texto={`Fichas de calle · ${infracciones.length}`} />
               {infracciones.map((inf) => (
                 <FilaInfraccion
                   key={inf.id}
@@ -211,6 +219,31 @@ export function MateriaDetalleScreen({
           ) : null
         }
       />
+    </View>
+  );
+}
+
+/** Etiqueta de sección (mayúsculas, tenue) reutilizada en las cabeceras de Normas. */
+function SeccionLabel({ t, texto }: { t: ReturnType<typeof useAppTheme>; texto: string }) {
+  return (
+    <View
+      style={{
+        paddingHorizontal: t.spacing.base,
+        paddingTop: t.spacing.lg,
+        paddingBottom: t.spacing.xs,
+        backgroundColor: t.color.bg,
+      }}
+    >
+      <Text
+        style={{
+          color: t.color.textSecondary,
+          ...t.typography.scale.label,
+          textTransform: 'uppercase',
+          letterSpacing: 0.6,
+        }}
+      >
+        {texto}
+      </Text>
     </View>
   );
 }

@@ -10,11 +10,13 @@ import {
   contarPorMateria,
   filtrarArticulos,
   listarArticulos,
+  agruparPorSubtema,
   listarCcaaConContenido,
   listarInfraccionesDeMateria,
   listarMunicipiosConOrdenanza,
   listarNormas,
   materiaDeNorma,
+  subtemaDeInfraccion,
 } from './normas';
 
 /** Cadena territorial de un Policía Local de Santa Cruz de Tenerife (Canarias). */
@@ -74,6 +76,26 @@ suite('normas contra el paquete real', () => {
     expect(fichas.length).toBeGreaterThan(10);
     expect(fichas.every((f) => materiaDeNorma(f.normaCodigo) === 'trafico')).toBe(true);
   });
+
+  // Submenús estilo SPPLB: toda ficha ESTATAL de las materias densas está clasificada en un sub-tema
+  // (guarda anti-olvido al añadir fichas nuevas) y ningún grupo visible queda por debajo de 3 (regla
+  // anti-vacío de docs/paridad-spplb.md). Se usa cadena vacía → solo lo estatal (lo mapeado a mano).
+  it.each(['trafico', 'penal', 'seguridad'] as const)(
+    'sub-temas de %s: cobertura completa y ningún grupo con <3 fichas',
+    async (materia) => {
+      const fichas = await listarInfraccionesDeMateria(runner, materia, []);
+      expect(fichas.length, materia).toBeGreaterThan(0);
+      const sinTema = fichas.filter((f) => subtemaDeInfraccion(f.id) === null).map((f) => f.id);
+      expect(sinTema, `fichas sin sub-tema en ${materia}`).toEqual([]);
+      const grupos = agruparPorSubtema(fichas, materia);
+      expect(grupos.length, materia).toBeGreaterThan(1);
+      for (const g of grupos) {
+        expect(g.fichas.length, `${materia}/${g.key}`).toBeGreaterThanOrEqual(3);
+      }
+      const total = grupos.reduce((n, g) => n + g.fichas.length, 0);
+      expect(total, `todas las fichas de ${materia} caen en un grupo`).toBe(fichas.length);
+    },
+  );
 
   it('listarNormas trae las normas de tráfico con recuento de artículos', async () => {
     const normas = await listarNormas(runner);

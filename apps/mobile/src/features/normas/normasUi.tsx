@@ -1,6 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
-import { Building2, ChevronRight, Landmark, Send } from 'lucide-react-native';
+import {
+  BookOpen,
+  Building2,
+  ChevronRight,
+  FileText,
+  Gauge,
+  Gavel,
+  HeartPulse,
+  IdCard,
+  Landmark,
+  LifeBuoy,
+  Megaphone,
+  Package,
+  Pill,
+  Send,
+  Signpost,
+  Siren,
+  Smartphone,
+  SquareParking,
+  Truck,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react-native';
 import { ccaaPorId } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { Banner } from '@/ui/components/Banner';
@@ -18,9 +40,35 @@ import {
   articulosLabel,
   NORMA_AMBITO_LABEL,
   NORMA_TIPO_LABEL,
+  type GrupoSubtema,
   type InfraccionResumen,
   type NormaResumen,
 } from './normas';
+
+/** Icono lucide por nombre para las filas de sub-tema (submenú estilo SPPLB). */
+const ICONO_SUBTEMA: Record<string, LucideIcon> = {
+  Gauge,
+  Signpost,
+  FileText,
+  Wrench,
+  LifeBuoy,
+  Smartphone,
+  SquareParking,
+  Truck,
+  Gavel,
+  Package,
+  HeartPulse,
+  Siren,
+  IdCard,
+  Pill,
+  Megaphone,
+  BookOpen,
+};
+
+/** "3 fichas" / "1 ficha" con plural correcto. */
+function fichasSubtemaLabel(n: number): string {
+  return `${n} ${n === 1 ? 'ficha' : 'fichas'}`;
+}
 
 /** Etiqueta corta de gravedad para la fila de ficha (no legal: solo orienta la lectura). */
 const GRAVEDAD_CORTA: Record<string, string> = {
@@ -82,6 +130,46 @@ export function FilaInfraccion({
       accessibilityLabel={`${item.tituloCorto}. ${gravedad}. Norma ${item.normaCodigo}.`}
       accessibilityHint="Abre la ficha de la infracción"
       onPress={() => onPress(item.id)}
+      right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
+    />
+  );
+}
+
+/**
+ * Fila de un SUB-TEMA dentro de una materia (submenú estilo SPPLB): icono + nombre + nº de fichas.
+ * Tocar abre la lista de fichas de ese sub-tema. Usa `ListRow` (nivel 2 = lista; el grid de tarjetas
+ * se reserva para el nivel 1 de materias, para una jerarquía visual legible).
+ */
+export function FilaSubtema({
+  item,
+  onPress,
+}: {
+  item: GrupoSubtema;
+  onPress: (key: string) => void;
+}) {
+  const t = useAppTheme();
+  const Icono = ICONO_SUBTEMA[item.icono] ?? BookOpen;
+  return (
+    <ListRow
+      title={item.label}
+      subtitle={fichasSubtemaLabel(item.fichas.length)}
+      leading={
+        <View
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: t.radius.sm,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: t.color.surfaceAlt,
+          }}
+        >
+          <Icono size={20} color={t.color.accent} strokeWidth={2} />
+        </View>
+      }
+      accessibilityLabel={`${item.label}. ${fichasSubtemaLabel(item.fichas.length)}.`}
+      accessibilityHint="Abre las fichas de este sub-tema"
+      onPress={() => onPress(item.key)}
       right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
     />
   );
