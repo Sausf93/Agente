@@ -142,6 +142,20 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
 - Paquete: **111 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
   + Coacciones 172 + Receptación 298 + Detención ilegal 163 + Maltrato animal 340 bis).
+- **Guía de identificación y cacheo** (2026-09-10, commit `25aae0a`, `/guia-identificacion`): referencia
+  ESCANEABLE de uso en directo (LOPSC 16/20/36.6 + escalón penal), accesible desde el acceso
+  "Identificación" de PN, GC y seguridad ciudadana. Revisada con **3 pases de agentes**: revisor-juridico
+  (APTO; confirmó 6h del 16.2 y 36.6 literal, corrigió cita del cacheo a 20.2, sacó el 20 del chip de
+  vehículo/domicilio, ancló la detención a la LECrim 490/492 y separó resistencia no violenta 556 CP del
+  atentado 550-551 CP) + validador-calle (reordenó negativa tras identificación, desdobló "no lleva DNI"
+  atípico de "se niega" grave, subió el resaltado del cacheo a mismo sexo/lugar reservado). Lenguaje
+  orientativo en la detención; fecha de actualización visible.
+- **Sinónimos de calle** de ese clúster (2026-09-10, commit `86fc3c4`, 1005 sinónimos): identificación
+  (papeles, filiar, indocumentado, reseñar…), negativa (no colabora, se puso chulo, se encaró…) y cacheo
+  (cachear, palpar, vaciar los bolsillos, camper habitada…), propuestos por validador-calle, con tests de
+  regresión. Sin dato legal nuevo. Deseables de la siguiente ola sobre la guía: menores (&lt;14 inimputable,
+  LO 5/2000), extranjeros (irregular ≠ delito), uso de fuerza proporcional (art. 5 LO 2/1986), grabar/ser
+  grabado — requieren su propio pase de revisor-juridico.
 
 ### BACKLOG priorizado de la evaluación de calle (4 agentes) — SIGUIENTE
 Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar sin revisor).
