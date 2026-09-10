@@ -669,6 +669,16 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'reyerta con arma',
       'corte con navaja',
     ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención del arma o instrumento peligroso empleado, como pieza de ' +
+          'convicción y efecto del delito, a disposición de la autoridad judicial (arts. 334 y 338 ' +
+          'LECrim; comiso, art. 127 CP). La valoración final corresponde a la autoridad judicial.',
+        fuente: 'LECrim arts. 334 y 338; CP art. 127',
+      },
+    ],
     notaRevision:
       'A VERIFICAR el marco de pena y la agravante: el art. 148 CP eleva las lesiones del art. 147.1 a ' +
       'prisión de 2 a 5 años (potestativo, "podrán ser castigadas") cuando concurren armas/medios ' +
@@ -1519,6 +1529,17 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'perro atado sin agua ni comida',
       'matar gatos',
       'disparar a un animal',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la retirada o incautación cautelar del animal para su protección y su ' +
+          'entrega a un centro o a la autoridad competente, conforme a las medidas del Título XVI bis ' +
+          '(art. 340 quinquies CP) y a la normativa de protección animal. La valoración final corresponde ' +
+          'a la autoridad judicial o administrativa.',
+        fuente: 'CP art. 340 quinquies; normativa de protección animal',
+      },
     ],
     notaRevision:
       'A VERIFICAR las cifras contra el CP con el Título XVI bis VIGENTE (LO 3/2023, que SUPRIMIÓ los arts. ' +
