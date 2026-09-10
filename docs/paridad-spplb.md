@@ -46,8 +46,10 @@ Extranjeros · Menores · Animales Peligrosos · Lectura de Derechos · Código 
    submenú de sub-temas (materia → sub-tema → ficha); el resto planas. Taxonomía = mapa interino en el móvil
    (`SUBTEMA_POR_INFRACCION`), con regla anti-vacío (ningún grupo visible <3). Falta densificar sub-temas
    flacos en olas futuras y, cuando "aparcamiento desglosado" exista, escindir "Parada/estacionamiento/VMP".
-2. **Volumen del catálogo de infracciones** por área (su fuerte). Hoy ~92 infracciones (41 tráfico).
-3. **Áreas flacas de infracciones**: Armas (RA), Extranjería, Animales, Transporte (viajeros/escolar/perecederas), Seguridad Ciudadana y Penal a fondo.
+2. **Volumen del catálogo de infracciones** por área (su fuerte). Hoy **118 infracciones** (41 tráfico).
+3. **Áreas flacas de infracciones**: ~~Armas~~ **ARRANCADA (2026-09-10, ola de Armas: 7 fichas del régimen de
+   armas reglamentadas, LO 4/2015, sección "Armas" encendida vía `MATERIA_OVERRIDE_POR_INFRACCION`)**;
+   Extranjería, Animales, Transporte (viajeros/escolar/perecederas), Seguridad Ciudadana y Penal a fondo.
 4. **Herramientas de "Control de Vehículos"** (nacionalidad de matrícula, periodos ITV) — extra, algunas necesitan red.
 
 ## Plan por olas (prioridad calle: GC Tráfico primero)

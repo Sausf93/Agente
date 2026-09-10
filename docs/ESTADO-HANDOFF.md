@@ -140,8 +140,19 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **111 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
-  + Coacciones 172 + Receptación 298 + Detención ilegal 163 + Maltrato animal 340 bis).
+- Paquete: **118 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
+  + Coacciones 172 + Receptación 298 + Detención ilegal 163 + Maltrato animal 340 bis + **7 de la ola de Armas**).
+- **Ola de ARMAS** (2026-09-10, commit `bc3021a`): enciende la sección "Armas" de SPPLB, que teníamos casi
+  vacía. 7 fichas del régimen de armas reglamentadas (sin licencia/guía, licencia caducada, portar fuera de
+  supuestos, transporte indebido, fogueo/aire/réplica, custodia, documentación perdida). Punto jurídico clave
+  (revisor + ingesta): la LO 1/1992 está DEROGADA → las infracciones administrativas de armas se tipifican
+  hoy en la **LO 4/2015** (arts. 36.10/36.12/37.8, muy grave 35.2, cuantías art. 39); el RD 137/1993 queda
+  como obligación material (números "a verificar"). Frontera penal por ficha (564/563/566-568 CP). Revisor
+  cazó y se corrigió: el 37.8 cubre solo la DOCUMENTACIÓN (no el arma), el 565 CP es "falta de intención" (no
+  de aptitud), y el comiso cita el 39.2. **Patrón nuevo reutilizable**: `MATERIA_OVERRIDE_POR_INFRACCION` en
+  `normas.ts` (móvil, interino como `SUBTEMA_POR_INFRACCION`) reasigna fichas a una materia distinta de la de
+  su norma para la navegación —las de armas citan la LOSC (fuente honesta) pero se muestran en "Armas"— sin
+  tocar el content-pipeline. Úsalo para futuras secciones que crucen norma↔materia.
 - **Guía de identificación y cacheo** (2026-09-10, commit `25aae0a`, `/guia-identificacion`): referencia
   ESCANEABLE de uso en directo (LOPSC 16/20/36.6 + escalón penal), accesible desde el acceso
   "Identificación" de PN, GC y seguridad ciudadana. Revisada con **3 pases de agentes**: revisor-juridico
