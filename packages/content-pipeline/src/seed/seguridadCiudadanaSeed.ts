@@ -468,6 +468,15 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'requerimiento de identificacion',
       'diligencia de identificacion',
       'pedir el dni',
+      // Lenguaje de calle (validador): no llevar documentacion NO es infraccion; se identifica por
+      // otros medios. Estos terminos caen aqui (art. 16), no en la negativa del 36.6.
+      'papeles',
+      'la documentacion',
+      'pedir la filiacion',
+      'indocumentado',
+      'sin dni encima',
+      'llevar a comisaria a identificar',
+      'resenar',
     ],
     consecuencias: [
       {
@@ -550,6 +559,12 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'datos falsos',
       'identidad falsa',
       'no lleva documentacion',
+      // Lenguaje de calle (validador): la negativa/no colaboracion a identificarse (art. 36.6).
+      'no se quiere identificar',
+      'no colabora',
+      'se puso chulo',
+      'se encaro',
+      'me planto cara',
     ],
     consecuencias: [
       {
@@ -1004,6 +1019,14 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'registrar un piso',
       '18.2',
       'cacheo con desnudo',
+      // Lenguaje de calle (validador): como lo dice el agente al cachear o mirar el vehiculo.
+      'cachear',
+      'palpar',
+      'cachear por encima de la ropa',
+      'vaciar los bolsillos',
+      'registrar el maletero',
+      'camper habitada',
+      'furgoneta vivienda',
     ],
     notaRevision:
       'ENTRADA CONSULTABLE, no infracción: es consulta de GARANTÍAS del cacheo/registro, no sancionadora ' +

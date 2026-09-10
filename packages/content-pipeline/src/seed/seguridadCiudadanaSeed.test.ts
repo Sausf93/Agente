@@ -321,6 +321,15 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
     expect(buscarFts('cacheo')).toContain('sc-cacheo-registro');
   });
 
+  // Sinónimos de CALLE (validador-calle): que estas consultas salgan escribiendo como se habla en la
+  // intervención, y que un futuro cambio no las tire en silencio.
+  it('lenguaje de calle: "papeles" → requerimiento (art. 16), "se puso chulo" → negativa, "cachear" → cacheo', () => {
+    expect(buscarSinonimoExacto('papeles')).toContain('sc-identificacion-requerimiento');
+    expect(buscarSinonimoExacto('se puso chulo')).toContain('sc-negativa-identificarse');
+    expect(buscarSinonimoExacto('cachear')).toContain('sc-cacheo-registro');
+    expect(buscarSinonimoExacto('camper habitada')).toContain('sc-cacheo-registro');
+  });
+
   it('encuentra por número de artículo ("LOSC 36")', () => {
     // La consulta se tokeniza por el separador ".", así que "36" localiza los arts. 36.x de la
     // LO 4/2015 (la app debe pasar la consulta por normalizarBusqueda antes del MATCH).
