@@ -35,6 +35,8 @@ export const ACCESOS_TRAFICO: readonly AccesoRapido[] = [
   buscar('Móvil'),
   buscar('Faro roto'),
   buscar('Alcoholemia'),
+  // Abre la GUÍA rápida (tasas + frontera penal juntas), no una búsqueda (petición del GC de Tráfico).
+  { label: 'Guía alcoholemia', destino: { tipo: 'ruta', valor: '/guia-alcoholemia' } },
   buscar('Sin ITV'),
   buscar('Semáforo rojo'),
 ];
