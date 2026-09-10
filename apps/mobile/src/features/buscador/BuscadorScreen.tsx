@@ -148,6 +148,7 @@ export function BuscadorScreen() {
               cuerpo={cuerpo}
               hayArticulos={articulos.length > 0}
               onReportar={() => router.push('/feedback')}
+              onExplorar={() => router.push('/normas')}
             />
           }
         />
@@ -426,6 +427,7 @@ function EstadoVacio({
   cuerpo,
   hayArticulos,
   onReportar,
+  onExplorar,
 }: {
   t: Theme;
   buscando: boolean;
@@ -435,6 +437,7 @@ function EstadoVacio({
   cuerpo: Cuerpo | null;
   hayArticulos: boolean;
   onReportar: () => void;
+  onExplorar: () => void;
 }) {
   // Si no hay infracciones pero SÍ artículos, no hay "vacío": lo pinta el footer "En la ley".
   if (hayArticulos) return null;
@@ -483,8 +486,13 @@ function EstadoVacio({
         {detalle}
       </Text>
       {sinResultados ? (
-        <View style={{ alignSelf: 'stretch', marginTop: t.spacing.sm }}>
+        <View style={{ alignSelf: 'stretch', marginTop: t.spacing.sm, gap: t.spacing.sm }}>
           <Button title="Reportar que falta esto" variant="secondary" onPress={onReportar} />
+          <Button title="Explorar las normas por temas" variant="secondary" onPress={onExplorar} />
+        </View>
+      ) : !sinContenido && consulta.trim().length === 0 ? (
+        <View style={{ alignSelf: 'stretch', marginTop: t.spacing.sm }}>
+          <Button title="Explorar las normas por temas" variant="secondary" onPress={onExplorar} />
         </View>
       ) : null}
     </View>
