@@ -125,11 +125,11 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - **Ola H · Buscador/claridad**: `validador-calle` sobre las 7 fichas nuevas → +~50 sinónimos de calle
   (986 en total), desambiguación visible Coacciones (172)↔Detención ilegal (163), y el 163.4 (detención
   ciudadana del flagrante) subido al texto visible. Sin dato legal nuevo.
-- **PENDIENTE del validador (necesita `revisor-juridico`, son claims nuevos)**: (a) añadir consecuencia de
-  INTERVENCIÓN DEL ARMA como pieza de convicción en `del-lesiones-agravadas` (148); (b) añadir RETIRADA/
-  intervención cautelar del ANIMAL y entrega a protectora/autoridad en `del-maltrato-animal` (340 bis, art.
-  340 quinquies medidas). Decisión de producto: el sufijo "A verificar" es visible en `penaTexto` de TODAS
-  las fichas (convención pendiente_revision + "Borrador beta"); valorar moverlo a un flag interno.
+- **Ola I · Penal (consecuencias operativas)** (commit `022bbe1`, revisada APTO): del validador — la acción
+  física que faltaba: intervención del ARMA (arts. 334/338 LECrim + 127 CP) en `del-lesiones-agravadas`; y
+  retirada/incautación cautelar del ANIMAL (art. 340 quinquies CP) en `del-maltrato-animal`.
+- **Decisión de producto pendiente** (no urgente): el sufijo "A verificar" es visible en `penaTexto` de TODAS
+  las fichas (convención pendiente_revision + "Borrador beta"); valorar moverlo a un flag interno de UI.
 - **NOTA DE MÉTODO (importante)**: varias "carencias" que reportaron los agentes NO eran reales —
   `del-estafa`, `del-falsedad-documental`, la reunión (LOSC), el botellón y "PN arranca con filtro" YA
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
