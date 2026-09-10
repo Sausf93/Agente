@@ -2112,7 +2112,8 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     gravedadCp: 'menos_grave',
     penaTexto:
       'Prisión de 2 a 5 años, multa de 12 a 24 meses y privación del derecho a conducir de 6 a 10 años ' +
-      '(art. 381.1 CP); si no se puso en concreto peligro la vida/integridad, prisión de 1 a 2 años (381.2)',
+      '(art. 381.1 CP); si no se puso en concreto peligro la vida/integridad, prisión de 1 a 2 años, multa ' +
+      'de 6 a 12 meses y la misma privación de conducir (381.2)',
     textoBoletin:
       'Conducir con MANIFIESTO DESPRECIO por la vida de los demás realizando la conducción temeraria del ' +
       'art. 380 (temeridad manifiesta poniendo en concreto peligro la vida o integridad de las personas). ' +
@@ -2158,8 +2159,8 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Delito de odio / discriminación',
     gravedadCp: 'menos_grave',
     penaTexto:
-      'Prisión de 1 a 4 años y multa de 6 a 12 meses (art. 510.1); prisión de 6 meses a 2 años en los ' +
-      'supuestos del 510.2; persona jurídica: multa de 2 a 5 años (art. 510 bis)',
+      'Prisión de 1 a 4 años y multa de 6 a 12 meses (art. 510.1); prisión de 6 meses a 2 años y multa de ' +
+      '6 a 12 meses (art. 510.2); persona jurídica: multa de 2 a 5 años (art. 510 bis)',
     textoBoletin:
       'Fomentar, promover o incitar públicamente al odio, la hostilidad, la discriminación o la violencia ' +
       'contra un grupo o una persona por motivos racistas, antisemitas, de ideología, religión, etnia, ' +
@@ -2303,36 +2304,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'A VERIFICAR penas. Arts. 185 y 186 CP → prisión 6 meses-1 año o multa 12-24 meses → MENOS GRAVE. ' +
       'Distinguir de la agresión sexual (178-181) y de la pornografía infantil (189). Fuente: CP 185/186.',
   }),
-  construirDelito({
-    id: 'del-simulacion-delito',
-    articulo: ART_CP_457,
-    tituloCorto: 'Denuncia falsa / simulación de delito',
-    gravedadCp: 'menos_grave',
-    penaTexto: 'Multa de 6 a 12 meses (art. 457 CP)',
-    textoBoletin:
-      'Simular ante un funcionario judicial o administrativo (p. ej. un agente) ser responsable o víctima ' +
-      'de una infracción penal, o denunciar una inexistente, provocando actuaciones procesales (art. 457). ' +
-      'Es el clásico de comisaría: la denuncia inventada de un robo que no existió (a menudo para el seguro) ' +
-      'o la agresión simulada. IMPORTANTE: al llevar solo pena de MULTA, la detención es EXCEPCIONAL (art. ' +
-      '495 LECrim). Si se imputa falsamente a una PERSONA CONCRETA, es acusación/denuncia falsas del art. ' +
-      '456. La calificación final corresponde a la autoridad judicial.',
-    terminos: [
-      'denuncia falsa',
-      'se ha inventado el robo',
-      'simula un robo para el seguro',
-      'denuncia un robo que no existio',
-      'finge que le han atracado',
-      'denunciar en falso',
-      'invento que le robaron el movil',
-      'autolesion para denunciar',
-    ],
-    notaRevision:
-      'A VERIFICAR pena y deslinde 456/457, y el COMPORTAMIENTO DEL MOTOR DE DETENCIÓN: el art. 457 es ' +
-      'pena de MULTA (6-12 meses), por lo que la detención es excepcional (art. 495 LECrim: no procede por ' +
-      'delitos solo con pena de multa salvo domicilio desconocido o falta de garantías). El revisor debe ' +
-      'confirmar que la ficha NO sobre-oriente a detener. Si se imputa a persona concreta → art. 456 ' +
-      '(acusación y denuncia falsas), que exige sentencia firme o sobreseimiento previos. Fuente: CP 456/457.',
-  }),
+  // `del-simulacion-delito` (art. 457, solo MULTA) RETIRADA temporalmente: el motor de detención
+  // (construirDelito → escenarioBaseDetencion) auto-genera "procede detención" para un delito menos
+  // grave con flagrancia, lo que SOBRE-ORIENTA a detener en un delito de solo multa (art. 492
+  // proporcionalidad). Reintroducir cuando el motor tenga un flag `penaSoloMulta` que enrute por la
+  // rama de proporcionalidad (ver docs/ESTADO-HANDOFF, backlog del motor de detención).
   construirDelito({
     id: 'del-sustraccion-menores',
     articulo: ART_CP_225_BIS,
@@ -2362,9 +2338,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
         tipo: 'proteccion',
         textoCorto:
           'Procede valorar la comunicación inmediata al juzgado (de familia y/o de guardia) y al ' +
-          'Ministerio Fiscal y las medidas civiles urgentes de restitución y protección del menor (art. ' +
+          'Ministerio Fiscal y las MEDIDAS CIVILES urgentes de restitución y protección del menor (art. ' +
           '158 CC), además de activar el protocolo de menor desaparecido cuando proceda.',
-        fuente: 'CC art. 158; LECrim art. 544 bis',
+        fuente: 'Código Civil art. 158',
       },
     ],
     notaRevision:

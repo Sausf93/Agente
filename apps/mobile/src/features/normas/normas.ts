@@ -757,7 +757,6 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-grooming-menores': 'pen-personas',
   'del-pornografia-infantil': 'pen-personas',
   'del-exhibicionismo': 'pen-personas',
-  'del-simulacion-delito': 'pen-otros',
   'del-sustraccion-menores': 'pen-personas',
   'del-allanamiento-establecimiento': 'pen-personas',
   'del-usurpacion-funciones': 'pen-autoridad',
