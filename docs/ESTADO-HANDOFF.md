@@ -112,13 +112,16 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - **Ola E · Penal**: fichas `del-coacciones` (art. 172 CP) y `del-receptacion` (art. 298 CP), revisadas
   (en receptación se corrigió la agravante del 298.2 —traficar/establecimiento, no "valor de los efectos"—
   y el límite del 298.3; se quitó el sinónimo duplicado 'coaccion' de `del-amenazas`).
+- **Ola F · Penal**: ficha `del-detencion-ilegal` (art. 163 CP), revisada (penas base OK; se corrigió que
+  la simulación de autoridad es el art. 165 —mitad superior—, no el 163.3, y el tipo atenuado del 163.4
+  es multa de 3-6 meses).
 - **NOTA DE MÉTODO (importante)**: varias "carencias" que reportaron los agentes NO eran reales —
   `del-estafa`, `del-falsedad-documental`, la reunión (LOSC), el botellón y "PN arranca con filtro" YA
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **109 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
-  + Coacciones 172 + Receptación 298).
+- Paquete: **110 infracciones** (104 base + Lesiones agravadas 148 + Extranjería 53.1.b + Abandono 382 bis
+  + Coacciones 172 + Receptación 298 + Detención ilegal 163).
 
 ### BACKLOG priorizado de la evaluación de calle (4 agentes) — SIGUIENTE
 Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar sin revisor).

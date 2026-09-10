@@ -149,6 +149,20 @@ const ART_CP_298 = articuloCp({
     'delito encubierto (art. 298.3). Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+const ART_CP_163 = articuloCp({
+  numero: '163',
+  titulo: 'Detención ilegal',
+  texto:
+    'Castiga al particular que encerrare o detuviere a otro privándole de su libertad, con prisión de 4 a ' +
+    '6 años. La pena baja si el culpable da libertad al encerrado o detenido dentro de los tres primeros ' +
+    'días (163.2), y sube si la privación dura más de quince días (163.3); se impone en su mitad superior ' +
+    '(art. 165) si se simula ser autoridad, la víctima es menor o persona con discapacidad necesitada de ' +
+    'especial protección, o es funcionario público en el ejercicio de sus funciones. El particular que, ' +
+    'fuera de los casos permitidos, detiene a otro para presentarlo a la autoridad ' +
+    'puede tener una pena atenuada si alega haber obrado por ese motivo (163.4). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_468 = articuloCp({
   numero: '468',
   titulo: 'Quebrantamiento de condena, medida cautelar o de seguridad',
@@ -377,6 +391,7 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_242,
   ART_CP_147,
   ART_CP_148,
+  ART_CP_163,
   ART_CP_172,
   ART_CP_298,
   ART_CP_468,
@@ -1373,6 +1388,48 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       '(art. 298.3). Exige DOLO ' +
       '(conocimiento del origen) y ánimo de lucro. Distinguir del blanqueo de capitales (art. 301) y del ' +
       'encubrimiento (art. 451). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Detención ilegal (163): atacar la libertad ambulatoria; distinta de las coacciones (172) ---
+  construirDelito({
+    id: 'del-detencion-ilegal',
+    articulo: ART_CP_163,
+    tituloCorto: 'Detención ilegal (retención contra su voluntad)',
+    // Art. 163.1: prisión 4-6 años → GRAVE (máx. 6 > 5 años, art. 33.2 CP).
+    gravedadCp: 'grave',
+    penaTexto:
+      'Prisión de 4 a 6 años (detención ilegal por particular, art. 163.1 CP); menor si libera en los 3 ' +
+      'primeros días (163.2) y mayor si dura más de 15 días (163.3). A verificar',
+    textoBoletin:
+      'Encerrar o detener a otra persona privándola de su libertad, sin estar legítimamente autorizado ' +
+      '(art. 163 CP): p. ej. retenerla contra su voluntad, encerrarla o impedirle marcharse. Es delito de ' +
+      'un PARTICULAR (si lo comete una autoridad o funcionario fuera de los casos legales, va por el art. ' +
+      '167). La pena baja si se libera en los 3 primeros días y sube si dura más de 15 días (163.3); se ' +
+      'agrava en su mitad superior (art. 165) si se simula ser autoridad, la víctima es menor o ' +
+      'especialmente vulnerable, o es funcionario en el ejercicio de sus funciones. Se distingue de las ' +
+      'coacciones (art. 172): aquí se ataca la LIBERTAD AMBULATORIA (la ' +
+      'de moverse o marcharse). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'detencion ilegal',
+      'lo tienen retenido',
+      'la tienen encerrada',
+      'secuestro',
+      'lo tienen secuestrado',
+      'no la dejan salir',
+      'retencion contra su voluntad',
+      'lo tienen encerrado',
+      'privacion de libertad',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y los subtipos: detención ilegal del art. 163.1 CP → prisión de 4 a 6 ' +
+      'años → GRAVE (art. 33.2). Subtipos: liberación en los 3 primeros días → pena inferior en grado ' +
+      '(163.2); duración superior a 15 días → prisión de 5 a 8 años (163.3). La simulación de autoridad, o ' +
+      'que la víctima sea menor, persona con discapacidad necesitada de especial protección o funcionario ' +
+      'en el ejercicio, imponen la pena en su MITAD SUPERIOR (art. 165). El secuestro CONDICIONAL (exigir ' +
+      'una condición para liberar) es el art. 164, con pena mayor. La detención ilegal por AUTORIDAD o ' +
+      'funcionario fuera de los casos legales es el art. 167. El particular que aprehende a otro para ' +
+      'presentarlo INMEDIATAMENTE a la autoridad (p. ej. tras sorprender un delito flagrante, art. 490 ' +
+      'LECrim) responde por el tipo atenuado del art. 163.4 (multa de 3 a 6 meses). Distinguir ' +
+      'de las coacciones (art. 172, `del-coacciones`). Confirmar penas y encaje contra el texto consolidado del CP.',
   }),
 ];
 
