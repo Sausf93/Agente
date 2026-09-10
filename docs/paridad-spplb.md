@@ -41,7 +41,11 @@ Extranjeros · Menores · Animales Peligrosos · Lectura de Derechos · Código 
 **Igualado:** Tráfico (normas): tenemos sus mismas leyes.
 
 **Pendiente (el trabajo):**
-1. **Navegación por sub-temas ("Explorar por temas")** — su grid de Consultas. Diseñado (spec), falta construir.
+1. ~~**Navegación por sub-temas ("Explorar por temas")**~~ — **HECHO (2026-09-10, commit ca508a2)**. En las 3
+   materias densas (Tráfico 9 sub-temas, Penal 4, Seguridad Ciudadana 3) el detalle de materia muestra un
+   submenú de sub-temas (materia → sub-tema → ficha); el resto planas. Taxonomía = mapa interino en el móvil
+   (`SUBTEMA_POR_INFRACCION`), con regla anti-vacío (ningún grupo visible <3). Falta densificar sub-temas
+   flacos en olas futuras y, cuando "aparcamiento desglosado" exista, escindir "Parada/estacionamiento/VMP".
 2. **Volumen del catálogo de infracciones** por área (su fuerte). Hoy ~92 infracciones (41 tráfico).
 3. **Áreas flacas de infracciones**: Armas (RA), Extranjería, Animales, Transporte (viajeros/escolar/perecederas), Seguridad Ciudadana y Penal a fondo.
 4. **Herramientas de "Control de Vehículos"** (nacionalidad de matrícula, periodos ITV) — extra, algunas necesitan red.
