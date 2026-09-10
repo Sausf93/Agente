@@ -118,6 +118,11 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - **Ola G · Penal**: ficha `del-maltrato-animal` (art. **340 bis** CP). El revisor cazó que la LO 3/2023
   SUPRIMIÓ el art. 337 (mi ancla inicial) y trasladó el maltrato al Título XVI bis (340 bis maltrato /
   340 ter abandono); recolocada, con marco atenuado para vertebrados no domésticos, y re-verificada APTA.
+- **Herramientas de USO EN DIRECTO** (principio del fundador: usable y dinámico para consultar en plena
+  intervención, piel del agente): **Guía de alcoholemia** (`/guia-alcoholemia`, tasas + frontera penal +
+  procedimiento, revisada) y **Control de carretera** (`/control-carretera`, commit `428aa06`: checklist
+  INTERACTIVO de un toque —conductor/documentación/vehículo/transporte—, marcable y con enlace a cada
+  ficha/guía; estado efímero). Ambas desde los accesos rápidos de Tráfico. Aplicar esta lente a todo.
 - **Submenús por sub-tema estilo SPPLB** (commit `ca508a2`): en Tráfico (9 sub-temas), Penal (4) y Seguridad
   Ciudadana (3) el detalle de materia muestra un submenú (materia → sub-tema → ficha); resto planas. Mapa
   interino en el móvil (`SUBTEMA_POR_INFRACCION` en `normas.ts`), `agruparPorSubtema` con anti-vacío, nueva
