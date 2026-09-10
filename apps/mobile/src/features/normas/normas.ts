@@ -324,6 +324,9 @@ const MATERIA_POR_TEMA: Record<string, Materia> = {
   ZBE: 'trafico', // zona de bajas emisiones
   RUIDO: 'ocio', // ruidos y vibraciones (convivencia)
   TERRAZAS: 'ocio', // terrazas / ocupación de vía pública (convivencia)
+  RESIDUOS: 'ocio', // residuos y limpieza (convivencia): orinar, pintadas, enseres, playas…
+  POLICIA: 'ocio', // policía y buen gobierno (convivencia): botellón, acampada…
+  VENTA: 'ocio', // venta ambulante / top manta (convivencia y comercio en vía pública)
   // Tema compartido por CAN-ANIM y OM-ANIM-* (protección y tenencia de animales).
   ANIM: 'animales',
 };

@@ -71,6 +71,9 @@ const ID_OM_ANIM = 'OM-SCTF-ANIMALES'; // Ordenanza de protección y tenencia de
 const ID_OM_RUIDO = 'OM-SCTF-RUIDOS'; // Ordenanza de ruidos y vibraciones
 const ID_OM_TERRAZAS = 'OM-SCTF-TERRAZAS'; // Ordenanza de ocupación de vía pública con mesas/sillas
 const ID_OM_ZBE = 'OM-SCTF-ZBE'; // Ordenanza reguladora de la Zona de Bajas Emisiones
+const ID_OM_RESIDUOS = 'OM-SCTF-RESIDUOS'; // Ordenanza de gestión de residuos y limpieza
+const ID_OM_POLICIA = 'OM-SCTF-POLICIA'; // Ordenanza de policía y buen gobierno
+const ID_OM_VENTA = 'OM-SCTF-VENTA'; // Ordenanza de venta fuera de establecimiento comercial permanente
 
 const URL_OM_CIRC = 'https://sede.santacruzdetenerife.es/sede/normativa/n647';
 const URL_OM_ANIM = 'https://sede.santacruzdetenerife.es/sede/normativa/n513';
@@ -80,6 +83,11 @@ const URL_OM_TERRAZAS =
   'https://sede.santacruzdetenerife.es/sede/tramites/ocupacion-de-la-via-publica-con-mesas-sillas-y-parasoles';
 const URL_OM_ZBE =
   'https://www.santacruzdetenerife.es/web/servicios-municipales/movilidad-y-accesibilidad-universal/zonas-de-bajas-emisiones';
+const URL_OM_RESIDUOS =
+  'https://sede.santacruzdetenerife.es/fileadmin/user_upload/Sede/normativas/Ordenanzas_municipales/Texto_consolidado_OMGRL.pdf';
+const URL_OM_POLICIA =
+  'https://sede.santacruzdetenerife.es/fileadmin/user_upload/Sede/normativas/Ordenanzas_municipales/OMPoliciayBGobierno_Texto_consolidado.pdf';
+const URL_OM_VENTA = 'https://sede.santacruzdetenerife.es/sede/tramite/t491';
 
 /** Construye una `Norma` municipal ligada al municipio del piloto. */
 function normaMunicipal(input: { id: string; codigo: string; titulo: string; url: string }): Norma {
@@ -129,6 +137,26 @@ export const NORMAS_ORDENANZAS_SEED: Norma[] = [
     codigo: 'OM-ZBE-SCTF',
     titulo: 'Ordenanza reguladora de la Zona de Bajas Emisiones (Santa Cruz de Tenerife)',
     url: URL_OM_ZBE,
+  }),
+  normaMunicipal({
+    id: ID_OM_RESIDUOS,
+    codigo: 'OM-RESIDUOS-SCTF',
+    titulo:
+      'Ordenanza de gestión de residuos y limpieza de espacios públicos para una economía circular (Santa Cruz de Tenerife)',
+    url: URL_OM_RESIDUOS,
+  }),
+  normaMunicipal({
+    id: ID_OM_POLICIA,
+    codigo: 'OM-POLICIA-SCTF',
+    titulo: 'Ordenanza de policía y buen gobierno (Santa Cruz de Tenerife)',
+    url: URL_OM_POLICIA,
+  }),
+  normaMunicipal({
+    id: ID_OM_VENTA,
+    codigo: 'OM-VENTA-SCTF',
+    titulo:
+      'Ordenanza reguladora de la venta fuera de establecimiento comercial permanente y actividades en la vía pública (Santa Cruz de Tenerife)',
+    url: URL_OM_VENTA,
   }),
 ];
 
@@ -234,6 +262,102 @@ const ART_ZBE = articuloSeed({
     'el texto consolidado en la sede electrónica del Ayuntamiento.',
 });
 
+// --- Artículos de la OLA DE ORDENANZAS SCTF (convivencia, limpieza, playas, venta) 2026-09-10 ----
+const ART_RESIDUOS_38_6 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '38.6',
+  titulo: 'Prohibición de orinar, defecar o escupir en el espacio público',
+  texto:
+    'La ordenanza de gestión de residuos y limpieza prohíbe defecar, miccionar (orinar) o escupir en ' +
+    'los espacios públicos (art. 38.6). Su incumplimiento es infracción leve, con cuantía graduable ' +
+    'hasta el máximo del tramo leve (art. 52.2). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_RESIDUOS_42 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '42',
+  titulo: 'Pintadas y grafitis en el espacio público',
+  texto:
+    'La ordenanza de limpieza prohíbe realizar pintadas, grafitis, inscripciones o manchas sobre ' +
+    'cualquier elemento del espacio público, mobiliario urbano, árboles o vías, salvo los murales ' +
+    'autorizados (art. 42). Puede agravarse si el deterioro es grave o afecta a bienes protegidos, y ' +
+    'ponerse en conocimiento de la autoridad judicial si es constitutiva de delito de daños. Orientativo.',
+});
+
+const ART_RESIDUOS_27 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '27',
+  titulo: 'Abandono de residuos voluminosos (muebles y enseres)',
+  texto:
+    'La ordenanza de limpieza prohíbe abandonar residuos voluminosos (muebles, colchones, enseres) en el ' +
+    'espacio público o fuera de los contenedores y del sistema de recogida habilitado (art. 27), y ' +
+    'considera el depósito fuera de contenedor infracción grave (art. 50.1.b). Orientativo; consúltese el BOP.',
+});
+
+const ART_RESIDUOS_51 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '51',
+  titulo: 'Depósito de residuos o contenedores fuera de horario',
+  texto:
+    'La ordenanza de limpieza tipifica como leve sacar los contenedores o depositar la basura en la vía ' +
+    'pública fuera de las horas, lugares o condiciones establecidos (art. 51.1.b y 51.1.c). Orientativo.',
+});
+
+const ART_RESIDUOS_38 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '38',
+  titulo: 'Vertidos de líquidos a la vía pública',
+  texto:
+    'La ordenanza de limpieza prohíbe verter en la vía pública aguas sucias, de riego o de aparatos de ' +
+    'refrigeración, y arrojar residuos desde ventanas, balcones o vehículos (art. 38, aptdos. 5/7/8/9). ' +
+    'Es leve, agravable por su entidad (art. 50.2.b). Orientativo; consúltese el texto consolidado.',
+});
+
+const ART_RESIDUOS_43 = articuloSeed({
+  normaId: ID_OM_RESIDUOS,
+  numero: '43',
+  titulo: 'Playas y zonas de baño: residuos y prohibición de fumar',
+  texto:
+    'La ordenanza de limpieza prohíbe depositar residuos directamente en la arena o rocas de las playas ' +
+    'y zonas de baño (art. 43.1) y fumar en ellas fuera de las zonas expresamente habilitadas (art. 43.2), ' +
+    'para evitar colillas y residuos en la arena. Infracciones leves. Orientativo; consúltese el BOP.',
+});
+
+const ART_POLICIA_109 = articuloSeed({
+  normaId: ID_OM_POLICIA,
+  numero: '109',
+  titulo: 'Consumo de bebidas alcohólicas en la vía pública',
+  texto:
+    'La ordenanza de policía y buen gobierno prohíbe consumir bebidas alcohólicas en la vía pública fuera ' +
+    'de los establecimientos de hostelería y kioscos autorizados (art. 109). La ordenanza no fija cuantía ' +
+    '(remite a la legislación vigente, art. 135): el importe debe consultarse. Puede concurrir con la ' +
+    'normativa de limpieza si se ensucia la vía. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_POLICIA_130 = articuloSeed({
+  normaId: ID_OM_POLICIA,
+  numero: '130',
+  titulo: 'Acampada y fuego en parques de montaña',
+  texto:
+    'La ordenanza de policía y buen gobierno solo permite acampar y encender fuego en los lugares ' +
+    'expresamente habilitados de los parques de montaña (arts. 130-131). No fija cuantía (art. 135). ' +
+    'Máxima cautela por riesgo de incendio forestal; puede concurrir la normativa forestal de Canarias, ' +
+    'con sanciones propias más graves. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_VENTA_AMBULANTE = articuloSeed({
+  normaId: ID_OM_VENTA,
+  numero: 'venta',
+  titulo: 'Venta ambulante sin autorización',
+  texto:
+    'La ordenanza reguladora de la venta fuera de establecimiento comercial permanente exige autorización ' +
+    'municipal para la venta ambulante o no sedentaria en la vía o espacios públicos. Ejercerla sin ' +
+    'autorización, o fuera de las zonas, fechas y condiciones autorizadas, la incumple. Su artículo ' +
+    'sancionador y cuantía deben consultarse en el texto de la ordenanza. Si los géneros pudieran vulnerar ' +
+    'la propiedad industrial o intelectual, valorar el traslado del tanto de culpa a la autoridad judicial. ' +
+    'Resumen orientativo; consúltese el texto de la ordenanza.',
+});
+
 export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
   ART_ANIM_VIA,
@@ -241,6 +365,15 @@ export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_RUIDO_CONV,
   ART_TERRAZAS,
   ART_ZBE,
+  ART_RESIDUOS_38_6,
+  ART_RESIDUOS_42,
+  ART_RESIDUOS_27,
+  ART_RESIDUOS_51,
+  ART_RESIDUOS_38,
+  ART_RESIDUOS_43,
+  ART_POLICIA_109,
+  ART_POLICIA_130,
+  ART_VENTA_AMBULANTE,
 ];
 
 // --- Constructor de una infracción MUNICIPAL con sus sinónimos y consecuencias --------------
@@ -588,6 +721,273 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'revisor jurídico: fecha de entrada en vigor del régimen sancionador, artículo, clasificación, ' +
       'cuantías y distintivos/autorizaciones exactos. Recordar el antecedente: el TSJ anuló en 2025 la ' +
       'anterior ordenanza de movilidad. No convertir en ficha sancionadora hasta confirmar la vigencia.',
+  }),
+  // --- OLA DE ORDENANZAS SCTF (convivencia, limpieza, playas, venta) 2026-09-10 -----------------
+  // Bloque A + playas (fumar/residuos): artículo y TRAMO confirmados en el texto consolidado de la
+  // ordenanza de limpieza (importe = MÁXIMO del tramo, art. 52.2, no cifra fija). Botellón, acampada
+  // y venta ambulante: norma confirmada pero SIN cuantía → consultables (no_sancionador). Revisado por
+  // ingesta-normativa contra la sede de SCTF; pendiente de revisor jurídico.
+  construirInfraccion({
+    id: 'ord-sctf-orinar-defecar-escupir',
+    articulo: ART_RESIDUOS_38_6,
+    tituloCorto: 'Orinar, defecar o escupir en la vía pública',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Defecar, orinar o escupir en los espacios públicos (art. 38.6 de la ordenanza de limpieza). Es ' +
+      'infracción LEVE; el importe lo gradúa el órgano competente HASTA 750 € (máximo del tramo leve, ' +
+      'art. 52.2), no es una cuantía fija. La valoración final corresponde al agente y al órgano municipal.',
+    terminos: [
+      'orinar en la calle',
+      'mear en la via publica',
+      'hacer pis en la calle',
+      'defecar en la calle',
+      'escupir en la calle',
+      'necesidades en la via publica',
+      'cagar en la calle',
+    ],
+    notaRevision:
+      'Art. 38.6 y clasificación LEVE CONFIRMADOS (texto consolidado de la ordenanza de residuos y ' +
+      'limpieza de SCTF). El importe (750 €) es el MÁXIMO del tramo leve (art. 52.2.c), NO cuantía fija: ' +
+      'lo gradúa el órgano competente. A verificar posible pronto pago (ordenanza fiscal). Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-pintadas-grafitis',
+    articulo: ART_RESIDUOS_42,
+    tituloCorto: 'Pintadas o grafitis en el espacio público',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Realizar pintadas, grafitis o inscripciones sobre elementos del espacio público, mobiliario ' +
+      'urbano, árboles o vías, salvo murales autorizados (art. 42 de la ordenanza de limpieza). LEVE con ' +
+      'carácter general (hasta 750 €); puede agravarse (hasta 1.500 € o 3.000 €) por deterioro grave o ' +
+      'bien protegido. Si la pintada pudiera ser delito de daños, procede ponerlo en conocimiento de la ' +
+      'autoridad judicial, sin perjuicio del expediente sancionador. La valoración final es del órgano competente.',
+    terminos: [
+      'pintadas',
+      'grafiti',
+      'grafitis',
+      'pintar pared',
+      'spray pared',
+      'firmas en la pared',
+      'rayar mobiliario',
+      'graffiti sin permiso',
+    ],
+    notaRevision:
+      'Art. 42 CONFIRMADO. Importe = techo de tramo (leve ≤750 €; grave ≤1.500 €; muy grave ≤3.000 €, ' +
+      'art. 52.2). A verificar con el revisor el criterio de gravedad (deterioro/patrimonio) y la ' +
+      'frontera con el delito de daños del CP (art. 42 remite a la autoridad judicial).',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-abandono-enseres',
+    articulo: ART_RESIDUOS_27,
+    tituloCorto: 'Abandonar muebles o enseres en la vía pública',
+    gravedad: 'grave',
+    importeEur: 1500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Abandonar residuos voluminosos (muebles, colchones, enseres) en el espacio público o fuera de los ' +
+      'contenedores y del sistema de recogida habilitado (art. 27). La ordenanza considera el depósito ' +
+      'fuera de contenedor infracción GRAVE (art. 50.1.b), con importe graduable hasta 1.500 € (máx. del ' +
+      'tramo grave, art. 52.2.b). Procede informar del servicio de recogida de voluminosos. Orientativo.',
+    terminos: [
+      'tirar muebles en la calle',
+      'abandonar sofa',
+      'colchon en la acera',
+      'enseres en la calle',
+      'dejar trastos',
+      'muebles junto al contenedor',
+      'voluminosos',
+      'sacar la basura grande',
+    ],
+    notaRevision:
+      'Arts. 27 y 50.1.b CONFIRMADOS (abandono fuera de contenedor = grave). Importe = techo del tramo ' +
+      'grave (art. 52.2.b: hasta 1.500 €), no cuantía fija. A verificar si el simple depósito junto al ' +
+      'contenedor se degrada a leve por escasa entidad (art. 51). Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-contenedores-fuera-horario',
+    articulo: ART_RESIDUOS_51,
+    tituloCorto: 'Sacar la basura o contenedores fuera de horario',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Sacar los contenedores o depositar la basura en la vía pública fuera de las horas, lugares o ' +
+      'condiciones establecidos por el Ayuntamiento (arts. 51.1.b y 51.1.c de la ordenanza de limpieza). ' +
+      'Es infracción LEVE (hasta 750 €). La valoración final corresponde al agente y al órgano municipal.',
+    terminos: [
+      'basura fuera de horario',
+      'sacar la basura antes de hora',
+      'contenedor fuera de hora',
+      'tirar basura de dia',
+      'horario de basura',
+      'bolsa en la calle',
+      'depositar residuos fuera de hora',
+    ],
+    notaRevision:
+      'Arts. 51.1.b/c y clasificación leve CONFIRMADOS. Importe = techo tramo leve (≤750 €). A VERIFICAR ' +
+      'la franja horaria vigente (la nota municipal citaba 19:00–21:00) para mostrarla en la ficha. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-vertidos-via-publica',
+    articulo: ART_RESIDUOS_38,
+    tituloCorto: 'Verter aguas sucias o líquidos a la vía pública',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Verter en la vía pública aguas sucias, de riego o de aparatos de aire acondicionado, o arrojar ' +
+      'residuos desde ventanas, balcones o vehículos (art. 38, aptdos. 5/7/8/9, de la ordenanza de ' +
+      'limpieza). Es LEVE (hasta 750 €), agravable por su entidad (art. 50.2.b). Orientativo.',
+    terminos: [
+      'verter agua sucia',
+      'tirar agua a la calle',
+      'desague aire acondicionado',
+      'fregar y tirar agua',
+      'vertido en la acera',
+      'aguas del local a la calle',
+      'achique a la via publica',
+    ],
+    notaRevision:
+      'Art. 38 (aptdos. 5/7/8/9) CONFIRMADO. Importe = techo tramo leve; posible elevación a grave (art. ' +
+      '50.2.b). A VERIFICAR la delimitación frente a vertidos industriales/saneamiento con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-playa-fumar',
+    articulo: ART_RESIDUOS_43,
+    tituloCorto: 'Fumar en la playa fuera de zona habilitada',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Fumar en las playas y zonas de baño del municipio fuera de las zonas expresamente habilitadas, para ' +
+      'evitar colillas en la arena (art. 43.2 de la ordenanza de limpieza). Es LEVE (hasta 750 €). La ' +
+      'valoración final corresponde al agente y al órgano municipal.',
+    terminos: [
+      'fumar en la playa',
+      'colillas en la arena',
+      'prohibido fumar playa',
+      'cigarro en la playa',
+      'playa sin humo',
+      'tabaco playa',
+    ],
+    notaRevision:
+      'Art. 43.2 CONFIRMADO. Importe = techo tramo leve (≤750 €). A verificar qué playas tienen zona ' +
+      'habilitada para fumar (bando/señalización). Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-playa-residuos-arena',
+    articulo: ART_RESIDUOS_43,
+    tituloCorto: 'Tirar residuos en la arena o rocas de la playa',
+    gravedad: 'leve',
+    importeEur: 750,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Depositar residuos directamente en la arena o en las rocas de las playas y zonas de baño, en lugar ' +
+      'de usar papeleras o contenedores (art. 43.1 de la ordenanza de limpieza). Es LEVE (hasta 750 €). ' +
+      'La valoración final corresponde al agente y al órgano municipal.',
+    terminos: [
+      'basura en la playa',
+      'tirar residuos playa',
+      'dejar basura arena',
+      'ensuciar la playa',
+      'botellas en la arena',
+      'restos en la playa',
+    ],
+    notaRevision:
+      'Art. 43.1 CONFIRMADO. Importe = techo tramo leve (≤750 €). A VERIFICAR el importe efectivo dentro ' +
+      'del tramo con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-alcohol-via-publica',
+    articulo: ART_POLICIA_109,
+    tituloCorto: 'Consumo de alcohol en la vía pública (botellón)',
+    gravedad: 'leve', // valor de relleno del modelo; NO se afirma cuantía (la ordenanza no la fija)
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Consumir bebidas alcohólicas en la vía pública fuera de los establecimientos de hostelería y ' +
+      'kioscos autorizados (art. 109 de la ordenanza de policía y buen gobierno). La ordenanza prohíbe la ' +
+      'conducta pero NO fija su cuantía (remite a la legislación vigente, art. 135): el importe debe ' +
+      'consultarse. Puede concurrir con la normativa de limpieza si se ensucia la vía. La valoración final ' +
+      'corresponde al agente y al órgano municipal.',
+    terminos: [
+      'botellon',
+      'beber en la calle',
+      'alcohol en la via publica',
+      'consumir alcohol calle',
+      'litrona en la calle',
+      'beber en la plaza',
+      'botellona',
+    ],
+    notaRevision:
+      'Art. 109 CONFIRMADO (prohibición). NO se fija importe: la ordenanza remite a "legislación vigente" ' +
+      '(art. 135) → entrada CONSULTABLE. A VERIFICAR con el revisor si hay ordenanza específica o cuantía ' +
+      'por ordenanza fiscal; delimitar frente a la LO 4/2015 (estatal) y a la ley del menor si hay menores. ' +
+      'Redactado en clave neutra, retirando el lenguaje arcaico del art. 109.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-acampada-parques',
+    articulo: ART_POLICIA_130,
+    tituloCorto: 'Acampar o hacer fuego en parques de montaña',
+    gravedad: 'leve',
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Acampar, instalar tiendas o encender fuego en los parques de montaña del municipio fuera de los ' +
+      'lugares habilitados (arts. 130-131 de la ordenanza de policía y buen gobierno). La ordenanza ' +
+      'prohíbe la conducta pero no fija cuantía; el importe debe consultarse. MÁXIMA CAUTELA por riesgo de ' +
+      'incendio forestal: puede concurrir la normativa forestal de Canarias, con sanciones propias más ' +
+      'graves. La valoración final corresponde al agente y al órgano competente.',
+    terminos: [
+      'acampar en el monte',
+      'fuego en el monte',
+      'hoguera parque',
+      'tienda de campaña monte',
+      'hacer fuego forestal',
+      'acampada monte',
+      'barbacoa en el monte',
+    ],
+    notaRevision:
+      'Arts. 130-131 CONFIRMADOS. Sin importe (art. 135) → CONSULTABLE. A verificar concurrencia con la ' +
+      'normativa forestal/incendios de Canarias (sanciones propias más graves); el revisor decide si la ' +
+      'ficha remite a esa normativa.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-venta-ambulante',
+    articulo: ART_VENTA_AMBULANTE,
+    tituloCorto: 'Venta ambulante sin autorización ("top manta")',
+    gravedad: 'leve',
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Ejercer la venta ambulante o no sedentaria en la vía o espacios públicos sin la autorización ' +
+      'municipal exigida, o fuera de las zonas, fechas y condiciones autorizadas. El artículo sancionador ' +
+      'y la cuantía deben consultarse en la ordenanza reguladora. ORIENTACIÓN: procede requerir la ' +
+      'autorización y, en su defecto, el cese de la venta; si los géneros pudieran vulnerar la propiedad ' +
+      'industrial o intelectual, valorar el traslado del tanto de culpa a la autoridad judicial. La ' +
+      'valoración final corresponde al agente y al órgano competente.',
+    terminos: [
+      'venta ambulante',
+      'top manta',
+      'mantero',
+      'vender sin licencia',
+      'venta ilegal calle',
+      'puesto sin permiso',
+      'vender en la via publica',
+      'venta sin autorizacion',
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE: la ordenanza EXISTE (sede SCTF, trámite t491) pero NO se ha confirmado el ' +
+      'artículo sancionador ni la cuantía. A VERIFICAR con el texto consolidado. Añadir decomiso/' +
+      'intervención cautelar de género solo si la ordenanza lo prevé. Delimitar frente al delito contra la ' +
+      'propiedad industrial del CP para el "top manta" de marcas.',
   }),
 ];
 
