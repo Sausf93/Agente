@@ -163,11 +163,20 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
      acampada montes y top manta como consultables). 3 ordenanzas nuevas (residuos, policía y buen gobierno,
      venta). Es lo que desbloquea VENDER a policía local. Importes = techo del tramo (art. 52.2) donde
      confirmado; consultable donde la cuantía no es pública.
-  5. **Frontera penal** (9, commit `4d8f5e4`, **EN GIT, NO PUBLICADA hasta pasar revisor** — muy sensible):
-     conducción con desprecio a la vida 381 (kamikaze penal), odio 510, grooming 183, pornografía infantil
-     189, exhibicionismo 185-186, denuncia falsa 457, sustracción de menores 225 bis, allanamiento de local
-     203, usurpación de funciones/falso policía 402-403. **SIGUIENTE PASO al retomar: aplicar el veredicto del
-     revisor de esta ola y, si APTO, publicar en Expo.**
+  5. **Frontera penal** (8, commit `29ebc97`, **publicada** tras revisor APTO): conducción con desprecio a
+     la vida 381 (kamikaze penal), odio 510, grooming 183, pornografía infantil 189, exhibicionismo 185-186,
+     sustracción de menores 225 bis, allanamiento de local 203, usurpación/falso policía 402-403. El revisor
+     completó penas (multa del 381.2 y 510.2), corrigió la protección de 225 bis a medida civil (158 CC) y
+     **retiró `del-simulacion-delito` (457)**: ver pendiente del motor abajo.
+- **PENDIENTE DEL MOTOR DE DETENCIÓN (bloquea reintroducir el 457 y otros delitos de solo multa):** el motor
+  (`packages/shared/src/detencion.ts` + `escenarioBaseDetencion`/`reglaDetencion`) solo aplica la
+  excepcionalidad (proporcionalidad, art. 492/495 LECrim) cuando `gravedadCp === 'leve'`. Un delito
+  MENOS GRAVE con pena ÚNICA DE MULTA (p. ej. denuncia falsa art. 457) cae en la rama "procede detención",
+  que SOBRE-ORIENTA a detener (línea roja de CLAUDE.md). Arreglo: añadir un flag `penaSoloMulta` a
+  `EntradaDetencion`/`DelitoSeedInput` y enrutar esos casos, aun en flagrancia, por una rama de
+  proporcionalidad ("no procede salvo falta de identificación/garantías"). NO rebajar `gravedadCp` a 'leve'
+  (falsearía el chip del marco penal). Con el flag, reintroducir `del-simulacion-delito` (457) y revisar
+  otros delitos de solo multa. El artículo 457 ya está en el articulado (consultable, sin ficha).
 - **Ola de ARMAS** (2026-09-10, commit `bc3021a`): enciende la sección "Armas" de SPPLB, que teníamos casi
   vacía. 7 fichas del régimen de armas reglamentadas (sin licencia/guía, licencia caducada, portar fuera de
   supuestos, transporte indebido, fogueo/aire/réplica, custodia, documentación perdida). Punto jurídico clave
