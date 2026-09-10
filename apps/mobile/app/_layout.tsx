@@ -107,6 +107,10 @@ export default function RootLayout() {
           options={{ headerShown: true, title: 'Guía de alcoholemia', presentation: 'card' }}
         />
         <Stack.Screen
+          name="control-carretera"
+          options={{ headerShown: true, title: 'Control de carretera', presentation: 'card' }}
+        />
+        <Stack.Screen
           name="vehiculos/index"
           options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
         />

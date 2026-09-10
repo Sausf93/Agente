@@ -31,6 +31,8 @@ const buscar = (label: string, termino: string = label): AccesoRapido => ({
 
 /** Accesos de TRÁFICO (Guardia Civil y Policía Local): lo más consultado en carretera/vía. */
 export const ACCESOS_TRAFICO: readonly AccesoRapido[] = [
+  // Checklist interactivo de un control en carretera (uso en directo, petición del GC de Tráfico).
+  { label: 'Control de carretera', destino: { tipo: 'ruta', valor: '/control-carretera' } },
   buscar('Sin seguro'),
   buscar('Móvil'),
   buscar('Faro roto'),
