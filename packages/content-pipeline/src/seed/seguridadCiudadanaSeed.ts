@@ -224,6 +224,35 @@ const ART_LOSC_37_17 = articuloLosc({
     'de la tranquilidad. Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// Artículos del catálogo de ARMAS (LO 4/2015). Tras la derogación de la LO 1/1992 por la propia LO
+// 4/2015, las infracciones administrativas de armas se tipifican y gradúan AQUÍ (arts. 36 y 37); el
+// Reglamento de Armas (RD 137/1993) queda como la OBLIGACIÓN material incumplida (guía, licencia,
+// categorías, transporte, custodia). La frontera con el delito (tenencia ilícita 563-564 CP;
+// depósito/tráfico 566-568 CP) se orienta en cada ficha. Verificado por `ingesta-normativa`.
+const ART_LOSC_36_12 = articuloLosc({
+  numero: '36.12',
+  titulo: 'Armas reglamentadas sin documentación o incumpliendo la normativa (grave)',
+  texto:
+    'Tipifica como infracción GRAVE la fabricación, reparación, almacenamiento, circulación, comercio, ' +
+    'transporte, distribución, adquisición, certificación, enajenación o utilización de armas ' +
+    'reglamentarias, explosivos catalogados, cartuchería o artículos pirotécnicos, incumpliendo la ' +
+    'normativa de aplicación, careciendo de la documentación o autorización requeridas o excediendo los ' +
+    'límites autorizados, cuando la conducta no sea constitutiva de delito, así como la omisión, ' +
+    'insuficiencia o falta de eficacia de las medidas de seguridad o precauciones obligatorias. La ' +
+    'obligación material (guía, licencia, transporte, custodia) la detalla el Reglamento de Armas (RD ' +
+    '137/1993). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOSC_37_8 = articuloLosc({
+  numero: '37.8',
+  titulo: 'Documentación de armas: conservación y denuncia de pérdida o sustracción (leve)',
+  texto:
+    'Tipifica como infracción LEVE la omisión o la insuficiencia de las medidas para garantizar la ' +
+    'conservación de la DOCUMENTACIÓN de armas y explosivos, así como la falta de denuncia de la ' +
+    'pérdida o sustracción DE ESA DOCUMENTACIÓN (no del arma en sí). Resumen orientativo; consúltese ' +
+    'el texto consolidado en el BOE.',
+});
+
 // Artículo de PROTECCIÓN (no sancionador) para la entrada consultable MENA. Resume el marco de
 // protección del menor extranjero no acompañado citando LO 1/1996, LO 4/2000 (extranjería) y
 // LO 5/2000 (responsabilidad penal del menor). No es un tipo infractor: orienta sobre la actuación.
@@ -303,7 +332,9 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_37_1,
   ART_LOSC_37_4,
   ART_LOSC_37_7,
+  ART_LOSC_37_8,
   ART_LOSC_37_17,
+  ART_LOSC_36_12,
   ART_LOPJM_MENA,
 ];
 
@@ -657,7 +688,7 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la intervención (aprehensión) del arma y su puesta a disposición de la ' +
           'autoridad competente.',
-        fuente: 'LO 4/2015 art. 36.10',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
       },
     ],
     notaRevision:
@@ -665,6 +696,276 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       ' A VERIFICAR qué armas son "prohibidas" (remisión al Reglamento de Armas, RD 137/1993, art. ' +
       '4) y la frontera con el delito de tenencia ilícita de armas (arts. 563 y ss. CP). Confirmar ' +
       'el artículo del comiso del arma. Revisar con el revisor jurídico.',
+  }),
+  // --- OLA DE ARMAS (RD 137/1993 como obligación material; sanción LO 4/2015 arts. 36/37) --------
+  // Rellena la sección "Armas" (paridad SPPLB), hoy casi vacía. La sanción vive en la LOSC (la LO
+  // 1/1992 quedó derogada); el RD 137/1993 detalla la obligación. Frontera penal orientada por ficha.
+  construirInfraccion({
+    id: 'arma-sin-licencia-guia',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Arma reglamentada sin licencia o guía',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Tener o usar un arma reglamentada careciendo de la licencia (licencias A-F) o de la guía de ' +
+      'pertenencia exigidas, incumpliendo la normativa de armas, cuando la conducta no sea constitutiva ' +
+      'de delito (art. 36.12 LO 4/2015; obligación de los arts. 96 y ss. y 31 y ss. del Reglamento de ' +
+      'Armas, RD 137/1993). FRONTERA PENAL: la tenencia de un ARMA DE FUEGO reglamentada sin licencia/guía ' +
+      'es, con carácter general, DELITO de tenencia ilícita (art. 564 CP), no infracción administrativa; ' +
+      'la vía del 36.12 queda para armas no de fuego, inutilizadas o excesos documentales sobre arma ' +
+      'legalmente tenida. La calificación penal o administrativa la decide la autoridad judicial.',
+    terminos: [
+      'arma sin papeles',
+      'pistola sin licencia',
+      'escopeta sin guia',
+      'no tiene licencia de armas',
+      'arma sin documentacion',
+      'revolver sin permiso',
+      'llevar pistola sin licencia',
+      'cazar sin licencia de armas',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) del arma y su puesta a disposición de la ' +
+          'autoridad competente (Intervención de Armas de la Guardia Civil).',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' Punto SENSIBLE a verificar: el deslinde entre el art. 36.12 LO 4/2015 (administrativo) y el ' +
+      'delito de tenencia ilícita del art. 564 CP según el tipo de arma y su APTITUD para el disparo ' +
+      '(un arma inservible puede no contar como arma de fuego a efectos del 564). El art. 565 CP es OTRA ' +
+      'cosa: permite al tribunal rebajar la pena un grado cuando se evidencie la falta de INTENCIÓN de ' +
+      'usar el arma con fines ilícitos. Confirmar los artículos de licencias (96 y ss.) y ' +
+      'guía (31 y ss.) del RD 137/1993, que la reforma del reglamento pudo reordenar. Revisar con el ' +
+      'revisor jurídico antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'arma-licencia-guia-caducada',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Licencia o guía de armas caducada',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Mantener un arma reglamentada con la licencia o la guía de pertenencia caducada o sin renovar, ' +
+      'excediendo los límites autorizados o careciendo de la documentación en vigor (art. 36.12 LO ' +
+      '4/2015). FRONTERA PENAL (materia controvertida): la mera caducidad reciente sobre un arma ' +
+      'legalmente adquirida suele reconducirse a la vía administrativa; la falta total o la no ' +
+      'renovación prolongada puede derivar en tenencia ilícita (art. 564 CP). Orientativo: valorar el ' +
+      'tiempo de caducidad y las circunstancias; la calificación la fija la autoridad judicial.',
+    terminos: [
+      'licencia caducada',
+      'guia caducada',
+      'permiso de armas vencido',
+      'no renovo la licencia',
+      'licencia de armas sin renovar',
+      'arma con licencia vencida',
+      'caducado el permiso de la escopeta',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del arma y su depósito a disposición de la ' +
+          'autoridad competente hasta regularizar la documentación (Intervención de Armas de la GC).',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' Dato SENSIBLE: NO afirmar automáticamente que "caducada = delito". A verificar el criterio ' +
+      'jurisprudencial (TS) sobre la caducidad de la licencia/guía (36.12 LO 4/2015 vs. 564 CP) y los ' +
+      'plazos de vigencia y renovación por tipo de licencia del RD 137/1993. Revisar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'arma-portar-fuera-supuestos',
+    articulo: ART_LOSC_36_10,
+    tituloCorto: 'Portar el arma fuera de los supuestos permitidos',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Portar o usar un arma fuera de los lugares habilitados para su uso, aun teniendo licencia, o de ' +
+      'modo negligente, temerario o intimidatorio, cuando la conducta no sea constitutiva de delito ' +
+      '(art. 36.10 LO 4/2015; condiciones de uso y porte de los arts. 145 y ss. del RD 137/1993). ' +
+      'FRONTERA PENAL: pasa a la vía penal si concurre uso con relevancia típica (amenazas, arts. 169 y ' +
+      'ss. CP; atentado, art. 550 CP) o si se une a tenencia ilícita (art. 564 CP). Orientativo.',
+    terminos: [
+      'llevar la pistola por la calle',
+      'sacar el arma sin motivo',
+      'porta el arma fuera del coto',
+      'arma fuera de casa',
+      'llevar arma de caza por la ciudad',
+      'exhibir la pistola',
+      'ir armado por la calle',
+      'portar arma sin razon',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) del arma y su puesta a disposición de la ' +
+          'autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' Comparte artículo (36.10) con `sc-armas-prohibidas` pero es OTRA conducta (arma con licencia ' +
+      'fuera de lugar habilitado, no arma prohibida). A verificar los arts. 145 y ss. del RD 137/1993 ' +
+      '(lugares habilitados y supuestos de porte por tipo de licencia) y la frontera con amenazas/' +
+      'atentado. Revisar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'arma-transporte-indebido',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Transporte indebido de arma',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Transportar un arma reglamentada incumpliendo la normativa de aplicación —sin ir descargada, ' +
+      'enfundada y separada de la munición— cuando la conducta no sea constitutiva de delito (art. ' +
+      '36.12 LO 4/2015; condiciones de transporte de los arts. 145 y ss. del RD 137/1993). FRONTERA ' +
+      'PENAL: con carácter general es administrativa; la vía penal se reserva a la tenencia ilícita ' +
+      '(art. 564 CP) o al depósito/tráfico (arts. 566-568 CP) si aparecen esos elementos. Orientativo.',
+    terminos: [
+      'arma cargada en el coche',
+      'escopeta sin funda',
+      'arma junto a la municion',
+      'llevar el arma cargada',
+      'transportar el rifle mal',
+      'arma en la guantera',
+      'no llevaba la funda',
+      'pistola cargada en el maletero',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del arma y su puesta a disposición de la ' +
+          'autoridad competente (Intervención de Armas de la Guardia Civil).',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A verificar los arts. 145 y ss. del RD 137/1993 (requisitos exactos del transporte: descargada, ' +
+      'enfundada y separada de la munición) y si algún supuesto menor encajaría como leve. Revisar con ' +
+      'el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'arma-fogueo-aire-replica',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Fogueo, aire comprimido o réplica sin requisitos',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Tener o usar armas de aire comprimido, detonadoras o de fogueo reglamentadas sin la documentación ' +
+      'o excediendo los límites autorizados, incumpliendo la normativa de armas (art. 36.12 LO 4/2015; ' +
+      'categorías del art. 3 del RD 137/1993). FRONTERA PENAL: si la réplica, el fogueo o la detonadora ' +
+      'se han MODIFICADO para disparar proyectil, dejan de ser réplica y pasan a arma prohibida/ilícita ' +
+      '(art. 563 CP). El uso de un arma simulada en un robo o amenaza se valora en el delito principal ' +
+      '(arts. 169, 237 y ss. CP), no aquí. Orientativo.',
+    terminos: [
+      'pistola de fogueo',
+      'arma detonadora',
+      'replica de pistola',
+      'pistola de aire comprimido',
+      'arma de balines',
+      'airsoft',
+      'pistola de juguete que parece real',
+      'carabina de perdigones',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención del arma o réplica y su puesta a disposición de la ' +
+          'autoridad competente para su examen.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' Dato SENSIBLE: no calificar toda réplica como arma prohibida. A verificar las categorías del ' +
+      'art. 3 del RD 137/1993 (4ª aire comprimido; detonadoras/fogueo), que las reformas del reglamento ' +
+      'han reordenado, y el deslinde con el delito del art. 563 CP (arma modificada para disparar). ' +
+      'Revisar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'arma-custodia-deposito',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Omisión del deber de custodia del arma',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Omitir, o aplicar de forma insuficiente, las medidas de seguridad obligatorias para la ' +
+      'conservación y custodia de un arma reglamentada en el domicilio (art. 36.12 LO 4/2015; ' +
+      'condiciones de conservación de los arts. 105 y ss. del RD 137/1993). Puede escalar a MUY GRAVE ' +
+      '(art. 35.2 LO 4/2015) solo si se causan perjuicios muy graves. FRONTERA PENAL: normalmente ' +
+      'administrativa; hay vía penal si de la falta de custodia deriva un resultado típico (homicidio o ' +
+      'lesiones imprudentes, arts. 142/152 CP) o concurre depósito ilícito (arts. 566-568 CP). Orientativo.',
+    terminos: [
+      'arma sin guardar',
+      'escopeta al alcance de los niños',
+      'no tiene armero',
+      'arma fuera de la caja fuerte',
+      'pistola en el cajon',
+      'no guarda bien el arma',
+      'arma sin custodia',
+      'dejar el arma cargada en casa',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del arma cuando su custodia entrañe riesgo, ' +
+          'poniéndola a disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' Dato SENSIBLE: por defecto GRAVE (36.12), no muy grave; el salto al art. 35.2 (muy grave) exige ' +
+      '"perjuicios muy graves". A verificar los arts. 105 y ss. del RD 137/1993 (obligación de armero/' +
+      'condiciones de seguridad). Revisar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'arma-documentacion-perdida',
+    articulo: ART_LOSC_37_8,
+    tituloCorto: 'No conservar o no denunciar la pérdida de la documentación del arma',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'No conservar debidamente la DOCUMENTACIÓN de un arma (licencia, guía), o no denunciar su ' +
+      'pérdida o sustracción (art. 37.8 LO 4/2015). Es infracción LEVE. IMPORTANTE: el 37.8 se refiere ' +
+      'a la DOCUMENTACIÓN, no al arma en sí. Si lo perdido o sustraído es el ARMA, la conducta se ' +
+      'valora por la vía de la custodia (art. 36.12) o, si hay indicios de destino ilícito a terceros, ' +
+      'por los tipos penales de depósito/tráfico (arts. 566-568 CP). Orientativo.',
+    terminos: [
+      'perdio la licencia de armas',
+      'extravio de la guia',
+      'papeles del arma perdidos',
+      'perdi la documentacion del arma',
+      'no denuncio la perdida de la licencia',
+      'licencia de armas extraviada',
+      'perdida de la guia de pertenencia',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' ACOTADO tras revisión: el literal del art. 37.8 LO 4/2015 cubre solo la DOCUMENTACIÓN de armas ' +
+      'y explosivos (su conservación y la denuncia de su pérdida/sustracción), NO la pérdida/sustracción ' +
+      'del arma —que va por el 36.12 (custodia) o la vía penal (566-568 CP)—. A verificar el precepto ' +
+      'del RD 137/1993 que fija el plazo y la forma de comunicar el extravío. Revisar con el revisor.',
   }),
   construirInfraccion({
     id: 'sc-desordenes-obstaculizar-via',

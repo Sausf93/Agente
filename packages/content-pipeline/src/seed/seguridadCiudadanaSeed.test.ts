@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 15 entradas de calle (10 infracciones LOSC + 5 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, derechos de la víctima y cacheo/registro)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(15);
+  it('siembra 22 entradas de calle (10 infracciones LOSC base + 7 de la ola de ARMAS + 5 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, derechos de la víctima y cacheo/registro)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(22);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {
@@ -328,6 +328,14 @@ describe('buscador FTS5: jerga de calle → infracción de seguridad ciudadana',
     expect(buscarSinonimoExacto('se puso chulo')).toContain('sc-negativa-identificarse');
     expect(buscarSinonimoExacto('cachear')).toContain('sc-cacheo-registro');
     expect(buscarSinonimoExacto('camper habitada')).toContain('sc-cacheo-registro');
+  });
+
+  // Ola de ARMAS: las consultas de calle de armas resuelven a su ficha nueva (paridad SPPLB).
+  it('ola de armas: "pistola sin licencia", "licencia caducada", "pistola de fogueo" resuelven a su ficha', () => {
+    expect(buscarSinonimoExacto('pistola sin licencia')).toContain('arma-sin-licencia-guia');
+    expect(buscarSinonimoExacto('licencia caducada')).toContain('arma-licencia-guia-caducada');
+    expect(buscarSinonimoExacto('pistola de fogueo')).toContain('arma-fogueo-aire-replica');
+    expect(buscarSinonimoExacto('escopeta sin funda')).toContain('arma-transporte-indebido');
   });
 
   it('encuentra por número de artículo ("LOSC 36")', () => {

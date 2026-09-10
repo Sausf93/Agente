@@ -8,6 +8,7 @@ import {
   filtrarArticulos,
   materiaAdmiteTerritorio,
   materiaDeNorma,
+  materiaDeInfraccion,
   normaRelevantePara,
   numeroSortKey,
   ordenarArticulos,
@@ -247,6 +248,27 @@ describe('materiaDeNorma', () => {
     expect(materiaDeNorma('ZZZ')).toBe('otras');
     expect(materiaDeNorma('OM-DESCONOCIDA-SCTF')).toBe('otras');
     expect(materiaDeNorma('CAN-XYZ')).toBe('otras');
+  });
+});
+
+describe('materiaDeInfraccion (override interino para la sección Armas)', () => {
+  it('las infracciones del régimen de armas (LOSC) se reasignan a la materia "armas"', () => {
+    for (const id of [
+      'arma-sin-licencia-guia',
+      'arma-licencia-guia-caducada',
+      'arma-transporte-indebido',
+      'arma-fogueo-aire-replica',
+      'arma-custodia-deposito',
+      'arma-documentacion-perdida',
+    ]) {
+      expect(materiaDeInfraccion(id, 'LOSC')).toBe('armas');
+    }
+  });
+
+  it('sin override, sigue la materia de la norma (LOSC → seguridad); "armas prohibidas" se queda en seguridad', () => {
+    expect(materiaDeInfraccion('sc-desobediencia-resistencia', 'LOSC')).toBe('seguridad');
+    expect(materiaDeInfraccion('sc-armas-prohibidas', 'LOSC')).toBe('seguridad');
+    expect(materiaDeInfraccion('inf-exceso-velocidad', 'LSV')).toBe('trafico');
   });
 });
 

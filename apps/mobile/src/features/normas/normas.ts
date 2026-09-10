@@ -344,6 +344,34 @@ export function materiaDeNorma(codigo: string): Materia {
 }
 
 /**
+ * Override interino de MATERIA por infracción (mismo patrón que `SUBTEMA_POR_INFRACCION`): reasigna
+ * una ficha a una materia distinta de la de su norma, solo para la NAVEGACIÓN por materia. Caso de
+ * uso: las infracciones administrativas de ARMAS se sancionan hoy por la LOSC (LO 4/2015, arts. 36/37)
+ * —esa es su fuente honesta, que se muestra en la ficha— pero pertenecen a la sección "Armas" (paridad
+ * SPPLB), no a "Seguridad ciudadana". Sin este override caerían bajo la materia de su norma (LOSC =
+ * seguridad). Se mantiene en el móvil (interino) para no tocar el content-pipeline ni el esquema Zod.
+ * NOTA: `sc-armas-prohibidas` (armas prohibidas, orden público) se deja a propósito en Seguridad
+ * ciudadana; aquí van solo las del RÉGIMEN de armas reglamentadas.
+ */
+export const MATERIA_OVERRIDE_POR_INFRACCION: Record<string, Materia> = {
+  'arma-sin-licencia-guia': 'armas',
+  'arma-licencia-guia-caducada': 'armas',
+  'arma-portar-fuera-supuestos': 'armas',
+  'arma-transporte-indebido': 'armas',
+  'arma-fogueo-aire-replica': 'armas',
+  'arma-custodia-deposito': 'armas',
+  'arma-documentacion-perdida': 'armas',
+};
+
+/**
+ * Materia de una INFRACCIÓN para la navegación: el override interino si lo hay; si no, la materia de
+ * su norma. Pura y determinista (fuente única para `listar`/`contar` por materia).
+ */
+export function materiaDeInfraccion(infId: string, normaCodigo: string): Materia {
+  return MATERIA_OVERRIDE_POR_INFRACCION[infId] ?? materiaDeNorma(normaCodigo);
+}
+
+/**
  * Materias que PUEDEN tener contenido territorial (autonómico/municipal) y, por tanto, en las que
  * tiene sentido ofrecer la franja "solicítala" cuando el CCAA/municipio del perfil aún no lo trae.
  * Se DERIVA de `MATERIA_POR_TEMA` (los temas de las normas territoriales): hoy Tráfico (circulación,
@@ -526,7 +554,7 @@ export async function listarInfraccionesDeMateria(
     filtro.params,
   );
   return filas
-    .filter((f) => materiaDeNorma(f.norma_codigo) === materia)
+    .filter((f) => materiaDeInfraccion(f.id, f.norma_codigo) === materia)
     .map((f) => ({
       id: f.id,
       tituloCorto: f.titulo_corto,
@@ -546,8 +574,8 @@ export async function contarInfraccionesPorMateria(
   cadena: readonly string[] = [],
 ): Promise<Map<Materia, number>> {
   const filtro = filtroTerritorialSql(cadena, 'i.territorio_id');
-  const filas = await runner.getAll<{ norma_codigo: string }>(
-    `SELECT n.codigo AS norma_codigo
+  const filas = await runner.getAll<{ id: string; norma_codigo: string }>(
+    `SELECT i.id, n.codigo AS norma_codigo
        FROM infraccion i
        JOIN articulo a ON a.id = i.articulo_id
        JOIN norma    n ON n.id = a.norma_id
@@ -556,7 +584,7 @@ export async function contarInfraccionesPorMateria(
   );
   const conteo = new Map<Materia, number>();
   for (const f of filas) {
-    const materia = materiaDeNorma(f.norma_codigo);
+    const materia = materiaDeInfraccion(f.id, f.norma_codigo);
     conteo.set(materia, (conteo.get(materia) ?? 0) + 1);
   }
   return conteo;
