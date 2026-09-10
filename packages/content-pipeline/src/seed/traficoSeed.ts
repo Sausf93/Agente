@@ -1500,6 +1500,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'abandonar el accidente',
       'huir del accidente',
       'se marcho del accidente',
+      'darse a la fuga',
+      'se dio a la fuga',
+      'atropello con fuga',
+      'atropello y se fue',
+      'choque y huida',
+      'conductor fugado',
     ],
     consecuencias: [
       {

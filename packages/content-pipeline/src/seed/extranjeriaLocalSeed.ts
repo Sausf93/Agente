@@ -283,6 +283,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'extranjero trabajando sin permiso',
       'sin autorizacion de trabajo',
       'trabajar sin residencia',
+      'trabajador irregular',
+      'trabajando en negro',
+      'vendedor sin papeles',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
     consecuencias: [

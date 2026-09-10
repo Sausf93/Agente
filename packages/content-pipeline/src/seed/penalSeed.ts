@@ -660,6 +660,14 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'lesiones a un menor',
       'agresion con ensañamiento',
       'paliza con ensañamiento',
+      'acuchillado',
+      'apuñalado',
+      'le clavo un cuchillo',
+      'le rajo',
+      'botellazo',
+      'le dio un botellazo',
+      'reyerta con arma',
+      'corte con navaja',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena y la agravante: el art. 148 CP eleva las lesiones del art. 147.1 a ' +
@@ -1337,8 +1345,10 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'Impedir a otra persona, sin estar legítimamente autorizado y empleando violencia (sobre las ' +
       'personas o las cosas), hacer lo que la ley no prohíbe, o compelerla a hacer lo que no quiere, sea ' +
       'justo o injusto (art. 172 CP). Se distingue de las amenazas (anunciar un mal futuro, art. 169) en ' +
-      'que aquí se DOBLEGA la voluntad en el momento. La coacción de carácter leve es delito leve (multa); ' +
-      'hay subtipos agravados (impedir un derecho fundamental, acoso, violencia de género). La ' +
+      'que aquí se DOBLEGA la voluntad en el momento. Si además ENCIERRAN o retienen a la persona ' +
+      'privándola de su libertad, es detención ilegal (art. 163, más grave, ver ficha). La coacción de ' +
+      'carácter leve es delito leve (multa); hay subtipos agravados (impedir un derecho fundamental, ' +
+      'acoso, violencia de género). La ' +
       'calificación final corresponde a la autoridad judicial.',
     terminos: [
       'coacciones',
@@ -1349,6 +1359,12 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'me obliga a la fuerza',
       'me esta forzando',
       'no me deja irme',
+      'me corta el paso',
+      'me impide el paso',
+      'no me deja entrar en mi casa',
+      'me obliga a firmar',
+      'me obliga a pagar',
+      'me esta coaccionando',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena y el subtipo: coacciones del art. 172.1 CP → prisión de 6 meses a 3 ' +
@@ -1384,8 +1400,16 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'genero robado',
       'sabe que es robado',
       'perista',
+      'reducidor',
       'compra de objetos robados',
       'revender robado',
+      'cobre robado',
+      'chatarra robada',
+      'venta de cobre',
+      'compro oro',
+      'casa de empeño',
+      'movil robado',
+      'objetos robados',
     ],
     consecuenciasExtra: [
       {
@@ -1423,7 +1447,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'agrava en su mitad superior (art. 165) si se simula ser autoridad, la víctima es menor o ' +
       'especialmente vulnerable, o es funcionario en el ejercicio de sus funciones. Se distingue de las ' +
       'coacciones (art. 172): aquí se ataca la LIBERTAD AMBULATORIA (la ' +
-      'de moverse o marcharse). La calificación final corresponde a la autoridad judicial.',
+      'de moverse o marcharse). NO comete este delito quien sujeta a otra persona para entregarla ' +
+      'INMEDIATAMENTE a la autoridad tras sorprenderla en un delito flagrante (art. 490 LECrim; tipo ' +
+      'atenuado del art. 163.4). La calificación final corresponde a la autoridad judicial.',
     terminos: [
       'detencion ilegal',
       'lo tienen retenido',
@@ -1434,6 +1460,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'retencion contra su voluntad',
       'lo tienen encerrado',
       'privacion de libertad',
+      'rehen',
+      'tiene un rehen',
+      'la ha encerrado',
+      'encerrada en casa',
+      'no la deja salir de casa',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena y los subtipos: detención ilegal del art. 163.1 CP → prisión de 4 a 6 ' +
@@ -1479,6 +1510,15 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'animal maltratado',
       'pego una paliza al perro',
       'apalear un animal',
+      'perro apaleado',
+      'peleas de perros',
+      'pelea de gallos',
+      'envenenar perro',
+      'veneno para perros',
+      'mataperros',
+      'perro atado sin agua ni comida',
+      'matar gatos',
+      'disparar a un animal',
     ],
     notaRevision:
       'A VERIFICAR las cifras contra el CP con el Título XVI bis VIGENTE (LO 3/2023, que SUPRIMIÓ los arts. ' +
