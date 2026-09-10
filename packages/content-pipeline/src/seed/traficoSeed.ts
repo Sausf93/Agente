@@ -735,7 +735,84 @@ const ART_RGV_7 = articuloSeed({
     'el Manual de Procedimiento de ITV.',
 });
 
+// --- Artículos de la OLA DE TRÁFICO (volumen de catálogo, 2026-09-10) ------------------------
+const ART_RGC_29 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '29',
+  titulo: 'Colocación en la calzada (circular por la derecha)',
+  texto:
+    'Como norma general, todo conductor debe circular por la derecha y lo más cerca posible del borde ' +
+    'derecho de la calzada, manteniendo la separación lateral suficiente para adelantar con seguridad, ' +
+    'salvo cuando adelante o la señalización permita otra cosa. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_35 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '35',
+  titulo: 'Separación lateral en el adelantamiento (1,5 m a ciclistas)',
+  texto:
+    'El adelantamiento debe realizarse dejando una separación lateral suficiente y, en todo caso, de al ' +
+    'menos 1,5 metros al adelantar a ciclos, ciclomotores, peatones o animales; para respetarla se puede ' +
+    'ocupar parte del carril contiguo o contrario cuando sea posible con seguridad. Resumen orientativo.',
+});
+
+const ART_RGC_45 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '45',
+  titulo: 'Velocidad anormalmente reducida',
+  texto:
+    'No se puede entorpecer la marcha de otros vehículos circulando sin causa justificada a una velocidad ' +
+    'anormalmente reducida, ni por debajo de los límites mínimos de velocidad establecidos. Resumen orientativo.',
+});
+
+const ART_RGC_55 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '55',
+  titulo: 'Incorporación a la circulación (ceder el paso)',
+  texto:
+    'El conductor que se incorpora a la circulación desde una vía de acceso, propiedad colindante, zona de ' +
+    'servicio o inmueble debe cerciorarse de que puede hacerlo sin peligro y CEDER EL PASO a los vehículos ' +
+    'que circulan por la vía a la que se accede. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_167 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '167',
+  titulo: 'Marcas longitudinales continuas (línea continua)',
+  texto:
+    'Una marca longitudinal continua (M-2.1) sobre la calzada significa que ningún conductor, con carácter ' +
+    'general, debe atravesarla ni circular sobre ella, ni con su vehículo pisar la línea, salvo en los casos ' +
+    'excepcionalmente permitidos. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LSV_76 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '76',
+  titulo: 'Infracciones graves (catálogo del art. 76)',
+  texto:
+    'Enumera las infracciones GRAVES de tráfico, entre ellas arrojar a la vía o sus inmediaciones objetos ' +
+    'que puedan producir incendios o accidentes u obstaculizar la circulación, y el exceso de ocupantes o ' +
+    'de las condiciones del transporte que comprometa la seguridad. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LSV_13 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '13',
+  titulo: 'Detectores e inhibidores de radar',
+  texto:
+    'Prohíbe instalar o llevar en el vehículo mecanismos o sistemas encaminados a detectar los aparatos de ' +
+    'vigilancia del tráfico (detectores de radar). Los INHIBIDORES de señal, que impiden el funcionamiento ' +
+    'de esos aparatos, constituyen una infracción MUY GRAVE. Resumen orientativo; consúltese el BOE.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
+  ART_RGC_29,
+  ART_RGC_35,
+  ART_RGC_45,
+  ART_RGC_55,
+  ART_RGC_167,
+  ART_LSV_76,
+  ART_LSV_13,
   ART_RGC_99,
   ART_RGC_18,
   ART_RGC_117,
@@ -3028,6 +3105,310 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'auriculares o cascos conectados a dispositivos de sonido). Pendiente de visto bueno del revisor. ' +
       'NOTA: los sistemas de comunicación integrados y homologados del casco de moto que no aíslan del ' +
       'entorno quedan fuera; confirmar el matiz.',
+  }),
+  // --- OLA DE TRÁFICO (volumen de catálogo, 2026-09-10): conductas de calle frecuentes que faltaban.
+  // Importes al cuadro estricto del marco 'trafico' (leve ≤100, grave 200, muy grave 500). Los PUNTOS
+  // marcados "a verificar" son el dato sensible: el revisor los contrasta con el Anexo II LSV.
+  construirInfraccion({
+    id: 'inf-sentido-contrario',
+    articulo: ART_LSV_77,
+    tituloCorto: 'Circular en sentido contrario',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 6,
+    textoBoletin:
+      'Conducir por una vía o tramo en sentido contrario al establecido para la circulación, con el ' +
+      'consiguiente riesgo grave para el resto de usuarios.',
+    terminos: [
+      'sentido contrario',
+      'direccion prohibida',
+      'a contramano',
+      'entro por la salida',
+      'por el carril contrario',
+      'conduccion suicida',
+      'contra direccion',
+      'kamikaze',
+      'via de un solo sentido',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo si persiste el riesgo para la circulación ' +
+          '(art. 104 LSV); la medida se levanta al cesar la causa.',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR (dato sensible): el apartado exacto del art. 77 LSV (muy grave, "conducir en sentido ' +
+      'contrario al establecido") y la confirmación de 6 PUNTOS en el Anexo II LSV. Importe muy grave 500 €.',
+  }),
+  construirInfraccion({
+    id: 'inf-linea-continua',
+    articulo: ART_RGC_167,
+    tituloCorto: 'Pisar o rebasar línea continua',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'No respetar una marca vial longitudinal continua, pisándola o rebasándola, fuera de los supuestos ' +
+      'en que reglamentariamente está permitido. Si se rebasa PARA ADELANTAR, se aplica la infracción de ' +
+      'adelantamiento antirreglamentario.',
+    terminos: [
+      'linea continua',
+      'pisar la raya',
+      'cruzar la linea',
+      'raya continua',
+      'linea blanca',
+      'rebasar linea',
+      'invadir el carril contrario',
+      'cambiar de carril con linea continua',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: la gravedad (grave si entraña riesgo; podría ser leve en supuestos menores) y el ' +
+      'apartado exacto del art. 167/137 RGC. Sin puntos por el mero pisar/rebasar (si es para adelantar, ' +
+      'la de adelantamiento sí detrae). Importe grave 200 €.',
+  }),
+  construirInfraccion({
+    id: 'inf-no-mantener-derecha',
+    articulo: ART_RGC_29,
+    tituloCorto: 'Circular sin mantenerse a la derecha',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: null,
+    textoBoletin:
+      'Circular sin mantenerse en el carril derecho o sin ceñirse al borde derecho de la calzada cuando ' +
+      'no se está adelantando ni la señalización lo permite, entorpeciendo la ordenada circulación.',
+    terminos: [
+      'por el carril izquierdo',
+      'no se aparta',
+      'va por la izquierda',
+      'carril central sin motivo',
+      'no mantiene la derecha',
+      'ocupando carril izquierdo',
+      'va en medio',
+      'no cede el carril',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: la gravedad (leve 100 € vs grave 200 € si crea riesgo) y el apartado exacto del ' +
+      'art. 29 RGC (colocación en la calzada). Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-adelantar-ciclista-sin-15m',
+    articulo: ART_RGC_35,
+    tituloCorto: 'Adelantar a ciclista sin 1,5 m',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 6,
+    textoBoletin:
+      'Adelantar a un ciclista o a un grupo de ciclistas sin dejar una separación lateral de al menos ' +
+      '1,5 metros, o hacerlo poniendo en peligro su seguridad.',
+    terminos: [
+      'adelantar ciclista',
+      'metro y medio',
+      '1,5 metros',
+      'rozar al ciclista',
+      'adelantar bici',
+      'sin separacion al ciclista',
+      'pasar pegado a la bici',
+      'adelantar a un ciclista',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR (dato sensible): los PUNTOS exactos (¿6? tras la reforma que endureció el ' +
+      'adelantamiento peligroso a ciclistas) en el Anexo II LSV y el apartado del art. 35 RGC ' +
+      '(separación lateral de 1,5 m). Importe grave 200 €.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionar-carril-bus-bici',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionar en carril bus/bici o parada de bus',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Estacionar el vehículo en un carril o parte de la vía reservada (carril bus, carril bici) o en una ' +
+      'parada de transporte público señalizada, obstaculizando el uso al que está destinada.',
+    terminos: [
+      'aparcar en el carril bus',
+      'parado en la parada del bus',
+      'carril bici',
+      'aparcar en carril bici',
+      'en la parada',
+      'zona de bus',
+      'sobre el carril bici',
+      'aparcar en la parada',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Puede proceder la retirada del vehículo por la grúa cuando obstaculice un carril o parte de la ' +
+          'vía reservada o una parada de transporte público (art. 105 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: la gravedad y el importe (el estacionamiento sobre carril reservado/parada suele ser ' +
+      'grave 200 €, pero en zona urbana puede regir la ORDENANZA municipal) y el apartado del art. 94.2 ' +
+      'RGC. Ficha desglosada frente al genérico `inf-estacionamiento-indebido`. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-no-ceder-incorporacion',
+    articulo: ART_RGC_55,
+    tituloCorto: 'No ceder el paso al incorporarse',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Incorporarse a la circulación desde una vía de acceso, área de servicio, zona colindante o inmueble ' +
+      'sin ceder el paso a los vehículos que circulan por la vía a la que se accede.',
+    terminos: [
+      'incorporacion',
+      'salir sin mirar',
+      'meterse sin ceder',
+      'entrar a la via',
+      'incorporarse a la autovia',
+      'salida de gasolinera',
+      'no cede al entrar',
+      'ceda de incorporacion',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: la gravedad y el apartado del art. 55 RGC (incorporación a la circulación). Distinta ' +
+      'de `inf-stop-ceda-el-paso` (señal en intersección). Importe grave 200 €. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-arrojar-objetos-via',
+    articulo: ART_LSV_77,
+    tituloCorto: 'Arrojar objetos que puedan causar incendio o accidente',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 6,
+    textoBoletin:
+      'Arrojar, depositar o abandonar sobre la vía o sus inmediaciones objetos o materias que puedan ' +
+      'producir incendios o accidentes (por ejemplo, arrojar una colilla encendida). Es infracción MUY ' +
+      'GRAVE (art. 77 LSV, reforma Ley 18/2021). Si el objeto solo obstaculiza la circulación SIN riesgo ' +
+      'de incendio ni accidente, la conducta es grave (art. 76 LSV).',
+    terminos: [
+      'tirar la colilla',
+      'arrojar basura',
+      'tirar cosas por la ventanilla',
+      'colilla encendida',
+      'tirar el cigarro',
+      'riesgo de incendio',
+      'tirar objetos',
+      'escombros en la via',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'CORREGIDO tras revisión: arrojar objetos que puedan producir INCENDIO o ACCIDENTE (colilla ' +
+      'encendida) es MUY GRAVE (art. 77 LSV, tras la Ley 18/2021), 6 PUNTOS (Anexo II), importe muy grave ' +
+      '500 €. El supuesto meramente obstaculizador (sin incendio/accidente) sí es grave (art. 76 LSV). Si ' +
+      'el objeto provoca un incendio puede haber responsabilidad penal aparte. Confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'inf-detector-radar',
+    articulo: ART_LSV_13,
+    tituloCorto: 'Llevar detector de radar',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 3,
+    textoBoletin:
+      'Circular con un mecanismo o dispositivo destinado a detectar los sistemas de vigilancia del tráfico ' +
+      '(detector de radar). DISTINTO del inhibidor de señal, que constituye infracción MUY GRAVE (art. 77 ' +
+      'LSV), de importe muy superior.',
+    terminos: [
+      'detector de radar',
+      'avisador de radar',
+      'chivato de radar',
+      'inhibidor',
+      'antirradar',
+      'detector',
+      'saltarse el radar',
+      'aparato antirradar',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR (dato sensible): los PUNTOS (¿3?) en el Anexo II LSV, el apartado del art. 13 LSV y la ' +
+      'frontera exacta detector (grave, 200 €) vs INHIBIDOR (muy grave, art. 77, ~6.000 €). Confirmar la ' +
+      'base legal de la intervención del dispositivo antes de afirmarla. Importe grave 200 €.',
+  }),
+  construirInfraccion({
+    id: 'inf-exceso-ocupantes',
+    articulo: ART_LSV_76,
+    tituloCorto: 'Exceso de ocupantes',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Transportar en el vehículo un número de personas superior al de plazas autorizadas, o hacerlo en ' +
+      'emplazamientos o condiciones distintos de los previstos, comprometiendo la seguridad de los ocupantes. ' +
+      'En turismo, el exceso HASTA el 50 % de las plazas es LEVE; el exceso que SUPERA el 50 % es GRAVE ' +
+      '(art. 76 LSV). No detrae puntos.',
+    terminos: [
+      'exceso de pasajeros',
+      'mas gente de la cuenta',
+      'van apretados',
+      'mas personas que plazas',
+      'llevar gente en el maletero',
+      'sin plaza',
+      'ocupantes de mas',
+      'hacinados',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta cesar el riesgo cuando el exceso de ' +
+          'ocupantes comprometa la seguridad (art. 104 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'CORREGIDO tras revisión: en TURISMO no hay tramo muy grave. Exceso HASTA el 50 % de las plazas → ' +
+      'LEVE (100 €); exceso que SUPERA el 50 % → GRAVE (200 €), art. 76 LSV. NO detrae puntos. La ficha ' +
+      'modela el caso grave (>50 %). Distinto de las fichas LOTT de viajeros. Confirmar apartado con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'inf-velocidad-reducida',
+    articulo: ART_RGC_45,
+    tituloCorto: 'Velocidad anormalmente reducida',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Circular sin causa justificada a una velocidad anormalmente reducida, entorpeciendo la marcha del ' +
+      'resto de vehículos, o por debajo de la velocidad mínima exigible en la vía.',
+    terminos: [
+      'va muy lento',
+      'circular despacio',
+      'velocidad minima',
+      'entorpecer',
+      'tapon',
+      'coche lento en autovia',
+      'ir a paso de tortuga',
+      'molestar circulando lento',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: la gravedad (leve 100 € vs grave 200 € si entorpece con riesgo) y el apartado del ' +
+      'art. 45/49 RGC (velocidad anormalmente reducida / mínima). Sin puntos. Referencia 200 €.',
   }),
 ];
 

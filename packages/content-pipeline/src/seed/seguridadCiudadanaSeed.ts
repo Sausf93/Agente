@@ -719,6 +719,9 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'arma sin papeles',
       'pistola sin licencia',
       'escopeta sin guia',
+      'escopeta del abuelo',
+      'arma heredada sin papeles',
+      'el arma no esta a su nombre',
       'no tiene licencia de armas',
       'arma sin documentacion',
       'revolver sin permiso',
@@ -837,11 +840,12 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     terminos: [
       'arma cargada en el coche',
       'escopeta sin funda',
+      'escopeta en el asiento',
+      'volviendo de cazar',
       'arma junto a la municion',
       'llevar el arma cargada',
       'transportar el rifle mal',
       'arma en la guantera',
-      'no llevaba la funda',
       'pistola cargada en el maletero',
     ],
     consecuencias: [

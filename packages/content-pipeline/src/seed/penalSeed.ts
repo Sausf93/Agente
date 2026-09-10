@@ -401,7 +401,121 @@ const ART_CP_564 = articuloCp({
     'como navajas, porras o sprays de defensa). Resumen orientativo; consúltese el texto consolidado.',
 });
 
+// --- Artículos de la OLA DE DELITOS VIOLENTOS y CONTRA LA LIBERTAD SEXUAL (2026-09-10) ---------
+const ART_CP_138 = articuloCp({
+  numero: '138',
+  titulo: 'Homicidio',
+  texto:
+    'Castiga a quien matare a otro (dolosamente) con la pena de prisión de diez a quince años ' +
+    '(art. 138.1). La pena se impone en su mitad superior o superior en grado cuando concurre alguna ' +
+    'circunstancia del art. 140.1 o el hecho es además constitutivo de atentado (art. 138.2). La muerte ' +
+    'causada por IMPRUDENCIA no es homicidio del 138, sino el delito imprudente del art. 142. Resumen ' +
+    'orientativo; consúltese el texto consolidado del CP.',
+});
+
+const ART_CP_139 = articuloCp({
+  numero: '139',
+  titulo: 'Asesinato',
+  texto:
+    'Es asesinato matar a otro concurriendo alevosía, precio/recompensa/promesa, ensañamiento (aumentar ' +
+    'deliberada e inhumanamente el dolor de la víctima) o para facilitar la comisión de otro delito o ' +
+    'evitar que se descubra (art. 139.1): prisión de quince a veinticinco años, en su mitad superior si ' +
+    'concurre más de una circunstancia (139.2). El art. 140 impone la PRISIÓN PERMANENTE REVISABLE en los ' +
+    'supuestos agravados (víctima menor de 16 años o especialmente vulnerable, hecho subsiguiente a un ' +
+    'delito contra la libertad sexual, pertenencia a organización criminal, o más de dos víctimas). ' +
+    'Resumen orientativo; consúltese el texto consolidado del CP.',
+});
+
+const ART_CP_178 = articuloCp({
+  numero: '178',
+  titulo: 'Agresión sexual (libertad sexual)',
+  texto:
+    'Tras la LO 10/2022 y la LO 4/2023, es agresión sexual todo acto que atente contra la libertad sexual ' +
+    'de otra persona sin su consentimiento (art. 178.1): solo hay consentimiento cuando se manifiesta ' +
+    'libremente por actos que expresen de forma clara la voluntad de la persona. Se consideran en todo ' +
+    'caso agresión los actos con violencia, intimidación, abuso de superioridad o vulnerabilidad, o sobre ' +
+    'personas privadas de sentido o de voluntad anulada, incluida la sumisión química (178.2). La pena ' +
+    'base es de uno a cuatro años; con violencia o intimidación o voluntad anulada, de uno a cinco años ' +
+    '(178.3). El acceso carnal (vaginal, anal o bucal) o la introducción de miembros u objetos es ' +
+    'VIOLACIÓN (art. 179): prisión de cuatro a doce años (179.1) o de seis a doce años cuando media ' +
+    'violencia, intimidación o la voluntad de la víctima está anulada (179.2). El art. 180 recoge los ' +
+    'subtipos agravados. Resumen orientativo; consúltese el texto consolidado del CP.',
+});
+
+const ART_CP_181 = articuloCp({
+  numero: '181',
+  titulo: 'Agresión sexual a menor de dieciséis años',
+  texto:
+    'Realizar actos de carácter sexual con un menor de dieciséis años se castiga con prisión de dos a seis ' +
+    'años (art. 181.1); concurriendo alguna modalidad del art. 178.2 o prevalimiento por convivencia o ' +
+    'parentesco, de cinco a diez años (181.2); con acceso ' +
+    'carnal o introducción de miembros u objetos, de ocho a doce años (181.4) o de doce a quince en los ' +
+    'supuestos del 181.2. Existen agravantes (181.5/6) y la cláusula de proximidad por edad y grado de ' +
+    'desarrollo del art. 183 bis puede excluir la responsabilidad entre iguales. El consentimiento del ' +
+    'menor de dieciséis años no exime, salvo esa cláusula. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_173_1 = articuloCp({
+  numero: '173.1',
+  titulo: 'Trato degradante (integridad moral)',
+  texto:
+    'Castiga a quien infligiere a otra persona un trato degradante, menoscabando gravemente su integridad ' +
+    'moral, con prisión de seis meses a dos años (art. 173.1). El mismo artículo tipifica el ACOSO LABORAL ' +
+    '(actos hostiles o humillantes reiterados prevaliéndose de superioridad, en el ámbito laboral o ' +
+    'funcionarial) y el ACOSO INMOBILIARIO (actos hostiles para impedir el disfrute legítimo de la ' +
+    'vivienda). Se distingue de la tortura del art. 174 (que exige autoridad o funcionario). Resumen ' +
+    'orientativo; consúltese el texto consolidado del CP.',
+});
+
+const ART_CP_174 = articuloCp({
+  numero: '174',
+  titulo: 'Torturas',
+  texto:
+    'Comete tortura la autoridad o funcionario público que, abusando de su cargo y con el fin de obtener ' +
+    'una confesión o información de cualquier persona, o de castigarla por un hecho que haya cometido o se sospeche que ha cometido, o por una razón basada en cualquier tipo de discriminación, somete a una ' +
+    'persona a condiciones o procedimientos que le supongan sufrimientos físicos o mentales, la supresión ' +
+    'o disminución de sus facultades, o que atenten contra su integridad moral (art. 174). Pena: prisión ' +
+    'de dos a seis años si el atentado es grave y de uno a tres años si no lo es; en ambos casos, ' +
+    'inhabilitación absoluta de ocho a doce años. Alcanza también a funcionarios de instituciones ' +
+    'penitenciarias o de centros de menores. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_172_TER = articuloCp({
+  numero: '172 ter',
+  titulo: 'Acoso (stalking)',
+  texto:
+    'Castiga a quien acose a una persona de forma insistente y reiterada, sin estar legítimamente ' +
+    'autorizado, alterando gravemente el desarrollo de su vida cotidiana, mediante vigilarla, perseguirla ' +
+    'o buscar su cercanía; establecer o intentar establecer contacto por cualquier medio o a través de ' +
+    'terceros; usar indebidamente sus datos personales; o atentar contra su libertad o patrimonio o el de ' +
+    'personas próximas (art. 172 ter): prisión de tres meses a dos años o multa de seis a veinticuatro ' +
+    'meses. Se agrava cuando la víctima es o ha sido pareja o pertenece al ámbito del art. 173.2. Resumen ' +
+    'orientativo; consúltese el texto consolidado del CP.',
+});
+
+const ART_CP_197 = articuloCp({
+  numero: '197',
+  titulo: 'Descubrimiento y revelación de secretos; difusión de imágenes íntimas',
+  texto:
+    'El art. 197.1 castiga a quien, para descubrir los secretos o vulnerar la intimidad de otro y sin su ' +
+    'consentimiento, se apodera de sus documentos o efectos, intercepta sus telecomunicaciones o usa ' +
+    'artificios de escucha o grabación: prisión de uno a cuatro años y multa de doce a veinticuatro meses. ' +
+    'El art. 197.7 castiga la difusión, sin autorización, de imágenes o grabaciones íntimas obtenidas con ' +
+    'anuencia de la víctima en un ámbito privado, cuando menoscabe gravemente su intimidad (difusión no ' +
+    'consentida de imágenes íntimas): prisión de tres meses a un año o multa de seis a doce meses, ' +
+    'agravada si la víctima es pareja/expareja, menor o con discapacidad, o media ánimo de lucro. Resumen ' +
+    'orientativo; consúltese el texto consolidado del CP.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_138,
+  ART_CP_139,
+  ART_CP_178,
+  ART_CP_181,
+  ART_CP_173_1,
+  ART_CP_174,
+  ART_CP_172_TER,
+  ART_CP_197,
   ART_CP_234,
   ART_CP_242,
   ART_CP_147,
@@ -1552,6 +1666,324 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'tratamiento es DELITO LEVE (multa 1-2 meses) → rama de detención del art. 495 LECrim. ABANDONO = ' +
       'art. 340 ter. Distinguir del régimen ADMINISTRATIVO (Ley 7/2023 y ordenanzas). Confirmar todas las ' +
       'cifras con el revisor antes de retirar el "a verificar".',
+  }),
+  // --- OLA DE DELITOS VIOLENTOS Y CONTRA LA LIBERTAD SEXUAL (2026-09-10) --------------------------
+  // Contenido MUY sensible (vida, libertad sexual, menores). Lenguaje ORIENTATIVO; la detención la
+  // genera el motor; la protección de la víctima va como consecuencia extra. Todo pendiente_revision.
+  construirDelito({
+    id: 'del-homicidio',
+    articulo: ART_CP_138,
+    tituloCorto: 'Homicidio',
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 10 a 15 años (homicidio doloso, art. 138.1 CP)',
+    textoBoletin:
+      'Causar dolosamente la muerte de otra persona (art. 138.1 CP): prisión de 10 a 15 años. La pena se ' +
+      'eleva (art. 138.2) cuando concurre alguna circunstancia del art. 140.1 o el hecho es además ' +
+      'constitutivo de atentado. Si la muerte se causa por IMPRUDENCIA no es homicidio del 138, sino el ' +
+      'delito imprudente del art. 142. La calificación (dolo/imprudencia, homicidio/asesinato) corresponde ' +
+      'en exclusiva a la autoridad judicial; el atestado describe hechos, no califica. ' +
+      'EN LA ESCENA (orientativo, lo PRIMERO): auxilio a la víctima si hay cualquier signo de vida (aviso ' +
+      'sanitario); PRESERVAR la escena sin tocar ni mover nada, acordonar y no pisar; asegurar al presunto ' +
+      'autor si está presente; identificar y separar a los testigos; y avisar a la Policía Judicial/Científica ' +
+      'y a la comisión judicial para el levantamiento del cadáver. La detención se valora conforme a la LECrim.',
+    terminos: [
+      'lo mato',
+      'le ha matado',
+      'homicidio',
+      'hay un muerto',
+      'una persona muerta',
+      'cadaver',
+      'muerte sospechosa',
+      'muerto a golpes',
+      'apuñalado hasta la muerte',
+      'le quito la vida',
+      'muerte violenta',
+      'lo han matado',
+    ],
+    notaRevision:
+      'CONTENIDO MUY SENSIBLE (vida). A VERIFICAR: homicidio doloso art. 138.1 → prisión de 10 a 15 años → ' +
+      'GRAVE; subtipo agravado 138.2 (circunstancias del 140.1 o atentado) → pena superior en grado. ' +
+      'DISTINGUIR del ASESINATO (139, con alevosía/precio/ensañamiento/para facilitar otro delito) y del ' +
+      'HOMICIDIO IMPRUDENTE (142: grave 1-4 años; menos grave multa 3-18 meses). Confirmar penas y encaje ' +
+      'contra el texto consolidado del CP antes de retirar el "a verificar".',
+  }),
+  construirDelito({
+    id: 'del-asesinato',
+    articulo: ART_CP_139,
+    tituloCorto: 'Asesinato',
+    gravedadCp: 'grave',
+    penaTexto:
+      'Prisión de 15 a 25 años (art. 139.1 CP); prisión permanente revisable en los supuestos del art. 140',
+    textoBoletin:
+      'Matar a otra persona concurriendo alguna circunstancia del art. 139.1 CP: alevosía; precio, ' +
+      'recompensa o promesa; ensañamiento; o para facilitar otro delito o evitar su descubrimiento. Pena: ' +
+      'prisión de 15 a 25 años, en su mitad superior si concurre más de una circunstancia (139.2). El art. ' +
+      '140 impone PRISIÓN PERMANENTE REVISABLE (víctima menor de 16 años o especialmente vulnerable, hecho ' +
+      'subsiguiente a un delito contra la libertad sexual, organización criminal, o más de dos víctimas). ' +
+      'La calificación (homicidio/asesinato y sus circunstancias) corresponde en exclusiva al juez. ' +
+      'EN LA ESCENA (orientativo): mismo protocolo que el homicidio — auxilio si hay signos de vida, ' +
+      'PRESERVAR la escena (no tocar, no mover, acordonar), asegurar al presunto autor, separar testigos ' +
+      'y avisar a Policía Judicial/Científica y a la comisión judicial para el levantamiento del cadáver.',
+    terminos: [
+      'asesinato',
+      'lo mato a sangre fria',
+      'crimen',
+      'lo han matado',
+      'lo mato por la espalda',
+      'ejecucion',
+      'sicario',
+      'lo mato con saña',
+      'asesino a sueldo',
+    ],
+    notaRevision:
+      'CONTENIDO MUY SENSIBLE. A VERIFICAR: asesinato 139.1 → prisión de 15 a 25 años → GRAVE; mitad ' +
+      'superior si concurre más de una circunstancia (139.2); art. 140 → PRISIÓN PERMANENTE REVISABLE en ' +
+      'sus supuestos. La frontera alevosía/ensañamiento es estrictamente JUDICIAL; el atestado describe, no ' +
+      'califica. Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  construirDelito({
+    id: 'del-agresion-sexual',
+    articulo: ART_CP_178,
+    tituloCorto: 'Agresión sexual (sin consentimiento)',
+    // Modelada como GRAVE (recomendación del revisor): la ficha responde a "violación" y la violación
+    // del art. 179 es delito GRAVE; modelarla menos_grave infra-orientaría la rama de detención en el
+    // caso más grave y operativo. El 178.1 aislado (tocamientos) sería menos grave; lo aclara la nota.
+    gravedadCp: 'grave',
+    penaTexto:
+      'Violación —acceso carnal o introducción de miembros u objetos— (art. 179): prisión de 4 a 12 años ' +
+      '(179.1) o de 6 a 12 con violencia/intimidación o voluntad anulada (179.2). Agresión sexual sin ' +
+      'acceso carnal: 1 a 4 años (178.1); con violencia/intimidación, 1 a 5 (178.3)',
+    textoBoletin:
+      'Tras la LO 10/2022 y la LO 4/2023, todo acto que atente contra la libertad sexual de otra persona ' +
+      'SIN SU CONSENTIMIENTO es AGRESIÓN SEXUAL (art. 178.1 CP): solo hay consentimiento cuando se ' +
+      'manifiesta libremente por actos que expresen de forma clara la voluntad. Son agresión en todo caso ' +
+      'los actos con violencia, intimidación, abuso de superioridad o vulnerabilidad, o sobre personas de ' +
+      'voluntad anulada, incluida la sumisión química (178.2). Pena base 1-4 años; con violencia/' +
+      'intimidación o voluntad anulada, 1-5 años (178.3). El acceso carnal o la introducción de miembros u ' +
+      'objetos es VIOLACIÓN (art. 179): 4-12 años (179.1) o 6-12 con violencia/intimidación (179.2). Las ' +
+      'agravantes del art. 180 elevan las penas. La ' +
+      'calificación final corresponde en exclusiva a la autoridad judicial.',
+    terminos: [
+      'agresion sexual',
+      'abuso sexual',
+      'una violacion',
+      'me ha violado',
+      'la han forzado',
+      'intento de violacion',
+      'manada',
+      'me ha tocado sin permiso',
+      'tocamientos',
+      'meter mano',
+      'sin consentimiento',
+      'sumision quimica',
+      'le echaron algo en la copa',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'PRIORIDAD la víctima (orientativo): que NO se lave ni cambie de ropa y no beba/coma hasta el ' +
+          'examen forense (preservar indicios); NO reiterar la toma de declaración; acompañamiento a la ' +
+          'unidad especializada (UFAM) y asistencia sanitaria y psicológica; evitar la revictimización. ' +
+          'Procede valorar la orden de protección y las medidas de alejamiento (arts. 544 bis y 544 ter ' +
+          'LECrim), que acuerda o ratifica la autoridad judicial.',
+        fuente: 'LECrim arts. 544 bis y 544 ter',
+      },
+    ],
+    notaRevision:
+      'CONTENIDO MUY SENSIBLE (libertad sexual) — verificado por revisor tras la LO 10/2022 y LO 4/2023. ' +
+      'A VERIFICAR (segundo par de ojos): art. 178.1 (cualquier acto sin consentimiento) → 1-4 años → ' +
+      'menos grave; 178.3 (violencia/intimidación/voluntad anulada) → 1-5 años; art. 179 VIOLACIÓN → ' +
+      '179.1 (acceso carnal/introducción) 4-12 años y 179.2 (con violencia/intimidación o voluntad ' +
+      'anulada) 6-12 años, AMBOS GRAVE; art. 180 subtipos agravados. La ficha se MODELA como GRAVE ' +
+      '(recomendación del revisor) porque responde a "violación"; el 178.1 aislado (tocamientos) sería ' +
+      'menos grave. Confirmar todas las penas y la definición de consentimiento contra el texto ' +
+      'consolidado del CP (anclas #a178, #a179, #a180) antes de retirar el "a verificar".',
+  }),
+  construirDelito({
+    id: 'del-agresion-sexual-menor',
+    articulo: ART_CP_181,
+    tituloCorto: 'Agresión sexual a menor de 16 años',
+    gravedadCp: 'grave',
+    penaTexto:
+      'Prisión de 2 a 6 años (art. 181.1); con acceso carnal, de 8 a 12 años (181.4) o de 12 a 15 (181.2)',
+    textoBoletin:
+      'Realizar actos de carácter sexual con un menor de dieciséis años (art. 181.1 CP): prisión de 2 a 6 ' +
+      'años. Concurriendo alguna modalidad del art. 178.2 (violencia, intimidación, voluntad anulada, abuso de ' +
+      'superioridad), 5 a 10 años (181.2). Con acceso carnal o introducción de miembros u objetos, 8 a 12 ' +
+      'años (181.4) o 12 a 15 (sobre el 181.2). Hay agravantes (181.5/6) e inhabilitación si el autor es ' +
+      'autoridad o funcionario. El consentimiento del menor de 16 años NO exime, salvo la cláusula de ' +
+      'proximidad por edad y desarrollo del art. 183 bis. La calificación final corresponde al juez.',
+    terminos: [
+      'abuso a un menor',
+      'tocamientos a un niño',
+      'agresion sexual a menor',
+      'pederasta',
+      'abusan de una niña',
+      'abusan de un niño',
+      'abuso infantil',
+      'actos sexuales con un menor',
+      'abuso a una niña',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Procede valorar de forma PRIORITARIA la protección del menor: comunicación a la autoridad ' +
+          'judicial y al Ministerio Fiscal (Fiscalía de Menores) y a los servicios de protección del ' +
+          'menor de la comunidad autónoma, medidas de alejamiento (arts. 544 bis/ter LECrim) y asistencia ' +
+          'especializada, evitando la revictimización. Las medidas las acuerda o ratifica el juez.',
+        fuente: 'LECrim arts. 544 bis y 544 ter; protección de menores',
+      },
+    ],
+    notaRevision:
+      'CONTENIDO EXTREMADAMENTE SENSIBLE (menores, libertad sexual) — verificar con máxima prudencia tras ' +
+      'la LO 10/2022 y LO 4/2023. A VERIFICAR: 181.1 → 2-6 años; 181.2 → 5-10; 181.4 (acceso carnal) → ' +
+      '8-12 (base) o 12-15 (sobre 181.2); agravantes 181.5/6. Es DELITO GRAVE. VERIFICAR además el art. ' +
+      '182 (determinar a un menor a participar/presenciar actos sexuales) y la cláusula de proximidad de ' +
+      'edad del art. 183 bis (exime entre iguales). Confirmar TODAS las penas con el revisor antes de publicar.',
+  }),
+  construirDelito({
+    id: 'del-trato-degradante',
+    articulo: ART_CP_173_1,
+    tituloCorto: 'Trato degradante (integridad moral)',
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 2 años (art. 173.1 CP)',
+    textoBoletin:
+      'Infligir a otra persona un trato degradante, menoscabando gravemente su integridad moral (art. ' +
+      '173.1 CP): prisión de 6 meses a 2 años. El mismo artículo castiga el ACOSO LABORAL (actos hostiles ' +
+      'o humillantes reiterados prevaliéndose de superioridad) y el ACOSO INMOBILIARIO (actos hostiles ' +
+      'para impedir el disfrute legítimo de la vivienda). Se distingue de la tortura del art. 174 (que ' +
+      'exige autoridad o funcionario) y de la violencia habitual del art. 173.2. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'trato degradante',
+      'humillacion',
+      'vejaciones',
+      'acoso laboral',
+      'mobbing',
+      'acoso inmobiliario',
+      'trato inhumano',
+      'le humillan',
+    ],
+    notaRevision:
+      'A VERIFICAR: trato degradante del art. 173.1 CP → prisión de 6 meses a 2 años → MENOS GRAVE. ' +
+      'Confirmar la redacción de los párrafos de ACOSO LABORAL e INMOBILIARIO del mismo artículo. ' +
+      'DISTINGUIR de la tortura (174, por autoridad/funcionario), de la violencia habitual (173.2) y de ' +
+      'las lesiones psíquicas (147). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  construirDelito({
+    id: 'del-torturas',
+    articulo: ART_CP_174,
+    tituloCorto: 'Torturas (por autoridad o funcionario)',
+    gravedadCp: 'grave',
+    penaTexto:
+      'Prisión de 2 a 6 años (atentado grave) o de 1 a 3 años (no grave), e inhabilitación absoluta de 8 ' +
+      'a 12 años (art. 174 CP)',
+    textoBoletin:
+      'Comete tortura la autoridad o funcionario público que, abusando de su cargo y con el fin de obtener ' +
+      'una confesión o información de cualquier persona, o de castigarla por un hecho que haya cometido o se sospeche que ha cometido, o por una razón basada en cualquier tipo de discriminación, somete a ' +
+      'una persona a sufrimientos físicos o mentales, a la supresión o disminución de sus facultades, o a ' +
+      'condiciones que atenten contra su integridad moral (art. 174 CP). Pena: prisión de 2 a 6 años si el ' +
+      'atentado es grave y de 1 a 3 años si no lo es; en ambos casos, inhabilitación absoluta de 8 a 12 ' +
+      'años. Alcanza también a funcionarios de instituciones penitenciarias o de centros de menores. La ' +
+      'calificación final corresponde en exclusiva a la autoridad judicial.',
+    terminos: [
+      'torturas',
+      'malos tratos policiales',
+      'abuso de autoridad con violencia',
+      'coaccion para confesar',
+      'tortura en comisaria',
+      'vejaciones por un funcionario',
+      'apremios ilegitimos',
+      'tortura',
+    ],
+    notaRevision:
+      'CONTENIDO SENSIBLE (sujeto activo cualificado: autoridad/funcionario). A VERIFICAR: art. 174 CP → ' +
+      'prisión de 2 a 6 años (atentado GRAVE) o de 1 a 3 años (no grave), MÁS inhabilitación absoluta de 8 ' +
+      'a 12 años. La ficha modela el atentado grave. DISTINGUIR del art. 173.1 (trato degradante por ' +
+      'cualquier persona), del art. 175 (integridad moral por autoridad fuera del 174) y del art. 176 ' +
+      '(autoridad que la permite por omisión). Confirmar penas contra el texto consolidado del CP.',
+  }),
+  construirDelito({
+    id: 'del-acoso-stalking',
+    articulo: ART_CP_172_TER,
+    tituloCorto: 'Acoso (stalking)',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 3 meses a 2 años o multa de 6 a 24 meses (art. 172 ter); si la víctima es del art. ' +
+      '173.2, prisión de 1 a 2 años o trabajos en beneficio de la comunidad',
+    textoBoletin:
+      'Acosar a una persona de forma insistente y reiterada, sin estar legítimamente autorizado, alterando ' +
+      'gravemente el desarrollo de su vida cotidiana, mediante vigilarla, perseguirla o buscar su cercanía; ' +
+      'establecer o intentar establecer contacto por cualquier medio o a través de terceros; usar ' +
+      'indebidamente sus datos personales; o atentar contra su libertad o patrimonio o el de personas ' +
+      'próximas (art. 172 ter CP). La pena se agrava cuando la víctima es o ha sido pareja o pertenece al ' +
+      'ámbito del art. 173.2. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'acoso',
+      'stalking',
+      'me esta acosando',
+      'no para de llamarme',
+      'ciberacoso',
+      'me persigue',
+      'no me deja en paz',
+      'aparece donde voy',
+      'acecho',
+      'acoso a mi expareja',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'En el ámbito de pareja o familiar, procede valorar de forma prioritaria las medidas de ' +
+          'protección de la víctima (orden de protección, arts. 544 bis y 544 ter LECrim; valoración ' +
+          'policial del riesgo, VioGén). Las medidas las acuerda o ratifica la autoridad judicial.',
+        fuente: 'LECrim arts. 544 bis y 544 ter; VPR/VioGén',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR: acoso del art. 172 ter CP → prisión de 3 meses a 2 años o multa de 6 a 24 meses → ' +
+      'MENOS GRAVE; modalidad agravada (víctima del art. 173.2) → prisión de 1 a 2 años o TBC. El art. 172 ' +
+      'ter fue reformado por la LO 1/2023 (vigor 02-03-2023): añade el subtipo de especial vulnerabilidad y ' +
+      'el de creación de perfiles falsos con imagen no consentida (ap. 5). Confirmar el catálogo de conductas ' +
+      'y penas contra el texto consolidado del CP. Exige INSISTENCIA/REITERACIÓN y alteración GRAVE de la ' +
+      'vida cotidiana; un episodio aislado no basta.',
+  }),
+  construirDelito({
+    id: 'del-revelacion-secretos',
+    articulo: ART_CP_197,
+    tituloCorto: 'Revelación de secretos y difusión de imágenes íntimas',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 4 años y multa de 12 a 24 meses (art. 197.1); difusión de imágenes íntimas sin ' +
+      'consentimiento (art. 197.7), prisión de 3 meses a 1 año o multa de 6 a 12 meses',
+    textoBoletin:
+      'El art. 197.1 CP castiga a quien, para descubrir los secretos o vulnerar la intimidad de otro y sin ' +
+      'su consentimiento, se apodera de sus documentos o efectos, intercepta sus telecomunicaciones o usa ' +
+      'artificios de escucha o grabación: prisión de 1 a 4 años y multa de 12 a 24 meses. El art. 197.7 ' +
+      'castiga la difusión, sin autorización, de imágenes o grabaciones íntimas obtenidas con anuencia de ' +
+      'la víctima en un ámbito privado, cuando su divulgación menoscabe gravemente su intimidad (difusión ' +
+      'no consentida de imágenes íntimas): prisión de 3 meses a 1 año o multa de 6 a 12 meses, agravada si ' +
+      'la víctima es o ha sido pareja, es menor o con discapacidad, o media ánimo de lucro. La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'difundir fotos intimas',
+      'sexting sin permiso',
+      'ha colgado mis fotos',
+      'ha subido un video mio',
+      'packs',
+      'ha compartido mis desnudos',
+      'revelacion de secretos',
+      'espiar el movil',
+      'porno venganza',
+    ],
+    notaRevision:
+      'A VERIFICAR: art. 197.1 → prisión de 1 a 4 años y multa de 12 a 24 meses → MENOS GRAVE; art. 197.7 ' +
+      '(difusión de imágenes/grabaciones íntimas sin consentimiento) → prisión de 3 meses a 1 año o multa ' +
+      'de 6 a 12 meses, agravante (mitad superior) si víctima pareja/expareja, menor o con discapacidad, o ' +
+      'ánimo de lucro. Confirmar penas y redacción vigente contra el texto consolidado del CP. La prueba ' +
+      'suele ser digital: recordar la regla de no subir datos de terceros al servidor.',
   }),
 ];
 

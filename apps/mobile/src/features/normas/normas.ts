@@ -702,6 +702,18 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-abandono-accidente': 'traf-delitos',
   'inf-negativa-prueba': 'traf-delitos',
   'inf-conduccion-temeraria': 'traf-delitos',
+  // Ola de tráfico (2026-09-10): conductas nuevas. Toda ficha debe llevar sub-tema (lo exige el test
+  // de cobertura); las que no encajan en uno temático van al cajón "Otras de tráfico".
+  'inf-sentido-contrario': 'traf-maniobras-senales',
+  'inf-linea-continua': 'traf-maniobras-senales',
+  'inf-no-mantener-derecha': 'traf-maniobras-senales',
+  'inf-adelantar-ciclista-sin-15m': 'traf-maniobras-senales',
+  'inf-no-ceder-incorporacion': 'traf-maniobras-senales',
+  'inf-estacionar-carril-bus-bici': 'traf-estacionamiento',
+  'inf-velocidad-reducida': 'traf-alcohol-velocidad',
+  'inf-arrojar-objetos-via': 'traf-otras',
+  'inf-detector-radar': 'traf-otras',
+  'inf-exceso-ocupantes': 'traf-otras',
   // Penal
   'del-hurto': 'pen-patrimonio',
   'del-robo-violencia': 'pen-patrimonio',
@@ -727,6 +739,15 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-tenencia-armas': 'pen-otros',
   'del-falsedad-documental': 'pen-otros',
   'del-maltrato-animal': 'pen-otros',
+  // Ola de delitos violentos y contra la libertad sexual (2026-09-10).
+  'del-homicidio': 'pen-personas',
+  'del-asesinato': 'pen-personas',
+  'del-agresion-sexual': 'pen-personas',
+  'del-agresion-sexual-menor': 'pen-personas',
+  'del-trato-degradante': 'pen-personas',
+  'del-torturas': 'pen-personas',
+  'del-acoso-stalking': 'pen-personas',
+  'del-revelacion-secretos': 'pen-otros',
   // Seguridad ciudadana
   'sc-identificacion-requerimiento': 'seg-orden-identidad',
   'sc-cacheo-registro': 'seg-orden-identidad',
