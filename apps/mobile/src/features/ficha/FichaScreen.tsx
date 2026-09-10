@@ -18,6 +18,8 @@ import {
   FileWarning,
   Fingerprint,
   Gavel,
+  BookOpen,
+  ChevronRight,
   Info,
   Lock,
   MessageSquareWarning,
@@ -60,6 +62,7 @@ import {
   PLANTILLA_ACTA_DEPOSITO_GRUA,
 } from './plantillaDoc';
 import { reportarErrorFichaLink } from './reportarError';
+import { guiaRelacionadaDe, type GuiaRelacionada } from '@/features/guia/guiaRelacionada';
 import {
   CONSECUENCIA_LABEL,
   formatCompetencia,
@@ -242,6 +245,9 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
   });
   // La DETENCIÓN se separa del resto: en un delito sube arriba (leer-primero), no va enterrada.
   const consecuenciaDetencion = ficha.consecuencias.find((c) => c.tipo === 'detencion') ?? null;
+  // GUÍA rápida relacionada (uso en directo): si la ficha tiene una guía escaneable que la amplía
+  // (identificación/cacheo, alcoholemia), se ofrece un salto directo bajo la acción operativa.
+  const guiaRelacionada = guiaRelacionadaDe(ficha.infraccionId);
   // La PROTECCIÓN de la víctima (violencia de género) también sube DESTACADA junto a la detención:
   // no debe quedar enterrada entre "otras consecuencias".
   const consecuenciaProteccion = ficha.consecuencias.find((c) => c.tipo === 'proteccion') ?? null;
@@ -456,6 +462,13 @@ export function FichaScreen({ infraccionId }: FichaScreenProps) {
         ))}
       </View>
 
+      {/* Salto a la GUÍA rápida escaneable que amplía esta ficha (uso en directo): cierra el bucle
+          búsqueda → ficha → guía. Va AQUÍ, después de "Copiar boletín" (zona de material de apoyo),
+          para no robarle el sitio al dato nº1 —importe/boletín— ni confundirse con él (validador). */}
+      {guiaRelacionada ? (
+        <GuiaRelacionadaLink t={t} guia={guiaRelacionada} onPress={() => router.push(guiaRelacionada.ruta)} />
+      ) : null}
+
       {/* 6. Consecuencias con su fuente (orientativas, §4.6). En un delito, la detención ya se
           pintó arriba (leer-primero): aquí van "Otras consecuencias" (decomiso, identificación…). */}
       {otrasConsecuencias.length > 0 ? (
@@ -599,6 +612,56 @@ function ReportarError({ t, infraccionId }: { t: Theme; infraccionId: string }) 
           Si algo no cuadra con la norma o falta un supuesto, cuéntamelo.
         </Text>
       </View>
+    </Pressable>
+  );
+}
+
+/**
+ * Enlace DESTACADO a la guía rápida que amplía la ficha (uso en directo). Superficie de acento suave
+ * con icono de "guía", título y descripción corta; a la derecha un chevron. Un toque abre la guía
+ * escaneable (identificación/cacheo, alcoholemia): el agente no tiene que volver a los accesos.
+ */
+function GuiaRelacionadaLink({
+  t,
+  guia,
+  onPress,
+}: {
+  t: Theme;
+  guia: GuiaRelacionada;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Abrir ${guia.titulo}`}
+      accessibilityHint={guia.descripcion}
+      onPress={onPress}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: t.spacing.md,
+        minHeight: t.touch.min,
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        // Superficie NEUTRA (no el acento del importe/boletín): es material de apoyo orientativo, no
+        // un dato duro para el boletín. El icono y el chevron dan la pista de "abrir", sin competir.
+        borderColor: t.color.border,
+        backgroundColor: t.color.surfaceAlt,
+        paddingHorizontal: t.spacing.md,
+        paddingVertical: t.spacing.sm,
+      }}
+    >
+      <BookOpen size={22} color={t.color.textSecondary} strokeWidth={2.2} />
+      <View style={{ flex: 1, gap: t.spacing.xxs }}>
+        <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption, fontWeight: '700' }}>
+          GUÍA RÁPIDA · orientativa
+        </Text>
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.label }}>{guia.titulo}</Text>
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
+          {guia.descripcion}
+        </Text>
+      </View>
+      <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
     </Pressable>
   );
 }
