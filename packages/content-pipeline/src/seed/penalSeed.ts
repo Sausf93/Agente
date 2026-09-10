@@ -149,6 +149,21 @@ const ART_CP_298 = articuloCp({
     'delito encubierto (art. 298.3). Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+const ART_CP_340_BIS = articuloCp({
+  numero: '340 bis',
+  titulo: 'Maltrato animal (delitos contra los animales)',
+  texto:
+    'Título XVI bis del CP (introducido por la LO 3/2023, que SUPRIMIÓ el antiguo art. 337 y trasladó aquí ' +
+    'el maltrato animal). Castiga a quien, por cualquier medio o procedimiento —incluidos los actos de ' +
+    'carácter sexual—, maltrate a un animal doméstico, amansado, domesticado o que viva temporal o ' +
+    'permanentemente bajo control humano, causándole lesión que requiera tratamiento veterinario o ' +
+    'menoscabo grave de su salud: prisión de 3 a 18 meses o multa de 6 a 12 meses e inhabilitación especial ' +
+    'de 1 a 3 años. Si el maltrato se causa a cualquier otro animal vertebrado, la pena es menor (prisión ' +
+    'de 3 a 12 meses o multa de 3 a 6 meses). La pena sube si causa la MUERTE del animal y se agrava (mitad ' +
+    'superior) por ensañamiento, armas, ante un menor o persona vulnerable, difusión, etc. El abandono es ' +
+    'el art. 340 ter. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_163 = articuloCp({
   numero: '163',
   titulo: 'Detención ilegal',
@@ -394,6 +409,7 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_163,
   ART_CP_172,
   ART_CP_298,
+  ART_CP_340_BIS,
   ART_CP_468,
   ART_CP_550,
   ART_CP_368,
@@ -1430,6 +1446,51 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'presentarlo INMEDIATAMENTE a la autoridad (p. ej. tras sorprender un delito flagrante, art. 490 ' +
       'LECrim) responde por el tipo atenuado del art. 163.4 (multa de 3 a 6 meses). Distinguir ' +
       'de las coacciones (art. 172, `del-coacciones`). Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Maltrato animal (Título XVI bis, arts. 340 bis/ter; la LO 3/2023 SUPRIMIÓ el antiguo 337) -----
+  construirDelito({
+    id: 'del-maltrato-animal',
+    articulo: ART_CP_340_BIS,
+    tituloCorto: 'Maltrato animal',
+    // Art. 340 bis: prisión/multa e inhabilitación → MENOS GRAVE; la muerte del animal sube la pena.
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 3 a 18 meses o multa de 6 a 12 meses e inhabilitación especial de 1 a 3 años (maltrato ' +
+      'con lesión que requiere tratamiento veterinario a animal doméstico o bajo control humano, art. 340 ' +
+      'bis CP); si causa la MUERTE, prisión de 12 a 24 meses. Pena menor si el animal es un vertebrado no ' +
+      'doméstico. A verificar',
+    textoBoletin:
+      'Maltratar a un animal doméstico, amansado, domesticado o que viva bajo control humano, por cualquier ' +
+      'medio —incluidos los actos de carácter sexual—, causándole una lesión que requiere tratamiento ' +
+      'veterinario o un menoscabo grave de su salud (art. 340 bis CP, Título XVI bis introducido por la LO ' +
+      '3/2023, que SUPRIMIÓ el antiguo art. 337). Se agrava (mitad superior) por ensañamiento, uso de ' +
+      'armas, ante un menor o persona vulnerable, o difundiendo los hechos, y la pena es mayor si el animal ' +
+      'MUERE. Si la víctima es un vertebrado NO doméstico, la pena es menor. El maltrato cruel sin lesión ' +
+      'que requiera tratamiento es delito leve, y el ABANDONO del animal es el art. 340 ter. Distinto de la ' +
+      'infracción ADMINISTRATIVA de bienestar/tenencia (Ley 7/2023 y ordenanzas). La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'maltrato animal',
+      'maltrato a un animal',
+      'ha pegado al perro',
+      'crueldad con animales',
+      'ha matado al perro',
+      'maltrata a su perro',
+      'animal maltratado',
+      'pego una paliza al perro',
+      'apalear un animal',
+    ],
+    notaRevision:
+      'A VERIFICAR las cifras contra el CP con el Título XVI bis VIGENTE (LO 3/2023, que SUPRIMIÓ los arts. ' +
+      '337 y 337 bis y creó los arts. 340 bis a 340 quinquies; reforma PENAL en vigor el 18-04-2023, ' +
+      'distinta de la Ley 7/2023 de bienestar animal —administrativa, de sep-2023—). Marco base del art. ' +
+      '340 bis: animal doméstico/bajo control humano → prisión de 3 a 18 meses o multa de 6 a 12 meses e ' +
+      'inhabilitación 1-3 años; MUERTE → prisión de 12 a 24 meses e inhabilitación 2-4 años; vertebrado NO ' +
+      'doméstico → marco atenuado (prisión de 3 a 12 meses o multa de 3 a 6 meses; muerte 6-18 meses o ' +
+      'multa 18-24). Agravantes del 340 bis en su mitad superior. El maltrato sin lesión que requiera ' +
+      'tratamiento es DELITO LEVE (multa 1-2 meses) → rama de detención del art. 495 LECrim. ABANDONO = ' +
+      'art. 340 ter. Distinguir del régimen ADMINISTRATIVO (Ley 7/2023 y ordenanzas). Confirmar todas las ' +
+      'cifras con el revisor antes de retirar el "a verificar".',
   }),
 ];
 
