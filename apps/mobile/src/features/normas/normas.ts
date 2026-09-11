@@ -761,6 +761,9 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-sustraccion-menores': 'pen-personas',
   'del-allanamiento-establecimiento': 'pen-personas',
   'del-usurpacion-funciones': 'pen-autoridad',
+  // Ola de extranjería — frontera penal (2026-09-11).
+  'del-favorecimiento-inmigracion-ilegal': 'pen-otros',
+  'del-trata-seres-humanos': 'pen-personas',
   // Seguridad ciudadana
   'sc-identificacion-requerimiento': 'seg-orden-identidad',
   'sc-cacheo-registro': 'seg-orden-identidad',

@@ -615,7 +615,36 @@ const ART_CP_402 = articuloCp({
     'al público. Resumen orientativo; consúltese el CP.',
 });
 
+// --- Artículos de la OLA DE EXTRANJERÍA — frontera penal (2026-09-11) --------------------------
+const ART_CP_318_BIS = articuloCp({
+  numero: '318 bis',
+  titulo: 'Favorecimiento de la inmigración ilegal',
+  texto:
+    'Castiga a quien intencionadamente ayude a una persona que no sea nacional de un Estado de la UE a ' +
+    'entrar o transitar por España vulnerando la legislación de extranjería (art. 318 bis.1: multa de tres a ' +
+    'doce meses o prisión de tres meses a un año, en su mitad superior con ánimo de lucro), y a quien con ' +
+    'ánimo de lucro ayude a permanecer (318 bis.2). Se agrava a PRISIÓN DE CUATRO A OCHO AÑOS cuando se ' +
+    'comete en el seno de una ORGANIZACIÓN (318 bis.3). Existe una CLÁUSULA HUMANITARIA (318 bis.6): queda ' +
+    'excluida la ayuda humanitaria. Protege el control de los flujos migratorios; se distingue de la trata ' +
+    '(art. 177 bis), que protege a la víctima. Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_177_BIS = articuloCp({
+  numero: '177 bis',
+  titulo: 'Trata de seres humanos',
+  texto:
+    'Castiga captar, transportar, trasladar, acoger o recibir a una persona empleando violencia, ' +
+    'intimidación, engaño, abuso de una situación de superioridad, de necesidad o de vulnerabilidad, con ' +
+    'una finalidad de EXPLOTACIÓN (sexual, laboral, mendicidad, actividades delictivas, matrimonio forzado, ' +
+    'extracción de órganos, etc.): prisión de cinco a ocho años (art. 177 bis.1), agravada en supuestos como ' +
+    'víctima menor o especialmente vulnerable. La persona tratada es VÍCTIMA, no infractora: el ' +
+    'consentimiento es irrelevante cuando media alguno de esos medios. Se distingue del favorecimiento de la ' +
+    'inmigración ilegal (art. 318 bis). Resumen orientativo; consúltese el CP.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_318_BIS,
+  ART_CP_177_BIS,
   ART_CP_381,
   ART_CP_510,
   ART_CP_183,
@@ -2457,6 +2486,83 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       '(uso indebido de uniforme/insignia oficial) → multa, típico del "falso policía" —valorar mención—; ' +
       'art. 403 (intrusismo) → multa 12-24 meses (sin título académico), multa 6-12 meses (sin título ' +
       'oficial), o prisión 6 meses-2 años en el agravado. MENOS GRAVE. Fuente: CP arts. 402, 402 bis y 403.',
+  }),
+  // --- OLA DE EXTRANJERÍA — frontera penal (2026-09-11) -----------------------------------------
+  construirDelito({
+    id: 'del-favorecimiento-inmigracion-ilegal',
+    articulo: ART_CP_318_BIS,
+    tituloCorto: 'Favorecimiento de la inmigración ilegal',
+    gravedadCp: 'grave',
+    penaTexto:
+      'Multa de 3 a 12 meses o prisión de 3 meses a 1 año, en su mitad superior con ánimo de lucro (art. ' +
+      '318 bis.1); prisión de 4 a 8 años si se comete en el seno de una ORGANIZACIÓN (318 bis.3)',
+    textoBoletin:
+      'Ayudar intencionadamente a una persona no comunitaria a entrar o transitar por España vulnerando la ' +
+      'legislación de extranjería (art. 318 bis.1), o con ánimo de lucro a permanecer (318 bis.2). Se agrava ' +
+      'a PRISIÓN DE 4 A 8 AÑOS cuando se comete en el seno de una ORGANIZACIÓN dedicada a ello (318 bis.3). ' +
+      'MENSAJE CLAVE: aquí SÍ hay delito, a diferencia de la estancia irregular del propio extranjero, que ' +
+      'es administrativa. Existe una CLÁUSULA HUMANITARIA (318 bis.6): queda excluida la ayuda humanitaria. ' +
+      'Este delito protege el control de flujos; NO confundir con la trata (177 bis), que protege a la ' +
+      'víctima. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'trafico de personas',
+      'ayudar a entrar ilegales',
+      'patera organizada',
+      'favorecer inmigracion ilegal',
+      'mafia de inmigracion',
+      'pasar personas por la frontera',
+      'passeur',
+      'traslado de sin papeles',
+    ],
+    notaRevision:
+      'A VERIFICAR penas y apartados del art. 318 bis: básico .1 (multa 3-12 meses o prisión 3 meses-1 año, ' +
+      'mitad superior con ánimo de lucro) = menos grave; .2 permanencia con lucro; ORGANIZACIÓN .3 = 4-8 ' +
+      'años = GRAVE (escenario modelado). PRESERVAR la cláusula humanitaria (318 bis.6) y el deslinde con la ' +
+      'infracción administrativa del art. 54.1.b LO 4/2000 ("cuando el hecho no sea delito"). NO confundir ' +
+      'con la trata (177 bis). Confirmar con el revisor contra el CP.',
+  }),
+  construirDelito({
+    id: 'del-trata-seres-humanos',
+    articulo: ART_CP_177_BIS,
+    tituloCorto: 'Trata de seres humanos',
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 5 a 8 años (art. 177 bis.1 CP); subtipos agravados con pena superior',
+    textoBoletin:
+      'Captar, transportar, acoger o recibir personas empleando violencia, intimidación, engaño, abuso de ' +
+      'superioridad o de vulnerabilidad, con fines de EXPLOTACIÓN (sexual, laboral, mendicidad, actividades ' +
+      'delictivas, matrimonio forzado, extracción de órganos, etc.): art. 177 bis CP, prisión de 5 a 8 años, ' +
+      'agravada si la víctima es menor o especialmente vulnerable. MENSAJE CLAVE: la persona tratada es ' +
+      'VÍCTIMA, no infractora; el consentimiento es irrelevante cuando media alguno de esos medios. NO ' +
+      'procede sancionarla ni expulsarla por su situación: se le informa de sus derechos y del periodo de ' +
+      'restablecimiento y reflexión (mínimo 30 días) del art. 59 bis LO 4/2000. La identificación y ' +
+      'protección de la víctima priman. Coordinación con Fiscalía y unidades especializadas (UCRIF/EMUME). ' +
+      'La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'trata de personas',
+      'trata de seres humanos',
+      'explotacion sexual',
+      'prostitucion forzada',
+      'victima de trata',
+      'mujeres obligadas a prostituirse',
+      'esclavitud moderna',
+      'explotacion laboral esclavitud',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'PRIORIDAD la protección e identificación de la VÍCTIMA (no es infractora): informarle de sus ' +
+          'derechos y del periodo de restablecimiento y reflexión (mínimo 30 días, art. 59 bis LO 4/2000), ' +
+          'que suspende cualquier expediente por estancia irregular y puede eximirla de responsabilidad. ' +
+          'Coordinación con Fiscalía y unidades especializadas. Las medidas las acuerda la autoridad judicial.',
+        fuente: 'LO 4/2000 art. 59 bis; CP art. 177 bis',
+      },
+    ],
+    notaRevision:
+      'CONTENIDO ALTAMENTE SENSIBLE. A VERIFICAR pena del art. 177 bis.1 (prisión 5-8 años) y subtipos ' +
+      'agravados; y el régimen de protección del art. 59 bis LO 4/2000 (periodo de restablecimiento y ' +
+      'reflexión mínimo, exención de responsabilidad). DESLINDE: 177 bis protege a la persona; 318 bis ' +
+      'protege el control de flujos. Lenguaje MUY orientativo y foco en la víctima. Doble revisión jurídica.',
   }),
 ];
 

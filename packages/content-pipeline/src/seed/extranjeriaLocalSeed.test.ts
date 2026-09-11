@@ -14,7 +14,7 @@ const porId = (id: string) =>
 
 describe('SEED_EXTRANJERIA_LOCAL: integridad', () => {
   it('siembra 4 infracciones administrativas (extranjería + PPP)', () => {
-    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(4);
+    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(10);
     for (const { infraccion } of SEED_EXTRANJERIA_LOCAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('administrativa');
     }
@@ -37,7 +37,10 @@ describe('SEED_EXTRANJERIA_LOCAL: integridad', () => {
   it('cada importe valida en su marco y supera los mínimos de publicación', () => {
     for (const { infraccion, sinonimos, marcoImporte } of SEED_EXTRANJERIA_LOCAL.infracciones) {
       expect(validarImporte(infraccion, marcoImporte), infraccion.id).toEqual([]);
-      expect(validarMinimosPublicacion(infraccion, sinonimos.length), infraccion.id).toEqual([]);
+      expect(
+        validarMinimosPublicacion(infraccion, sinonimos.length, marcoImporte),
+        infraccion.id,
+      ).toEqual([]);
     }
   });
 });

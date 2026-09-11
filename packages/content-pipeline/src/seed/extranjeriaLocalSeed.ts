@@ -130,9 +130,85 @@ const ART_PPP_13 = articuloSeed({
     '(art. 13.5) y pueden incluir el comiso o el sacrificio del animal. Resumen orientativo.',
 });
 
+// --- Artículos de la OLA DE EXTRANJERÍA (2026-09-11) ----------------------------------------
+const ART_LOEX_54_1_D = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '54.1.d',
+  titulo: 'Infracción muy grave: dar trabajo a un extranjero sin autorización (empleador)',
+  texto:
+    'Tipifica como infracción MUY GRAVE contratar o dar ocupación a un trabajador extranjero que carece ' +
+    'de la autorización de residencia y trabajo, cometiéndose una infracción por cada trabajador. Es la ' +
+    'infracción del EMPLEADOR, distinta de la del trabajador (grave, art. 53.1.b). El expediente lo inicia ' +
+    'la Inspección de Trabajo (art. 55.2). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOEX_52_B = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '52.b',
+  titulo: 'Infracción leve: retraso de hasta tres meses en solicitar la renovación',
+  texto:
+    'Tipifica como infracción LEVE el encontrarse trabajando o residiendo con la autorización caducada ' +
+    'habiéndose retrasado hasta tres meses en solicitar su renovación, siempre que ese retraso no derive ' +
+    'de causa imputable a la Administración. Se distingue de la estancia irregular GRAVE (art. 53.1.a), que ' +
+    'exige carecer de autorización o tenerla caducada más de tres meses sin haber pedido renovación. Resumen orientativo.',
+});
+
+const ART_LOEX_52_A = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '52.a',
+  titulo: 'Infracción leve: no comunicar los cambios que determina el art. 31',
+  texto:
+    'Tipifica como infracción LEVE la omisión o el retraso en comunicar a las autoridades los cambios de ' +
+    'nacionalidad, estado civil o domicilio, así como las demás circunstancias determinantes de la ' +
+    'situación laboral que exige el art. 31. Si hay ocultación dolosa o falsedad grave, la conducta pasa a ' +
+    'grave (art. 53.1.c). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_LOEX_4 = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '4',
+  titulo: 'Derecho y deber de documentación',
+  texto:
+    'Los extranjeros tienen el derecho y el deber de conservar la documentación que acredita su identidad y ' +
+    'su situación en España, y de exhibirla cuando sean requeridos. NO portar la documentación ENCIMA no ' +
+    'equivale a estar en situación irregular: quien está en situación regular puede acreditarla por otros ' +
+    'medios y aportarla después (cuestión de diligencia/subsanación), a diferencia de CARECER de ' +
+    'autorización, que es la estancia irregular grave (art. 53.1.a). Resumen orientativo.',
+});
+
+const ART_LOEX_58_3_B = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '58.3.b',
+  titulo: 'Devolución: contravenir la prohibición de entrada',
+  texto:
+    'Procede acordar la DEVOLUCIÓN, sin necesidad de un nuevo expediente de expulsión, de quien pretende ' +
+    'entrar o entra en España contraviniendo una prohibición de entrada vigente (p. ej. tras una expulsión ' +
+    'previa), reactivándose el cómputo del plazo de prohibición fijado en la resolución quebrantada. NO es ' +
+    'un delito por sí solo: la respuesta es administrativa. El internamiento cautelar, en su caso, lo ' +
+    'acuerda la autoridad con los requisitos de los arts. 61-62. Resumen orientativo.',
+});
+
+const ART_LOEX_53_1_PUESTOS = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '53.1',
+  titulo: 'Infracción grave: salir por puesto no habilitado / eludir el control fronterizo',
+  texto:
+    'Tipifica como infracción GRAVE, entre otras, salir del territorio español por un puesto no habilitado ' +
+    'o sin exhibir la documentación exigida, o eludir el control fronterizo. La ENTRADA ilegal del propio ' +
+    'extranjero se resuelve por la vía de la devolución (art. 58.3.b), no por sanción penal. AYUDAR a ' +
+    'terceros a entrar o transitar sí puede ser delito (art. 318 bis CP). Resumen orientativo; a verificar ' +
+    'la letra exacta del apartado en el texto consolidado.',
+});
+
 export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_53,
   ART_LOEX_53_TRABAJO,
+  ART_LOEX_54_1_D,
+  ART_LOEX_52_B,
+  ART_LOEX_52_A,
+  ART_LOEX_4,
+  ART_LOEX_58_3_B,
+  ART_LOEX_53_1_PUESTOS,
   ART_PPP_13,
 ];
 
@@ -307,10 +383,256 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       '10.000 €, art. 55.1.b) como orientativo, sabiendo que puede sustituirse por expulsión (art. 57). ' +
       'El expediente por 53.1.b se inicia por acta de la INSPECCIÓN DE TRABAJO (art. 55.2 LO 4/2000), no ' +
       'por el agente; y la carga sancionadora fuerte recae en el EMPLEADOR (art. 54.1.d, hasta 100.000 € ' +
-      'y cierre; posible delito del art. 311 bis CP si es reiterado). ' +
+      'y cierre; posible delito del art. 311 CP —imposición de condiciones ilegales— o del 177 bis si hay ' +
+      'explotación grave; el antiguo art. 311 bis fue DEROGADO por la LO 14/2022). ' +
       'MENSAJE CLAVE a preservar: es infracción ADMINISTRATIVA, NO delito; NO procede detención penal ' +
       'por ella. Punto jurídicamente sensible: confirmar toda la redacción con el revisor jurídico antes ' +
       'de publicar.',
+  }),
+  // --- OLA DE EXTRANJERÍA (2026-09-11): más catálogo administrativo (uso diario de PN) ----------
+  construirInfraccion({
+    id: 'ext-empleador-sin-autorizacion',
+    articulo: ART_LOEX_54_1_D,
+    tituloCorto: 'Dar trabajo a un extranjero sin autorización (empleador)',
+    gravedad: 'muy_grave',
+    // LO 4/2000 art. 55.1.c: muy graves, multa de 10.001 a 100.000 €. Mínimo del tramo como referencia.
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Contratar o dar ocupación a un trabajador extranjero que carece de autorización de residencia y ' +
+      'trabajo. Es infracción MUY GRAVE ADMINISTRATIVA del EMPLEADOR (art. 54.1.d LO 4/2000), y se comete ' +
+      'una por cada trabajador. Es la cara del empleador, distinta de la del trabajador (grave, art. ' +
+      '53.1.b). MENSAJE CLAVE: la vía es administrativa (acta de la Inspección de Trabajo, art. 55.2); la ' +
+      'mera situación no es delito. FRONTERA PENAL: si se imponen condiciones laborales ilegales puede ' +
+      'entrar el art. 311 CP y, en explotación grave con captación/traslado, la trata del art. 177 bis CP. ' +
+      'La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'contratar sin papeles',
+      'dar trabajo a sin papeles',
+      'empresa contrata ilegales',
+      'empleador extranjeros sin permiso',
+      'trabajador sin contrato extranjero',
+      'contratar irregulares',
+      'explotacion laboral inmigrantes',
+      'ocupar extranjero sin autorizacion',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y dar parte; el expediente sancionador lo inicia la Inspección de Trabajo ' +
+          '(art. 55.2 LO 4/2000). Valorar indicios de explotación laboral (frontera con arts. 311 y 177 bis CP).',
+        fuente: 'LO 4/2000 arts. 54.1.d y 55.2',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 54.1.d (muy grave), una infracción por cada trabajador; tramo muy grave ' +
+      '10.001-100.000 € (art. 55.1.c), el seed fija el mínimo. IMPORTANTE: el art. 311 bis CP fue ' +
+      'DEROGADO por la LO 14/2022; la frontera penal es hoy el art. 311 CP y, en su caso, el 177 bis (no ' +
+      'citar 311 bis como vigente). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-autorizacion-caducada-retraso',
+    articulo: ART_LOEX_52_B,
+    tituloCorto: 'Autorización caducada: retraso de hasta 3 meses en renovar',
+    gravedad: 'leve',
+    // LO 4/2000 art. 55.1.a: leves, multa de hasta 500 €. Referencia el techo del tramo.
+    importeEur: 500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Permanecer en España con la autorización caducada habiéndose retrasado HASTA TRES MESES en solicitar ' +
+      'su renovación. Es infracción LEVE ADMINISTRATIVA (art. 52.b LO 4/2000), no la estancia irregular ' +
+      'grave. DESLINDE CLAVE: si la autorización lleva caducada MÁS de tres meses SIN haber solicitado la ' +
+      'renovación, el hecho pasa a estancia irregular GRAVE (art. 53.1.a). MENSAJE CLAVE: no es delito ni ' +
+      'procede detención penal; suele ser subsanable presentando la renovación. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'tarjeta caducada',
+      'residencia caducada',
+      'renovar fuera de plazo',
+      'no renove la tarjeta',
+      'permiso caducado extranjero',
+      'tie caducada',
+      'nie caducado',
+      'prorroga no solicitada',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y comprobar la fecha de caducidad y si hay solicitud de renovación ' +
+          'presentada; orientar hacia la subsanación. Vía administrativa, nunca penal por la mera caducidad.',
+        fuente: 'LO 4/2000 arts. 52.b y 53.1.a',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 52.b (retraso hasta 3 meses = leve) y la frontera de los 3 meses con la estancia ' +
+      'irregular del 53.1.a. Importe leve (hasta 500 €, art. 55.1.a), el seed fija el techo. Deslinde muy ' +
+      'sensible en calle. Revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-no-portar-documentacion',
+    articulo: ART_LOEX_4,
+    tituloCorto: 'No llevar encima la documentación (no es estancia irregular)',
+    gravedad: 'leve', // valor de relleno; es entrada CONSULTABLE de deslinde, no sancionadora
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'No portar encima la documentación que acredita la situación (pasaporte, TIE/NIE). MENSAJE CLAVE: no ' +
+      'llevar la documentación ENCIMA no equivale a estar en situación irregular. Un extranjero en ' +
+      'situación regular puede acreditarla por otros medios y aportarla después; es una cuestión de ' +
+      'diligencia/subsanación (art. 4 LO 4/2000). Cosa distinta es CARECER de autorización, que es la ' +
+      'estancia irregular GRAVE (art. 53.1.a). Nunca procede detención penal por no llevar los papeles ' +
+      'encima. La valoración final corresponde al agente y a la autoridad competente.',
+    terminos: [
+      'no lleva papeles encima',
+      'sin documentacion encima',
+      'no lleva el nie',
+      'olvido la tarjeta',
+      'sin pasaporte encima',
+      'no lleva la tie',
+      'indocumentado extranjero',
+      'acreditar identidad extranjero',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y dar oportunidad de acreditar la situación por otros medios; distinguir "no ' +
+          'la lleva encima" (subsanable) de "no la tiene" (posible estancia irregular, 53.1.a). Se coordina ' +
+          'con la diligencia de identificación del art. 16 LO 4/2015.',
+        fuente: 'LO 4/2000 art. 4; LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE (deslinde): la obligación de portar la documentación es del art. 4 LO 4/2000, ' +
+      'pero NO llevarla encima no es sin más infracción grave. Modelada como no_sancionador (sin importe). ' +
+      'MENSAJE CLAVE a preservar. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-quebrantar-prohibicion-entrada',
+    articulo: ART_LOEX_58_3_B,
+    tituloCorto: 'Regresar tras una expulsión (prohibición de entrada vigente)',
+    gravedad: 'leve', // relleno; el peso está en la consecuencia (devolución), sin cuantía fija
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Regresar a España habiendo sido expulsado y estando vigente la prohibición de entrada, o entrar ' +
+      'contraviniéndola. MENSAJE CLAVE: por sí solo NO es delito (no encaja en el art. 197 ni 197 bis CP). ' +
+      'La respuesta es ADMINISTRATIVA: procede la DEVOLUCIÓN sin necesidad de nuevo expediente de expulsión ' +
+      '(art. 58.3.b LO 4/2000), reiniciándose el cómputo del plazo de prohibición de entrada. La detención ' +
+      'cautelar o el internamiento, si proceden, los acuerda la autoridad con los requisitos de los arts. ' +
+      '61-62. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'volvio tras ser expulsado',
+      'quebrantar expulsion',
+      'prohibicion de entrada',
+      'regreso tras expulsion',
+      'reentrada ilegal',
+      'expulsado que vuelve',
+      'incumplir orden de expulsion',
+      'veto de entrada',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y comprobar en bases si consta una expulsión con prohibición de entrada ' +
+          'vigente; la vía es la devolución (art. 58.3.b), no la detención penal. El internamiento cautelar ' +
+          'lo acuerda la autoridad (arts. 61-62).',
+        fuente: 'LO 4/2000 arts. 58.3.b, 57, 61 y 62',
+      },
+    ],
+    notaRevision:
+      'CORRECCIÓN a fijar con el revisor: el regreso tras expulsión NO es delito autónomo (no es 197 ni ' +
+      '197 bis CP, que son otra cosa); es DEVOLUCIÓN administrativa (art. 58.3.b) con reactivación del ' +
+      'plazo del art. 57. Modelada como no_sancionador. Descartar expresamente el encaje penal erróneo.',
+  }),
+  construirInfraccion({
+    id: 'ext-salida-puesto-no-habilitado',
+    articulo: ART_LOEX_53_1_PUESTOS,
+    tituloCorto: 'Salir por puesto no habilitado / eludir el control fronterizo',
+    gravedad: 'grave',
+    // LO 4/2000 art. 55.1.b: graves, multa de 501 a 10.000 €. Mínimo del tramo como referencia.
+    importeEur: 501,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Salir de España por un puesto no habilitado o sin exhibir la documentación exigida, o eludir el ' +
+      'control fronterizo. La SALIDA por puesto no habilitado es infracción GRAVE (art. 53.1 LO 4/2000). La ' +
+      'ENTRADA ilegal del propio extranjero se resuelve por la vía de la DEVOLUCIÓN (art. 58.3.b), sin nuevo ' +
+      'expediente. MENSAJE CLAVE: la conducta del propio extranjero es administrativa; AYUDAR a terceros a ' +
+      'entrar o transitar sí puede ser DELITO (art. 318 bis CP). La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'puesto no habilitado',
+      'entrada ilegal frontera',
+      'eludir control fronterizo',
+      'entrar sin pasar aduana',
+      'cruzar por sitio no autorizado',
+      'entrada clandestina',
+      'saltar la valla',
+      'patera',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y valorar la devolución (entrada) o la sanción grave (salida). Si hay ' +
+          'indicios de que alguien facilitó el paso, valorar la frontera penal del art. 318 bis CP.',
+        fuente: 'LO 4/2000 arts. 53.1 y 58.3.b',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR la letra exacta del art. 53.1 sobre puestos no habilitados y el deslinde entrada ' +
+      '(devolución, 58.3.b) / salida (grave). Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. No ' +
+      'confundir con el art. 318 bis CP (el que AYUDA a terceros). Revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-no-comunicar-cambios',
+    articulo: ART_LOEX_52_A,
+    tituloCorto: 'No comunicar cambios de domicilio, estado civil o nacionalidad',
+    gravedad: 'leve',
+    importeEur: 500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'No comunicar, o comunicar con retraso, los cambios de domicilio, estado civil o nacionalidad a los ' +
+      'que obliga el art. 31 LO 4/2000. Es infracción LEVE ADMINISTRATIVA (art. 52.a). DESLINDE: si hay ' +
+      'ocultación DOLOSA o falsedad grave, el hecho pasa a GRAVE (art. 53.1.c). MENSAJE CLAVE: no es delito ' +
+      'ni procede detención penal; suele ser subsanable. La valoración final corresponde a la autoridad ' +
+      'competente.',
+    terminos: [
+      'no comunicar cambio de domicilio',
+      'no actualizar el domicilio extranjeria',
+      'cambio de domicilio nie',
+      'no notificar cambio estado civil',
+      'no comunicar cambios extranjeria',
+      'empadronamiento extranjero',
+      'cambio de nacionalidad no comunicado',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y orientar a la subsanación (comunicación del cambio); distinguir el olvido ' +
+          'leve (52.a) de la ocultación dolosa (grave, 53.1.c). Vía administrativa.',
+        fuente: 'LO 4/2000 arts. 52.a y 31',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 52.a (leve) y la frontera con el 53.1.c (ocultación dolosa/falsedad = grave). ' +
+      'Importe leve hasta 500 € (55.1.a), el seed fija el techo. Revisor jurídico.',
   }),
   construirInfraccion({
     id: 'ppp-sin-licencia',
