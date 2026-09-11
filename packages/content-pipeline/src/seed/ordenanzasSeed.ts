@@ -581,25 +581,27 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'ord-sctf-perro-sin-censar',
     articulo: ART_ANIM_CENSO,
-    tituloCorto: 'Perro sin identificar (microchip) o sin censar',
+    tituloCorto: 'Perro sin inscribir en el censo municipal',
     gravedad: 'leve',
     importeEur: 100,
     importeReducidoEur: 50,
     textoBoletin:
-      'Tener un perro sin identificar mediante microchip o sin inscribir en el censo municipal de ' +
-      'animales, incumpliendo la ordenanza municipal de protección y tenencia de animales.',
+      'No inscribir al perro en el CENSO MUNICIPAL de animales, incumpliendo la ordenanza municipal de ' +
+      'protección y tenencia de animales (infracción leve). El deber de IDENTIFICACIÓN por microchip es ' +
+      'ESTATAL (Ley 7/2023, ficha propia, infracción grave): esta ficha es el censo local.',
     terminos: [
       'perro sin censar',
-      'perro sin chip',
-      'perro sin microchip',
-      'perro sin registrar',
       'sin censo animal',
-      'perro no identificado',
+      'perro no censado',
+      'no inscrito en el censo',
+      'censo municipal de animales',
+      'dar de alta el perro en el ayuntamiento',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: no identificar (microchip) ni censar al animal es infracción ' +
-      'de la Ordenanza de protección y tenencia de animales. El importe (100/50 €) es ORIENTATIVO; ' +
-      'confirmar artículo, tramo y cuantía con el texto consolidado y el revisor jurídico.',
+      'A VERIFICAR importe y clasificación: no inscribir al animal en el CENSO municipal es infracción ' +
+      'de la Ordenanza. El importe (100/50 €) es ORIENTATIVO. DESLINDE (revisor de animales): la ' +
+      'identificación por MICROCHIP es deber ESTATAL de la Ley 7/2023 (ficha `animal-no-identificacion`, ' +
+      'grave); esta ficha se reserva al censo municipal para no confundir 100 € con 10.001 €.',
   }),
   construirInfraccion({
     id: 'ord-sctf-ruido-convivencia',

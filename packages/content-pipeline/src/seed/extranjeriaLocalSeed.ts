@@ -144,35 +144,37 @@ const ART_PPP_13 = articuloSeed({
 // --- Artículos de BIENESTAR ANIMAL (Ley 7/2023), OLA DE ANIMALES 2026-09-11 -------------------
 const ART_LBA_ABANDONO = articuloSeed({
   normaId: ID_LBA,
-  numero: '80',
-  titulo: 'Bienestar animal: abandono y régimen sancionador',
+  numero: '74.k',
+  titulo: 'Bienestar animal: abandono (infracción grave)',
   texto:
-    'La Ley 7/2023 prohíbe el abandono de los animales de compañía y grada las infracciones (arts. 74-76) ' +
-    'con sanciones por tramos (art. 80): leves 500-10.000 €, graves 10.001-50.000 €, muy graves ' +
-    '50.001-200.000 €. DESLINDE PENAL: si del abandono se deriva un riesgo para la vida o integridad del ' +
-    'animal, el hecho puede ser DELITO del art. 340 ter CP. Resumen orientativo; consúltese el BOE.',
+    'La Ley 7/2023 tipifica como infracción GRAVE el abandono de un animal de compañía (art. 74.k), con la ' +
+    'sanción por tramos del art. 80 (grave 10.001-50.000 €). DESLINDE PENAL: si del abandono se deriva un ' +
+    'riesgo para la vida o integridad del animal, el hecho puede ser DELITO del art. 340 ter CP. Resumen ' +
+    'orientativo; consúltese el BOE.',
 });
 
 const ART_LBA_IDENTIFICACION = articuloSeed({
   normaId: ID_LBA,
-  numero: '74',
-  titulo: 'Bienestar animal: identificación y registro',
+  numero: '74.b',
+  titulo: 'Bienestar animal: identificación y registro (infracción grave)',
   texto:
-    'La Ley 7/2023 establece la obligación de identificar (microchip) y registrar a los animales de ' +
-    'compañía sujetos a ello. Su incumplimiento es infracción administrativa (arts. 74-76, sanción del ' +
-    'art. 80). Es el deber ESTATAL de identificación, distinto del censo municipal que fije la ordenanza. ' +
-    'Resumen orientativo; consúltese el texto consolidado.',
+    'La Ley 7/2023 tipifica como infracción GRAVE (art. 74.b) mantener sin identificar (microchip) o sin ' +
+    'registrar a un animal de compañía sujeto a ello, con la sanción del art. 80. Es el deber ESTATAL de ' +
+    'identificación, distinto del censo municipal que fije la ordenanza. Resumen orientativo; consúltese el ' +
+    'texto consolidado.',
 });
 
 const ART_LBA_MALTRATO = articuloSeed({
   normaId: ID_LBA,
-  numero: '75',
-  titulo: 'Bienestar animal: condiciones de mantenimiento y maltrato sin lesión',
+  numero: '74',
+  titulo: 'Bienestar animal: condiciones de mantenimiento y maltrato sin lesión (grave)',
   texto:
     'La Ley 7/2023 obliga a mantener a los animales en condiciones adecuadas (alojamiento, alimentación, ' +
-    'atención veterinaria) y prohíbe tratos que les causen sufrimiento sin llegar a la lesión que requiera ' +
-    'tratamiento (arts. 74-76, sanción del art. 80). DESLINDE PENAL: el maltrato con lesión que requiera ' +
-    'tratamiento veterinario o menoscabo grave de la salud es DELITO del art. 340 bis CP. Resumen orientativo.',
+    'atención veterinaria) y tipifica como GRAVES (art. 74, p. ej. 74.o) los tratos que les causen ' +
+    'sufrimiento sin llegar a la lesión que requiera tratamiento (sanción del art. 80). Las infracciones muy ' +
+    'graves están en el art. 75. DESLINDE PENAL: el maltrato con lesión que requiera tratamiento veterinario ' +
+    'o menoscabo grave es DELITO del art. 340 bis.1 CP; el maltrato grave o cruel SIN esa lesión también ' +
+    'puede ser delito (art. 340 bis.4 CP). Resumen orientativo.',
 });
 
 // --- Artículos de la OLA DE EXTRANJERÍA (2026-09-11) ----------------------------------------
@@ -827,11 +829,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'perro sin chip',
       'sin microchip',
       'animal sin identificar',
-      'perro sin registrar',
       'mascota sin chip',
       'gato sin chip',
-      'sin cartilla del animal',
-      'no esta censado',
+      'perro sin microchip',
+      'sin chip obligatorio',
+      'implantar el microchip',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
     consecuencias: [
@@ -859,9 +861,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Someter a un animal a condiciones o tratos que le causen sufrimiento o daño SIN llegar a producir una ' +
       'lesión que requiera tratamiento veterinario ni menoscabo grave de su salud: infracción administrativa ' +
-      'de la Ley 7/2023. DESLINDE PENAL: si el maltrato causa lesión que requiera tratamiento veterinario o ' +
-      'un menoscabo grave, el hecho es DELITO del art. 340 bis CP (ficha `del-maltrato-animal`). La ' +
-      'calificación final corresponde a la autoridad judicial.',
+      'GRAVE de la Ley 7/2023 (art. 74). DESLINDE PENAL: si el maltrato causa lesión que requiera tratamiento ' +
+      'veterinario o menoscabo grave, es DELITO del art. 340 bis.1 CP; y el maltrato GRAVE o CRUEL, aun SIN ' +
+      'esa lesión, también puede ser delito (art. 340 bis.4 CP). Esa frontera la fija la autoridad judicial ' +
+      '(ficha `del-maltrato-animal`).',
     terminos: [
       'maltrato animal',
       'maltratar un perro',
@@ -899,8 +902,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'Mantener a un animal en un vehículo, terraza, azotea, balcón o espacio cerrado en condiciones (calor, ' +
       'frío, falta de ventilación, agua o espacio) que comprometan su bienestar: infracción de la Ley 7/2023. ' +
       'SITUACIÓN DE POSIBLE URGENCIA: la protección inmediata del animal prima. DESLINDE PENAL: si hay riesgo ' +
-      'para la vida/integridad (p. ej. golpe de calor) puede procederse por el art. 340 ter CP, y si se causa ' +
-      'lesión/muerte por el art. 340 bis CP. La calificación final corresponde a la autoridad judicial.',
+      'para la vida/integridad (p. ej. golpe de calor) puede procederse por el art. 340 ter CP; si se causa ' +
+      'lesión/muerte, por el art. 340 bis.1 CP; y el maltrato grave aun sin lesión, por el 340 bis.4. La ' +
+      'calificación final corresponde a la autoridad judicial.',
     terminos: [
       'perro en el coche',
       'perro encerrado en el coche al sol',
@@ -995,8 +999,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR la cuantía del art. 13.5 (mínimo grave 300,52 €) y el apartado exacto; el seguro RC es ' +
-      'requisito del RD 287/2002 art. 3. Muchos matices los concreta la ORDENANZA municipal. Revisor.',
+      'A VERIFICAR (revisor de animales): la falta de seguro NO está tipificada específicamente en el art. ' +
+      '13; el seguro es requisito de la licencia (RD 287/2002 art. 3). La gravedad "grave 300,52 €" carece ' +
+      'de fuente directa: podría ser MUY GRAVE (13.1, si invalida la licencia) o LEVE (13.4), o elevarla la ' +
+      'ORDENANZA municipal. Reclasificar tras el visto bueno del revisor.',
   }),
   construirInfraccion({
     id: 'ppp-menor-conduciendo',
@@ -1030,8 +1036,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR el apartado (art. 13.2) e importe (art. 13.5, mínimo grave 300,52 €); requisito de mayoría ' +
-      'de edad en el RD 287/2002 art. 3. Revisor.',
+      'A VERIFICAR (revisor de animales): conducir un PPP siendo menor no figura literal en el art. 13.2; la ' +
+      'exigencia de mayoría de edad es del RD 287/2002 art. 3. La gravedad "grave" carece de apoyo directo: ' +
+      'probable LEVE (13.4) o vía ordenanza (salvo lectura de "conducción sin licencia"). Reclasificar con el revisor.',
   }),
   construirInfraccion({
     id: 'ppp-mas-de-uno',
@@ -1059,13 +1066,14 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         tipo: 'decomiso',
         textoCorto:
           'Procede valorar el aseguramiento del o los animales cuando el manejo simultáneo entrañe riesgo.',
-        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 7',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 8',
       },
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR la regla "un PPP por persona" (RD 287/2002 art. 7) y el importe (art. 13.5, mínimo grave ' +
-      '300,52 €); a menudo detallado por la ordenanza municipal. Revisor.',
+      'A VERIFICAR (revisor de animales): "un perro por persona" (RD 287/2002 art. 8) no figura en la lista ' +
+      'de graves del art. 13.2; la gravedad "grave" carece de apoyo directo: probable LEVE (13.4) o vía ' +
+      'ordenanza. Reclasificar con el revisor.',
   }),
   construirInfraccion({
     id: 'ppp-transporte',
@@ -1091,7 +1099,7 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       {
         tipo: 'decomiso',
         textoCorto: 'Procede valorar el aseguramiento del animal cuando el transporte entrañe riesgo.',
-        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 7',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 8',
       },
     ],
     marcoImporte: 'animales',
