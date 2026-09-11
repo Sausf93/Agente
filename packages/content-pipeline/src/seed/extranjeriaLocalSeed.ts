@@ -35,6 +35,7 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 // --- Identificadores de norma (BOE, legislación consolidada) --------------------------------
 const ID_LOEX = 'BOE-A-2000-544'; // LO 4/2000, derechos y libertades de los extranjeros en España
 const ID_PPP = 'BOE-A-1999-24419'; // Ley 50/1999, tenencia de animales potencialmente peligrosos
+const ID_LBA = 'BOE-A-2023-7936'; // Ley 7/2023, protección de los derechos y el bienestar de los animales
 
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
 
@@ -64,6 +65,16 @@ export const NORMAS_EXTRANJERIA_LOCAL_SEED: Norma[] = [
     tipo: 'ley',
     ambito: 'estatal',
     urlBoe: urlBoe(ID_PPP),
+    fechaConsolidacion: null,
+    cuerpos: CUERPOS_LOCAL,
+  }),
+  Norma.parse({
+    id: ID_LBA,
+    codigo: 'LBA',
+    titulo: 'Ley de protección de los derechos y el bienestar de los animales (Ley 7/2023)',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_LBA),
     fechaConsolidacion: null,
     cuerpos: CUERPOS_LOCAL,
   }),
@@ -128,6 +139,40 @@ const ART_PPP_13 = articuloSeed({
     'GRAVE, entre otras, dejar suelto al animal o no adoptar las medidas de seguridad, como llevarlo ' +
     'sin bozal o sin correa no extensible en lugares públicos. Las sanciones se gradúan por tramos ' +
     '(art. 13.5) y pueden incluir el comiso o el sacrificio del animal. Resumen orientativo.',
+});
+
+// --- Artículos de BIENESTAR ANIMAL (Ley 7/2023), OLA DE ANIMALES 2026-09-11 -------------------
+const ART_LBA_ABANDONO = articuloSeed({
+  normaId: ID_LBA,
+  numero: '80',
+  titulo: 'Bienestar animal: abandono y régimen sancionador',
+  texto:
+    'La Ley 7/2023 prohíbe el abandono de los animales de compañía y grada las infracciones (arts. 74-76) ' +
+    'con sanciones por tramos (art. 80): leves 500-10.000 €, graves 10.001-50.000 €, muy graves ' +
+    '50.001-200.000 €. DESLINDE PENAL: si del abandono se deriva un riesgo para la vida o integridad del ' +
+    'animal, el hecho puede ser DELITO del art. 340 ter CP. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_IDENTIFICACION = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74',
+  titulo: 'Bienestar animal: identificación y registro',
+  texto:
+    'La Ley 7/2023 establece la obligación de identificar (microchip) y registrar a los animales de ' +
+    'compañía sujetos a ello. Su incumplimiento es infracción administrativa (arts. 74-76, sanción del ' +
+    'art. 80). Es el deber ESTATAL de identificación, distinto del censo municipal que fije la ordenanza. ' +
+    'Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_LBA_MALTRATO = articuloSeed({
+  normaId: ID_LBA,
+  numero: '75',
+  titulo: 'Bienestar animal: condiciones de mantenimiento y maltrato sin lesión',
+  texto:
+    'La Ley 7/2023 obliga a mantener a los animales en condiciones adecuadas (alojamiento, alimentación, ' +
+    'atención veterinaria) y prohíbe tratos que les causen sufrimiento sin llegar a la lesión que requiera ' +
+    'tratamiento (arts. 74-76, sanción del art. 80). DESLINDE PENAL: el maltrato con lesión que requiera ' +
+    'tratamiento veterinario o menoscabo grave de la salud es DELITO del art. 340 bis CP. Resumen orientativo.',
 });
 
 // --- Artículos de la OLA DE EXTRANJERÍA (2026-09-11) ----------------------------------------
@@ -211,6 +256,9 @@ export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_58_3_A,
   ART_LOEX_53_1_G,
   ART_PPP_13,
+  ART_LBA_ABANDONO,
+  ART_LBA_IDENTIFICACION,
+  ART_LBA_MALTRATO,
 ];
 
 // --- Constructor de una infracción administrativa con sus sinónimos y consecuencias ---------
@@ -722,6 +770,334 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'persona) y las cuantías las suele detallar la ORDENANZA MUNICIPAL. A VERIFICAR también el ' +
       'ASEGURAMIENTO/intervención cautelar del animal (orientativo, art. 13 y RD 287/2002). Confirmar ' +
       'con el revisor jurídico.',
+  }),
+  // --- OLA DE ANIMALES (2026-09-11): bienestar animal (Ley 7/2023) + PPP (Ley 50/1999) ----------
+  construirInfraccion({
+    id: 'animal-abandono',
+    articulo: ART_LBA_ABANDONO,
+    tituloCorto: 'Abandono de un animal de compañía',
+    gravedad: 'grave',
+    // Ley 7/2023 art. 80: graves 10.001-50.000 €. Mínimo del tramo como referencia.
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Abandonar a un animal de compañía, o dejarlo sin la atención necesaria, cuando de ello NO se derive ' +
+      'un riesgo para su vida o integridad: infracción administrativa de la Ley 7/2023. DESLINDE PENAL: si ' +
+      'el animal queda en condiciones en que pueda peligrar su vida o integridad, el hecho puede ser DELITO ' +
+      'del art. 340 ter CP, cuya calificación corresponde a la autoridad judicial. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'abandono de animal',
+      'abandonar perro',
+      'perro abandonado',
+      'tirar un animal',
+      'dejar el perro atado',
+      'gato abandonado',
+      'camada abandonada',
+      'animal abandonado en la carretera',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la recogida e intervención cautelar del animal y su puesta a disposición del ' +
+          'servicio o autoridad competente (Ley 7/2023).',
+        fuente: 'Ley 7/2023 art. 80',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR clasificación (leve/grave/muy grave, arts. 74-76) e importe del art. 80 (grave ' +
+      '10.001-50.000 €, el seed fija el mínimo). Punto SENSIBLE: deslinde con el art. 340 ter CP (abandono ' +
+      'con riesgo para la vida/integridad = delito). Revisor jurídico obligatorio.',
+  }),
+  construirInfraccion({
+    id: 'animal-no-identificacion',
+    articulo: ART_LBA_IDENTIFICACION,
+    tituloCorto: 'Animal sin identificar (microchip)',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tener un animal de compañía sujeto a identificación obligatoria sin el microchip o sin registrarlo ' +
+      'cuando la norma lo exige (Ley 7/2023). Es el deber ESTATAL de identificación, sin perjuicio del censo ' +
+      'municipal que fije la ordenanza. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro sin chip',
+      'sin microchip',
+      'animal sin identificar',
+      'perro sin registrar',
+      'mascota sin chip',
+      'gato sin chip',
+      'sin cartilla del animal',
+      'no esta censado',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede requerir la documentación e identificación del animal y de la persona responsable; la ' +
+          'subsanación (implantar el microchip/registrar) no siempre excluye la sanción.',
+        fuente: 'Ley 7/2023 arts. 74 y 80',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la frontera leve/grave y el importe del art. 80 (el seed usa el mínimo grave 10.001 €; ' +
+      'podría ser leve 500 € si es subsanable). Deslindar del CENSO municipal (`ord-sctf-perro-sin-censar`): ' +
+      'esta es la identificación ESTATAL. La Ley 7/2023 amplía la identificación a más especies. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'animal-maltrato-sin-lesion',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Maltrato animal sin lesión (administrativo)',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Someter a un animal a condiciones o tratos que le causen sufrimiento o daño SIN llegar a producir una ' +
+      'lesión que requiera tratamiento veterinario ni menoscabo grave de su salud: infracción administrativa ' +
+      'de la Ley 7/2023. DESLINDE PENAL: si el maltrato causa lesión que requiera tratamiento veterinario o ' +
+      'un menoscabo grave, el hecho es DELITO del art. 340 bis CP (ficha `del-maltrato-animal`). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'maltrato animal',
+      'maltratar un perro',
+      'pegar a un animal',
+      'animal maltratado',
+      'crueldad animal',
+      'dar patadas a un perro',
+      'tener mal a un animal',
+      'maltrato sin lesiones',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del animal cuando su permanencia con el responsable ' +
+          'entrañe riesgo (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 75 y 80',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'Punto SENSIBLE: el deslinde con el art. 340 bis CP (la frontera es "lesión que requiere tratamiento ' +
+      'veterinario / menoscabo grave"). No solaparse con la ficha penal `del-maltrato-animal`. A VERIFICAR ' +
+      'clasificación e importe del art. 80. Revisor jurídico obligatorio.',
+  }),
+  construirInfraccion({
+    id: 'animal-vehiculo-terraza-riesgo',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Animal en vehículo o terraza con riesgo (calor)',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Mantener a un animal en un vehículo, terraza, azotea, balcón o espacio cerrado en condiciones (calor, ' +
+      'frío, falta de ventilación, agua o espacio) que comprometan su bienestar: infracción de la Ley 7/2023. ' +
+      'SITUACIÓN DE POSIBLE URGENCIA: la protección inmediata del animal prima. DESLINDE PENAL: si hay riesgo ' +
+      'para la vida/integridad (p. ej. golpe de calor) puede procederse por el art. 340 ter CP, y si se causa ' +
+      'lesión/muerte por el art. 340 bis CP. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'perro en el coche',
+      'perro encerrado en el coche al sol',
+      'animal en el coche con calor',
+      'perro en la terraza sin agua',
+      'perro en el balcon',
+      'golpe de calor perro',
+      'gato encerrado en un coche',
+      'animal encerrado con calor',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Ante riesgo inminente, procede valorar el rescate e intervención cautelar del animal y su puesta ' +
+          'a disposición de la autoridad o servicios competentes; actuación según la urgencia.',
+        fuente: 'Ley 7/2023 arts. 75 y 80',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'Ficha SENSIBLE por el componente de URGENCIA. A VERIFICAR clasificación e importe (art. 80) y el ' +
+      'deslinde penal (riesgo para la vida → 340 ter; lesión/muerte → 340 bis CP). Revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'animal-condiciones-inadecuadas',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Condiciones inadecuadas / sin atención veterinaria',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Mantener a un animal sin las condiciones higiénico-sanitarias, de alojamiento, alimentación o cuidado ' +
+      'adecuadas, o sin procurarle la asistencia veterinaria necesaria, sin llegar al maltrato con lesión: ' +
+      'infracción de la Ley 7/2023. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro sin comida',
+      'animal desnutrido',
+      'sin agua el animal',
+      'perro enfermo sin tratar',
+      'condiciones insalubres animal',
+      'animal sin cuidados',
+      'perro en malas condiciones',
+      'animal sin veterinario',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del animal cuando las condiciones entrañen riesgo para ' +
+          'su salud (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74, 75 y 80',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la frontera leve/grave y el importe (art. 80; el seed usa el mínimo grave). Deslinde con ' +
+      'el maltrato (`animal-maltrato-sin-lesion`) y con el delito 340 bis si hay menoscabo grave. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ppp-sin-seguro',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Perro peligroso (PPP) sin seguro de responsabilidad civil',
+    gravedad: 'grave',
+    // Ley 50/1999 art. 13.5: graves 300,52-2.404,05 €. Mínimo del tramo.
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tener un animal potencialmente peligroso careciendo del seguro de responsabilidad civil por daños a ' +
+      'terceros exigido para su tenencia (Ley 50/1999 y RD 287/2002). El seguro es requisito de la licencia; ' +
+      'su falta se sanciona como infracción grave. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro peligroso sin seguro',
+      'ppp sin seguro',
+      'sin seguro de responsabilidad civil',
+      'pitbull sin seguro',
+      'seguro del perro peligroso caducado',
+      'sin poliza del perro',
+      'seguro perro peligroso',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del animal cuando la tenencia incumpla los requisitos de ' +
+          'seguridad; el aseguramiento y la sanción los fija la autoridad competente.',
+        fuente: 'Ley 50/1999 art. 13',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR la cuantía del art. 13.5 (mínimo grave 300,52 €) y el apartado exacto; el seguro RC es ' +
+      'requisito del RD 287/2002 art. 3. Muchos matices los concreta la ORDENANZA municipal. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ppp-menor-conduciendo',
+    articulo: ART_PPP_13,
+    tituloCorto: 'PPP conducido por un menor de edad',
+    gravedad: 'grave',
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Permitir que un animal potencialmente peligroso sea conducido o manejado en lugares públicos por una ' +
+      'persona menor de edad. La tenencia y conducción de PPP exige licencia, reservada a mayores de edad ' +
+      '(Ley 50/1999 y RD 287/2002). La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'niño paseando perro peligroso',
+      'menor con perro peligroso',
+      'adolescente con pitbull',
+      'ppp llevado por un menor',
+      'perro peligroso con un niño',
+      'menor paseando un ppp',
+      'chaval con perro peligroso',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede requerir a un adulto con licencia el control del animal y valorar la intervención ' +
+          'cautelar si persiste el riesgo.',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 3',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR el apartado (art. 13.2) e importe (art. 13.5, mínimo grave 300,52 €); requisito de mayoría ' +
+      'de edad en el RD 287/2002 art. 3. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ppp-mas-de-uno',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Más de un PPP por persona en la vía pública',
+    gravedad: 'grave',
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Llevar a más de un animal potencialmente peligroso por persona simultáneamente en lugares públicos, ' +
+      'incumpliendo las medidas de seguridad exigidas (RD 287/2002). La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'dos perros peligrosos a la vez',
+      'varios ppp una persona',
+      'pasear dos pitbull',
+      'mas de un perro peligroso',
+      'llevar dos perros peligrosos',
+      'dos ppp una correa',
+      'varios perros peligrosos juntos',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar el aseguramiento del o los animales cuando el manejo simultáneo entrañe riesgo.',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 7',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR la regla "un PPP por persona" (RD 287/2002 art. 7) y el importe (art. 13.5, mínimo grave ' +
+      '300,52 €); a menudo detallado por la ordenanza municipal. Revisor.',
+  }),
+  construirInfraccion({
+    id: 'ppp-transporte',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Transporte de PPP sin medidas de seguridad',
+    gravedad: 'grave',
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Transportar a un animal potencialmente peligroso sin las condiciones y medidas de seguridad ' +
+      'reglamentarias que eviten riesgos a personas o a otros animales (RD 287/2002). La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'transportar perro peligroso',
+      'ppp en el coche sin medidas',
+      'llevar pitbull en la furgoneta',
+      'transporte de perro peligroso',
+      'perro peligroso sin sujetar en el coche',
+      'ppp mal transportado',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto: 'Procede valorar el aseguramiento del animal cuando el transporte entrañe riesgo.',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 7',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR el apartado e importe (art. 13.5, mínimo grave 300,52 €); condiciones de transporte en el ' +
+      'RD 287/2002. Revisor.',
   }),
 ];
 

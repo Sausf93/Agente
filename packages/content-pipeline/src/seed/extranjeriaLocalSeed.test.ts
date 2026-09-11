@@ -14,7 +14,7 @@ const porId = (id: string) =>
 
 describe('SEED_EXTRANJERIA_LOCAL: integridad', () => {
   it('siembra 4 infracciones administrativas (extranjería + PPP)', () => {
-    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(10);
+    expect(SEED_EXTRANJERIA_LOCAL.infracciones).toHaveLength(19);
     for (const { infraccion } of SEED_EXTRANJERIA_LOCAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('administrativa');
     }

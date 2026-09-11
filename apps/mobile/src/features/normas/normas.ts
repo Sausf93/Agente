@@ -304,6 +304,7 @@ const MATERIA_POR_CODIGO: Record<string, Materia> = {
   LOEX: 'extranjeria',
   RA: 'armas',
   LPPP: 'animales',
+  LBA: 'animales', // Ley 7/2023 de bienestar animal (protección de los derechos y el bienestar de los animales)
   EVD: 'victimaMenores',
   LOPJM: 'victimaMenores',
 };
