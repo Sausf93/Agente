@@ -100,6 +100,19 @@ export const RANGOS_IMPORTE_ANIMALES = {
 } as const;
 
 /**
+ * Rangos de importe de BIENESTAR ANIMAL (Ley 7/2023, de protección de los derechos y el bienestar
+ * de los animales, art. 80): leves 500–10.000 €; graves 10.001–50.000 €; muy graves 50.001–200.000 €.
+ * Es un marco DISTINTO del de PPP (Ley 50/1999): sus cuantías son un orden de magnitud mayores y no
+ * encajan en `RANGOS_IMPORTE_ANIMALES`. Fuente: Ley 7/2023 (BOE-A-2023-7936) art. 80. "A verificar":
+ * muchas competencias y la graduación efectiva las concretan la CCAA y la ordenanza municipal.
+ */
+export const RANGOS_IMPORTE_BIENESTAR_ANIMAL = {
+  leve: { min: 500, max: 10_000 },
+  grave: { min: 10_001, max: 50_000 },
+  muy_grave: { min: 50_001, max: 200_000 },
+} as const;
+
+/**
  * Marco normativo con el que interpretar los rangos de importe.
  * `trafico`, `seguridad_ciudadana`, `extranjeria` y `animales` tienen rangos legales POR
  * GRAVEDAD que se validan. `seguro_obligatorio`, `velocidad`, `alcohol_drogas` y `transporte`
@@ -122,6 +135,7 @@ export type MarcoImporte =
   | 'transporte'
   | 'extranjeria'
   | 'animales'
+  | 'bienestar_animal'
   | 'municipal'
   | 'autonomico'
   | 'penal'
@@ -207,6 +221,7 @@ export function validarImporte(
     seguridad_ciudadana: RANGOS_IMPORTE_SEGURIDAD_CIUDADANA,
     extranjeria: RANGOS_IMPORTE_EXTRANJERIA,
     animales: RANGOS_IMPORTE_ANIMALES,
+    bienestar_animal: RANGOS_IMPORTE_BIENESTAR_ANIMAL,
   };
   const tabla = tablasPorGravedad[marco] ?? RANGOS_IMPORTE_TRAFICO;
   // Los delitos ya se cortaron arriba; aquí la gravedad es leve/grave/muy_grave.
