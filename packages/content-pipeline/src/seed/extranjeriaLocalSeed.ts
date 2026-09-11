@@ -176,28 +176,29 @@ const ART_LOEX_4 = articuloSeed({
     'autorización, que es la estancia irregular grave (art. 53.1.a). Resumen orientativo.',
 });
 
-const ART_LOEX_58_3_B = articuloSeed({
+const ART_LOEX_58_3_A = articuloSeed({
   normaId: ID_LOEX,
-  numero: '58.3.b',
-  titulo: 'Devolución: contravenir la prohibición de entrada',
+  numero: '58.3.a',
+  titulo: 'Devolución: contravenir la prohibición de entrada tras una expulsión',
   texto:
-    'Procede acordar la DEVOLUCIÓN, sin necesidad de un nuevo expediente de expulsión, de quien pretende ' +
-    'entrar o entra en España contraviniendo una prohibición de entrada vigente (p. ej. tras una expulsión ' +
-    'previa), reactivándose el cómputo del plazo de prohibición fijado en la resolución quebrantada. NO es ' +
-    'un delito por sí solo: la respuesta es administrativa. El internamiento cautelar, en su caso, lo ' +
-    'acuerda la autoridad con los requisitos de los arts. 61-62. Resumen orientativo.',
+    'Procede acordar la DEVOLUCIÓN, sin necesidad de un nuevo expediente de expulsión, de quien habiendo ' +
+    'sido expulsado contraviene la prohibición de entrada en España (art. 58.3.a), reactivándose el cómputo ' +
+    'del plazo de prohibición fijado en la resolución quebrantada (art. 58.7). NO es un delito por sí solo: ' +
+    'la respuesta es administrativa. El internamiento cautelar, en su caso, lo acuerda la autoridad con los ' +
+    'requisitos de los arts. 61-62. (La entrada ilegal por puesto no habilitado del que pretende entrar es ' +
+    'la letra b del 58.3.) Resumen orientativo.',
 });
 
-const ART_LOEX_53_1_PUESTOS = articuloSeed({
+const ART_LOEX_53_1_G = articuloSeed({
   normaId: ID_LOEX,
-  numero: '53.1',
-  titulo: 'Infracción grave: salir por puesto no habilitado / eludir el control fronterizo',
+  numero: '53.1.g',
+  titulo: 'Infracción grave: salir por puesto no habilitado',
   texto:
-    'Tipifica como infracción GRAVE, entre otras, salir del territorio español por un puesto no habilitado ' +
-    'o sin exhibir la documentación exigida, o eludir el control fronterizo. La ENTRADA ilegal del propio ' +
-    'extranjero se resuelve por la vía de la devolución (art. 58.3.b), no por sanción penal. AYUDAR a ' +
-    'terceros a entrar o transitar sí puede ser delito (art. 318 bis CP). Resumen orientativo; a verificar ' +
-    'la letra exacta del apartado en el texto consolidado.',
+    'Tipifica como infracción GRAVE las salidas del territorio español por puestos no habilitados, sin ' +
+    'exhibir la documentación prevista o contraviniendo las prohibiciones legalmente impuestas (art. ' +
+    '53.1.g). Es la SALIDA: la ENTRADA ilegal del propio extranjero se resuelve por la vía de la devolución ' +
+    '(art. 58.3.b), no por esta sanción grave. AYUDAR a terceros a entrar o transitar sí puede ser delito ' +
+    '(art. 318 bis CP). Resumen orientativo; consúltese el texto consolidado.',
 });
 
 export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
@@ -207,8 +208,8 @@ export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_52_B,
   ART_LOEX_52_A,
   ART_LOEX_4,
-  ART_LOEX_58_3_B,
-  ART_LOEX_53_1_PUESTOS,
+  ART_LOEX_58_3_A,
+  ART_LOEX_53_1_G,
   ART_PPP_13,
 ];
 
@@ -383,8 +384,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       '10.000 €, art. 55.1.b) como orientativo, sabiendo que puede sustituirse por expulsión (art. 57). ' +
       'El expediente por 53.1.b se inicia por acta de la INSPECCIÓN DE TRABAJO (art. 55.2 LO 4/2000), no ' +
       'por el agente; y la carga sancionadora fuerte recae en el EMPLEADOR (art. 54.1.d, hasta 100.000 € ' +
-      'y cierre; posible delito del art. 311 CP —imposición de condiciones ilegales— o del 177 bis si hay ' +
-      'explotación grave; el antiguo art. 311 bis fue DEROGADO por la LO 14/2022). ' +
+      'y cierre; posible delito del art. 311 bis (empleo reiterado sin permiso), del 311 (condiciones ' +
+      'ilegales) o, en explotación grave, del 177 bis CP —a verificar el estado del 311 bis tras la LO ' +
+      '14/2022). ' +
       'MENSAJE CLAVE a preservar: es infracción ADMINISTRATIVA, NO delito; NO procede detención penal ' +
       'por ella. Punto jurídicamente sensible: confirmar toda la redacción con el revisor jurídico antes ' +
       'de publicar.',
@@ -429,9 +431,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     marcoImporte: 'extranjeria',
     notaRevision:
       'A VERIFICAR: art. 54.1.d (muy grave), una infracción por cada trabajador; tramo muy grave ' +
-      '10.001-100.000 € (art. 55.1.c), el seed fija el mínimo. IMPORTANTE: el art. 311 bis CP fue ' +
-      'DEROGADO por la LO 14/2022; la frontera penal es hoy el art. 311 CP y, en su caso, el 177 bis (no ' +
-      'citar 311 bis como vigente). Confirmar con el revisor jurídico.',
+      '10.001-100.000 € (art. 55.1.c), el seed fija el mínimo. FRONTERA PENAL del empleador (a verificar el ' +
+      'estado exacto tras la LO 14/2022): art. 311 bis (empleo reiterado sin permiso), art. 311 ' +
+      '(imposición de condiciones ilegales) y, en explotación grave, art. 177 bis. Confirmar con el revisor.',
   }),
   construirInfraccion({
     id: 'ext-autorizacion-caducada-retraso',
@@ -517,7 +519,7 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
   }),
   construirInfraccion({
     id: 'ext-quebrantar-prohibicion-entrada',
-    articulo: ART_LOEX_58_3_B,
+    articulo: ART_LOEX_58_3_A,
     tituloCorto: 'Regresar tras una expulsión (prohibición de entrada vigente)',
     gravedad: 'leve', // relleno; el peso está en la consecuencia (devolución), sin cuantía fija
     marcoImporte: 'no_sancionador',
@@ -527,9 +529,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'Regresar a España habiendo sido expulsado y estando vigente la prohibición de entrada, o entrar ' +
       'contraviniéndola. MENSAJE CLAVE: por sí solo NO es delito (no encaja en el art. 197 ni 197 bis CP). ' +
       'La respuesta es ADMINISTRATIVA: procede la DEVOLUCIÓN sin necesidad de nuevo expediente de expulsión ' +
-      '(art. 58.3.b LO 4/2000), reiniciándose el cómputo del plazo de prohibición de entrada. La detención ' +
-      'cautelar o el internamiento, si proceden, los acuerda la autoridad con los requisitos de los arts. ' +
-      '61-62. La valoración final corresponde a la autoridad competente.',
+      '(art. 58.3.a LO 4/2000), reiniciándose el cómputo del plazo de prohibición de entrada (art. 58.7). La ' +
+      'detención cautelar o el internamiento, si proceden, los acuerda la autoridad con los requisitos de ' +
+      'los arts. 61-62. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'volvio tras ser expulsado',
       'quebrantar expulsion',
@@ -546,56 +548,58 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         tipo: 'identificacion',
         textoCorto:
           'Procede identificar y comprobar en bases si consta una expulsión con prohibición de entrada ' +
-          'vigente; la vía es la devolución (art. 58.3.b), no la detención penal. El internamiento cautelar ' +
+          'vigente; la vía es la devolución (art. 58.3.a), no la detención penal. El internamiento cautelar ' +
           'lo acuerda la autoridad (arts. 61-62).',
-        fuente: 'LO 4/2000 arts. 58.3.b, 57, 61 y 62',
+        fuente: 'LO 4/2000 arts. 58.3.a, 58.7, 61 y 62',
       },
     ],
     notaRevision:
-      'CORRECCIÓN a fijar con el revisor: el regreso tras expulsión NO es delito autónomo (no es 197 ni ' +
-      '197 bis CP, que son otra cosa); es DEVOLUCIÓN administrativa (art. 58.3.b) con reactivación del ' +
-      'plazo del art. 57. Modelada como no_sancionador. Descartar expresamente el encaje penal erróneo.',
+      'CONFIRMADO por el revisor: el regreso tras expulsión contraviniendo la prohibición de entrada es el ' +
+      'art. 58.3.a (no el 58.3.b, que es la entrada ilegal del que pretende entrar); NO es delito autónomo ' +
+      '(no es 197 ni 197 bis CP). Es DEVOLUCIÓN administrativa con reactivación del plazo (art. 58.7). ' +
+      'Modelada como no_sancionador.',
   }),
   construirInfraccion({
     id: 'ext-salida-puesto-no-habilitado',
-    articulo: ART_LOEX_53_1_PUESTOS,
+    articulo: ART_LOEX_53_1_G,
     tituloCorto: 'Salir por puesto no habilitado / eludir el control fronterizo',
     gravedad: 'grave',
     // LO 4/2000 art. 55.1.b: graves, multa de 501 a 10.000 €. Mínimo del tramo como referencia.
     importeEur: 501,
     importeReducidoEur: null,
     textoBoletin:
-      'Salir de España por un puesto no habilitado o sin exhibir la documentación exigida, o eludir el ' +
-      'control fronterizo. La SALIDA por puesto no habilitado es infracción GRAVE (art. 53.1 LO 4/2000). La ' +
-      'ENTRADA ilegal del propio extranjero se resuelve por la vía de la DEVOLUCIÓN (art. 58.3.b), sin nuevo ' +
-      'expediente. MENSAJE CLAVE: la conducta del propio extranjero es administrativa; AYUDAR a terceros a ' +
-      'entrar o transitar sí puede ser DELITO (art. 318 bis CP). La valoración final corresponde a la ' +
-      'autoridad competente.',
+      'SALIR de España por un puesto no habilitado, sin exhibir la documentación exigida, o contraviniendo ' +
+      'las prohibiciones legalmente impuestas: infracción GRAVE (art. 53.1.g LO 4/2000). OJO al deslinde: la ' +
+      'ENTRADA ilegal del propio extranjero (p. ej. llegar en patera) NO es esta sanción grave, sino que se ' +
+      'resuelve por la vía de la DEVOLUCIÓN (art. 58.3.b), sin multa; y AYUDAR a terceros a entrar o ' +
+      'transitar sí puede ser DELITO (art. 318 bis CP). La valoración final corresponde a la autoridad competente.',
     terminos: [
-      'puesto no habilitado',
-      'entrada ilegal frontera',
+      'salir por puesto no habilitado',
       'eludir control fronterizo',
-      'entrar sin pasar aduana',
-      'cruzar por sitio no autorizado',
-      'entrada clandestina',
-      'saltar la valla',
-      'patera',
+      'salir sin pasar control',
+      'cruzar la frontera sin control',
+      'salida por sitio no autorizado',
+      'saltarse el control de salida',
+      'abandonar el pais sin documentacion',
+      'puesto fronterizo no habilitado',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
     consecuencias: [
       {
         tipo: 'identificacion',
         textoCorto:
-          'Procede identificar y valorar la devolución (entrada) o la sanción grave (salida). Si hay ' +
-          'indicios de que alguien facilitó el paso, valorar la frontera penal del art. 318 bis CP.',
-        fuente: 'LO 4/2000 arts. 53.1 y 58.3.b',
+          'Procede identificar y valorar la sanción grave por la SALIDA (53.1.g). La ENTRADA ilegal se ' +
+          'resuelve por devolución (58.3.b), no por esta multa. Si alguien facilitó el paso, valorar la ' +
+          'frontera penal del art. 318 bis CP.',
+        fuente: 'LO 4/2000 arts. 53.1.g y 58.3.b',
       },
     ],
     marcoImporte: 'extranjeria',
     notaRevision:
-      'A VERIFICAR la letra exacta del art. 53.1 sobre puestos no habilitados y el deslinde entrada ' +
-      '(devolución, 58.3.b) / salida (grave). Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. No ' +
-      'confundir con el art. 318 bis CP (el que AYUDA a terceros). Revisor jurídico.',
+      'CONFIRMADO por el revisor: la salida por puesto no habilitado es el art. 53.1.g LO 4/2000 (grave). ' +
+      'Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. Deslinde: entrada ilegal → devolución ' +
+      '(58.3.b), no esta multa; ayudar a terceros → delito (318 bis CP). Sinónimos acotados a la SALIDA para ' +
+      'no sugerir multa de 501 € por llegar en patera.',
   }),
   construirInfraccion({
     id: 'ext-no-comunicar-cambios',

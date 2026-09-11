@@ -624,7 +624,7 @@ const ART_CP_318_BIS = articuloCp({
     'entrar o transitar por España vulnerando la legislación de extranjería (art. 318 bis.1: multa de tres a ' +
     'doce meses o prisión de tres meses a un año, en su mitad superior con ánimo de lucro), y a quien con ' +
     'ánimo de lucro ayude a permanecer (318 bis.2). Se agrava a PRISIÓN DE CUATRO A OCHO AÑOS cuando se ' +
-    'comete en el seno de una ORGANIZACIÓN (318 bis.3). Existe una CLÁUSULA HUMANITARIA (318 bis.6): queda ' +
+    'comete en el seno de una ORGANIZACIÓN (318 bis.3). Existe una CLÁUSULA HUMANITARIA (318 bis.1, párrafo final): queda ' +
     'excluida la ayuda humanitaria. Protege el control de los flujos migratorios; se distingue de la trata ' +
     '(art. 177 bis), que protege a la víctima. Resumen orientativo; consúltese el CP.',
 });
@@ -2501,7 +2501,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'legislación de extranjería (art. 318 bis.1), o con ánimo de lucro a permanecer (318 bis.2). Se agrava ' +
       'a PRISIÓN DE 4 A 8 AÑOS cuando se comete en el seno de una ORGANIZACIÓN dedicada a ello (318 bis.3). ' +
       'MENSAJE CLAVE: aquí SÍ hay delito, a diferencia de la estancia irregular del propio extranjero, que ' +
-      'es administrativa. Existe una CLÁUSULA HUMANITARIA (318 bis.6): queda excluida la ayuda humanitaria. ' +
+      'es administrativa. Existe una CLÁUSULA HUMANITARIA (318 bis.1, párrafo final): queda excluida la ayuda humanitaria. ' +
       'Este delito protege el control de flujos; NO confundir con la trata (177 bis), que protege a la ' +
       'víctima. La calificación final corresponde a la autoridad judicial.',
     terminos: [
@@ -2517,7 +2517,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR penas y apartados del art. 318 bis: básico .1 (multa 3-12 meses o prisión 3 meses-1 año, ' +
       'mitad superior con ánimo de lucro) = menos grave; .2 permanencia con lucro; ORGANIZACIÓN .3 = 4-8 ' +
-      'años = GRAVE (escenario modelado). PRESERVAR la cláusula humanitaria (318 bis.6) y el deslinde con la ' +
+      'años = GRAVE (escenario modelado). PRESERVAR la cláusula humanitaria (318 bis.1, párrafo final) y el deslinde con la ' +
       'infracción administrativa del art. 54.1.b LO 4/2000 ("cuando el hecho no sea delito"). NO confundir ' +
       'con la trata (177 bis). Confirmar con el revisor contra el CP.',
   }),
