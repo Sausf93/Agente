@@ -816,14 +816,14 @@ const ART_RGC_98 = articuloSeed({
     'ver y ser visto. Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
-const ART_RGC_91 = articuloSeed({
+const ART_RGC_114 = articuloSeed({
   normaId: ID_RGC,
-  numero: '91',
-  titulo: 'Puertas y apertura del vehículo con seguridad',
+  numero: '114',
+  titulo: 'Apertura de puertas y bajada del vehículo con seguridad',
   texto:
     'Prohíbe abrir las puertas del vehículo o apearse de él sin haberse cerciorado previamente de que ' +
-    'ello no crea peligro o entorpecimiento para otros usuarios, en especial ciclistas y motoristas. ' +
-    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+    'ello no crea peligro o entorpecimiento para otros usuarios, en especial ciclistas y motoristas ' +
+    '(art. 114 RGC). Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
 const ART_RGC_130 = articuloSeed({
@@ -837,14 +837,15 @@ const ART_RGC_130 = articuloSeed({
     'sustituye a los triángulos (RD 159/2021). Resumen orientativo; consúltese el BOE.',
 });
 
-const ART_RGC_143 = articuloSeed({
+const ART_RGC_141 = articuloSeed({
   normaId: ID_RGC,
-  numero: '143',
-  titulo: 'Obediencia a las señales de los agentes',
+  numero: '141',
+  titulo: 'Señales de los agentes (prevalencia y obediencia)',
   texto:
     'Las señales y órdenes de los agentes encargados de la vigilancia del tráfico son de obligado ' +
-    'cumplimiento y PREVALECEN sobre cualquier otra señal, aunque resulten contradictorias con ellas. No ' +
-    'obedecerlas es infracción. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+    'cumplimiento y PREVALECEN sobre cualquier otra señal (arts. 141-143 RGC y art. 133 RGC). No ' +
+    'obedecerlas es infracción GRAVE sancionada por el art. 76.j) LSV, con detracción de puntos (Anexo ' +
+    'II LSV). Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
 const ART_RGV_11 = articuloSeed({
@@ -859,9 +860,9 @@ const ART_RGV_11 = articuloSeed({
 
 export const ARTICULOS_SEED: Articulo[] = [
   ART_RGC_98,
-  ART_RGC_91,
+  ART_RGC_114,
   ART_RGC_130,
-  ART_RGC_143,
+  ART_RGC_141,
   ART_RGV_11,
   ART_RGC_29,
   ART_RGC_35,
@@ -3478,7 +3479,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     puntos: null,
     textoBoletin:
       'Parar o estacionar el vehículo en doble fila, junto a otro ya detenido o estacionado en el borde de ' +
-      'la calzada, obstaculizando la circulación del resto de usuarios (art. 94 RGC).',
+      'la calzada, obstaculizando la circulación del resto de usuarios (art. 94 RGC). En zona urbana el ' +
+      'importe y la gravedad pueden regirlos la ordenanza municipal.',
     terminos: [
       'doble fila',
       'en doble fila',
@@ -3544,7 +3546,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     puntos: null,
     textoBoletin:
       'Estacionar el vehículo frente a la salida de un inmueble señalizada con vado en vigor, impidiendo la ' +
-      'entrada o salida de vehículos (art. 94 RGC).',
+      'entrada o salida de vehículos (art. 94 RGC). Suele regirlo la ORDENANZA municipal (importe y gravedad ' +
+      'variables; con frecuencia leve).',
     terminos: [
       'vado',
       'delante del vado',
@@ -3630,43 +3633,46 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'inf-sin-chaleco-triangulos-v16',
     articulo: ART_RGC_130,
-    tituloCorto: 'No llevar chaleco, triángulos o luz V16',
+    tituloCorto: 'No señalizar el vehículo inmovilizado o no usar el chaleco',
     gravedad: 'leve',
     importeEur: 80,
     importeReducidoEur: 40,
     puntos: null,
     textoBoletin:
-      'Carecer a bordo del dispositivo de preseñalización de peligro exigible (luz de emergencia V16 y/o ' +
-      'triángulos) o del chaleco reflectante, obligatorios para señalizar el vehículo inmovilizado y salir ' +
-      'de él con visibilidad (art. 130 RGC). Desde el 1 de enero de 2026 la luz V16 conectada sustituye a ' +
-      'los triángulos (RD 159/2021).',
+      'NO SEÑALIZAR el vehículo inmovilizado o un obstáculo en la calzada con el dispositivo de ' +
+      'preseñalización de peligro (luz de emergencia V16 o, hasta su sustitución, triángulos), o NO usar el ' +
+      'chaleco reflectante al salir del vehículo a la calzada o el arcén (art. 130 RGC). OJO: no existe una ' +
+      'multa general por "no llevar" el dispositivo a bordo; lo sancionable es no señalizar cuando procede o ' +
+      'no usar el chaleco. Desde el 1 de enero de 2026 la V16 conectada sustituye a los triángulos (RD 159/2021).',
     terminos: [
-      'sin triangulos',
-      'sin chaleco',
+      'no señalizar el vehiculo',
+      'sin chaleco al bajar',
       'chaleco reflectante',
+      'no poner los triangulos',
       'luz v16',
       'baliza v16',
-      'sin baliza',
-      'sin triangulo de emergencia',
-      'preseñalizacion',
+      'sin señalizar averia',
+      'preseñalizacion de peligro',
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR: desde 01/01/2026 la V16 conectada a DGT 3.0 sustituye a los triángulos (RD 159/2021). ' +
-      'Importe leve (~80 €, dentro del tramo leve ≤100). Confirmar si a esa fecha ya se denuncia por carecer ' +
-      'de V16. Sin puntos.',
+      'CORREGIDO por el revisor: NO es denunciable "carecer a bordo" del dispositivo (no hay obligación ' +
+      'general de llevarlo); lo sancionable es NO SEÑALIZAR el vehículo inmovilizado o NO usar el chaleco al ' +
+      'salir (art. 130 RGC). El chaleco puede no estar en el literal del 130: a verificar su precepto. Desde ' +
+      '01/01/2026 la V16 conectada sustituye a los triángulos (RD 159/2021). Importe leve (~80 €, ≤100).',
   }),
   construirInfraccion({
     id: 'inf-alumbrado-tunel',
     articulo: ART_RGC_98,
     tituloCorto: 'No usar el alumbrado en túnel',
-    gravedad: 'leve',
-    importeEur: 100,
-    importeReducidoEur: 50,
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
     puntos: null,
     textoBoletin:
       'Circular por un túnel, paso inferior o tramo señalizado sin encender el alumbrado de cruce, ' +
-      'reduciendo la visibilidad propia y la de ser visto (art. 98 RGC).',
+      'reduciendo la visibilidad propia y la de ser visto (arts. 95 y 98 RGC). Es infracción GRAVE (art. ' +
+      '76.e LSV).',
     terminos: [
       'sin luces en el tunel',
       'tunel sin luz',
@@ -3678,8 +3684,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR gravedad/importe (se aplica leve 100 €; contrastar si el codificado DGT lo eleva a grave ' +
-      '200 por riesgo) y el apartado del art. 98 RGC. Sin puntos.',
+      'CORREGIDO por el revisor: circular sin el alumbrado obligatorio en túnel es GRAVE (art. 76.e LSV), ' +
+      '200 €, 0 puntos (no leve). Artículo material arts. 95 y 98 RGC. Confirmar apartado.',
   }),
   construirInfraccion({
     id: 'inf-sin-libertad-movimientos',
@@ -3771,7 +3777,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
   }),
   construirInfraccion({
     id: 'inf-apertura-puertas-apearse',
-    articulo: ART_RGC_91,
+    articulo: ART_RGC_114,
     tituloCorto: 'Abrir puertas o apearse sin precaución',
     gravedad: 'leve',
     importeEur: 100,
@@ -3779,7 +3785,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     puntos: null,
     textoBoletin:
       'Abrir las puertas del vehículo o apearse de él sin cerciorarse previamente de que no origina peligro ' +
-      'o entorpecimiento para otros usuarios, en especial ciclistas y motoristas (art. 91 RGC).',
+      'o entorpecimiento para otros usuarios, en especial ciclistas y motoristas (art. 114 RGC).',
     terminos: [
       'abrir la puerta sin mirar',
       'puertazo',
@@ -3792,12 +3798,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR el apartado del art. 91 RGC e importe (leve 100 €; algunos lo fijan en 200 si causa ' +
-      'peligro concreto). Sin puntos.',
+      'CORREGIDO por el revisor: la apertura de puertas/apearse es el art. 114 RGC (no el 91, que es la ' +
+      'forma de estacionar). A VERIFICAR la gravedad (varias fuentes la sitúan como GRAVE 200 € por riesgo, ' +
+      'p. ej. al ciclista; el seed pone leve 100 €). Sin puntos.',
   }),
   construirInfraccion({
     id: 'inf-desobedecer-agente',
-    articulo: ART_RGC_143,
+    articulo: ART_RGC_141,
     tituloCorto: 'No obedecer las señales de un agente',
     gravedad: 'grave',
     importeEur: 200,
@@ -3805,8 +3812,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     puntos: 4,
     textoBoletin:
       'No obedecer las señales u órdenes de los agentes que regulan la circulación, que prevalecen sobre ' +
-      'cualquier otra señal (art. 143 RGC). FRONTERA: la mera desobediencia a la señal de tráfico es ' +
-      'administrativa; la desobediencia GRAVE a la autoridad puede ir por la LO 4/2015 o el art. 556 CP.',
+      'cualquier otra señal (arts. 141-143 RGC). Es infracción GRAVE (art. 76.j LSV) con 4 puntos (Anexo ' +
+      'II). FRONTERA: la mera desobediencia a la señal de tráfico es administrativa; la desobediencia GRAVE ' +
+      'a la autoridad puede ir por la LO 4/2015 (art. 36.6) o el art. 556 CP.',
     terminos: [
       'no parar al agente',
       'saltarse al guardia',
@@ -3819,9 +3827,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'A VERIFICAR puntos (Anexo II, posible 4) e importe (grave 200). FRONTERA: desobediencia grave a la ' +
-      'autoridad → LO 4/2015 art. 36.6 o art. 556 CP; no confundir con el art. 383 CP (negativa a pruebas, ' +
-      'ficha propia).',
+      'CONFIRMADO por el revisor: precepto sancionador art. 76.j LSV (grave, 200 €) + 4 puntos (Anexo II ' +
+      'ap. 15); reglamentario, señales de los agentes arts. 141-143 y prevalencia art. 133 RGC. (El art. ' +
+      '143 RGC define "tipos de semáforos"; corregida la cita.) FRONTERA: desobediencia grave a la autoridad ' +
+      '→ LO 4/2015 art. 36.6 o art. 556 CP; no confundir con el art. 383 CP (negativa a pruebas, ficha propia).',
   }),
 ];
 

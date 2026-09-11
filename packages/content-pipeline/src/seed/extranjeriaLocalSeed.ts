@@ -219,7 +219,8 @@ interface InfraccionSeedInput {
   articulo: Articulo;
   tituloCorto: string;
   gravedad: Infraccion['gravedad'];
-  importeEur: number;
+  /** Importe base. `null` SOLO en entradas CONSULTABLES (`marcoImporte: 'no_sancionador'`). */
+  importeEur: number | null;
   importeReducidoEur: number | null;
   textoBoletin: string;
   terminos: string[];
