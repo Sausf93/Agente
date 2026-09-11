@@ -140,7 +140,26 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **155 infracciones, 29 normas, 1365 sinónimos** (sprint del 2026-09-10, ver bloque siguiente).
+- Paquete: **175 infracciones, 29 normas, ~1523 sinónimos** (sprints 2026-09-10 y 2026-09-11).
+- **SPRINT 2026-09-11: motor de detención + más contenido.** Mismo flujo (ingesta → revisor → build → Expo):
+  1. **Motor de detención — flag `penaSoloMulta`** (commit `439d34c`, publicado): un delito de solo multa
+     (art. 457) ya NO sobre-orienta a detener; rama de proporcionalidad (art. 492), tests en shared.
+     Reintroducida `del-simulacion-delito` (457).
+  2. **Marco `bienestar_animal`** en shared (commit `24a9a24`): tramos del art. 80 Ley 7/2023 (prep ola
+     Animales; los de PPP `animales` no encajaban).
+  3. **Ola de Extranjería** (8 fichas, commit `e475a77`, publicada, revisor APTO): empleador 54.1.d,
+     autorización caducada 52.b, no portar documentación (art. 4, consultable), regreso tras expulsión
+     58.3.a (consultable), salida por puesto no habilitado 53.1.g, no comunicar cambios 52.a; + penales
+     favorecimiento 318 bis y trata 177 bis. Revisor corrigió: cláusula humanitaria = 318 bis.1 (no .6);
+     regreso tras expulsión = 58.3.a (no .b); salida = 53.1.g; y que el 311 bis NO está derogado (mi claim
+     previo era erróneo → "a verificar").
+  4. **2ª ola de Tráfico** (12 fichas, commit `82af865`, **pendiente de revisor** al escribir esto):
+     aparcamiento desglosado (doble fila, paso de peatones, vado, PMR, carga y descarga) + chaleco/V16,
+     túnel, libertad de movimientos, animal suelto, remolque, puertas, no obedecer al agente. **SIGUIENTE
+     PASO: aplicar veredicto del revisor de tráfico r2 y publicar.**
+- **EN COLA (borrador de ingesta listo, sin escribir aún): ola de ANIMALES** — PPP (Ley 50/1999, marco
+  `animales`) + bienestar animal (Ley 7/2023, marco `bienestar_animal` ya creado; deslinde penal 340 bis/
+  340 ter). Escribir tras publicar tráfico r2.
 - **SPRINT 2026-09-10 (tarde): +44 fichas en 6 olas** para llegar a pseudo-producción el lunes (petición del
   fundador: "ser mejores que SPPLB, no tener menos"). Cada ola: ingesta-normativa (borrador verificado) →
   revisor-juridico (gate; cazó errores reales en TODAS) → validador-calle (simulación 3 cuerpos) → build →
