@@ -693,6 +693,13 @@ interface DelitoSeedInput {
     textoCorto: string;
     fuente: string;
   }>;
+  /**
+   * El delito está castigado ÚNICAMENTE con pena de MULTA (p. ej. simulación de delito, art. 457
+   * CP). Enruta la detención por la rama de PROPORCIONALIDAD del motor (art. 492 LECrim): no procede
+   * salvo falta de identificación/garantías, aun en flagrancia. No se rebaja `gravedadCp` (falsearía
+   * el marco penal): multa de más de 3 meses es "menos grave" (art. 33 CP).
+   */
+  penaSoloMulta?: boolean;
 }
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
@@ -734,12 +741,13 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
 
   // La consecuencia de detención SALE DEL MOTOR (una sola fuente de verdad para ficha y árbol). La
   // `regla` la construye el helper compartido `reglaDetencion` (mismo que usa el seed de tráfico).
-  const resultado = evaluarDetencion(escenarioBaseDetencion(input.gravedadCp));
+  const opcionesDetencion = { penaSoloMulta: input.penaSoloMulta ?? false };
+  const resultado = evaluarDetencion(escenarioBaseDetencion(input.gravedadCp, opcionesDetencion));
   const consecuencia = Consecuencia.parse({
     id: `${input.id}:cons-detencion`,
     tipo: 'detencion',
     // `regla` guarda el escenario base y la orientación: el árbol interactivo lo rehidrata.
-    regla: reglaDetencion(input.gravedadCp),
+    regla: reglaDetencion(input.gravedadCp, opcionesDetencion),
     textoCorto: textoConsecuenciaDetencion(resultado),
     fuente: [`CP art. ${input.articulo.numero}`, ...resultado.fuentes].join('; '),
     infraccionId: input.id,
@@ -2304,11 +2312,42 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'A VERIFICAR penas. Arts. 185 y 186 CP → prisión 6 meses-1 año o multa 12-24 meses → MENOS GRAVE. ' +
       'Distinguir de la agresión sexual (178-181) y de la pornografía infantil (189). Fuente: CP 185/186.',
   }),
-  // `del-simulacion-delito` (art. 457, solo MULTA) RETIRADA temporalmente: el motor de detención
-  // (construirDelito → escenarioBaseDetencion) auto-genera "procede detención" para un delito menos
-  // grave con flagrancia, lo que SOBRE-ORIENTA a detener en un delito de solo multa (art. 492
-  // proporcionalidad). Reintroducir cuando el motor tenga un flag `penaSoloMulta` que enrute por la
-  // rama de proporcionalidad (ver docs/ESTADO-HANDOFF, backlog del motor de detención).
+  construirDelito({
+    id: 'del-simulacion-delito',
+    articulo: ART_CP_457,
+    tituloCorto: 'Denuncia falsa / simulación de delito',
+    gravedadCp: 'menos_grave',
+    // Pena ÚNICA de multa: el motor enruta la detención por la rama de proporcionalidad (art. 492),
+    // no por la obligación de detener del 492.1 — detener por un delito de solo multa es despropor-
+    // cionado aun en flagrancia. Sin este flag, el motor sobre-orientaría a detener (revisor 2026-09).
+    penaSoloMulta: true,
+    penaTexto: 'Multa de 6 a 12 meses (art. 457 CP)',
+    textoBoletin:
+      'Simular ante un funcionario judicial o administrativo (p. ej. un agente) ser responsable o víctima ' +
+      'de una infracción penal, o denunciar una inexistente, provocando actuaciones procesales (art. 457). ' +
+      'Es el clásico de comisaría: la denuncia inventada de un robo que no existió (a menudo para el seguro) ' +
+      'o la agresión simulada. IMPORTANTE: al castigarse SOLO con pena de multa, la detención es ' +
+      'DESPROPORCIONADA con carácter general (art. 492 LECrim), aun en flagrancia: procede identificar y ' +
+      'dar cuenta al juzgado, salvo que la persona no quede identificada ni ofrezca garantías. Si se imputa ' +
+      'falsamente a una PERSONA CONCRETA, es acusación/denuncia falsas del art. 456. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'denuncia falsa',
+      'se ha inventado el robo',
+      'simula un robo para el seguro',
+      'denuncia un robo que no existio',
+      'finge que le han atracado',
+      'denunciar en falso',
+      'invento que le robaron el movil',
+      'autolesion para denunciar',
+    ],
+    notaRevision:
+      'A VERIFICAR pena y deslinde 456/457. Art. 457 → multa de 6 a 12 meses (menos grave por la cuantía, ' +
+      'art. 33 CP). DETENCIÓN: modelado con `penaSoloMulta: true` → el motor enruta por la ' +
+      'PROPORCIONALIDAD (art. 492 LECrim), no por el 492.1 ni el 495 (495 es para delitos LEVES; el 457 es ' +
+      'menos grave). Si se imputa a persona concreta → art. 456 (acusación y denuncia falsas), que exige ' +
+      'sentencia firme o sobreseimiento previos. Confirmar con el revisor. Fuente: CP 456/457.',
+  }),
   construirDelito({
     id: 'del-sustraccion-menores',
     articulo: ART_CP_225_BIS,

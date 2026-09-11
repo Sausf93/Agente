@@ -29,8 +29,11 @@ export interface ReglaDetencion {
  * domicilio conocido (lo que solo cambia el resultado en el delito leve, art. 495). El árbol
  * interactivo parte de aquí y deja al agente activar/desactivar cada circunstancia.
  */
-export function escenarioBaseDetencion(gravedadCp: GravedadPenal): EntradaDetencion {
-  return { gravedadCp, flagrancia: true, domicilioConocido: true };
+export function escenarioBaseDetencion(
+  gravedadCp: GravedadPenal,
+  opts: { penaSoloMulta?: boolean } = {},
+): EntradaDetencion {
+  return { gravedadCp, flagrancia: true, domicilioConocido: true, penaSoloMulta: opts.penaSoloMulta ?? false };
 }
 
 /**
@@ -38,8 +41,11 @@ export function escenarioBaseDetencion(gravedadCp: GravedadPenal): EntradaDetenc
  * Determinista: la orientación base la calcula el motor sobre el `escenarioBase`. La usan el seed
  * penal y el de tráfico (temeraria art. 380, negativa art. 383) para que ambos pinten el árbol.
  */
-export function reglaDetencion(gravedadCp: GravedadPenal): ReglaDetencion {
-  const escenarioBase = escenarioBaseDetencion(gravedadCp);
+export function reglaDetencion(
+  gravedadCp: GravedadPenal,
+  opts: { penaSoloMulta?: boolean } = {},
+): ReglaDetencion {
+  const escenarioBase = escenarioBaseDetencion(gravedadCp, opts);
   const resultado = evaluarDetencion(escenarioBase);
   return { motor: 'detencion', gravedadCp, escenarioBase, orientacionBase: resultado.orientacion };
 }

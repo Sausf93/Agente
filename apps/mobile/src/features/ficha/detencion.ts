@@ -18,12 +18,13 @@ import {
 
 /**
  * Campos booleanos de la entrada que el árbol expone como toggles de circunstancia. Excluye
- * `gravedadCp` (selector propio), `edadAutor` (selector de 3 tramos) y `soloHechoMigratorio`
- * (toggle propio con ayuda anti-error): esos tienen controles dedicados, no son circunstancias.
+ * `gravedadCp` (selector propio), `edadAutor` (selector de 3 tramos), `soloHechoMigratorio`
+ * (toggle propio con ayuda anti-error) y `penaSoloMulta` (propiedad del DELITO, no una
+ * circunstancia que el agente marque: viene fijada en la ficha): esos no son toggles.
  */
 export type CampoCircunstancia = Exclude<
   keyof EntradaDetencionNormalizada,
-  'gravedadCp' | 'edadAutor' | 'soloHechoMigratorio'
+  'gravedadCp' | 'edadAutor' | 'soloHechoMigratorio' | 'penaSoloMulta'
 >;
 
 /** Definición de un toggle del árbol: campo del motor + textos en español. */

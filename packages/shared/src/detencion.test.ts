@@ -58,6 +58,42 @@ describe('evaluarDetencion — DELITO LEVE (art. 495 rige sobre el 490)', () => 
   });
 });
 
+describe('evaluarDetencion — DELITO de SOLO MULTA (proporcionalidad, art. 492)', () => {
+  it('la FLAGRANCIA no obliga a detener en un delito de solo multa (492, no 492.1)', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'menos_grave',
+      penaSoloMulta: true,
+      flagrancia: true,
+      domicilioConocido: true,
+    });
+    expect(r.orientacion).toBe('no_procede_salvo');
+    // NO debe orientar a "procede" ni citar la obligación de detener del 492.1.
+    expect(r.fuentes).not.toContain('LECrim art. 492.1');
+    expect(r.fuentes).toContain('LECrim art. 492');
+    expect(r.fuentes).toContain('LECrim art. 493');
+    // No es un delito leve: no debe apoyarse en el 495.
+    expect(r.fuentes).not.toContain('LECrim art. 495');
+  });
+
+  it('sin identificación ni garantías → puede proceder (excepción por proporcionalidad)', () => {
+    const r = evaluarDetencion({
+      gravedadCp: 'menos_grave',
+      penaSoloMulta: true,
+      flagrancia: true,
+      domicilioConocido: false,
+      prestariaFianza: false,
+    });
+    expect(r.orientacion).toBe('puede_proceder');
+    expect(r.fuentes).toContain('LECrim art. 492');
+  });
+
+  it('mantiene el lenguaje orientativo y el pie de responsabilidad', () => {
+    const r = evaluarDetencion({ gravedadCp: 'menos_grave', penaSoloMulta: true, flagrancia: true });
+    expect(r.titulo.toLowerCase()).not.toContain('detén');
+    expect(r.pie).toBe(PIE_DETENCION);
+  });
+});
+
 describe('evaluarDetencion — MENOS GRAVE / GRAVE con causa del art. 490 → procede', () => {
   const gravedades: GravedadPenal[] = ['menos_grave', 'grave'];
   for (const g of gravedades) {

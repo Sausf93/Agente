@@ -49,6 +49,7 @@ export const PIE_EXTRANJERIA =
 // --- Citas de artículos (fuente única de las referencias que devuelve el motor) -------------
 const ART_33_CP = 'CP art. 33'; // gravedad de la pena → leve / menos grave / grave
 const ART_490 = 'LECrim art. 490'; // flagrancia, intento, fuga, rebeldía
+const ART_492 = 'LECrim art. 492'; // detención por la policía judicial (modulada por la pena)
 const ART_492_1 = 'LECrim art. 492.1'; // obligación de detener a quien esté en un caso del 490
 const ART_492_3 = 'LECrim art. 492.3'; // riesgo de incomparecencia
 const ART_492_4 = 'LECrim art. 492.4'; // indicios racionales de delito + de participación
@@ -114,8 +115,17 @@ export const EntradaDetencion = z.object({
   riesgoIncomparecencia: z.boolean().default(false),
   /** La persona tiene domicilio conocido (solo pesa en delito leve, art. 495). */
   domicilioConocido: z.boolean().default(true),
-  /** La persona prestaría fianza bastante (solo pesa en delito leve, art. 495). */
+  /** La persona prestaría fianza bastante (pesa en delito leve, art. 495, y en el de solo multa). */
   prestariaFianza: z.boolean().default(false),
+  /**
+   * El delito está castigado ÚNICAMENTE con pena de MULTA (p. ej. simulación de delito, art. 457
+   * CP). Por defecto `false`. NO es la gravedad (multa de más de 3 meses es "menos grave", art.
+   * 33 CP): es un discriminador de RAMA. Detener por un delito de solo multa es, con carácter
+   * general, DESPROPORCIONADO (art. 492 LECrim), aun en flagrancia; por eso el motor lo enruta por
+   * la rama de proporcionalidad —igual espíritu que el art. 495 del delito leve— en lugar de la
+   * obligación de detener del art. 492.1. No se rebaja `gravedadCp` a `leve` (falsearía el marco penal).
+   */
+  penaSoloMulta: z.boolean().default(false),
   /**
    * Tramo de edad del autor (LO 5/2000). Por defecto `adulto`: las fichas y los tests existentes
    * que no lo informan siguen el árbol penal ordinario sin cambios. `menor_14` y `menor_14_17`
@@ -319,6 +329,38 @@ function evaluarArbolPenal(v: EntradaDetencionNormalizada): ResultadoDetencion {
         'y no preste fianza bastante (art. 495 LECrim). Procede identificarla y dar cuenta al ' +
         'juzgado (art. 493 LECrim).',
       fuentes: [ART_33_CP, ART_495, ART_493],
+      pie: PIE_DETENCION,
+    };
+  }
+
+  // --- Rama 1 bis: DELITO castigado SOLO con MULTA (proporcionalidad) -------------------------
+  // Un delito de pena única de multa (p. ej. simulación de delito, art. 457 CP) es "menos grave"
+  // por la cuantía (art. 33 CP), pero detener por él es DESPROPORCIONADO con carácter general (art.
+  // 492 LECrim), incluso en flagrancia. Se enruta por la excepcionalidad —mismo espíritu que el
+  // art. 495 del delito leve—: solo cabe si la persona no queda identificada ni ofrece garantías.
+  if (v.penaSoloMulta) {
+    const excepcion = !v.domicilioConocido && !v.prestariaFianza;
+    if (excepcion) {
+      return {
+        orientacion: 'puede_proceder',
+        titulo: 'Puede proceder la detención (excepcional)',
+        motivo:
+          'El delito está castigado solo con pena de multa: detener sería en general ' +
+          'desproporcionado (art. 492 LECrim), pero aquí concurre la excepción, ya que la persona ' +
+          'no queda identificada ni ofrece garantías de comparecencia.',
+        fuentes: [ART_33_CP, ART_492],
+        pie: PIE_DETENCION,
+      };
+    }
+    return {
+      orientacion: 'no_procede_salvo',
+      titulo: 'No procede la detención (delito de solo multa), salvo falta de identificación o garantías',
+      motivo:
+        'El delito está castigado únicamente con pena de multa: detenerlo sería, con carácter ' +
+        'general, desproporcionado (art. 492 LECrim), aun cuando haya flagrancia. Procede ' +
+        'identificar a la persona y dar cuenta al juzgado (art. 493 LECrim); solo cabría la ' +
+        'detención si no quedara identificada ni ofreciera garantías de comparecencia.',
+      fuentes: [ART_33_CP, ART_492, ART_493],
       pie: PIE_DETENCION,
     };
   }
