@@ -13,7 +13,7 @@ const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
   it('siembra 64 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(64);
+    expect(SEED_TRAFICO.infracciones).toHaveLength(76);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {

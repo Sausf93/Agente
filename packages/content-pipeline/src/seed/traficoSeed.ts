@@ -805,7 +805,64 @@ const ART_LSV_13 = articuloSeed({
     'de esos aparatos, constituyen una infracción MUY GRAVE. Resumen orientativo; consúltese el BOE.',
 });
 
+// --- Artículos de la 2ª OLA DE TRÁFICO (volumen de catálogo, 2026-09-11) ---------------------
+const ART_RGC_98 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '98',
+  titulo: 'Alumbrado en túneles y pasos inferiores',
+  texto:
+    'Obliga a encender el alumbrado de cruce (y las luces de posición) al circular por túneles, pasos ' +
+    'inferiores y tramos de vía afectados por la señal de "túnel", con independencia de la hora, para ' +
+    'ver y ser visto. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_91 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '91',
+  titulo: 'Puertas y apertura del vehículo con seguridad',
+  texto:
+    'Prohíbe abrir las puertas del vehículo o apearse de él sin haberse cerciorado previamente de que ' +
+    'ello no crea peligro o entorpecimiento para otros usuarios, en especial ciclistas y motoristas. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_130 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '130',
+  titulo: 'Preseñalización de peligro y dispositivos obligatorios',
+  texto:
+    'Regula la preseñalización de un vehículo inmovilizado o de un obstáculo en la calzada mediante el ' +
+    'dispositivo de preseñalización de peligro (luz de emergencia V16 o, en su caso, triángulos) y el uso ' +
+    'del chaleco reflectante al salir del vehículo. Desde el 1 de enero de 2026 la luz V16 conectada ' +
+    'sustituye a los triángulos (RD 159/2021). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_143 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '143',
+  titulo: 'Obediencia a las señales de los agentes',
+  texto:
+    'Las señales y órdenes de los agentes encargados de la vigilancia del tráfico son de obligado ' +
+    'cumplimiento y PREVALECEN sobre cualquier otra señal, aunque resulten contradictorias con ellas. No ' +
+    'obedecerlas es infracción. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGV_11 = articuloSeed({
+  normaId: ID_RGV,
+  numero: '11',
+  titulo: 'Matriculación y condiciones de remolques',
+  texto:
+    'Regula la matriculación y las placas de los remolques y semirremolques y las condiciones del conjunto ' +
+    'arrastrante-arrastrado: el dispositivo de acoplamiento debe ofrecer garantías de seguridad y el ' +
+    'conjunto contar con la autorización y documentación exigibles. Resumen orientativo; consúltese el BOE.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
+  ART_RGC_98,
+  ART_RGC_91,
+  ART_RGC_130,
+  ART_RGC_143,
+  ART_RGV_11,
   ART_RGC_29,
   ART_RGC_35,
   ART_RGC_45,
@@ -3409,6 +3466,362 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR: la gravedad (leve 100 € vs grave 200 € si entorpece con riesgo) y el apartado del ' +
       'art. 45/49 RGC (velocidad anormalmente reducida / mínima). Sin puntos. Referencia 200 €.',
+  }),
+  // --- 2ª OLA DE TRÁFICO (volumen, 2026-09-11): aparcamiento desglosado y conductas frecuentes ----
+  construirInfraccion({
+    id: 'inf-doble-fila',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Parar o estacionar en doble fila',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Parar o estacionar el vehículo en doble fila, junto a otro ya detenido o estacionado en el borde de ' +
+      'la calzada, obstaculizando la circulación del resto de usuarios (art. 94 RGC).',
+    terminos: [
+      'doble fila',
+      'en doble fila',
+      'parado en doble fila',
+      'aparcar en doble fila',
+      'segunda fila',
+      'bloqueando el carril',
+      'cortando el paso',
+      'parado tapando',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto: 'Puede proceder la retirada por la grúa cuando obstaculice gravemente la circulación (art. 105 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el apartado del art. 94 RGC y la gravedad (grave 200 € si obstaculiza; leve 100 € si no). ' +
+      'Sin puntos. En zona urbana puede regir la ORDENANZA municipal.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionar-paso-peatones',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionar sobre un paso de peatones',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Estacionar el vehículo sobre un paso para peatones o para ciclistas señalizado, impidiendo el cruce ' +
+      'seguro y la visibilidad recíproca (art. 94 RGC).',
+    terminos: [
+      'encima del paso de cebra',
+      'sobre el paso de peatones',
+      'en la cebra',
+      'tapando el paso',
+      'paso de cebra',
+      'sobre el paso ciclista',
+      'pisando la cebra',
+      'aparcar en el paso de peatones',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto: 'Puede proceder la retirada por la grúa por impedir el paso seguro de peatones (art. 105 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: grave 200 €, 0 puntos. Confirmar el apartado del art. 94 RGC (pasos). En urbano puede ' +
+      'regir la ordenanza municipal.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionar-vado',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionar frente a un vado señalizado',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Estacionar el vehículo frente a la salida de un inmueble señalizada con vado en vigor, impidiendo la ' +
+      'entrada o salida de vehículos (art. 94 RGC).',
+    terminos: [
+      'vado',
+      'delante del vado',
+      'tapando el garaje',
+      'salida de garaje',
+      'vado permanente',
+      'bloqueando el garaje',
+      'entrada de coches',
+      'aparcar en un vado',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto: 'Puede proceder la retirada por la grúa, normalmente a instancia del titular del vado (art. 105 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'IMPORTANTE: el vado suele sancionarse por ORDENANZA MUNICIPAL, con importe variable; el seed usa el ' +
+      'supletorio del RGC 94 (grave 200 €). A VERIFICAR importe/competencia por municipio. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionar-pmr-sin-tarjeta',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionar en plaza para PMR sin tarjeta',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Estacionar en una plaza reservada a personas con movilidad reducida sin exhibir la tarjeta de ' +
+      'estacionamiento válida y en vigor, privando de la plaza a quien tiene derecho a ella (art. 94 RGC y ' +
+      'ordenanza de accesibilidad).',
+    terminos: [
+      'plaza de minusvalidos',
+      'plaza de discapacitados',
+      'plaza pmr',
+      'sin tarjeta de minusvalido',
+      'reservada movilidad reducida',
+      'aparcar en plaza de discapacitado',
+      'silla de ruedas plaza',
+      'tarjeta de estacionamiento',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto: 'Puede proceder la retirada por la grúa por ocupar indebidamente una plaza reservada (art. 105 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 105',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'MARCO predominantemente MUNICIPAL: el importe lo fija la ordenanza (200-300 € y en algunas hasta ' +
+      '500 €); el seed usa el supletorio grave 200 €. A VERIFICAR importe/base local. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-estacionar-carga-descarga',
+    articulo: ART_RGC_94,
+    tituloCorto: 'Estacionar en zona de carga y descarga',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: null,
+    textoBoletin:
+      'Estacionar un vehículo en una zona reservada a carga y descarga durante el horario en que la reserva ' +
+      'está en vigor, sin estar autorizado a ello (art. 94 RGC y ordenanza municipal).',
+    terminos: [
+      'carga y descarga',
+      'zona de carga',
+      'reservado carga',
+      'zona amarilla',
+      'aparcar en carga y descarga',
+      'descarga mercancias',
+      'franja amarilla',
+      'aparcar en zona de reparto',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'MARCO MUNICIPAL: importe y horario los fija la ordenanza (60-200 €); el seed usa el supletorio leve ' +
+      '100 €. A VERIFICAR por municipio. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-sin-chaleco-triangulos-v16',
+    articulo: ART_RGC_130,
+    tituloCorto: 'No llevar chaleco, triángulos o luz V16',
+    gravedad: 'leve',
+    importeEur: 80,
+    importeReducidoEur: 40,
+    puntos: null,
+    textoBoletin:
+      'Carecer a bordo del dispositivo de preseñalización de peligro exigible (luz de emergencia V16 y/o ' +
+      'triángulos) o del chaleco reflectante, obligatorios para señalizar el vehículo inmovilizado y salir ' +
+      'de él con visibilidad (art. 130 RGC). Desde el 1 de enero de 2026 la luz V16 conectada sustituye a ' +
+      'los triángulos (RD 159/2021).',
+    terminos: [
+      'sin triangulos',
+      'sin chaleco',
+      'chaleco reflectante',
+      'luz v16',
+      'baliza v16',
+      'sin baliza',
+      'sin triangulo de emergencia',
+      'preseñalizacion',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: desde 01/01/2026 la V16 conectada a DGT 3.0 sustituye a los triángulos (RD 159/2021). ' +
+      'Importe leve (~80 €, dentro del tramo leve ≤100). Confirmar si a esa fecha ya se denuncia por carecer ' +
+      'de V16. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-alumbrado-tunel',
+    articulo: ART_RGC_98,
+    tituloCorto: 'No usar el alumbrado en túnel',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: null,
+    textoBoletin:
+      'Circular por un túnel, paso inferior o tramo señalizado sin encender el alumbrado de cruce, ' +
+      'reduciendo la visibilidad propia y la de ser visto (art. 98 RGC).',
+    terminos: [
+      'sin luces en el tunel',
+      'tunel sin luz',
+      'no encender en el tunel',
+      'luces tunel',
+      'paso inferior',
+      'sin alumbrado tunel',
+      'cruce apagado en tunel',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad/importe (se aplica leve 100 €; contrastar si el codificado DGT lo eleva a grave ' +
+      '200 por riesgo) y el apartado del art. 98 RGC. Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-sin-libertad-movimientos',
+    articulo: ART_RGC_18,
+    tituloCorto: 'Conducir sin libertad de movimientos o visión',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Conducir sin mantener la propia libertad de movimientos, el campo necesario de visión o la atención ' +
+      'permanente, por llevar objetos, bultos o elementos que dificulten el control del vehículo (art. 18 ' +
+      'RGC). Distinto del uso del móvil (art. 18.2), que tiene ficha propia.',
+    terminos: [
+      'sin ver bien',
+      'con la mano ocupada',
+      'objeto que estorba',
+      'bulto delante',
+      'parabrisas tapado',
+      'conduciendo con una mano',
+      'salpicadero lleno',
+      'sin campo de vision',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad (grave 200) y si detrae puntos (posible 3). Distinto del móvil (art. 18.2, ficha ' +
+      'propia). Confirmar apartado del art. 18 RGC en el codificado DGT.',
+  }),
+  construirInfraccion({
+    id: 'inf-animal-suelto-habitaculo',
+    articulo: ART_RGC_18,
+    tituloCorto: 'Llevar un animal suelto que dificulte la conducción',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Conducir llevando un animal suelto en el habitáculo, sin sistema de sujeción adecuado, de modo que ' +
+      'pueda interferir en el control del vehículo o distraer al conductor (art. 18 RGC).',
+    terminos: [
+      'perro suelto en el coche',
+      'animal suelto en el coche',
+      'perro en las piernas',
+      'mascota sin atar',
+      'perro en el asiento conduciendo',
+      'gato suelto en el coche',
+      'sin transportin',
+      'perro delante conduciendo',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe/gravedad (grave 200 por asimilación a falta de libertad de movimientos) y puntos ' +
+      '(0/3). Confirmar apartado del art. 18 RGC.',
+  }),
+  construirInfraccion({
+    id: 'inf-remolque-mal-enganchado',
+    articulo: ART_RGV_11,
+    tituloCorto: 'Remolque mal enganchado o sin autorización',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: null,
+    textoBoletin:
+      'Arrastrar un remolque cuyo dispositivo de acoplamiento no ofrece garantías de seguridad, o hacerlo ' +
+      'careciendo de la matriculación o autorización exigible al conjunto, con riesgo de desenganche o ' +
+      'pérdida de estabilidad (art. 11 RGV).',
+    terminos: [
+      'remolque mal enganchado',
+      'remolque suelto',
+      'enganche flojo',
+      'remolque sin matricula',
+      'bola del remolque',
+      'remolque sin papeles',
+      'sin cadena de seguridad',
+      'remolque peligroso',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto: 'Procede valorar la inmovilización por deficiencia con riesgo hasta subsanar (art. 104 LSV).',
+        fuente: 'RD-Leg 6/2015 (LSV) art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: separar dos supuestos (mal enganchado = seguridad; sin autorización/placa = RGV ' +
+      'documental) podría dar dos fichas. Importe grave 200 y puntos 0 a confirmar; concretar apartado del ' +
+      'art. 11/Anexo RGV.',
+  }),
+  construirInfraccion({
+    id: 'inf-apertura-puertas-apearse',
+    articulo: ART_RGC_91,
+    tituloCorto: 'Abrir puertas o apearse sin precaución',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: null,
+    textoBoletin:
+      'Abrir las puertas del vehículo o apearse de él sin cerciorarse previamente de que no origina peligro ' +
+      'o entorpecimiento para otros usuarios, en especial ciclistas y motoristas (art. 91 RGC).',
+    terminos: [
+      'abrir la puerta sin mirar',
+      'puertazo',
+      'apearse sin mirar',
+      'puerta al ciclista',
+      'bajarse del coche sin mirar',
+      'abrir sin precaucion',
+      'dooring',
+      'golpe con la puerta',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el apartado del art. 91 RGC e importe (leve 100 €; algunos lo fijan en 200 si causa ' +
+      'peligro concreto). Sin puntos.',
+  }),
+  construirInfraccion({
+    id: 'inf-desobedecer-agente',
+    articulo: ART_RGC_143,
+    tituloCorto: 'No obedecer las señales de un agente',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'No obedecer las señales u órdenes de los agentes que regulan la circulación, que prevalecen sobre ' +
+      'cualquier otra señal (art. 143 RGC). FRONTERA: la mera desobediencia a la señal de tráfico es ' +
+      'administrativa; la desobediencia GRAVE a la autoridad puede ir por la LO 4/2015 o el art. 556 CP.',
+    terminos: [
+      'no parar al agente',
+      'saltarse al guardia',
+      'no obedecer al agente',
+      'ignorar la señal del agente',
+      'no atender la orden',
+      'desobedecer al policia de trafico',
+      'no respetar al agente',
+      'no parar en un control',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR puntos (Anexo II, posible 4) e importe (grave 200). FRONTERA: desobediencia grave a la ' +
+      'autoridad → LO 4/2015 art. 36.6 o art. 556 CP; no confundir con el art. 383 CP (negativa a pruebas, ' +
+      'ficha propia).',
   }),
 ];
 
