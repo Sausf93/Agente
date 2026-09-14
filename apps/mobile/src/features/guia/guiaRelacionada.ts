@@ -71,6 +71,9 @@ export const GUIA_POR_FICHA: Readonly<Record<string, GuiaRelacionada>> = {
   ...Object.fromEntries(
     GUIA_MENORES.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_MENORES_REL]),
   ),
+  // La ficha consultable del régimen del menor (buscable: "detener a un menor"…) enlaza a la guía de
+  // menores aunque la guía no la declare como sección (no es una sección, es su reflejo buscable).
+  'sc-menor-regimen': GUIA_MENORES_REL,
   ...Object.fromEntries(
     GUIA_VIOLENCIA_GENERO.filter((s) => s.fichaId).map((s) => [
       s.fichaId as string,

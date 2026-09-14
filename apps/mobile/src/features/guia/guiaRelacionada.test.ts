@@ -18,6 +18,33 @@ describe('guiaRelacionadaDe', () => {
     }
   });
 
+  it('la ficha del régimen del menor enlaza a la guía de menores', () => {
+    expect(guiaRelacionadaDe('sc-menor-regimen')?.ruta).toBe('/guia-menores');
+  });
+
+  it('la ficha MENA enlaza a la guía de menores (más específica que la de extranjería)', () => {
+    // sc-mena-consulta la declaran ambas guías; la precedencia deja ganar a la de menores.
+    expect(guiaRelacionadaDe('sc-mena-consulta')?.ruta).toBe('/guia-menores');
+  });
+
+  it('las fichas de extranjería enlazan a la guía de extranjería', () => {
+    for (const id of ['ext-estancia-irregular', 'ext-no-portar-documentacion']) {
+      expect(guiaRelacionadaDe(id)?.ruta).toBe('/guia-extranjeria');
+    }
+  });
+
+  it('las fichas de violencia de género enlazan a la guía de VG', () => {
+    for (const id of ['del-violencia-genero', 'del-quebrantamiento']) {
+      expect(guiaRelacionadaDe(id)?.ruta).toBe('/guia-violencia-genero');
+    }
+  });
+
+  it('las fichas de ocupación enlazan a la guía de ocupación', () => {
+    for (const id of ['del-allanamiento-morada', 'del-usurpacion', 'sc-ocupacion-inmueble']) {
+      expect(guiaRelacionadaDe(id)?.ruta).toBe('/guia-ocupacion');
+    }
+  });
+
   it('una ficha sin guía asociada devuelve null', () => {
     expect(guiaRelacionadaDe('inf-exceso-velocidad')).toBeNull();
     expect(guiaRelacionadaDe('no-existe')).toBeNull();

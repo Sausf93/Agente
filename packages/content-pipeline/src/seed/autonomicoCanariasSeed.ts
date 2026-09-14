@@ -51,7 +51,7 @@ import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
  */
 
 /** Fecha de curación de este seed (la que verá el agente como "Actualizado el…"). */
-const FECHA_ACTUALIZACION = '2026-09-08';
+const FECHA_ACTUALIZACION = '2026-09-14';
 const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 /**
@@ -331,14 +331,18 @@ function consecuenciaCese(infraccionId: string): Consecuencia {
 }
 
 /**
- * Coletilla OBLIGATORIA (revisor, ronda validación): las CUANTÍAS del art. 66 de la Ley 7/2011 no
- * han podido confirmarse contra el literal del artículo (fuente primaria), así que TODA infracción
- * de esta ley debe dejar clarísimo el "a verificar" sobre el importe. Se añade a cada `notaRevision`.
+ * Coletilla OBLIGATORIA (revisor). Los TRAMOS de multa del art. 66 se CONFIRMARON el 2026-09-14
+ * contra el texto consolidado del BOE (BOE-A-2011-8022, art. 66): muy graves 15.001–30.000 €,
+ * graves 3.001–15.000 €, leves hasta 3.000 €. El seed muestra el MÍNIMO del tramo como referencia
+ * orientativa; queda "a verificar" por el revisor la GRADUACIÓN concreta dentro del tramo (art. 67,
+ * según riesgo, intencionalidad, daños y reincidencia). Se añade a cada `notaRevision`.
  */
 const CAVEAT_ART_66 =
-  ' IMPORTANTE (revisor): las CUANTÍAS del art. 66 (tanto el MÍNIMO como el MÁXIMO del tramo que se ' +
-  'muestra como rango) están SIN CONFIRMAR por fuente primaria (no se pudo leer el literal del ' +
-  'artículo); tómense como ORIENTATIVAS y verifíquense con el texto consolidado del BOE antes de publicar.';
+  ' NOTA: los TRAMOS del art. 66 los leyó ingesta del texto del BOE (BOE-A-2011-8022, 2026-09-14): ' +
+  'muy graves 15.001–30.000 €, graves 3.001–15.000 €, leves hasta 3.000 €; el seed muestra el MÍNIMO ' +
+  'del tramo como referencia orientativa. Quedan PENDIENTES de corroboración por el segundo revisor ' +
+  '(§8.3) —no verificables de forma independiente en la última revisión— y A VERIFICAR la GRADUACIÓN ' +
+  'concreta dentro del tramo (art. 67) antes de publicar como verificado.';
 
 // --- Constructor de una infracción AUTONÓMICA con sus sinónimos y consecuencias -------------
 interface InfraccionSeedInput {
@@ -608,6 +612,164 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
       '7/2011 art. 62), multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del tramo. ' +
       'Confirmar el ordinal EXACTO del art. 62 (puede NO coincidir con el de la dispensación a menores) ' +
       'y el umbral del 10% frente al exceso GRAVE del art. 63, con el texto consolidado y el revisor.',
+  }),
+  // --- AMPLIACIÓN 2026-09-14 (ordinales CONFIRMADOS contra el texto consolidado del BOE) ---------
+  // Conductas de calle que faltaban de la Ley 7/2011, con su ordinal EXACTO leído en el literal del
+  // BOE-A-2011-8022 (arts. 62, 63 y 66). Siguen en `pendiente_revision`: la graduación dentro del
+  // tramo y las posibles concurrencias con normativa estatal las cierra el revisor jurídico.
+  construirInfraccion({
+    id: 'can-esp-negativa-agentes',
+    articulo: ART_ESP_62,
+    tituloCorto: 'Negar el acceso a los agentes de la autoridad',
+    gravedad: 'muy_grave',
+    // Ley 7/2011 art. 62.9 (muy grave) → art. 66.1: multa de 15.001 a 30.000 €. Se fija el mínimo.
+    importeEur: 15001,
+    importeReducidoEur: null,
+    importeMaxEur: 30000,
+    textoBoletin:
+      'La negativa, no amparada legalmente, al acceso de los agentes de la autoridad al local o ' +
+      'espectáculo durante el ejercicio de sus funciones (por ejemplo, impedir u obstaculizar una ' +
+      'inspección). Es infracción MUY GRAVE del art. 62.9 de la Ley 7/2011. Debe distinguirse de la ' +
+      'desobediencia o resistencia a agente (LO 4/2015 o vía penal), que se valora aparte. La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'negar acceso a la policia',
+      'no dejar entrar a los agentes',
+      'impedir inspeccion local',
+      'obstruir a la autoridad en el local',
+      'no permitir el acceso a la inspeccion',
+      'negar entrada a la policia local',
+    ],
+    notaRevision:
+      'ORDINAL leído del BOE por ingesta (2026-09-14), pendiente de corroboración por el segundo revisor §8.3 (Ley 7/2011 art. 62.9): negar el acceso a los agentes de la ' +
+      'autoridad es MUY GRAVE, multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del ' +
+      'tramo. A VERIFICAR por el revisor: la DELIMITACIÓN respecto a la desobediencia/resistencia a ' +
+      'agente (LO 4/2015 art. 36.6 o vía penal, art. 556 CP) para evitar doble sanción por los mismos ' +
+      'hechos, y la graduación dentro del tramo.',
+  }),
+  construirInfraccion({
+    id: 'can-esp-drogas-local',
+    conCese: true,
+    articulo: ART_ESP_62,
+    tituloCorto: 'Permitir o tolerar el consumo de drogas en el local',
+    gravedad: 'muy_grave',
+    // Ley 7/2011 art. 62.11 (muy grave) → art. 66.1: multa de 15.001 a 30.000 €. Se fija el mínimo.
+    importeEur: 15001,
+    importeReducidoEur: null,
+    importeMaxEur: 30000,
+    textoBoletin:
+      'Desarrollar, permitir o tolerar espectáculos o actividades en el local cuando se promueva, ' +
+      'facilite o consienta el consumo de drogas tóxicas o estupefacientes, sin perjuicio de las ' +
+      'responsabilidades penales que puedan derivarse (el consumo por sí solo no es delito; la ' +
+      'responsabilidad penal del titular se valoraría por favorecimiento/facilitación del tráfico, ' +
+      'art. 368 y ss. CP). Es infracción MUY GRAVE del art. 62.11 de la ' +
+      'Ley 7/2011. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'drogas en el local',
+      'consumo de drogas en la discoteca',
+      'permitir droga en el bar',
+      'estupefacientes en el local',
+      'local que consiente drogas',
+      'trapicheo en la discoteca',
+    ],
+    notaRevision:
+      'ORDINAL leído del BOE por ingesta (2026-09-14), pendiente de corroboración por el segundo revisor §8.3 (Ley 7/2011 art. 62.11): promover, facilitar o consentir el ' +
+      'consumo de drogas en el local es MUY GRAVE, multa de 15.001 a 30.000 € (art. 66.1); el seed ' +
+      'fija el mínimo del tramo. A VERIFICAR por el revisor: la CONCURRENCIA con la responsabilidad ' +
+      'penal (favorecimiento del consumo, arts. 368 y ss. CP) y con la LO 4/2015, y la graduación ' +
+      'dentro del tramo. VALORAR si procede una medida de cese/precinto (arts. 49/65.2) — a confirmar.',
+  }),
+  construirInfraccion({
+    id: 'can-esp-medidas-seguridad',
+    conCese: true,
+    articulo: ART_ESP_62,
+    tituloCorto: 'Actividad sin las medidas de seguridad (salidas de emergencia, incendios)',
+    gravedad: 'muy_grave',
+    // Ley 7/2011 art. 62.2 (muy grave) → art. 66.1: multa de 15.001 a 30.000 €. Se fija el mínimo.
+    importeEur: 15001,
+    importeReducidoEur: null,
+    importeMaxEur: 30000,
+    textoBoletin:
+      'Desarrollar la actividad sin sujeción a las medidas del proyecto autorizado o comunicado, o a ' +
+      'las impuestas por el órgano competente, en especial las relativas a accesos, salidas de ' +
+      'emergencia y extinción de incendios, u otras dirigidas a la seguridad en locales de ' +
+      'espectáculos. Es infracción MUY GRAVE del art. 62.2 de la Ley 7/2011. La valoración final y la ' +
+      'apreciación del riesgo corresponden a la autoridad competente.',
+    terminos: [
+      'salidas de emergencia bloqueadas',
+      'salida de emergencia cerrada',
+      'sin extintores',
+      'sin medidas de seguridad el local',
+      'puertas de emergencia bloqueadas',
+      'incumplir seguridad contra incendios',
+    ],
+    notaRevision:
+      'ORDINAL leído del BOE por ingesta (2026-09-14), pendiente de corroboración por el segundo revisor §8.3 (Ley 7/2011 art. 62.2): desarrollar la actividad sin las ' +
+      'medidas de seguridad (accesos, salidas de emergencia, extinción de incendios) es MUY GRAVE, ' +
+      'multa de 15.001 a 30.000 € (art. 66.1); el seed fija el mínimo del tramo. A VERIFICAR por el ' +
+      'revisor: la DELIMITACIÓN respecto al art. 62.12 (mal estado con riesgo grave) y al art. 63.5 ' +
+      '(mal estado con riesgo, GRAVE), y la graduación dentro del tramo. VALORAR medida de ' +
+      'cese/precinto por riesgo (arts. 49/65.2) — a confirmar por el revisor.',
+  }),
+  construirInfraccion({
+    id: 'can-esp-derecho-admision',
+    articulo: ART_ESP_63,
+    tituloCorto: 'Ejercicio arbitrario o discriminatorio del derecho de admisión',
+    gravedad: 'grave',
+    // Ley 7/2011 art. 63.13 (grave) → art. 66.2: multa de 3.001 a 15.000 €. Se fija el mínimo.
+    importeEur: 3001,
+    importeReducidoEur: null,
+    importeMaxEur: 15000,
+    textoBoletin:
+      'Ejercer el derecho de admisión de forma arbitraria, discriminatoria, abusiva o contraria al ' +
+      'art. 14 de la Constitución (por ejemplo, denegar la entrada por razón de origen, sexo o ' +
+      'cualquier otra condición personal o social). Es infracción GRAVE del art. 63.13 de la Ley ' +
+      '7/2011. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'derecho de admision',
+      'no me dejan entrar en la discoteca',
+      'admision discriminatoria',
+      'discriminacion en la puerta',
+      'el portero no deja entrar',
+      'admision arbitraria',
+    ],
+    notaRevision:
+      'ORDINAL leído del BOE por ingesta (2026-09-14), pendiente de corroboración por el segundo revisor §8.3 (Ley 7/2011 art. 63.13): el ejercicio arbitrario o ' +
+      'discriminatorio del derecho de admisión es GRAVE, multa de 3.001 a 15.000 € (art. 66.2); el ' +
+      'seed fija el mínimo del tramo. A VERIFICAR por el revisor: la POSIBLE CONCURRENCIA con la LO ' +
+      '4/2015 (discriminación) y con la normativa de igualdad de trato, y la graduación dentro del ' +
+      'tramo. Valorar además la posible concurrencia con los arts. 511 y 512 CP (denegación ' +
+      'discriminatoria de prestación en el ejercicio de actividad empresarial) y con la Ley 15/2022 ' +
+      'integral para la igualdad de trato.',
+  }),
+  construirInfraccion({
+    id: 'can-esp-sacar-bebidas',
+    articulo: ART_ESP_63,
+    tituloCorto: 'Consentir sacar bebidas fuera del establecimiento',
+    gravedad: 'grave',
+    // Ley 7/2011 art. 63.6 (grave) → art. 66.2: multa de 3.001 a 15.000 €. Se fija el mínimo.
+    importeEur: 3001,
+    importeReducidoEur: null,
+    importeMaxEur: 15000,
+    textoBoletin:
+      'Consentir sacar bebidas fuera del lugar o establecimiento donde se desarrolla la actividad. Es ' +
+      'infracción GRAVE del art. 63.6 de la Ley 7/2011 imputable al titular del local. La ' +
+      'responsabilidad de quien consume en la vía pública (botellón) se rige por la ordenanza ' +
+      'municipal, que se valora aparte. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'sacar bebidas del local',
+      'copas fuera del bar',
+      'bebidas a la calle desde el bar',
+      'consumir fuera del local',
+      'sacar alcohol del bar',
+      'botellon en la puerta del bar',
+    ],
+    notaRevision:
+      'ORDINAL leído del BOE por ingesta (2026-09-14), pendiente de corroboración por el segundo revisor §8.3 (Ley 7/2011 art. 63.6): consentir sacar bebidas fuera del ' +
+      'establecimiento es GRAVE, multa de 3.001 a 15.000 € (art. 66.2); el seed fija el mínimo del ' +
+      'tramo. A VERIFICAR por el revisor: que la conducta se imputa al TITULAR del local (no al ' +
+      'consumidor, que respondería, en su caso, por la ORDENANZA municipal de consumo en vía pública), ' +
+      'y la graduación dentro del tramo.',
   }),
 ];
 

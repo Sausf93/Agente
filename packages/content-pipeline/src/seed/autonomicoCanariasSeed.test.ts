@@ -139,13 +139,15 @@ describe('SEED_AUTONOMICO_CANARIAS: correcciones de la ronda de validación (rev
     }
   });
 
-  // I-3 (revisor): las cuantías del art. 66 no están confirmadas por fuente primaria; DEBE quedar
-  // clarísimo en cada nota de las infracciones de la Ley 7/2011.
-  it('cada nota deja clarísimo que las cuantías del art. 66 están SIN confirmar', () => {
+  // I-3 → actualizado (2026-09-14, corrección del revisor §8.3): los TRAMOS del art. 66 los LEYÓ
+  // ingesta del BOE (BOE-A-2011-8022) pero NO se pudieron corroborar de forma independiente en la
+  // última revisión, así que quedan PENDIENTES de corroboración (no se afirma "confirmado"). Cada nota
+  // debe citar el art. 66 y dejar la graduación/corroboración "a verificar".
+  it('cada nota cita el art. 66 y deja la corroboración/graduación a verificar (no lo da por confirmado)', () => {
     for (const item of SEED_AUTONOMICO_CANARIAS.infracciones) {
       const nota = item.notaRevision.toLowerCase();
       expect(nota, item.infraccion.id).toContain('art. 66');
-      expect(nota, item.infraccion.id).toMatch(/sin confirmar|sin confirmar por fuente primaria/);
+      expect(nota, item.infraccion.id).toContain('verificar');
     }
   });
 

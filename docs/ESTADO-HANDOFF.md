@@ -140,7 +140,18 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **185 infracciones, 30 normas, 1800 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **190 infracciones, 30 normas, 1830 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (7ª parte): +5 fichas autonómicas de Canarias.** Ampliada la Ley 7/2011 (CAN-ESP)
+  con negativa a agentes (62.9), drogas en el local (62.11 + cese), medidas de seguridad/salidas de
+  emergencia (62.2 + cese), derecho de admisión arbitrario (63.13) y sacar bebidas del local (63.6).
+  Ingesta leyó los ordinales del BOE (pdftotext); el revisor NO pudo corroborarlos de forma
+  independiente (límites de fetch), así que las notas dicen "leído por ingesta, PENDIENTE de
+  corroboración por 2º revisor §8.3" (no se afirma "confirmado") y todo sigue `pendiente_revision`.
+  Correcciones del revisor aplicadas (matiz penal drogas 368; concurrencia 511/512 CP + Ley 15/2022 en
+  derecho de admisión; fecha 2026-09-14). Directo para vender a locales/autonómica canaria. También:
+  la ficha buscable del régimen del menor (`sc-menor-regimen`) ahora enlaza a la guía de menores.
+  912+ tests verdes. PENDIENTE: 2º revisor con acceso al consolidado del BOE para corroborar ordinales
+  62.x/63.x y tramos art. 66 antes de pasar a `verificado`.
 - **SPRINT 2026-09-14 (6ª parte): Guía de ocupación (okupas).** Nueva **Guía de ocupación**
   (`guiaOcupacion.ts` + `GuiaOcupacionScreen.tsx`, ruta `/guia-ocupacion`), 7 secciones acción-primero
   desde la distinción clave ¿es MORADA?: allanamiento 202 (morada, delito permanente) vs usurpación
