@@ -782,9 +782,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'ENTRADA CONSULTABLE (deslinde): la obligación de portar la documentación es del art. 4 LO 4/2000, ' +
-      'pero NO llevarla encima no es sin más infracción grave. Modelada como no_sancionador (sin importe). ' +
-      'MENSAJE CLAVE a preservar. Confirmar con el revisor jurídico.',
+      'ENTRADA CONSULTABLE (deslinde): la obligación de portar la documentación es del art. 4.1 LO 4/2000, ' +
+      'pero NO llevarla encima no es sin más infracción grave (no equivale a la estancia irregular del 53.1.a). ' +
+      'Modelada como no_sancionador (sin importe) por ser deslinde, no tipo sancionador autónomo. MENSAJE CLAVE ' +
+      'a preservar. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ext-quebrantar-prohibicion-entrada',
@@ -910,16 +911,17 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'ppp-sin-licencia',
     articulo: ART_PPP_13,
-    tituloCorto: 'Perro peligroso (PPP) sin licencia ni registro',
+    tituloCorto: 'Perro peligroso (PPP) sin licencia administrativa',
     gravedad: 'muy_grave',
     // Ley 50/1999 art. 13.5: muy graves, de 2.404,06 a 15.025,30 €. Se fija el mínimo del tramo.
     importeEur: 2404.06,
     importeReducidoEur: null,
     textoBoletin:
       'Tener un animal potencialmente peligroso (perro de raza o características de PPP) careciendo ' +
-      'de la licencia administrativa preceptiva o sin haberlo inscrito en el Registro de Animales ' +
-      'Potencialmente Peligrosos. Es infracción MUY GRAVE de la Ley 50/1999 (art. 13.1), sancionable ' +
-      'con multa y, en su caso, comiso del animal. La valoración final corresponde a la autoridad competente.',
+      'de la licencia administrativa preceptiva. Es infracción MUY GRAVE de la Ley 50/1999 ' +
+      '(art. 13.1.b), sancionable con multa y, en su caso, comiso del animal. OJO: la mera falta de ' +
+      'inscripción en el Registro (teniendo licencia) es infracción GRAVE distinta (art. 13.2.c), no ' +
+      'muy grave. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'perro peligroso',
       'ppp',
@@ -942,11 +944,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR importe y clasificación: carecer de licencia o de inscripción registral del PPP ' +
-      'es MUY GRAVE (Ley 50/1999 art. 13.1), multa de 2.404,06 a 15.025,30 € (art. 13.5); el seed ' +
-      'fija el mínimo del tramo. La lista de razas y el desarrollo están en el RD 287/2002. Muchas ' +
-      'competencias sancionadoras y matices los fija la ORDENANZA MUNICIPAL y la normativa autonómica ' +
-      '(incluida la Ley 7/2023 de bienestar animal). Confirmar con el revisor jurídico antes de publicar.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): carecer de LICENCIA es MUY ' +
+      'GRAVE (art. 13.1.b), multa de 2.404,06 a 15.025,30 € (art. 13.5); el seed fija el mínimo del ' +
+      'tramo. NO confundir con la mera falta de INSCRIPCIÓN en el Registro (art. 13.2.c), que es GRAVE ' +
+      '(300,52-2.404,05 €) — por eso esta ficha se limita a la falta de licencia. La lista de razas y el ' +
+      'desarrollo están en el RD 287/2002. Ordenanza municipal y normativa autonómica (incl. Ley 7/2023) ' +
+      'pueden matizar competencias. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-sin-bozal',
@@ -984,12 +987,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR importe y clasificación: llevar el PPP sin bozal/correa o suelto en la vía pública ' +
-      'es GRAVE (Ley 50/1999 art. 13.2), multa de 300,52 a 2.404,05 € (art. 13.5); el seed fija el ' +
-      'mínimo del tramo. Las medidas concretas (bozal, correa ≤ 2 m no extensible, un animal por ' +
-      'persona) y las cuantías las suele detallar la ORDENANZA MUNICIPAL. A VERIFICAR también el ' +
-      'ASEGURAMIENTO/intervención cautelar del animal (orientativo, art. 13 y RD 287/2002). Confirmar ' +
-      'con el revisor jurídico.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): llevar el PPP en lugar público sin ' +
+      'bozal o no sujeto con cadena es GRAVE (art. 13.2.d), multa de 300,52 a 2.404,05 € (art. 13.5); el seed ' +
+      'fija el mínimo del tramo. Las medidas concretas (bozal, correa ≤ 2 m no extensible, un animal por ' +
+      'persona) las detalla el RD 287/2002 y puede completarlas la ORDENANZA MUNICIPAL. El aseguramiento/ ' +
+      'intervención cautelar es orientativo (art. 13 y RD 287/2002). Segundo revisor humano para el cierre.',
   }),
   // --- OLA DE ANIMALES (2026-09-11): bienestar animal (Ley 7/2023) + PPP (Ley 50/1999) ----------
   construirInfraccion({
@@ -1188,14 +1190,17 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     id: 'ppp-sin-seguro',
     articulo: ART_PPP_13,
     tituloCorto: 'Perro peligroso (PPP) sin seguro de responsabilidad civil',
-    gravedad: 'grave',
-    // Ley 50/1999 art. 13.5: graves 300,52-2.404,05 €. Mínimo del tramo.
-    importeEur: 300.52,
+    gravedad: 'leve',
+    // Ley 50/1999 art. 13.5: leves 150,25-300,51 €. Mínimo del tramo. Reclasificada a LEVE tras leer el
+    // art. 13 en el BOE: la falta de seguro NO figura en las muy graves (13.1) ni graves (13.2), luego cae
+    // en el residual del art. 13.4 (leve). El seguro es requisito de la licencia (RD 287/2002 art. 3).
+    importeEur: 150.25,
     importeReducidoEur: null,
     textoBoletin:
       'Tener un animal potencialmente peligroso careciendo del seguro de responsabilidad civil por daños a ' +
       'terceros exigido para su tenencia (Ley 50/1999 y RD 287/2002). El seguro es requisito de la licencia; ' +
-      'su falta se sanciona como infracción grave. La valoración final corresponde a la autoridad competente.',
+      'su falta, al no estar entre las infracciones graves ni muy graves del art. 13, es LEVE (art. 13.4), ' +
+      'sin perjuicio de que carecer de licencia sí sea muy grave. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'perro peligroso sin seguro',
       'ppp sin seguro',
@@ -1217,22 +1222,25 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR (revisor de animales): la falta de seguro NO está tipificada específicamente en el art. ' +
-      '13; el seguro es requisito de la licencia (RD 287/2002 art. 3). La gravedad "grave 300,52 €" carece ' +
-      'de fuente directa: podría ser MUY GRAVE (13.1, si invalida la licencia) o LEVE (13.4), o elevarla la ' +
-      'ORDENANZA municipal. Reclasificar tras el visto bueno del revisor.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): la falta de seguro NO está entre ' +
+      'las muy graves (13.1) ni las graves (13.2), por lo que es LEVE por el residual del art. 13.4 (tramo ' +
+      '150,25-300,51 €, el seed fija el mínimo). El seguro es requisito de la licencia (RD 287/2002 art. 3). ' +
+      'Una ordenanza municipal podría matizar. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-menor-conduciendo',
     articulo: ART_PPP_13,
     tituloCorto: 'PPP conducido por un menor de edad',
-    gravedad: 'grave',
-    importeEur: 300.52,
+    gravedad: 'leve',
+    // Ley 50/1999 art. 13.4 (residual: no figura en 13.1 ni 13.2) → LEVE, 150,25-300,51 € (art. 13.5). Mínimo del tramo.
+    importeEur: 150.25,
     importeReducidoEur: null,
     textoBoletin:
       'Permitir que un animal potencialmente peligroso sea conducido o manejado en lugares públicos por una ' +
       'persona menor de edad. La tenencia y conducción de PPP exige licencia, reservada a mayores de edad ' +
-      '(Ley 50/1999 y RD 287/2002). La valoración final corresponde a la autoridad competente.',
+      '(RD 287/2002 art. 3). Al no figurar en las muy graves ni graves del art. 13, es infracción LEVE ' +
+      '(art. 13.4, residual); una ordenanza municipal podría graduarla distinto. La valoración final ' +
+      'corresponde a la autoridad competente.',
     terminos: [
       'niño paseando perro peligroso',
       'menor con perro peligroso',
@@ -1254,21 +1262,25 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR (revisor de animales): conducir un PPP siendo menor no figura literal en el art. 13.2; la ' +
-      'exigencia de mayoría de edad es del RD 287/2002 art. 3. La gravedad "grave" carece de apoyo directo: ' +
-      'probable LEVE (13.4) o vía ordenanza (salvo lectura de "conducción sin licencia"). Reclasificar con el revisor.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): conducir un PPP siendo menor NO figura ' +
+      'entre las muy graves (13.1) ni las graves (13.2); la exigencia de mayoría de edad es del RD 287/2002 art. 3. ' +
+      'Por tanto es LEVE por el residual del art. 13.4 (150,25-300,51 €, el seed fija el mínimo). Si el menor va SIN ' +
+      'ningún adulto con licencia podría leerse como tenencia "sin licencia" (muy grave 13.1.b): ese matiz lo cierra ' +
+      'el revisor. Una ordenanza municipal puede graduar. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-mas-de-uno',
     articulo: ART_PPP_13,
     tituloCorto: 'Más de un PPP por persona en la vía pública',
-    gravedad: 'grave',
-    importeEur: 300.52,
+    gravedad: 'leve',
+    // Ley 50/1999 art. 13.4 (residual: no figura en 13.1 ni 13.2) → LEVE, 150,25-300,51 € (art. 13.5). Mínimo del tramo.
+    importeEur: 150.25,
     importeReducidoEur: null,
     textoBoletin:
       'Llevar a más de un animal potencialmente peligroso por persona simultáneamente en lugares públicos, ' +
-      'incumpliendo las medidas de seguridad exigidas (RD 287/2002). La valoración final corresponde a la ' +
-      'autoridad competente.',
+      'incumpliendo la regla de "un perro por persona" (RD 287/2002 art. 8). Al no figurar en las muy graves ' +
+      'ni graves del art. 13, es infracción LEVE (art. 13.4, residual); una ordenanza municipal podría graduarla ' +
+      'distinto. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'dos perros peligrosos a la vez',
       'varios ppp una persona',
@@ -1289,9 +1301,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR (revisor de animales): "un perro por persona" (RD 287/2002 art. 8) no figura en la lista ' +
-      'de graves del art. 13.2; la gravedad "grave" carece de apoyo directo: probable LEVE (13.4) o vía ' +
-      'ordenanza. Reclasificar con el revisor.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): la regla "un perro por persona" ' +
+      '(RD 287/2002 art. 8) NO figura en las muy graves (13.1) ni las graves (13.2); es LEVE por el residual ' +
+      'del art. 13.4 (150,25-300,51 €, el seed fija el mínimo). Una ordenanza municipal puede graduar. ' +
+      'Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-transporte',
@@ -1322,8 +1335,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR el apartado e importe (art. 13.5, mínimo grave 300,52 €); condiciones de transporte en el ' +
-      'RD 287/2002. Revisor.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): el transporte de PPP incumpliendo el ' +
+      'art. 10 es infracción GRAVE (art. 13.2.e), multa de 300,52 a 2.404,05 € (art. 13.5); el seed fija el ' +
+      'mínimo del tramo. Las condiciones concretas de transporte se desarrollan en el RD 287/2002. Segundo ' +
+      'revisor humano para el cierre.',
   }),
   // --- OLA DE PARIDAD SPPLB (2026-09-14): EXTRANJERÍA (arts. 53/54) ------------------------------
   construirInfraccion({
@@ -1555,10 +1570,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'extranjeria',
     notaRevision:
-      'A VERIFICAR (SENSIBLE): el apartado exacto —art. 54.1.f (simular relación laboral con ánimo de lucro)— y ' +
-      'su encaje con los "matrimonios de conveniencia", que la doctrina y la jurisprudencia tratan de forma ' +
-      'específica (posible fraude de ley / falsedad documental, arts. 390 y ss. CP). Tramo muy grave ' +
-      '10.001-100.000 € (55.1.c), el seed fija el mínimo. Confirmar la calificación con el revisor jurídico.',
+      'VERIFICADO contra el BOE (LO 4/2000 art. 54.1.f, leído 2026-09-14): el tipo es "promover, favorecer o ' +
+      'facilitar con ánimo de lucro la inmigración clandestina / SIMULAR una relación laboral con un extranjero" ' +
+      '(muy grave). CLAVE: el "matrimonio de conveniencia" NO encaja en este apartado —se combate por nulidad/ ' +
+      'fraude de ley y, en su caso, falsedad documental (arts. 390 y ss. CP) o 318 bis CP—, por eso la ficha lo ' +
+      'deslinda. Tramo muy grave 10.001-100.000 € (55.1.c), el seed fija el mínimo. Segundo revisor humano para ' +
+      'el cierre por lo SENSIBLE del deslinde.',
   }),
   // --- OLA DE PARIDAD SPPLB (2026-09-14): ANIMALES (Ley 50/1999 y Ley 7/2023) --------------------
   construirInfraccion({
@@ -1596,9 +1613,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR: adiestramiento para el ataque/finalidades prohibidas como MUY GRAVE (Ley 50/1999 art. 13.1), ' +
-      'tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Deslinde PENAL con el art. 340 bis CP ' +
-      '(peleas de animales) para no solaparse con la ficha penal. Revisor de animales.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): adiestrar un PPP para activar la ' +
+      'agresividad (art. 13.1.d) y adiestrarlo sin la habilitación/certificado oficial (art. 13.1.e) son MUY ' +
+      'GRAVES, tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Deslinde PENAL con el art. 340 bis ' +
+      'CP (peleas de animales) para no solaparse con la ficha penal. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-venta-ilegal',
@@ -1830,10 +1848,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR la LETRA exacta: el abandono de un PPP es MUY GRAVE del art. 13.1 Ley 50/1999 (letra ' +
-      'concreta a confirmar contra el consolidado), tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el ' +
-      'mínimo. Deslinde con el abandono ordinario de la Ley 7/2023 (`animal-abandono`) y con el delito del ' +
-      'art. 340 ter CP. Confirmar con el revisor de animales antes de publicar.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): el abandono de un PPP es MUY GRAVE ' +
+      '(art. 13.1.a), tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Deslinde con el abandono ' +
+      'ordinario de la Ley 7/2023 (`animal-abandono`) y con el delito del art. 340 ter CP. Segundo revisor humano ' +
+      'para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-suelto-sin-bozal-ni-correa',
@@ -1871,10 +1889,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR: modalidad AGRAVADA (suelto + sin bozal + sin correa) frente a `ppp-sin-bozal`; sigue siendo ' +
-      'GRAVE del art. 13.2 Ley 50/1999 (LETRA a confirmar), tramo 300,52-2.404,05 € (art. 13.5), el seed fija ' +
-      'el mínimo pero el cúmulo de incumplimientos justificaría subir en la horquilla. No duplicar con ' +
-      '`ppp-sin-bozal`: aquí concurren varias faltas a la vez. Revisor de animales.',
+      'CONFIRMADO contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): llevar un PPP en lugar público sin ' +
+      'bozal o no sujeto con cadena es GRAVE (art. 13.2.d), tramo 300,52-2.404,05 € (art. 13.5); el seed fija ' +
+      'el mínimo, pero el cúmulo de incumplimientos (suelto + sin bozal + sin correa) justificaría subir en la ' +
+      'horquilla. No duplicar con `ppp-sin-bozal`: aquí concurren varias faltas a la vez. Segundo revisor humano ' +
+      'para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-no-comunicar-incidencias',
@@ -1949,10 +1968,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'animales',
     notaRevision:
-      'A VERIFICAR (revisor de animales): la cría/comercio de PPP se somete a licencia (Ley 50/1999 art. 4); ' +
-      'su falta se ancla a la LETRA del art. 13.1 (MUY GRAVE, "posesión sin licencia/inscripción"), a confirmar ' +
-      'contra el consolidado. Tramo muy grave 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Concurre ' +
-      'la normativa de NÚCLEOS ZOOLÓGICOS (autonómica) y la Ley 7/2023 (`animal-venta-ilegal`). Reclasificar con el revisor.',
+      'VERIFICADO PARCIAL contra el BOE (Ley 50/1999 art. 13, leído 2026-09-14): la cría/comercio de PPP se ' +
+      'somete a licencia (art. 4). El anclaje MUY GRAVE es sólido: quien cría/comercia sin licencia incurre en ' +
+      'la "tenencia sin licencia" (art. 13.1.b) y, al vender/transmitir a quien carece de licencia, en el art. ' +
+      '13.1.c. Tramo muy grave 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Deslinde: la LETRA exacta ' +
+      '(13.1.b vs 13.1.c según se impute tenencia o transmisión) la fija el segundo revisor humano. Concurre la ' +
+      'normativa de NÚCLEOS ZOOLÓGICOS (autonómica) y la Ley 7/2023 (`animal-venta-ilegal`).',
   }),
   construirInfraccion({
     id: 'ppp-sin-cartel-advertencia',

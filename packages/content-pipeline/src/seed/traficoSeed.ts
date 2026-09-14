@@ -2074,7 +2074,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       '(200 €/100 €) proceden de criterios DGT; confirmar por supuesto y advertir de la variación ' +
       'municipal. Alcohol y drogas en VMP se rigen por sus propias tasas. No detrae puntos. A ' +
       'VERIFICAR además la INMOVILIZACIÓN/retención cautelar del VMP en supuestos de riesgo: es ' +
-      'ORIENTATIVA y depende de la ordenanza municipal; confirmar con el revisor jurídico. Revisar.',
+      'ORIENTATIVA y depende de la ordenanza municipal; confirmar con el revisor jurídico. ' +
+      'PRÓXIMO CAMBIO (RD 518/2026, BOE-A-2026-13889, EN VIGOR 1-OCT-2026): la reforma del RGC introduce ' +
+      'obligaciones nuevas para los VMP (entre ellas el uso de CASCO) y otras medidas de protección de ' +
+      'usuarios vulnerables; desde el 1-oct-2026 hay que AÑADIR esas conductas y su régimen — a verificar ' +
+      'el alcance exacto (casco, edad mínima) en el articulado reformado.',
   }),
   construirInfraccion({
     id: 'inf-menor-sin-sri',
@@ -2152,7 +2156,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
         fuente: 'CP art. 383; LECrim arts. 490 y 492',
       },
     ],
-    marcoImporte: 'trafico',
+    marcoImporte: 'penal',
     notaRevision:
       'A VERIFICAR el encaje penal: delito del art. 383 CP (negativa a las pruebas). Confirmar la ' +
       'redacción orientativa de la detención con el revisor jurídico (§4.6, lenguaje NUNCA ' +
@@ -3669,7 +3673,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR (dato sensible): los PUNTOS (¿3?) en el Anexo II LSV, el apartado del art. 13 LSV y la ' +
       'frontera exacta detector (grave, 200 €) vs INHIBIDOR (muy grave, art. 77, ~6.000 €). Confirmar la ' +
-      'base legal de la intervención del dispositivo antes de afirmarla. Importe grave 200 €.',
+      'base legal de la intervención del dispositivo antes de afirmarla. Importe grave 200 €. ' +
+      'PRÓXIMO CAMBIO (RD 518/2026, BOE-A-2026-13889, EN VIGOR 1-OCT-2026): la reforma del RGC podría ' +
+      'elevar el detector de radar a MUY GRAVE / 500 € — a partir de esa fecha hay que ACTUALIZAR el ' +
+      'importe y la gravedad; a verificar el detalle en el articulado reformado.',
   }),
   construirInfraccion({
     id: 'inf-exceso-ocupantes',
@@ -4556,8 +4563,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR el apartado exacto del art. 142 LOTT (documentos de control; obligación de carta de porte, ' +
       'Ley 15/2009 del contrato de transporte terrestre de mercancías) y la GRAVEDAD contra el texto consolidado ' +
-      'y el ROTT: el seed ancla LEVE con horquilla 100–400 € por prudencia; A VERIFICAR el importe efectivo. Sin ' +
-      'pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+      'y el ROTT: el seed ancla LEVE con horquilla 100–300 € (mínimo del tramo leve) por prudencia; A VERIFICAR ' +
+      'el importe efectivo. Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
   }),
   construirInfraccion({
     id: 'inf-vtc-captacion',

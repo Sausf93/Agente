@@ -1465,6 +1465,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     // Daños del art. 263.1 (cuantía > 400 €): multa de 6 a 24 meses → MENOS GRAVE (multa de más
     // de 3 meses, art. 33.3 CP). Los daños ≤ 400 € son delito leve (art. 263.1, párr. 2º).
     gravedadCp: 'menos_grave',
+    // La pena del 263.1 es SOLO multa (sin prisión alternativa): la detención se rige por la
+    // proporcionalidad del art. 492 LECrim, no por la obligación de detener en flagrancia.
+    penaSoloMulta: true,
     penaTexto: 'Multa de 6 a 24 meses (daños cuya cuantía excede de 400 €, art. 263.1 CP)',
     textoBoletin:
       'Causar daños en propiedad ajena no comprendidos en otros títulos del Código Penal, cuando la ' +
@@ -1614,7 +1617,8 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Desórdenes públicos',
     // Art. 557.1 (redacción LO 14/2022): actuar en grupo y con el fin de atentar contra la paz
     // pública ejecutando actos de violencia o intimidación → prisión de 6 meses a 3 años → MENOS
-    // GRAVE (base). La modalidad agravada por MULTITUD (art. 557.2) es prisión de 3 a 5 años → GRAVE.
+    // GRAVE (base). La modalidad agravada por MULTITUD (art. 557.2) es prisión de 3 a 5 años → sigue
+    // siendo MENOS GRAVE (el máximo, 5 años, no supera los 5 que exige "grave" en el art. 33.3 CP).
     gravedadCp: 'menos_grave',
     penaTexto:
       'Prisión de 6 meses a 3 años (desórdenes públicos en grupo, art. 557.1 CP); modalidad agravada ' +
@@ -1644,7 +1648,8 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'actos de violencia o intimidación) → prisión de 6 meses a 3 años → MENOS GRAVE; la modalidad ' +
       'AGRAVADA del art. 557.2 (hechos cometidos en el seno de una multitud o grupo numeroso idóneo ' +
       'para afectar gravemente el orden público, o prevaliéndose de ella) → prisión de 3 a 5 años → ' +
-      'GRAVE, lo que cambiaría la rama de detención. El subtipo AGRAVADO del art. 557.3 (llevar armas ' +
+      'sigue siendo MENOS GRAVE (máximo 5 años; "grave" exige pena SUPERIOR a 5 años, art. 33.3 CP), no ' +
+      'cambia la rama de detención. El subtipo AGRAVADO del art. 557.3 (llevar armas ' +
       'u otros objetos peligrosos, o cometer actos de pillaje) también eleva la pena; OJO: tras la LO ' +
       '14/2022 el art. 557 bis dejó de ser esa agravación y pasó a castigar la invasión u ocupación ' +
       'en grupo del domicilio de una persona jurídica, despacho, oficina o local (cotejado con la LO ' +
@@ -2327,7 +2332,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'voluntad anulada, incluida la sumisión química (178.2). Pena base 1-4 años; con violencia/' +
       'intimidación o voluntad anulada, 1-5 años (178.3). El acceso carnal o la introducción de miembros u ' +
       'objetos es VIOLACIÓN (art. 179): 4-12 años (179.1) o 6-12 con violencia/intimidación (179.2). Las ' +
-      'agravantes del art. 180 elevan las penas. La ' +
+      'agravantes del art. 180 elevan las penas. PERSEGUIBILIDAD (art. 191 CP): se requiere DENUNCIA de la ' +
+      'persona agraviada, de su representante legal o querella del Ministerio Fiscal; basta la denuncia del ' +
+      'Fiscal cuando la víctima sea menor, con discapacidad necesitada de especial protección o desvalida. La ' +
       'calificación final corresponde en exclusiva a la autoridad judicial.',
     terminos: [
       'agresion sexual',
@@ -2379,7 +2386,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'superioridad), 5 a 10 años (181.2). Con acceso carnal o introducción de miembros u objetos, 8 a 12 ' +
       'años (181.4) o 12 a 15 (sobre el 181.2). Hay agravantes (181.5/6) e inhabilitación si el autor es ' +
       'autoridad o funcionario. El consentimiento del menor de 16 años NO exime, salvo la cláusula de ' +
-      'proximidad por edad y desarrollo del art. 183 bis. La calificación final corresponde al juez.',
+      'proximidad por edad y desarrollo del art. 183 bis. PERSEGUIBILIDAD (art. 191 CP): cuando la víctima ' +
+      'es MENOR o persona con discapacidad necesitada de especial protección, BASTA la denuncia del ' +
+      'Ministerio Fiscal (no depende de la voluntad del menor ni de su familia). La calificación final corresponde al juez.',
     terminos: [
       'abuso a un menor',
       'tocamientos a un niño',
@@ -3485,9 +3494,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR el marco de pena y la circunstancia agravante concreta: el atentado agravado del art. ' +
       '551 CP impone la pena SUPERIOR EN GRADO a la del art. 550 (que ya distingue autoridad/agente y la ' +
-      'presencia de violencia). Modelado como GRAVE porque con la elevación en grado puede superar los 5 ' +
-      'años (art. 33 CP); confirmar según cuál sea la modalidad (arma, vehículo, fuego/líquidos ' +
-      'inflamables, peligro para la vida) y la condición del sujeto pasivo. DESLINDE con el atentado ' +
+      'presencia de violencia). Modelado como MENOS GRAVE porque el caso de calle (atentado a AGENTE, base ' +
+      '6 meses-3 años) elevado en grado ≈ 3 a 4 años y 6 meses, cuyo máximo NO supera los 5 años (art. 33 ' +
+      'CP); si el sujeto pasivo es AUTORIDAD (base 1-4 años), la elevación puede superar los 5 años → GRAVE. ' +
+      'Confirmar según la modalidad (arma, vehículo, fuego/líquidos inflamables, peligro para la vida) y la ' +
+      'condición del sujeto pasivo. DESLINDE con el atentado ' +
       'básico (del-atentado-agente, art. 550) y con la resistencia grave (del-resistencia-desobediencia, ' +
       'art. 556). Confirmar penas y agravantes contra el texto consolidado del CP con el revisor jurídico.',
   }),
@@ -3643,15 +3654,16 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     articulo: ART_CP_263,
     tituloCorto: 'Daños leves (hasta 400 €)',
     // Caso modelado: daños dolosos de cuantía ≤ 400 € → delito leve (multa de 1 a 3 meses) → LEVE.
+    // (No se marca penaSoloMulta: en delitos leves la rama del art. 495 LECrim ya intercepta antes.)
     gravedadCp: 'leve',
-    penaSoloMulta: true,
     penaTexto: 'Multa de 1 a 3 meses (delito leve, daños hasta 400 €, art. 263.1 CP)',
     textoBoletin:
       'Causar daños en propiedad ajena, no comprendidos en otros títulos del CP, cuando la cuantía del ' +
       'daño NO excede de 400 euros: delito leve, multa de 1 a 3 meses (art. 263.1 CP, párrafo segundo). ' +
       'Por encima de 400 € es delito menos grave (ficha del-danos); los daños por incendio, explosión o ' +
-      'medios peligrosos van por el art. 266 (ficha del-danos-agravados). REQUISITO PROCESAL (a ' +
-      'verificar): los delitos leves patrimoniales suelen exigir DENUNCIA previa de la persona agraviada. ' +
+      'medios peligrosos van por el art. 266 (ficha del-danos-agravados). El daño DOLOSO leve del art. ' +
+      '263.1 es PERSEGUIBLE DE OFICIO (no exige denuncia previa; el requisito de denuncia es solo para los ' +
+      'daños IMPRUDENTES graves del art. 267). ' +
       'FRONTERA: el deslucimiento de bienes muebles o inmuebles en la vía pública (grafiti) puede ser ' +
       'infracción administrativa (art. 37.13 LO 4/2015) si no hay daño patrimonial. La calificación final ' +
       'corresponde a la autoridad judicial.',
@@ -3669,9 +3681,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR la frontera de cuantía y el requisito procesal: los daños dolosos de cuantía ≤ 400 € ' +
       'son DELITO LEVE (multa de 1 a 3 meses, art. 263.1 CP, párrafo segundo) → la ficha lo modela como ' +
-      'LEVE + penaSoloMulta (detención regida por el art. 495 LECrim). Por encima de 400 € pasa a MENOS ' +
-      'GRAVE (ficha del-danos). REQUISITO PROCESAL a confirmar: perseguibilidad de los delitos leves ' +
-      'patrimoniales (posible exigencia de denuncia del agraviado). DESLINDE con los daños agravados por ' +
+      'LEVE (detención regida por el art. 495 LECrim). Por encima de 400 € pasa a MENOS ' +
+      'GRAVE (ficha del-danos). PERSEGUIBILIDAD: el daño DOLOSO leve (263.1) es de OFICIO; el requisito de ' +
+      'denuncia previa es solo para el daño IMPRUDENTE grave del art. 267. DESLINDE con los daños agravados por ' +
       'medios peligrosos (art. 266, del-danos-agravados) y con el deslucimiento/grafiti como infracción ' +
       'administrativa (LO 4/2015). Confirmar contra el texto consolidado del CP con el revisor jurídico.',
   }),

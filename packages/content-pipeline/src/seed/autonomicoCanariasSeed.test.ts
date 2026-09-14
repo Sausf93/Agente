@@ -109,16 +109,21 @@ describe('SEED_AUTONOMICO_CANARIAS: cobertura de lo más útil en Canarias', () 
 
 describe('SEED_AUTONOMICO_CANARIAS: correcciones de la ronda de validación (revisor + validador)', () => {
   // I-1/I-2: el ocio lleva la medida operativa `cese_actividad` (cese/desalojo/precinto), que MANDA
-  // sobre la multa. Debe llevar su fuente (arts. 49 y 65.2) y lenguaje orientativo.
-  it('las infracciones de ocio llevan la consecuencia estructurada `cese_actividad` con su fuente', () => {
+  // sobre la multa, con lenguaje orientativo. Corregido (revisor QA 2026-09-14): la BASE LEGAL del cese
+  // depende del supuesto — sin licencia = arts. 49 y 65.2 (cierre del no autorizado); local CON licencia
+  // (horario, aforo, drogas, seguridad) = arts. 56 y 57 (medida provisional cautelar).
+  it('las infracciones de ocio llevan `cese_actividad` con la fuente correcta según el supuesto', () => {
     for (const id of ['can-esp-horario-cierre', 'can-esp-tras-cierre', 'can-esp-sin-licencia']) {
       const item = porId(id)!;
       const cese = item.consecuencias.find((c) => c.tipo === 'cese_actividad');
       expect(cese, id).toBeDefined();
-      expect(cese!.fuente, id).toMatch(/49.*65\.2|65\.2/);
       expect(cese!.textoCorto.toLowerCase(), id).toMatch(/cese|desalojo|precinto/);
-      // Orientativo, nunca imperativo.
       expect(cese!.textoCorto.toLowerCase(), id).toMatch(/procede|valorar/);
+      if (id === 'can-esp-sin-licencia') {
+        expect(cese!.fuente, id).toMatch(/65\.2/); // cierre del establecimiento no autorizado
+      } else {
+        expect(cese!.fuente, id).toMatch(/56.*57|56/); // medida provisional cautelar (local con licencia)
+      }
     }
   });
 

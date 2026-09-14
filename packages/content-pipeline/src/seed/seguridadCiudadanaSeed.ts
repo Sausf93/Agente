@@ -1011,7 +1011,6 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'no lleva documentacion',
       // Lenguaje de calle (validador): la negativa/no colaboracion a identificarse (art. 36.6).
       'no se quiere identificar',
-      'no colabora',
       'se puso chulo',
       'se encaro',
       'me planto cara',
@@ -1198,7 +1197,8 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     textoBoletin:
       'Mantener un arma reglamentada con la licencia o la guía de pertenencia caducada o sin renovar, ' +
       'excediendo los límites autorizados o careciendo de la documentación en vigor (art. 36.12 LO ' +
-      '4/2015). FRONTERA PENAL (materia controvertida): la mera caducidad reciente sobre un arma ' +
+      '4/2015; el deber de vigencia y renovación de la licencia y de la guía de pertenencia lo fija el ' +
+      'RD 137/1993, artículo concreto a verificar). FRONTERA PENAL (materia controvertida): la mera caducidad reciente sobre un arma ' +
       'legalmente adquirida suele reconducirse a la vía administrativa; la falta total o la no ' +
       'renovación prolongada puede derivar en tenencia ilícita (art. 564 CP). Orientativo: valorar el ' +
       'tiempo de caducidad y las circunstancias; la calificación la fija la autoridad judicial.',
@@ -1392,7 +1392,9 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     importeReducidoEur: 50,
     textoBoletin:
       'No conservar debidamente la DOCUMENTACIÓN de un arma (licencia, guía), o no denunciar su ' +
-      'pérdida o sustracción (art. 37.8 LO 4/2015). Es infracción LEVE. IMPORTANTE: el 37.8 se refiere ' +
+      'pérdida o sustracción (art. 37.8 LO 4/2015; el deber y la forma de comunicar el extravío de la ' +
+      'documentación a la Intervención de Armas se desarrolla en el RD 137/1993, artículo concreto a ' +
+      'verificar). Es infracción LEVE. IMPORTANTE: el 37.8 se refiere ' +
       'a la DOCUMENTACIÓN, no al arma en sí. Si lo perdido o sustraído es el ARMA, la conducta se ' +
       'valora por la vía de la custodia (art. 36.12) o, si hay indicios de destino ilícito a terceros, ' +
       'por los tipos penales de depósito/tráfico (arts. 566-568 CP). Orientativo.',

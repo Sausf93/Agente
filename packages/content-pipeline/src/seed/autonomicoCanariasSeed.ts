@@ -314,17 +314,30 @@ export const ARTICULOS_CANARIAS_SEED: Articulo[] = [
  * ligada al régimen de cierre (art. 49). Se modela como consecuencia estructurada `cese_actividad`
  * para que la ficha la muestre DESTACADA por encima del importe (I-1/I-2). Lenguaje ORIENTATIVO.
  */
-const FUENTE_CESE = 'Ley 7/2011 arts. 49 y 65.2';
+// Cese en local SIN LICENCIA / sin comunicación previa: art. 65.2 (cierre del no autorizado), ligado
+// al régimen de cierre del art. 49. Corregido por el revisor QA (2026-09-14): esta base SOLO vale para
+// el establecimiento sin licencia.
+const FUENTE_CESE_SIN_LICENCIA = 'Ley 7/2011 arts. 49 y 65.2';
+// Cese/precinto CAUTELAR en local que SÍ tiene licencia (horario, aforo, drogas, medidas de
+// seguridad): medida provisional del art. 56 (56.6 permite la actuación inmediata del agente ante
+// riesgo grave o perturbación grave) con la tipología del art. 57 (precinto, clausura, suspensión).
+const FUENTE_CESE_PROVISIONAL =
+  'Ley 7/2011 arts. 56 y 57 (medida provisional; art. 56.6 para actuación inmediata del agente)';
 
 function consecuenciaCese(infraccionId: string): Consecuencia {
+  const sinLicencia = infraccionId === 'can-esp-sin-licencia';
+  const fuente = sinLicencia ? FUENTE_CESE_SIN_LICENCIA : FUENTE_CESE_PROVISIONAL;
+  const cita = sinLicencia
+    ? 'arts. 49 y 65.2 Ley 7/2011 (cierre del establecimiento no autorizado)'
+    : 'arts. 56 y 57 Ley 7/2011 (medida provisional; 56.6 para la actuación inmediata del agente)';
   return Consecuencia.parse({
     id: `${infraccionId}:cons-cese`,
     tipo: 'cese_actividad',
     regla: {},
     textoCorto:
-      'Procede valorar el cese de la actividad, el desalojo o el precinto (medida no sancionadora, ' +
-      'arts. 49 y 65.2 Ley 7/2011); la sanción la impone el órgano competente.',
-    fuente: FUENTE_CESE,
+      `Procede valorar el cese de la actividad, el desalojo o el precinto (medida no sancionadora, ${cita}); ` +
+      'la sanción la impone el órgano competente.',
+    fuente,
     infraccionId,
     articuloId: null,
   });
