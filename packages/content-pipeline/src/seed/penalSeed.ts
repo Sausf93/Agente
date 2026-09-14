@@ -1085,10 +1085,12 @@ interface DelitoSeedInput {
  * = grave; hasta 5 años / multa >2 meses = menos grave; art. 13.4 para penas que solapan tramos) se han
  * confirmado directamente en el texto. Se marcan `verificado` (sin sello "Borrador beta").
  *
- * NO se incluyen: delitos con clasificación DUDOSA en el propio seed que hay que revisar antes (p. ej.
- * `del-hurto` marcado 'leve' cuando el 234.1 base >400 € es prisión 6-18 meses = menos grave; o
- * `del-usurpacion`, por el solape 245.1/245.2), los subtipos con agravantes que cambian la pena, y los
- * MUY sensibles (agresión sexual, menores) que se dejan al jurista. Para cobrar, visto bueno humano final.
+ * NO se incluyen los delitos MUY sensibles (agresión sexual, menores) que se dejan al jurista. El
+ * hurto, antes marcado 'leve' con una frontera dudosa, se DESDOBLÓ tras cotejar el art. 234 CP en el
+ * BOE (2026-09-14): `del-hurto` = base >400 € (prisión 6-18 meses → MENOS GRAVE, art. 33.3.a) y
+ * `del-hurto-leve` = ≤400 € sin agravante (multa 1-3 meses → LEVE, art. 33.4.g); así cada tramo orienta
+ * bien la detención. La `del-usurpacion` (245.2, multa 3-6 meses) se confirmó LEVE por el art. 13.4 CP.
+ * Para cobrar, visto bueno humano final.
  */
 const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-robo-violencia', // 242: prisión 2-5 años → menos grave
@@ -1123,6 +1125,9 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-odio-discriminacion', // 510: prisión 1-4 años → menos grave
   'del-trato-degradante', // 173.1: prisión 6m-2a → menos grave
   'del-simulacion-delito', // 457: multa (penaSoloMulta) → menos grave
+  'del-hurto', // 234.1: hurto base >400 € → prisión 6-18 meses → menos grave (art. 33.3.a)
+  'del-hurto-leve', // 234.2: hurto ≤400 € sin agravante → multa 1-3 meses → leve (art. 33.4.g)
+  'del-usurpacion', // 245.2: ocupación pacífica → multa 3-6 meses → leve por el art. 13.4 CP
 ]);
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
@@ -1217,36 +1222,70 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     id: 'del-hurto',
     articulo: ART_CP_234,
     tituloCorto: 'Hurto',
-    // Caso más frecuente en la calle: cuantía ≤ 400 € sin agravante → multa 1-3 meses → LEVE.
-    gravedadCp: 'leve',
-    // Pena del caso modelado (delito leve, art. 234.2 CP). A partir de 400 € o con agravante del
-    // art. 235 pasa a menos grave (prisión de 6 a 18 meses) — ver notaRevision.
-    penaTexto: 'Multa de 1 a 3 meses (delito leve, hasta 400 €)',
+    // Hurto BASE (art. 234.1 CP): cuantía superior a 400 € → prisión de 6 a 18 meses → MENOS GRAVE
+    // (art. 33.3.a CP). El caso ≤ 400 € sin agravante es DELITO LEVE (multa 1-3 meses, art. 234.2) y
+    // vive en `del-hurto-leve`; con agravante del art. 235, en `del-hurto-agravado`. Así cada tramo
+    // orienta bien la detención: aquí, rama de menos grave (arts. 490/492 LECrim).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 a 18 meses (hurto de cuantía superior a 400 €, art. 234.1 CP)',
     textoBoletin:
       'Apoderamiento de cosas muebles ajenas con ánimo de lucro y sin la voluntad de su dueño, ' +
-      'sin fuerza en las cosas ni violencia o intimidación en las personas. Cuando la cuantía de ' +
-      'lo sustraído no excede de 400 euros y no concurre agravante del art. 235 CP, el hecho es un ' +
-      'delito leve. La calificación final corresponde a la autoridad judicial.',
+      'sin fuerza en las cosas ni violencia o intimidación en las personas. Cuando la cuantía de lo ' +
+      'sustraído EXCEDE de 400 euros, el hecho es un delito menos grave (art. 234.1 CP; también si el ' +
+      'culpable ha sido condenado por tres delitos previos del mismo Título, art. 234.2 in fine). Si ' +
+      'no excede de 400 € y no concurre agravante del art. 235, es DELITO LEVE (ver ficha «Hurto leve»). ' +
+      'La calificación final corresponde a la autoridad judicial.',
     terminos: [
       'hurto',
       'robo sin violencia',
+      'sisar',
+      'me han robado la cartera',
+      'hurto de mas de 400 euros',
+      'sustraccion sin fuerza ni violencia',
+    ],
+    notaRevision:
+      'Frontera de cuantía (art. 234 CP, texto vigente LO 1/2026): el hurto BASE (cuantía superior a ' +
+      '400 €) es prisión de 6 a 18 meses → MENOS GRAVE (art. 33.3.a CP) → la detención se orienta por ' +
+      'los arts. 490/492 LECrim. El caso ≤ 400 € sin agravante es DELITO LEVE (multa de 1 a 3 meses, ' +
+      'art. 234.2 → art. 33.4.g CP) y se modela en `del-hurto-leve`; con agravante del art. 235, en ' +
+      '`del-hurto-agravado`. La calificación final corresponde a la autoridad judicial.',
+  }),
+  construirDelito({
+    id: 'del-hurto-leve',
+    articulo: ART_CP_234,
+    tituloCorto: 'Hurto leve (≤400 €)',
+    // Hurto LEVE (art. 234.2 CP): cuantía no superior a 400 € y sin agravante del art. 235 → multa de
+    // 1 a 3 meses → LEVE (art. 33.4.g CP). Es el caso más frecuente de calle (pequeño hurto, tienda).
+    // La detención se rige por el art. 495 LECrim (no procede salvo excepción).
+    gravedadCp: 'leve',
+    penaTexto: 'Multa de 1 a 3 meses (hurto de cuantía no superior a 400 €, art. 234.2 CP)',
+    textoBoletin:
+      'Apoderamiento de cosas muebles ajenas con ánimo de lucro y sin la voluntad de su dueño, sin ' +
+      'fuerza en las cosas ni violencia o intimidación en las personas, cuando la cuantía de lo ' +
+      'sustraído NO excede de 400 euros y no concurre agravante del art. 235 CP: el hecho es un delito ' +
+      'LEVE (art. 234.2 CP). FRONTERAS: si excede de 400 € (o el culpable tiene tres condenas previas ' +
+      'del mismo Título) es hurto menos grave (art. 234.1, ver ficha «Hurto»); con agravante del ' +
+      'art. 235, hurto agravado. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'hurto leve',
       'mangar',
       'mango',
       'descuidero',
       'el tiron',
-      'sisar',
       'robar en una tienda',
       'hurto en supermercado',
       'robo hormiga',
-      'me han robado la cartera',
       'descuido',
+      'hurto de menos de 400 euros',
+      'pequeno hurto',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y la frontera leve/menos grave: el hurto es DELITO LEVE ' +
-      '(multa de 1 a 3 meses, art. 234.2 CP) cuando lo sustraído no excede de 400 € y no concurre ' +
-      'agravante del art. 235; a partir de 400 € o con agravante pasa a MENOS GRAVE (prisión de 6 a ' +
-      '18 meses, art. 234.1). La ficha modela el caso LEVE (el más frecuente) → detención regida ' +
-      'por el art. 495 LECrim. Confirmar cuantía-frontera y penas contra el texto consolidado del CP.',
+      'Delito LEVE de hurto (art. 234.2 CP, texto vigente LO 1/2026): cuantía ≤ 400 € sin agravante → ' +
+      'multa de 1 a 3 meses → pena LEVE (art. 33.4.g CP) → la detención se rige por el art. 495 LECrim ' +
+      '(no procede salvo desconocer domicilio o no ofrecer garantías, aun en flagrancia). Si la cuantía ' +
+      'EXCEDE de 400 € o el culpable tiene tres condenas previas del mismo Título, el hecho es menos ' +
+      'grave (art. 234.1, ficha `del-hurto`); con agravante del art. 235, `del-hurto-agravado`. La ' +
+      'calificación final corresponde a la autoridad judicial.',
   }),
   construirDelito({
     id: 'del-robo-violencia',
@@ -1912,7 +1951,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     gravedadCp: 'leve',
     penaTexto:
       'Multa de 3 a 6 meses (ocupación pacífica de inmueble ajeno que no es morada, art. 245.2 CP); ' +
-      'con violencia o intimidación (art. 245.1): prisión de 1 a 2 años. A verificar',
+      'con violencia o intimidación (art. 245.1): prisión de 1 a 2 años, además de las violencias.',
     textoBoletin:
       'Ocupar, sin autorización debida, un inmueble, vivienda o edificio ajenos que NO constituyan ' +
       'morada, o mantenerse en ellos contra la voluntad de su titular (ocupación pacífica, art. 245.2 ' +
@@ -1943,15 +1982,15 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'llevan meses okupados',
     ],
     notaRevision:
-      'A VERIFICAR la clasificación y la frontera: la ficha modela la OCUPACIÓN PACÍFICA del ' +
-      'art. 245.2 CP (inmueble ajeno que no es morada) → multa de 3 a 6 meses. Al ser una pena que por ' +
-      'su extensión puede ser leve o menos grave, el art. 13.4 CP obliga a considerarla DELITO LEVE → ' +
-      'la detención se rige por el art. 495 LECrim (NO procede salvo excepción, p. ej. desconocer el ' +
-      'domicilio). DISTINGUIR: (i) del ALLANAMIENTO DE MORADA (art. 202 CP) cuando el inmueble es ' +
-      'morada habitada; (ii) de la usurpación con VIOLENCIA o intimidación (art. 245.1, prisión de 1 a ' +
-      '2 años → MENOS GRAVE, que sí cambiaría la rama de detención); y (iii) de la infracción ' +
-      'administrativa de ocupación del art. 37.7 LO 4/2015. Confirmar clasificación (leve vs menos ' +
-      'grave) y penas con el revisor jurídico contra el texto consolidado del CP.',
+      'Clasificación confirmada: la ficha modela la OCUPACIÓN PACÍFICA del art. 245.2 CP (inmueble ' +
+      'ajeno que no es morada) → multa de 3 a 6 meses. Esa multa, por su extensión, puede considerarse ' +
+      'leve (3 meses = «multa de hasta tres meses», art. 33.4.g) y menos grave (más de 3 meses, ' +
+      'art. 33.3.j); por el art. 13.4 CP el delito se considera, EN TODO CASO, LEVE → la detención se ' +
+      'rige por el art. 495 LECrim (no procede salvo excepción, p. ej. desconocer el domicilio). ' +
+      'DISTINGUIR: (i) del ALLANAMIENTO DE MORADA (art. 202 CP) cuando el inmueble es morada habitada; ' +
+      '(ii) de la usurpación con VIOLENCIA o intimidación (art. 245.1, prisión de 1 a 2 años → MENOS ' +
+      'GRAVE, que sí cambiaría la rama de detención); y (iii) de la infracción administrativa de ' +
+      'ocupación del art. 37.7 LO 4/2015. La calificación final corresponde a la autoridad judicial.',
   }),
   // --- Allanamiento de morada (Policía Nacional; frontera con la usurpación) ------------------
   construirDelito({

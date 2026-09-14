@@ -15,8 +15,8 @@ const idsArticulos = new Set(SEED_PENAL.articulos.map((a) => a.id));
 const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_PENAL: integridad de los delitos', () => {
-  it('siembra 65 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(65);
+  it('siembra 66 delitos, todos por vía penal y sin importe administrativo', () => {
+    expect(SEED_PENAL.infracciones).toHaveLength(66);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -46,8 +46,9 @@ describe('SEED_PENAL: integridad de los delitos', () => {
   it('los delitos VERIFICADOS contra el CP en el BOE son un conjunto no vacío', () => {
     const verificados = SEED_PENAL.infracciones.filter((i) => i.revision === 'verificado');
     expect(verificados.length).toBeGreaterThanOrEqual(20);
-    // Los MUY sensibles y los de clasificación dudosa siguen en beta.
-    const pendientesEsperados = ['del-hurto', 'del-usurpacion', 'del-agresion-sexual', 'del-agresion-sexual-menor'];
+    // Los MUY sensibles siguen en beta (se dejan al jurista). El hurto (desdoblado en base/leve) y la
+    // usurpación ya se cotejaron contra el art. 234/245 CP en el BOE (2026-09-14) → verificados.
+    const pendientesEsperados = ['del-agresion-sexual', 'del-agresion-sexual-menor'];
     for (const id of pendientesEsperados) {
       const item = SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
       expect(item?.revision, id).toBe('pendiente_revision');
@@ -79,13 +80,21 @@ describe('SEED_PENAL: consecuencia de detención (motor LECrim, §4.6)', () => {
     }
   });
 
-  it('hurto (delito leve) → la detención se rige por el art. 495 (no procede salvo excepción)', () => {
-    const hurto = porId('del-hurto');
+  it('hurto leve (≤400 €, art. 234.2) → la detención se rige por el art. 495 (no procede salvo excepción)', () => {
+    const hurto = porId('del-hurto-leve');
     expect(hurto).toBeDefined();
     const det = hurto!.consecuencias.find((c) => c.tipo === 'detencion')!;
     expect(det.regla.orientacionBase).toBe('no_procede_salvo');
     expect(det.fuente).toMatch(/LECrim art\. 495/);
     expect(det.textoCorto.toLowerCase()).toContain('no procede');
+  });
+
+  it('hurto base (>400 €, art. 234.1, menos grave) flagrante → procede (art. 490)', () => {
+    const hurto = porId('del-hurto');
+    expect(hurto).toBeDefined();
+    const det = hurto!.consecuencias.find((c) => c.tipo === 'detencion')!;
+    expect(det.regla.orientacionBase).toBe('procede');
+    expect(det.fuente).toMatch(/LECrim art\. 490/);
   });
 
   it('robo, lesiones y quebrantamiento (menos grave) flagrantes → procede (art. 490)', () => {
