@@ -1113,6 +1113,16 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-robo-fuerza', // 238/240: prisión 1-3 años → menos grave
   'del-estafa', // 249: prisión 6m-3a → menos grave
   'del-falsedad-documental', // 392: prisión 6m-3a + multa → menos grave
+  'del-robo-fuerza-casa-habitada', // 241: prisión 2-5 años → menos grave
+  'del-sustraccion-vehiculo', // 244: trabajos comunidad/multa → menos grave
+  'del-receptacion', // 298: prisión 6m-2a → menos grave
+  'del-hurto-agravado', // 235: prisión 1-3 años → menos grave
+  'del-danos-agravados', // 266: prisión 1-3 años → menos grave
+  'del-conduccion-temeraria-desprecio', // 381: prisión 2-5 años → menos grave
+  'del-revelacion-secretos', // 197: prisión 1-4 años → menos grave
+  'del-odio-discriminacion', // 510: prisión 1-4 años → menos grave
+  'del-trato-degradante', // 173.1: prisión 6m-2a → menos grave
+  'del-simulacion-delito', // 457: multa (penaSoloMulta) → menos grave
 ]);
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
