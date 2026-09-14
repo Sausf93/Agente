@@ -273,6 +273,36 @@ const ART_LOPJM_MENA = articuloDe(ID_LOPJM, {
     'internamiento como adulto por su condición de menor o de extranjero. Resumen orientativo.',
 });
 
+// Artículo de ORIENTACIÓN (no sancionador) para la entrada consultable del RÉGIMEN DEL MENOR. Resume
+// la actuación con un menor infractor (inimputable < 14; régimen penal del menor 14-17 con las
+// garantías del art. 17 LO 5/2000), para capturar la búsqueda de calle ("detener a un menor", "menor
+// robando"...). Se ancla a LOPJM (LO 1/1996) igual que MENA y cita la LO 5/2000 en su texto. Plazos
+// COTEJADOS por el revisor jurídico (2026-09) contra el BOE consolidado: 24 h = art. 17.4; resolución
+// del Fiscal en 48 h = art. 17.5; custodia separada = art. 17.3; aviso consular = art. 520.2 LECrim.
+const ART_LOPJM_REGIMEN_MENOR = articuloDe(ID_LOPJM, {
+  numero: 'REGIMEN-MENOR',
+  titulo: 'Actuación con un menor infractor: inimputabilidad (< 14) y régimen del menor (14-17)',
+  texto:
+    'Ante un menor que comete un hecho, lo primero es la EDAD. MENOR DE 14 AÑOS: es penalmente ' +
+    'INIMPUTABLE (arts. 1.1 y 3 LO 5/2000, reguladora de la responsabilidad penal del menor); no cabe ' +
+    'detención penal. Procede identificarlo con cautelas de menor, entregarlo a sus representantes ' +
+    'legales o, en su defecto, ponerlo a disposición de la Entidad Pública de protección de menores de ' +
+    'la comunidad autónoma, y comunicarlo al Ministerio Fiscal (art. 3 LO 5/2000, en relación con la ' +
+    'LO 1/1996). DE 14 A 17 AÑOS: SÍ responde penalmente, pero por la LO 5/2000 (no por el régimen de ' +
+    'adultos): interviene el Ministerio Fiscal de Menores, no el juzgado de instrucción ordinario. Si ' +
+    'se detiene, la detención policial no puede exceder de 24 HORAS y, dentro de ese plazo, el menor se ' +
+    'pone en libertad o a disposición del Ministerio Fiscal (art. 17.4); el Fiscal resuelve dentro de ' +
+    'las 48 horas siguientes a la detención (art. 17.5). Custodia en dependencias ADECUADAS y SEPARADAS ' +
+    'de las de los mayores (art. 17.3): no procede el calabozo común. Información inmediata de hechos y ' +
+    'derechos y notificación a representantes legales y al Ministerio Fiscal de Menores (art. 17.1). Si ' +
+    'el menor es extranjero, comunicación a las autoridades consulares (art. 520.2 LECrim, aplicable por ' +
+    'el régimen de garantías del detenido que reconoce el art. 17 LO 5/2000). La entrega se cierra ' +
+    'dejando constancia (acta de entrega); si los padres o tutores ' +
+    'no se hacen cargo, puesta a disposición de la Entidad Pública de protección. Resumen orientativo; ' +
+    'la valoración final corresponde al agente, al Ministerio Fiscal de Menores y, en su caso, a la ' +
+    'autoridad judicial.',
+});
+
 // Artículo de GARANTÍAS (no sancionador) para la entrada consultable de cacheo/registro. Resume el
 // art. 20 LO 4/2015 (registros corporales externos) y sirve de anclaje a la consulta; la entrada y
 // registro en domicilio (art. 18.2 CE y arts. 545 y ss. LECrim) se cita en el boletín de la ficha.
@@ -336,6 +366,7 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_37_17,
   ART_LOSC_36_12,
   ART_LOPJM_MENA,
+  ART_LOPJM_REGIMEN_MENOR,
 ];
 
 // --- Constructor de una infracción de seguridad ciudadana -----------------------------------
@@ -1204,8 +1235,15 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     terminos: [
       'mena',
       'menor extranjero no acompañado',
+      'menor no acompañado',
       'menor sin familia',
       'menor migrante solo',
+      'menor solo',
+      'menor sin papeles',
+      'menor desaparecido',
+      'menor fugado',
+      'fuga de centro',
+      'fugado del centro',
       'cria solo',
     ],
     consecuencias: [
@@ -1228,6 +1266,78 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'Fiscalía; jurisprudencia del TS y del Comité de Derechos del Niño), (iii) la inimputabilidad del ' +
       'menor de 14 años (fuera de la LO 5/2000) y (iv) la redacción del mensaje de que NUNCA procede ' +
       'calabozo. Punto jurídicamente muy sensible: confirmar toda la redacción antes de publicar.',
+  }),
+  // ENTRADA CONSULTABLE (no sancionadora): RÉGIMEN DEL MENOR INFRACTOR. NO es un tipo sancionador:
+  // orienta la actuación con un menor que comete un hecho (inimputable < 14; régimen del menor 14-17
+  // con garantías del art. 17 LO 5/2000). Existe sobre todo para CAPTURAR la búsqueda de calle:
+  // "detener a un menor", "menor robando", "menor de 16", "es menor"... y llevar a la orientación
+  // correcta y a la guía de menores. Se modela `no_sancionador` (sin importe), como MENA.
+  construirInfraccion({
+    id: 'sc-menor-regimen',
+    articulo: ART_LOPJM_REGIMEN_MENOR,
+    tituloCorto: 'Menor infractor: inimputable (< 14) y régimen del menor (14-17)',
+    gravedad: 'leve', // valor de relleno exigido por el modelo; lo determinante es que NO sanciona
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Actuación con un MENOR que comete un hecho. Lo primero es la EDAD. MENOR DE 14 AÑOS: penalmente ' +
+      'INIMPUTABLE (arts. 1.1 y 3 LO 5/2000); no cabe detención penal. ORIENTACIÓN: identificar con ' +
+      'cautelas de menor, entregar a los representantes legales o, en su defecto, poner a disposición ' +
+      'de la Entidad Pública de protección de menores, y comunicar al Ministerio Fiscal (art. 3 LO ' +
+      '5/2000, en relación con la LO 1/1996). DE 14 A 17 AÑOS: responde penalmente por la LO 5/2000 (no ' +
+      'por el régimen de adultos): interviene el Ministerio Fiscal de Menores, no el juzgado de ' +
+      'instrucción ordinario. Si se detiene: la detención policial no puede exceder de 24 HORAS y, ' +
+      'dentro de ese plazo, el menor se pone en libertad o a disposición del Ministerio Fiscal (art. ' +
+      '17.4); el Fiscal resuelve dentro de las 48 horas siguientes a la detención (art. 17.5). Custodia ' +
+      'en dependencias ADECUADAS y SEPARADAS de las de los mayores (art. 17.3): NO procede el calabozo ' +
+      'común. Información inmediata de hechos y derechos y notificación a representantes legales y al ' +
+      'Ministerio Fiscal de Menores (art. 17.1). Si es extranjero, comunicación a las autoridades ' +
+      'consulares (art. 520.2 LECrim, aplicable por el régimen de garantías del art. 17 LO 5/2000). La ' +
+      'entrega se cierra con acta de ' +
+      'entrega; si los padres o tutores no se hacen cargo, puesta a disposición de la Entidad Pública ' +
+      'de protección. La valoración final corresponde al agente, al Ministerio Fiscal de Menores y, en ' +
+      'su caso, a la autoridad judicial.',
+    terminos: [
+      'menor',
+      'es menor',
+      'menor de edad',
+      'menor infractor',
+      'detener a un menor',
+      'menor detenido',
+      'calabozo menor',
+      'custodia menor',
+      'menor robando',
+      'menor hurto',
+      'menor mangando',
+      'menor pelea',
+      'menor vandalismo',
+      'menor de 14',
+      'menor de 16',
+      'inimputable',
+      'responsabilidad penal del menor',
+      'regimen del menor',
+      'entregar menor a los padres',
+    ],
+    consecuencias: [
+      {
+        tipo: 'proteccion',
+        textoCorto:
+          'Menor < 14: inimputable, entrega a representantes legales/Entidad de Protección y ' +
+          'comunicación al Fiscal (art. 3 LO 5/2000). Menor 14-17: responde por la LO 5/2000; si se ' +
+          'detiene, máx. 24 h y a disposición del Fiscal (art. 17.4), custodia separada (art. 17.3), ' +
+          'nunca calabozo común. La valoración final es del agente y del Fiscal de Menores.',
+        fuente: 'LO 5/2000 arts. 1.1, 3 y 17; LO 1/1996',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE, no infracción: orienta la actuación con un menor infractor (marco ' +
+      '`no_sancionador`, sin importe). Contenido COTEJADO por el revisor jurídico (2026-09) contra el ' +
+      'BOE consolidado de la LO 5/2000: inimputabilidad < 14 (arts. 1.1 y 3); régimen 14-17 con ' +
+      'detención máx. 24 h (art. 17.4) y resolución del Fiscal en 48 h (art. 17.5), custodia separada ' +
+      '(art. 17.3), información/notificación (art. 17.1) y aviso consular (art. 520.2 LECrim por ' +
+      'remisión del 17.1). Reespejo de la guía de menores. Queda pendiente_revision: a verificar la ' +
+      'redacción final con el cofundador agente antes de publicar (nada se autopublica).',
   }),
   // ENTRADA CONSULTABLE (no sancionadora): INFORMACIÓN DE DERECHOS A LA VÍCTIMA. La validación de
   // Policía Nacional la echó de menos: distinta de los derechos del DETENIDO (art. 520 LECrim, que

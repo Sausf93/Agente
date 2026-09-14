@@ -4,7 +4,7 @@ Este documento permite que una sesión de Claude **nueva** (p. ej. tras cambiar 
 Windows o de máquina) continúe el trabajo sin perder contexto. Complementa a
 [`docs/paridad-spplb.md`](./paridad-spplb.md) (hoja de ruta) y a `docs/ESPECIFICACION.md` (verdad del producto).
 
-Última actualización: 2026-09-09. Repo: https://github.com/Sausf93/Agente (rama `main`).
+Última actualización: 2026-09-14. Repo: https://github.com/Sausf93/Agente (rama `main`).
 
 ## Cómo retomar en una máquina/usuario nuevos
 1. `git clone https://github.com/Sausf93/Agente.git` (idealmente en `…/Documents/Saulo/repos/Agente`).
@@ -140,7 +140,24 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **184 infracciones, 30 normas, ~1590 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **185 infracciones, 30 normas, 1627 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (2ª parte): Guía de menores + hub de guías.** Nueva **Guía rápida de menores**
+  (`apps/mobile/src/features/guia/guiaMenores.ts` + `GuiaMenoresScreen.tsx`, ruta `/guia-menores`),
+  patrón de la guía de identificación pero con **chip de ACCIÓN operativa** por sección (feedback del
+  validador-calle: "qué hago AHORA" antes que la calificación jurídica). 8 secciones: inimputable <14,
+  régimen 14-17, detención del 14-17 (24 h art. 17.4 / Fiscal 48 h art. 17.5 / custodia separada 17.3 /
+  no calabozo), conductas administrativas (alcohol/tabaco/drogas, quién responde "a verificar"), entrega,
+  dudas de edad (35.3 LO 4/2000), MENA (35.3/35.4), menor fugado. **Revisor APTO CON CORRECCIONES** en
+  dos pasadas (art. 17.4/17.5, 520.2 LECrim por régimen de garantías del art. 17, Ley 28/2005 tabaco,
+  frontera consumo/tráfico, decomiso reencuadrado a medidas provisionales LO 4/2015). Motor de detención
+  (`AVISO_MENOR_14_17`) alineado (se retiró el "a verificar" del plazo, ya cotejado). **Nueva ficha
+  consultable `sc-menor-regimen`** (no_sancionador, anclada a LOPJM) que captura la búsqueda de calle
+  ("detener a un menor", "menor robando", "es menor"…) + sinónimos MENA ampliados (fugado, desaparecido,
+  sin papeles). **Hub "Más" reestructurado**: nueva sección "Guías rápidas" (identificación, alcoholemia,
+  control de carretera, menores) accesible a TODOS los cuerpos; antes las guías solo se alcanzaban desde
+  accesos rápidos por cuerpo. "Menores" añadido a accesos de PN, Local y seguridad ciudadana. 912 tests
+  verdes, lint y typecheck limpios. Pendiente: **reconfirmar con el cofundador agente** la vía
+  administrativa del menor antes de quitar "Borrador beta".
 - **SPRINT 2026-09-14: estructura de la información.** Tráfico r2 y Animales publicadas (revisor APTO);
   **CI arreglado** (typecheck del `importeEur: null` en el seed de extranjería → interfaz `number | null`;
   confirmado verde en GitHub). **Reestructurada la navegación por sub-temas** (commit `31724ba`, validada

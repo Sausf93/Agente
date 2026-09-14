@@ -115,6 +115,10 @@ export default function RootLayout() {
           options={{ headerShown: true, title: 'Identificación y cacheo', presentation: 'card' }}
         />
         <Stack.Screen
+          name="guia-menores"
+          options={{ headerShown: true, title: 'Menores', presentation: 'card' }}
+        />
+        <Stack.Screen
           name="vehiculos/index"
           options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
         />

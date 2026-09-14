@@ -43,8 +43,15 @@ export const ACCESOS_TRAFICO: readonly AccesoRapido[] = [
   buscar('Semáforo rojo'),
 ];
 
-/** Añadidos de POLICÍA LOCAL: convivencia y movilidad urbana (zona azul, patinete). */
-export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [buscar('Zona azul'), buscar('Patinete')];
+/**
+ * Añadidos de POLICÍA LOCAL: convivencia y movilidad urbana (zona azul, patinete) + Menores (alcohol,
+ * botellón y vandalismo de menores son consulta diaria de un Local; abre la guía del menor).
+ */
+export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [
+  buscar('Zona azul'),
+  buscar('Patinete'),
+  { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
+];
 
 /**
  * Accesos GENÉRICOS de SEGURIDAD CIUDADANA (LO 4/2015, estatal → siempre resuelven). Es el set al
@@ -57,6 +64,9 @@ export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
   { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   buscar('Falta de respeto', 'falta de respeto'),
   buscar('Armas prohibidas', 'arma prohibida'),
+  // Menores es transversal (validación de calle): el crío bebiendo, el vandalismo o el MENA los ve
+  // cualquier cuerpo. Abre la guía del menor (inimputable < 14, régimen 14-17, MENA).
+  { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
 ];
 
 /**
@@ -87,6 +97,9 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   // consulta diaria de PN/GC/Local: 'identificacion' es el sinónimo que la devuelve primero (antes
   // era 'no se identifica', que abría la NEGATIVA del art. 36.6, otra cosa distinta).
   { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
+  // "Menores" abre la GUÍA del menor (inimputable < 14, régimen 14-17 con garantías, MENA): oficio
+  // diario de PN (extranjería/MENA y vía penal del menor), no una búsqueda de una única ficha.
+  { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
 ];
 
 /**

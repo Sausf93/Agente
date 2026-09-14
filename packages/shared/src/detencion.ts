@@ -173,15 +173,18 @@ function describirCausa490(v: EntradaDetencionNormalizada): string {
 }
 
 /**
- * Aviso DESTACADO de las especialidades del régimen del menor 14-17 (art. 17 LO 5/2000). Texto
- * literal de la spec jurídica (§4.2). Plazos «a verificar» por jurista antes de publicar.
+ * Aviso DESTACADO de las especialidades del régimen del menor 14-17 (art. 17 LO 5/2000). Plazos
+ * COTEJADOS contra el BOE consolidado (revisor jurídico, 2026-09): 24 h = art. 17.4; resolución del
+ * Fiscal en 48 h = art. 17.5; aviso consular por remisión del art. 17.1 al art. 520.2 LECrim.
  */
 const AVISO_MENOR_14_17 =
   'Régimen del menor (14-17 años): si se detiene, la detención policial no puede exceder de 24 ' +
-  'horas (art. 17.4 LO 5/2000, a verificar); custodia separada de los mayores (art. 17.3); ' +
-  'información inmediata y notificación a representantes legales y al Ministerio Fiscal de Menores ' +
-  '—no al juzgado de instrucción ordinario— (art. 17.1); puesta a disposición del Ministerio ' +
-  'Fiscal (art. 17.4-17.5). Si es extranjero, aviso a autoridades consulares.';
+  'horas y, dentro de ese plazo, se pone al menor en libertad o a disposición del Ministerio ' +
+  'Fiscal (art. 17.4 LO 5/2000); el Fiscal resuelve dentro de las 48 horas siguientes a la ' +
+  'detención (art. 17.5). Custodia separada de los mayores (art. 17.3); información inmediata y ' +
+  'notificación a representantes legales y al Ministerio Fiscal de Menores —no al juzgado de ' +
+  'instrucción ordinario— (art. 17.1). Si es extranjero, comunicación a autoridades consulares ' +
+  '(art. 520.2 LECrim, aplicable por el régimen de garantías del detenido que reconoce el art. 17).';
 
 /**
  * Aviso DESTACADO cuando el hecho es solo migratorio y el autor es (o puede ser) menor: activa la

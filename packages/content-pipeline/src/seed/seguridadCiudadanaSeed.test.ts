@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 22 entradas de calle (10 infracciones LOSC base + 7 de la ola de ARMAS + 5 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, derechos de la víctima y cacheo/registro)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(22);
+  it('siembra 23 entradas de calle (10 infracciones LOSC base + 7 de la ola de ARMAS + 6 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, régimen del menor, derechos de la víctima y cacheo/registro)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(23);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {

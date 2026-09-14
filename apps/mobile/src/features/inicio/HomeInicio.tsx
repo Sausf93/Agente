@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type ComponentType, type ReactNode } 
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import {
+  Baby,
   Bell,
   Bike,
   CalendarClock,
@@ -91,6 +92,7 @@ const ACCESO_ICON: Record<string, ComponentType<LucideProps>> = {
   Robo: Siren,
   'Leer derechos': ScrollText,
   Identificación: Fingerprint,
+  Menores: Baby,
   Velocidad: Gauge,
   Tacógrafo: Timer,
   Extranjería: Globe,

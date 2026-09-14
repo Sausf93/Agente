@@ -7,6 +7,7 @@
 
 import { GUIA_IDENTIFICACION } from './guiaIdentificacion';
 import { FICHAS_ALCOHOL } from './guiaAlcoholemia';
+import { GUIA_MENORES } from './guiaMenores';
 
 export interface GuiaRelacionada {
   /** Ruta de la guía (pantalla de la app). */
@@ -27,6 +28,12 @@ const GUIA_ALCOHOLEMIA_REL: GuiaRelacionada = {
   descripcion: 'Cuándo pasa a delito y cómo dejar la prueba bien hecha.',
 };
 
+const GUIA_MENORES_REL: GuiaRelacionada = {
+  ruta: '/guia-menores',
+  titulo: 'Guía rápida de menores',
+  descripcion: 'Inimputable < 14, régimen del menor 14-17 con garantías y MENA.',
+};
+
 /**
  * Ficha → guía relacionada, construido a partir de las fichas que declara cada guía. Si dos secciones
  * de una guía apuntan a la misma ficha (p. ej. cacheo y vehículo → `sc-cacheo-registro`), la clave se
@@ -35,6 +42,10 @@ const GUIA_ALCOHOLEMIA_REL: GuiaRelacionada = {
 export const GUIA_POR_FICHA: Readonly<Record<string, GuiaRelacionada>> = {
   ...Object.fromEntries(GUIA_IDENTIFICACION.map((s) => [s.fichaId, GUIA_IDENTIFICACION_REL])),
   ...Object.fromEntries(FICHAS_ALCOHOL.map((f) => [f.id, GUIA_ALCOHOLEMIA_REL])),
+  // Solo las secciones de la guía de menores que declaran ficha (MENA → sc-mena-consulta).
+  ...Object.fromEntries(
+    GUIA_MENORES.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_MENORES_REL]),
+  ),
 };
 
 /** Devuelve la guía escaneable que amplía una ficha, o `null` si no hay ninguna. */

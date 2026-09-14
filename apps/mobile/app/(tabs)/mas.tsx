@@ -3,13 +3,17 @@ import { Link } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  Baby,
   Car,
   ChevronRight,
+  Fingerprint,
   FlaskConical,
   Languages,
   MessageSquarePlus,
   MessageSquareText,
   Settings,
+  Signpost,
+  Wine,
   type LucideProps,
 } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
@@ -37,6 +41,46 @@ export default function MasScreen() {
     >
       <ScreenHeader title="Más" />
 
+      {/* GUÍAS RÁPIDAS de uso EN DIRECTO. Antes solo se llegaba a ellas desde los accesos rápidos de
+          INICIO, que dependen del cuerpo: un agente cuyo cuerpo no listaba una guía no podía abrirla.
+          Aquí están TODAS, para cualquier cuerpo. La lectura de derechos vive abajo (herramienta). */}
+      <SeccionTitulo t={t} titulo="Guías rápidas" />
+      <View style={{ gap: t.spacing.sm, paddingHorizontal: t.spacing.base }}>
+        <Link href="/guia-identificacion" asChild>
+          <FilaMas
+            t={t}
+            icon={Fingerprint}
+            titulo="Identificación y cacheo"
+            descripcion="Cuándo identificar, garantías del cacheo y qué hago ante la negativa."
+          />
+        </Link>
+        <Link href="/guia-alcoholemia" asChild>
+          <FilaMas
+            t={t}
+            icon={Wine}
+            titulo="Alcoholemia"
+            descripcion="Tasas, cuándo pasa a delito y cómo dejar la prueba bien hecha."
+          />
+        </Link>
+        <Link href="/control-carretera" asChild>
+          <FilaMas
+            t={t}
+            icon={Signpost}
+            titulo="Control de carretera"
+            descripcion="Checklist de un control, paso a paso, para no dejarte nada."
+          />
+        </Link>
+        <Link href="/guia-menores" asChild>
+          <FilaMas
+            t={t}
+            icon={Baby}
+            titulo="Menores"
+            descripcion="Inimputable menor de 14, régimen 14-17 con garantías y MENA."
+          />
+        </Link>
+      </View>
+
+      <SeccionTitulo t={t} titulo="Herramientas y ajustes" />
       <View style={{ gap: t.spacing.sm, paddingHorizontal: t.spacing.base }}>
         <Link href="/ajustes" asChild>
           <FilaMas
@@ -99,6 +143,24 @@ export default function MasScreen() {
         Próximamente: mapa/PK y suscripción.
       </Text>
     </ScrollView>
+  );
+}
+
+/** Título de sección del hub (agrupa las filas: "Guías rápidas" vs "Herramientas y ajustes"). */
+function SeccionTitulo({ t, titulo }: { t: Theme; titulo: string }) {
+  return (
+    <Text
+      accessibilityRole="header"
+      style={{
+        color: t.color.textSecondary,
+        paddingHorizontal: t.spacing.base,
+        ...t.typography.scale.caption,
+        textTransform: 'uppercase',
+        letterSpacing: 0.6,
+      }}
+    >
+      {titulo}
+    </Text>
   );
 }
 
