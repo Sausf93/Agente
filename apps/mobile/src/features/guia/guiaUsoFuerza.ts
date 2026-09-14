@@ -30,9 +30,13 @@ export const ACTUALIZACION_GUIA_USO_FUERZA = 'septiembre de 2026';
 export const GUIA_USO_FUERZA: readonly SeccionGuiaAccion[] = [
   {
     titulo: 'Los tres principios que lo rigen todo',
-    accion: 'Antes de emplear fuerza, pásalo por el filtro: congruencia, oportunidad y proporcionalidad.',
+    accion: 'Filtro antes de emplear la fuerza: congruencia, oportunidad y proporcionalidad.',
     articulo: 'art. 5.2.c LO 2/1986',
     puntos: [
+      {
+        texto:
+          'Marco constitucional: el art. 104 CE encomienda a las Fuerzas y Cuerpos de Seguridad proteger el libre ejercicio de los derechos y libertades y garantizar la seguridad ciudadana; su desarrollo son los principios de actuación del art. 5 LO 2/1986.',
+      },
       {
         texto:
           'La ley exige actuar "por los principios de congruencia, oportunidad y proporcionalidad en la utilización de los medios a su alcance" (art. 5.2.c LO 2/1986). Son el filtro de CUALQUIER uso de la fuerza.',
@@ -60,12 +64,16 @@ export const GUIA_USO_FUERZA: readonly SeccionGuiaAccion[] = [
   {
     titulo: 'La escala de la fuerza (orientativa)',
     accion: 'Orientación: subir solo lo justo y bajar en cuanto cesa la resistencia o el riesgo.',
-    articulo: 'doctrina; principios del art. 5.2.c LO 2/1986',
+    articulo: 'modelo doctrinal de formación policial (fuente concreta a verificar) · principios del art. 5.2.c LO 2/1986',
     puntos: [
       {
         texto:
-          'Referencia doctrinal de graduación, de menor a mayor: (1) presencia policial; (2) verbalización/diálogo y advertencia; (3) control físico (técnicas de reducción/sujeción); (4) medios coactivos reglamentarios (defensa, aerosol, etc.); (5) arma de fuego como ÚLTIMO recurso.',
+          'Modelo de graduación usado habitualmente en la formación policial (fuente concreta a verificar), de menor a mayor: (1) presencia policial; (2) verbalización/diálogo y advertencia; (3) control físico o reducción (técnicas de sujeción, grilletes/esposas); (4) medios coactivos reglamentarios (defensa/porra extensible o tonfa, spray/aerosol de defensa; el táser donde esté autorizado); (5) arma de fuego como ÚLTIMO recurso.',
         fuerte: true,
+      },
+      {
+        texto:
+          'Ejemplos orientativos para reconocer el nivel: una persona que forcejea al ser esposada → control físico (nivel 3); quien se abalanza o amenaza con un objeto contundente → medios coactivos (nivel 4); quien amenaza de muerte con un arma blanca o de fuego → el nivel extremo, con el listón del art. 5.2.d. Son ejemplos, no reglas: manda el riesgo real y los tres principios.',
       },
       {
         texto:
@@ -84,7 +92,7 @@ export const GUIA_USO_FUERZA: readonly SeccionGuiaAccion[] = [
   },
   {
     titulo: 'El arma de fuego: solo el límite extremo',
-    accion: 'Recuerda el listón legal: riesgo racionalmente grave para la vida o integridad, propia o ajena.',
+    accion: 'Listón legal del arma: riesgo racionalmente grave para la vida o integridad, propia o ajena.',
     articulo: 'art. 5.2.d LO 2/1986',
     puntos: [
       {
@@ -115,7 +123,7 @@ export const GUIA_USO_FUERZA: readonly SeccionGuiaAccion[] = [
       },
       {
         texto:
-          'La eximente del art. 20.7 CP exige, según jurisprudencia constante, que el agente actúe en el ejercicio de su cargo, con un fin lícito, y que el uso de la fuerza sea NECESARIO y PROPORCIONADO. Si falta la proporción, puede quedar como eximente incompleta (art. 21.1 CP), atenuando, no eximiendo.',
+          'La eximente del art. 20.7 CP (obrar en cumplimiento de un deber o en el ejercicio legítimo de un derecho, oficio o cargo) exige, según la interpretación habitual de los tribunales (a verificar con jurisprudencia concreta), que el agente actúe en el ejercicio de su cargo, con un fin lícito, y que el uso de la fuerza sea NECESARIO y PROPORCIONADO. Si falta la proporción, puede quedar como eximente incompleta (art. 21.1 CP), atenuando, no eximiendo.',
         fuerte: true,
       },
       {
@@ -142,6 +150,10 @@ export const GUIA_USO_FUERZA: readonly SeccionGuiaAccion[] = [
         texto:
           'Procede reflejar en el atestado/informe, con objetividad, la resistencia o amenaza afrontada, los medios empleados, las advertencias hechas y las lesiones o incidencias, para dejar constancia de la necesidad y proporción.',
         fuerte: true,
+      },
+      {
+        texto:
+          'Si tu cuerpo dispone de cámara individual (bodycam), procede activarla/preservar la grabación según la normativa interna: documenta la intervención y protege tanto a la ciudadanía como al propio agente. A verificar el protocolo de tu unidad/territorio.',
       },
       {
         texto:

@@ -24,6 +24,7 @@ export function GuiaViolenciaGeneroScreen() {
       guiasRelacionadas={[
         { ruta: '/guia-identificacion', titulo: 'Identificación y cacheo' },
         { ruta: '/guia-menores', titulo: 'Menores (si hay menores implicados)' },
+        { ruta: '/guia-uso-fuerza', titulo: 'Uso de la fuerza' },
       ]}
       pie={
         'Fuente: arts. 153, 173.2 y 147/148 CP, arts. 468 CP, 544 bis y 544 ter y 490 LECrim, ' +

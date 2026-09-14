@@ -19,6 +19,7 @@ export function GuiaOcupacionScreen() {
       secciones={GUIA_OCUPACION}
       guiasRelacionadas={[
         { ruta: '/guia-identificacion', titulo: 'Identificación y cacheo' },
+        { ruta: '/guia-uso-fuerza', titulo: 'Uso de la fuerza' },
       ]}
       pie={
         'Fuente: arts. 202, 203, 245, 172, 255 y 455 CP, art. 37.7 LO 4/2015, art. 18.2 CE, arts. 553 ' +

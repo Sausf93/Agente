@@ -21,6 +21,7 @@ export function GuiaUsoFuerzaScreen() {
       secciones={GUIA_USO_FUERZA}
       guiasRelacionadas={[
         { ruta: '/guia-identificacion', titulo: 'Identificación y cacheo' },
+        { ruta: '/guia-violencia-genero', titulo: 'Violencia de género' },
         { ruta: '/derechos', titulo: 'Leer derechos al detenido' },
       ]}
       pie={
