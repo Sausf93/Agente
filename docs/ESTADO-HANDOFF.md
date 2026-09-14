@@ -97,6 +97,35 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
+### YA HECHO el 2026-09-14 (tarde) — guía de uso de fuerza + QA multiagente — CI verde (Run 107)
+- **Guía orientativa de USO DE LA FUERZA** (commit de guía; `/guia-uso-fuerza`): nueva guía de calle
+  con el patrón de las demás (6 secciones: los tres principios de congruencia/oportunidad/
+  proporcionalidad del art. 5.2.c LO 2/1986, la escala orientativa, el arma de fuego del art. 5.2.d,
+  la cobertura del art. 20.7/20.4 CP, qué hacer después —art. 5.3.b— y los límites del 15 CE / 174-175
+  CP). Art. 5 (art. quinto) COTEJADO literal contra el BOE. ZONA SENSIBLE: TODO orientativo, no ordena
+  emplear la fuerza; "Borrador beta" pendiente de construir/validar CON el cofundador y un revisor.
+  Accesible desde los accesos rápidos de PN/GC/Local/seguridad ciudadana.
+- **Ronda de QA con 3 agentes** (solo lectura, en paralelo, `sonnet`) sobre todo el catálogo (commit
+  `6fef6c2`). Correcciones aplicadas de ENRUTAMIENTO de sinónimos e importes (evitan dar dato erróneo
+  en directo): tráfico —`inf-sin-seguro` a lenguaje orientativo; 'inhibidor' fuera de `inf-detector-radar`
+  (es muy grave art. 77, distinto); 'carga y descarga' fuera del genérico de aparcamiento (es leve/100 €);
+  "dos ocupantes" del VMP del genérico (200 €) a `inf-vmp-pasajero` (100 €); 'sin matricula' a la ficha de
+  placa ausente— y seguridad —'no lleva documentacion' fuera de `sc-negativa-identificarse` (no es el 36.6);
+  términos de `sc-armas-explosivos-muy-grave` reescritos al resultado agravado—. Importes de seguridad
+  COTEJADOS contra el BOE (LO 4/2015 art. 39.1). El QA transversal confirmó 0 IDs duplicados, 0
+  imperativos en detención/decomiso/cese, 0 normas derogadas citadas como vigentes, 0 datos de terceros.
+- **Backlog que dejaron los agentes** (no bloquean lanzamiento, para valorar):
+  - Buscador de dos niveles: desambiguar "perro suelto"/"perro sin correa" (aparece en PPP grave, Ley
+    7/2023 leve y ordenanza) — priorizar por especificidad o preguntar "¿es PPP?" antes del importe.
+  - Panel admin: un estado/etiqueta `bloqueaPublicacion` distinto de `pendiente_revision` para las
+    fichas que dicen "no publicar hasta confirmar" (`ord-sctf-terrazas`, `ord-sctf-zbe`,
+    `animal-sin-curso-ni-seguro`), que el aprobador con prisa no las trate como un "a verificar" normal.
+  - `del-agresion-sexual` agrupa 178.1 (menos grave) y 179 (grave) bajo `gravedad: 'grave'`: dejar
+    constancia en el PIE de la ficha (no solo en la nota interna) de que el subtipo más leve podría
+    regirse por otro régimen, para que el motor de detención no sobre-oriente.
+  - Subir el mínimo de sinónimos del validador (`validarMinimosPublicacion`) de 2 a 3 para reflejar el
+    estándar real (nunca baja de 5).
+
 ### YA HECHO el 2026-09-14 (ronda de verificación BOE) — `main` + Expo `preview`, CI verde (Run 105)
 - **QA final + verificación con fuente primaria** (commit `3681195`): ronda propia del agente principal
   sobre las **306 infracciones**, leyendo el BOE consolidado desde el navegador (lo que los subagentes no
