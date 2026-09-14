@@ -97,22 +97,28 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
-### CAMBIO DE MODELO (2026-09-14): `verificado` vs `pendiente_revision` — 90/307 ya verificadas
+### CAMBIO DE MODELO (2026-09-14): `verificado` vs `pendiente_revision` — 118/307 ya verificadas
 Antes TODA ficha quedaba `pendiente_revision` (sello "Borrador beta") por defecto. Ahora el agente
 principal COTEJA contra el BOE consolidado (leído en el navegador, no WebFetch) y marca `verificado`
 lo que confirma directamente en la fuente. Mecanismo: un set `VERIFICADAS_BOE`/`VERIFICADOS_BOE` al
-principio de cada seed + un parámetro `revision?` en los constructores (por defecto `pendiente_revision`).
-La app quita el "Borrador beta" a las `verificado`.
-- **Verificadas (90):** PPP (Ley 50/1999 art. 13, 9 fichas), bienestar animal (Ley 7/2023 arts. 73-76,
-  8), seguridad ciudadana (LO 4/2015 arts. 35-37, 41) y penal (CP, art. 33 CP, 32 delitos).
-- **Siguen `pendiente_revision` (a propósito):** el régimen de ARMAS (RD 137/1993, material sin cotejar),
-  el 36.23 (inconstitucionalidad parcial), lo que descansa en un CHAPEAU interpretable (maltrato animal),
-  desarrollo REGLAMENTARIO pendiente (listado positivo, curso/seguro), las ORDENANZAS municipales y el
-  autonómico de Canarias (art. 66 sin corroborar), los delitos sensibles (sexual, menores) y los subtipos
-  con agravantes. Dos clasificaciones DUDOSAS detectadas al verificar y flagueadas: `del-hurto` ('leve'
-  cuando el 234.1 >400 € es menos grave) y `del-usurpacion` (solape 245.1/245.2) — ver tarea spawn.
-- **Falta por verificar (siguiente):** TRÁFICO (LSV art. 80 importes confirmables, pero muchos con puntos/
-  Anexo II "a verificar"), el resto de penal, y las fichas estatales de extranjería (LOEX arts. 53-55).
+principio de cada seed + un parámetro `revision?` en los constructores (por defecto `pendiente_revision`);
+en penal y tráfico el constructor antepone a la nota una línea de cotejo con el artículo. La app quita
+el "Borrador beta" a las `verificado`.
+- **Verificadas (118):** PPP (Ley 50/1999 art. 13, 9), bienestar animal (Ley 7/2023 arts. 73-76, 8),
+  seguridad ciudadana (LO 4/2015 arts. 35-37 y 39, 41), penal (CP, art. 33 CP, 47 delitos) y tráfico
+  (LSV art. 77/80 + Anexo II de puntos, 13).
+- **Errores REALES cazados al verificar (corregidos):** `inf-marcha-atras-autopista` estaba muy grave/
+  6/500 € y la LSV Anexo II item 18 dice grave/4/200 € → corregido (sobre-sanción). Y detectados y dejados
+  en beta para revisar: `del-hurto` ('leve' vs 234.1 menos grave — lo lleva la tarea spawn), `del-usurpacion`
+  (245.1/245.2), `del-atentado-agravado` (551 "superior en grado" ¿grave?), `del-favorecimiento-inmigracion`
+  (318 bis base menos grave, no grave), `inf-marcha-atras-indebida` (4 puntos sin apoyo en Anexo II).
+- **Siguen `pendiente_revision` (a propósito):** ARMAS admin (RD 137/1993), el 36.23 (STC), CHAPEAU
+  interpretable (maltrato animal con/sin lesión), reglamento pendiente (listado positivo, curso/seguro),
+  ORDENANZAS municipales y Canarias (art. 66 sin corroborar), VELOCIDAD (Anexo IV por tramos), ALCOHOL
+  (tasas), TRANSPORTE (LOTT), extranjería estatal (LOEX arts. 53-55, aún sin cotejar), delitos sensibles
+  (sexual, menores) y subtipos con agravantes/remisión (252/253→248/250).
+- **Falta por verificar (siguiente):** extranjería estatal (LOEX), velocidad/alcohol/transporte de tráfico,
+  el régimen de armas (cuando se cotejen los números del RD 137/1993), y cerrar los errores flagueados.
 - **Aviso honesto (en las notas y aquí):** `verificado` = cotejado contra el BOE por el asistente; para
   COBRAR sigue siendo prudente un visto bueno humano/jurídico final, sobre todo en penal (detención).
 
