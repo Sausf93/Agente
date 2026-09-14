@@ -1301,7 +1301,7 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     consecuencias: [
       {
         tipo: 'inmovilizacion',
-        textoCorto: 'Procede inmovilizar el vehículo hasta acreditar el seguro (art. 104 LSV).',
+        textoCorto: 'Procede valorar la inmovilización del vehículo hasta acreditar el seguro (art. 104 LSV).',
         fuente: 'LSV art. 104',
       },
       {
@@ -1536,9 +1536,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'velocidad',
     notaRevision:
-      'A VERIFICAR el cuadro completo de tramos (importe y puntos por km/h de exceso, distinto ' +
-      'según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha lo pinta ' +
-      'como rango "según exceso, desde 100 €" (100–600 €), SIN cifra fija enfatizada, y los puntos ' +
+      'NOTA sobre la gravedad: `gravedad: "grave"` es solo la etiqueta REPRESENTATIVA del cuadro, que ' +
+      'en realidad abarca de LEVE (el suelo de 100 € sin puntos) a GRAVE/MUY GRAVE según el exceso; por ' +
+      'eso la ficha usa marco `velocidad` y modela un RANGO (importeEur 100 = suelo, importeMaxEur 600), ' +
+      'no una cifra fija. A VERIFICAR el cuadro completo de tramos (importe y puntos por km/h de exceso, ' +
+      'distinto según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha lo ' +
+      'pinta como rango "según exceso, desde 100 €" (100–600 €), SIN cifra fija enfatizada, y los puntos ' +
       '(0–6) se detallan en el boletín porque varían por tramo. Confirmar también la frontera penal ' +
       'del art. 379.1 CP (60 km/h urbana / 80 km/h interurbana sobre el límite). No publicar sin ' +
       'desglose por tramos.',
@@ -1948,9 +1951,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'pmr',
       'plaza de minusvalidos',
       'plaza de movilidad reducida',
-      'carga y descarga',
-      'c/d',
-      'aparcado en carga y descarga',
+      // NO se enganchan aquí 'carga y descarga'/'c/d'/'aparcado en carga y descarga': ese supuesto es
+      // LEVE/100 € y vive en `inf-estacionar-carga-descarga`; devolverlo desde este genérico (grave,
+      // 200 €) daría un dato erróneo (corrección revisor 2026-09-14).
       'estacionamento',
       'aparcamiendo',
       // Añadidos de calle (validador 2026-09). NO se añade zona azul/ORA (ver comentario arriba).
@@ -2041,19 +2044,19 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'vmp',
       'patinete en la acera',
       'patinete sin luces',
-      'dos en un patinete',
-      'patinete dos personas',
       'patinete de noche',
       'patin',
-      'dos en el patin',
       'con auriculares',
       'patinete con auriculares',
       'patinete de menor',
       'patinete sin seguro',
-      'patinete a dos',
       'patinete sin luz',
       'patinete tuneado',
       'patinet',
+      // NO se enganchan aquí los términos de "dos ocupantes" ('dos en un patinete', 'patinete dos
+      // personas', 'patinete a dos', 'dos en el patin'): ese supuesto es LEVE/100 € y vive en
+      // `inf-vmp-pasajero`; devolverlo desde este genérico (grave, 200 €) daría un dato erróneo
+      // (corrección revisor 2026-09-14).
     ],
     consecuencias: [
       {
@@ -2955,7 +2958,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'matricula oculta',
       'matricula tapada',
       'matricula ilegible',
-      'sin matricula',
+      // 'sin matricula' vive en `inf-sin-placa-o-no-reglamentaria` (placa AUSENTE); aquí es la placa
+      // presente pero oculta/doblada/ilegible (corrección revisor 2026-09-14).
       'matricula doblada',
       'matricula manipulada',
       'placa tapada',
@@ -3663,17 +3667,20 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'detector de radar',
       'avisador de radar',
       'chivato de radar',
-      'inhibidor',
       'antirradar',
       'detector',
       'saltarse el radar',
       'aparato antirradar',
+      // NO se incluye 'inhibidor': el inhibidor de señal es infracción MUY GRAVE distinta (art. 77
+      // LSV), de importe superior; devolver esta ficha (grave, 200 €) daría un dato erróneo. Se
+      // reintroducirá cuando exista una ficha `inf-inhibidor-radar` propia (corrección revisor 2026-09-14).
     ],
     marcoImporte: 'trafico',
     notaRevision:
       'A VERIFICAR (dato sensible): los PUNTOS (¿3?) en el Anexo II LSV, el apartado del art. 13 LSV y la ' +
-      'frontera exacta detector (grave, 200 €) vs INHIBIDOR (muy grave, art. 77, ~6.000 €). Confirmar la ' +
-      'base legal de la intervención del dispositivo antes de afirmarla. Importe grave 200 €. ' +
+      'frontera exacta detector (grave, 200 €) vs INHIBIDOR (muy grave, art. 77 LSV; en el marco `trafico` ' +
+      'el tramo muy grave es 500 €). Confirmar la base legal de la intervención del dispositivo antes de ' +
+      'afirmarla. Importe grave 200 €. ' +
       'PRÓXIMO CAMBIO (RD 518/2026, BOE-A-2026-13889, EN VIGOR 1-OCT-2026): la reforma del RGC podría ' +
       'elevar el detector de radar a MUY GRAVE / 500 € — a partir de esa fecha hay que ACTUALIZAR el ' +
       'importe y la gravedad; a verificar el detalle en el articulado reformado.',
@@ -4790,6 +4797,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'llevar a alguien en el patinete',
       'patin con acompañante',
       'montado detras en el patinete',
+      // Reasignados desde `inf-vmp-patinete` (genérico grave/200 €) para que el supuesto de dos
+      // ocupantes resuelva a esta ficha LEVE/100 € (corrección revisor 2026-09-14).
+      'dos en un patinete',
+      'patinete dos personas',
+      'patinete a dos',
+      'dos en el patin',
     ],
     marcoImporte: 'trafico',
     notaRevision:

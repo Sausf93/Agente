@@ -851,21 +851,23 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
  * revisor. Se factoriza para no repetir el mismo párrafo en cada infracción.
  */
 const NOTA_GRAVE_IMPORTE =
-  'A VERIFICAR el importe: la LO 4/2015 sanciona las infracciones GRAVES con una horquilla de ' +
-  '601 a 30.000 € (tramo mínimo 601–10.400 €, art. 39). El seed fija el extremo inferior (601 €) ' +
-  'como referencia conservadora; el importe efectivo lo gradúa la autoridad según la reincidencia, ' +
-  'el perjuicio y demás circunstancias del art. 33. El pronto pago (art. 54) reduce el 50 %.';
+  'Horquilla COTEJADA en el BOE (LO 4/2015 art. 39.1, leído 2026-09-14): infracciones GRAVES de ' +
+  '601 a 30.000 € y, por grados (art. 33.2), mínimo 601–10.400 €, medio 10.401–20.200 €, máximo ' +
+  '20.201–30.000 €. El seed fija el extremo inferior (601 €) como referencia conservadora. A ' +
+  'VERIFICAR el importe EFECTIVO: lo gradúa la autoridad según la reincidencia, el perjuicio y demás ' +
+  'circunstancias del art. 33. El pronto pago (art. 54) reduce el 50 %.';
 
 const NOTA_LEVE_IMPORTE =
-  'A VERIFICAR el importe: la LO 4/2015 sanciona las infracciones LEVES con una horquilla de 100 ' +
-  'a 600 € (art. 39). El seed fija el extremo inferior (100 €) como referencia conservadora; el ' +
-  'importe efectivo lo gradúa la autoridad según las circunstancias del art. 33. El pronto pago ' +
+  'Horquilla COTEJADA en el BOE (LO 4/2015 art. 39.1, leído 2026-09-14): infracciones LEVES de 100 ' +
+  'a 600 €. El seed fija el extremo inferior (100 €) como referencia conservadora. A VERIFICAR el ' +
+  'importe EFECTIVO: lo gradúa la autoridad según las circunstancias del art. 33. El pronto pago ' +
   '(art. 54) reduce el 50 %.';
 
 const NOTA_MUY_GRAVE_IMPORTE =
-  'A VERIFICAR el importe: la LO 4/2015 sanciona las infracciones MUY GRAVES con una horquilla de ' +
-  '30.001 a 600.000 € (art. 39). El seed fija el extremo inferior (30.001 €) como referencia ' +
-  'conservadora; el importe efectivo lo gradúa la autoridad según las circunstancias del art. 33. ' +
+  'Horquilla COTEJADA en el BOE (LO 4/2015 art. 39.1, leído 2026-09-14): infracciones MUY GRAVES de ' +
+  '30.001 a 600.000 € y, por grados (art. 33.2), mínimo 30.001–220.000 €, medio 220.001–410.000 €, ' +
+  'máximo 410.001–600.000 €. El seed fija el extremo inferior (30.001 €) como referencia conservadora. ' +
+  'A VERIFICAR el importe EFECTIVO: lo gradúa la autoridad según las circunstancias del art. 33. ' +
   'IMPORTANTE: el pronto pago del art. 54 NO se aplica a las MUY GRAVES (solo a graves y leves), por ' +
   'lo que la ficha no lleva importe reducido.';
 
@@ -1008,8 +1010,14 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'no da sus datos',
       'datos falsos',
       'identidad falsa',
-      'no lleva documentacion',
-      // Lenguaje de calle (validador): la negativa/no colaboracion a identificarse (art. 36.6).
+      // NO se incluye 'no lleva documentacion': no llevar el DNI encima NO es esta infracción del
+      // 36.6 (601 €), se identifica por otros medios (art. 16) → ese término vive en
+      // `sc-identificacion-requerimiento`. Corrección revisor 2026-09-14 (evita enrutar a una sanción
+      // inexistente por ese solo hecho).
+      // Lenguaje de calle (validador): la negativa/no colaboración a identificarse (art. 36.6). La
+      // chulería en tiempo PASADO ('se puso chulo', 'se encaro') se reserva aquí (así lo fija el test
+      // de enrutamiento del buscador) y la de presente ('se pone chulo', 'se encara') en
+      // `sc-desobediencia-resistencia`.
       'no se quiere identificar',
       'se puso chulo',
       'se encaro',
@@ -2771,14 +2779,18 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'obligación material la detallan el Reglamento de Armas (RD 137/1993) y la normativa de ' +
       'explosivos y pirotecnia. FRONTERA PENAL: depósito o tráfico de armas o explosivos (arts. 566 a ' +
       '568 CP): la calificación final corresponde a la autoridad judicial.',
+    // Términos que reflejan el RESULTADO AGRAVADO ("perjuicios muy graves") que exige el art. 35.2:
+    // sin ese perjuicio la conducta neutra (depósito/transporte/tenencia sin guía) es GRAVE del art.
+    // 36.12 y vive en `arma-*`/`arma-custodia-deposito`. Corrección revisor 2026-09-14 para no
+    // enrutar una sanción de 30.001-600.000 € a un hecho que sería grave (601-30.000 €).
     terminos: [
-      'almacen ilegal de pirotecnia',
-      'deposito de explosivos sin autorizacion',
-      'guardar mucha cartuchería sin guia',
-      'venta ilegal de petardos peligrosos',
-      'fabrica clandestina de fuegos artificiales',
       'explosivos sin licencia con daños',
-      'transportar explosivos sin autorizacion',
+      'explosion de pirotecnia con heridos',
+      'deposito de explosivos que provoca daños graves',
+      'fabrica clandestina de fuegos artificiales con victimas',
+      'accidente grave por explosivos sin autorizacion',
+      'almacen ilegal de pirotecnia que causa un incendio',
+      'manipulacion de explosivos con perjuicios muy graves',
     ],
     consecuencias: [
       {
