@@ -472,6 +472,134 @@ const ART_LOSC_37_14 = articuloLosc({
     'orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// --- Artículos de la 4ª ola (paridad SPPLB): más huecos de los arts. 36 y 37 LO 4/2015 -------
+// Numeración COTEJADA contra el BOE consolidado (BOE-A-2015-3442, 2026-09). Textos redactados por
+// nosotros (resúmenes neutros, no copiados). Todo el contenido queda `pendiente_revision`.
+const ART_LOSC_36_2 = articuloLosc({
+  numero: '36.2',
+  titulo: 'Perturbación grave de la seguridad frente a sedes parlamentarias (grave)',
+  texto:
+    'Tipifica como infracción grave la perturbación grave de la seguridad ciudadana que se produzca ' +
+    'con ocasión de reuniones o manifestaciones frente a las sedes del Congreso de los Diputados, del ' +
+    'Senado y de las asambleas legislativas de las comunidades autónomas, aunque no estuvieran ' +
+    'reunidos, cuando no constituya infracción penal. Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_LOSC_36_4 = articuloLosc({
+  numero: '36.4',
+  titulo: 'Obstrucción al ejercicio de funciones o a la ejecución de resoluciones (grave)',
+  texto:
+    'Tipifica como infracción grave los actos de obstrucción que pretendan impedir a cualquier ' +
+    'autoridad, empleado público o corporación oficial el ejercicio legítimo de sus funciones, el ' +
+    'cumplimiento o la ejecución de acuerdos o resoluciones administrativas o judiciales, siempre que ' +
+    'se produzcan al margen de los procedimientos legalmente establecidos y no sean constitutivos de ' +
+    'delito. Caso típico: impedir un lanzamiento o desahucio judicial, o un desalojo acordado. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_13 = articuloLosc({
+  numero: '36.13',
+  titulo: 'Negativa u obstrucción a inspecciones y controles reglamentarios (grave)',
+  texto:
+    'Tipifica como infracción grave la negativa de acceso o la obstrucción deliberada de las ' +
+    'inspecciones o controles reglamentarios establecidos por la autoridad competente en fábricas, ' +
+    'locales, establecimientos, embarcaciones y aeronaves (por ejemplo, controles de armas, explosivos, ' +
+    'pirotecnia o seguridad privada). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_15 = articuloLosc({
+  numero: '36.15',
+  titulo: 'Falta de colaboración con las Fuerzas y Cuerpos de Seguridad (grave)',
+  texto:
+    'Tipifica como infracción grave la falta de colaboración con las Fuerzas y Cuerpos de Seguridad en ' +
+    'la averiguación de delitos o en la prevención de acciones que puedan poner en riesgo la seguridad ' +
+    'ciudadana en los supuestos previstos en el art. 7 (deber de colaboración) de la propia LO 4/2015. ' +
+    'No obliga a declarar contra uno mismo ni sustituye el deber de denunciar. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_17 = articuloLosc({
+  numero: '36.17',
+  titulo: 'Traslado de personas para facilitar el acceso al consumo de drogas (grave)',
+  texto:
+    'Tipifica como infracción grave el traslado de personas, con cualquier tipo de vehículo, con el ' +
+    'objeto de facilitarles el acceso al consumo de drogas tóxicas, estupefacientes o sustancias ' +
+    'psicotrópicas, siempre que la conducta no sea constitutiva de delito. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_18 = articuloLosc({
+  numero: '36.18',
+  titulo: 'Plantación y cultivo de drogas en lugares visibles al público (grave)',
+  texto:
+    'Tipifica como infracción grave la ejecución de actos de plantación y cultivo ilícitos de drogas ' +
+    'tóxicas, estupefacientes o sustancias psicotrópicas en lugares visibles al público, cuando no sean ' +
+    'constitutivos de infracción penal. Caso típico: macetas de marihuana visibles en balcones, ' +
+    'terrazas o ventanas. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_21 = articuloLosc({
+  numero: '36.21',
+  titulo: 'Alegación de datos falsos para obtener documentación oficial (grave)',
+  texto:
+    'Tipifica como infracción grave la alegación de datos o circunstancias falsos para la obtención de ' +
+    'las documentaciones previstas en la LO 4/2015 (por ejemplo, licencias, autorizaciones o permisos), ' +
+    'siempre que la conducta no sea constitutiva de infracción penal. Se distingue del art. 36.6 (datos ' +
+    'falsos en el proceso de IDENTIFICACIÓN). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_2 = articuloLosc({
+  numero: '37.2',
+  titulo: 'Exhibición de objetos peligrosos con ánimo intimidatorio (leve)',
+  texto:
+    'Tipifica como infracción leve la exhibición de objetos peligrosos para la vida y la integridad ' +
+    'física de las personas con ánimo intimidatorio, siempre que la conducta no sea constitutiva de ' +
+    'infracción penal ni de la infracción grave de armas del art. 36.10. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_3 = articuloLosc({
+  numero: '37.3',
+  titulo: 'Incumplimiento de restricciones de circulación en actos o manifestaciones (leve)',
+  texto:
+    'Tipifica como infracción leve el incumplimiento de las restricciones de circulación peatonal o ' +
+    'itinerario con ocasión de un acto público, reunión o manifestación, cuando provoquen alteraciones ' +
+    'menores en el normal desarrollo de los mismos. Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_LOSC_37_5 = articuloLosc({
+  numero: '37.5',
+  titulo: 'Actos de exhibición obscena o contra la indemnidad sexual (leve)',
+  texto:
+    'Tipifica como infracción leve la realización o incitación a la realización de actos que atenten ' +
+    'contra la libertad e indemnidad sexual, o la ejecución de actos de exhibición obscena, cuando no ' +
+    'constituyan infracción penal (frontera con el delito de exhibicionismo del art. 185 CP). Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_15 = articuloLosc({
+  numero: '37.15',
+  titulo: 'Remoción de vallas o precintos de un perímetro de seguridad (leve)',
+  texto:
+    'Tipifica como infracción leve la remoción de vallas, encintados u otros elementos fijos o móviles ' +
+    'colocados por las Fuerzas y Cuerpos de Seguridad para delimitar perímetros de seguridad, aun con ' +
+    'carácter preventivo, cuando no sea constitutiva de infracción grave. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_16 = articuloLosc({
+  numero: '37.16',
+  titulo: 'Dejar sueltos animales peligrosos o abandonar animales con peligro (leve)',
+  texto:
+    'Tipifica como infracción leve dejar sueltos o en disposición de causar daños a animales feroces o ' +
+    'dañinos, así como el abandono de animales domésticos en condiciones en que pueda peligrar su vida. ' +
+    'Es el tipo de SEGURIDAD CIUDADANA (LO 4/2015), distinto del régimen de bienestar animal (Ley ' +
+    '7/2023), de los animales potencialmente peligrosos (Ley 50/1999) y de las ordenanzas municipales; ' +
+    'pueden concurrir. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_16,
   ART_LOSC_20,
@@ -503,6 +631,19 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_37_6,
   ART_LOSC_37_13,
   ART_LOSC_37_14,
+  // 4ª ola (paridad SPPLB)
+  ART_LOSC_36_2,
+  ART_LOSC_36_4,
+  ART_LOSC_36_13,
+  ART_LOSC_36_15,
+  ART_LOSC_36_17,
+  ART_LOSC_36_18,
+  ART_LOSC_36_21,
+  ART_LOSC_37_2,
+  ART_LOSC_37_3,
+  ART_LOSC_37_5,
+  ART_LOSC_37_15,
+  ART_LOSC_37_16,
 ];
 
 // --- Constructor de una infracción de seguridad ciudadana -----------------------------------
@@ -2085,6 +2226,397 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       ' A VERIFICAR el precepto del RD 137/1993 que fija el plazo y la forma de comunicar la pérdida/' +
       'sustracción del arma y el deslinde con el art. 37.8 (documentación, leve) y con el depósito/' +
       'tráfico (arts. 566-568 CP). Confirmar con el revisor jurídico.',
+  }),
+  // --- 4ª ola (paridad SPPLB): huecos de los arts. 36 y 37 LO 4/2015 --------------------------
+  construirInfraccion({
+    id: 'sc-perturbacion-sedes-parlamentarias',
+    articulo: ART_LOSC_36_2,
+    tituloCorto: 'Perturbación grave frente a sedes parlamentarias',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Perturbar gravemente la seguridad ciudadana con ocasión de una reunión o manifestación frente a ' +
+      'las sedes del Congreso, del Senado o de una asamblea legislativa autonómica, aunque no estuvieran ' +
+      'reunidos, cuando la conducta no sea constitutiva de delito (art. 36.2 LO 4/2015). Se distingue de ' +
+      'la perturbación en actos/espectáculos (art. 36.1) por el lugar y de los desórdenes generales ' +
+      '(art. 36.3).',
+    terminos: [
+      'manifestacion frente al congreso',
+      'protesta frente al parlamento',
+      'concentracion ante el senado',
+      'rodear el congreso',
+      'altercados frente a la asamblea',
+      'disturbios ante el parlamento autonomico',
+      'protesta frente a las cortes',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar a los responsables para la denuncia; la valoración de si la conducta ' +
+          'supera el ámbito administrativo corresponde al agente y a la autoridad judicial.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con los arts. 36.1 (actos/espectáculos) y 36.3 (desórdenes en vía ' +
+      'pública) y con el delito de desórdenes públicos (arts. 557 y ss. CP), así como el respeto al ' +
+      'derecho de reunión (art. 21 CE). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-obstruccion-ejercicio-funciones',
+    articulo: ART_LOSC_36_4,
+    tituloCorto: 'Obstrucción al ejercicio de funciones o a resoluciones (desahucio)',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Realizar actos de obstrucción que pretendan impedir a una autoridad, empleado público o ' +
+      'corporación oficial el ejercicio legítimo de sus funciones o el cumplimiento o la ejecución de ' +
+      'acuerdos o resoluciones administrativas o judiciales, al margen de los cauces legales y cuando la ' +
+      'conducta no sea constitutiva de delito (art. 36.4 LO 4/2015). Caso típico: impedir físicamente un ' +
+      'lanzamiento/desahucio o un desalojo ordenado. Se diferencia de la desobediencia/resistencia del ' +
+      'art. 36.6.',
+    terminos: [
+      'impedir un desahucio',
+      'bloquear un lanzamiento judicial',
+      'impedir un desalojo',
+      'obstruir a la autoridad',
+      'impedir el trabajo de un funcionario',
+      'parar un desahucio',
+      'no dejar ejecutar una orden judicial',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar a quienes obstruyan para la denuncia; la valoración de si la conducta ' +
+          'constituye delito (p. ej. desobediencia grave, art. 556 CP) corresponde a la autoridad judicial.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 36.6 (desobediencia/resistencia) y con el delito de ' +
+      'desobediencia grave (art. 556 CP). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-obstruccion-inspecciones-controles',
+    articulo: ART_LOSC_36_13,
+    tituloCorto: 'Negativa u obstrucción a inspecciones y controles reglamentarios',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Negar el acceso u obstruir deliberadamente las inspecciones o controles reglamentarios que ' +
+      'realice la autoridad competente en fábricas, locales, establecimientos, embarcaciones o ' +
+      'aeronaves (por ejemplo, controles de armas, explosivos, pirotecnia o seguridad privada), cuando ' +
+      'la conducta no sea constitutiva de delito (art. 36.13 LO 4/2015).',
+    terminos: [
+      'no dejar entrar a inspeccionar',
+      'impedir una inspeccion',
+      'negar el acceso a un control',
+      'obstruir una inspeccion de armas',
+      'no permitir el control del local',
+      'impedir la revision del establecimiento',
+      'negativa a inspeccion reglamentaria',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al responsable del establecimiento o actividad para la denuncia y dejar ' +
+          'constancia de la negativa u obstrucción.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR que exista una inspección o control REGLAMENTARIO habilitado por la autoridad ' +
+      'competente y el deslinde con el art. 36.6 (desobediencia) y con la entrada en domicilio/lugares ' +
+      'cerrados (autorización judicial cuando proceda). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-falta-colaboracion-fcs',
+    articulo: ART_LOSC_36_15,
+    tituloCorto: 'Falta de colaboración con las Fuerzas y Cuerpos de Seguridad',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'No colaborar con las Fuerzas y Cuerpos de Seguridad en la averiguación de delitos o en la ' +
+      'prevención de acciones que puedan poner en riesgo la seguridad ciudadana, en los supuestos del ' +
+      'deber de colaboración del art. 7 LO 4/2015 (art. 36.15 LO 4/2015). No obliga a declarar contra ' +
+      'uno mismo ni sustituye la denuncia; la valoración del alcance del deber corresponde al agente y a ' +
+      'la autoridad.',
+    terminos: [
+      'no colaborar con la policia',
+      'negarse a colaborar',
+      'no ayudar en una investigacion',
+      'falta de colaboracion',
+      'no facilitar informacion a la policia',
+      'negarse a colaborar con la guardia civil',
+      'no prestar auxilio requerido',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar a la persona requerida y dejar constancia del requerimiento de ' +
+          'colaboración y de su negativa; la valoración del alcance del deber corresponde a la autoridad.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el alcance del deber de colaboración (art. 7 LO 4/2015) y sus límites (no ' +
+      'autoinculpación, derecho a no declarar), y el deslinde con la desobediencia del art. 36.6. ' +
+      'Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-traslado-facilitar-drogas',
+    articulo: ART_LOSC_36_17,
+    tituloCorto: 'Trasladar personas para facilitar el acceso a drogas',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Trasladar personas con cualquier vehículo con el objeto de facilitarles el acceso al consumo de ' +
+      'drogas tóxicas, estupefacientes o sustancias psicotrópicas, cuando la conducta no sea ' +
+      'constitutiva de delito (art. 36.17 LO 4/2015). Se distingue del consumo/tenencia en vía pública ' +
+      '(art. 36.16) y de la tolerancia en locales (art. 36.19). FRONTERA PENAL: la promoción o ' +
+      'facilitación del consumo puede ser delito contra la salud pública (art. 368 CP).',
+    terminos: [
+      'llevar gente a comprar droga',
+      'transportar personas para consumir droga',
+      'llevar en coche a pillar',
+      'facilitar el acceso a la droga en coche',
+      'trasladar consumidores de droga',
+      'llevar gente al poblado a por droga',
+      'hacer de chofer para comprar droga',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al conductor y a los ocupantes para la denuncia; la valoración de si la ' +
+          'conducta constituye delito contra la salud pública (art. 368 CP) corresponde a la autoridad judicial.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con los arts. 36.16 (consumo/tenencia) y 36.19 (tolerancia en locales) y ' +
+      'con el delito contra la salud pública (art. 368 CP). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-cultivo-drogas-visible',
+    articulo: ART_LOSC_36_18,
+    tituloCorto: 'Plantación o cultivo de drogas visible al público',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Ejecutar actos de plantación y cultivo ilícitos de drogas tóxicas, estupefacientes o sustancias ' +
+      'psicotrópicas en lugares visibles al público, cuando la conducta no sea constitutiva de ' +
+      'infracción penal (art. 36.18 LO 4/2015). Caso típico: macetas de marihuana visibles en balcones, ' +
+      'terrazas o ventanas. FRONTERA PENAL: el cultivo destinado al tráfico es delito contra la salud ' +
+      'pública (art. 368 CP); la vía administrativa queda para el autoconsumo visible sin destino al tráfico.',
+    terminos: [
+      'plantas de marihuana en el balcon',
+      'cultivo de marihuana visible',
+      'macetas de maria en la ventana',
+      'plantacion de cannabis a la vista',
+      'marihuana en la terraza',
+      'cultivar maria en el balcon',
+      'plantas de cannabis visibles desde la calle',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la aprehensión (comiso) de las plantas y de los útiles de cultivo, que se ponen a ' +
+          'disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el delito contra la salud pública (art. 368 CP): el cultivo con ' +
+      'destino al tráfico es delito; la vía del 36.18 exige que sea VISIBLE al público y sin destino al ' +
+      'tráfico. Confirmar el comiso y su encaje con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-datos-falsos-documentacion',
+    articulo: ART_LOSC_36_21,
+    tituloCorto: 'Alegar datos falsos para obtener documentación oficial',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Alegar datos o circunstancias falsos para obtener las documentaciones previstas en la LO 4/2015 ' +
+      '(licencias, autorizaciones o permisos), cuando la conducta no sea constitutiva de delito (art. ' +
+      '36.21 LO 4/2015). Se distingue del art. 36.6 (alegar datos falsos en el proceso de ' +
+      'IDENTIFICACIÓN). FRONTERA PENAL: la falsedad documental es delito (arts. 390 y ss. CP).',
+    terminos: [
+      'datos falsos para una licencia',
+      'mentir para conseguir un permiso',
+      'falsear datos para una autorizacion',
+      'aportar documentacion falsa para un permiso',
+      'datos inexactos para obtener licencia',
+      'enganar para conseguir una autorizacion',
+      'declarar datos falsos a la administracion',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al solicitante y dejar constancia de los datos falsos alegados; la ' +
+          'valoración de si hay falsedad documental (arts. 390 y ss. CP) corresponde a la autoridad judicial.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 36.6 (datos falsos en la identificación) y con el delito de ' +
+      'falsedad documental (arts. 390 y ss. CP). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-exhibicion-objetos-peligrosos',
+    articulo: ART_LOSC_37_2,
+    tituloCorto: 'Exhibir objetos peligrosos con ánimo intimidatorio',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Exhibir objetos peligrosos para la vida y la integridad física de las personas con ánimo ' +
+      'intimidatorio, cuando la conducta no sea constitutiva de delito ni de la infracción grave de ' +
+      'armas del art. 36.10 (art. 37.2 LO 4/2015). Caso típico: enseñar una barra, un bate o una ' +
+      'herramienta de forma amenazante sin llegar a la agresión.',
+    terminos: [
+      'exhibir un objeto peligroso',
+      'ensenar un bate de forma amenazante',
+      'blandir una barra',
+      'amenazar con un objeto',
+      'mostrar un objeto peligroso para intimidar',
+      'sacar una herramienta para asustar',
+      'exhibir objeto peligroso con animo intimidatorio',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 36.10 (armas prohibidas/uso intimidatorio de armas, grave) ' +
+      'y con el delito de amenazas (arts. 169 y ss. CP). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-restriccion-circulacion-actos',
+    articulo: ART_LOSC_37_3,
+    tituloCorto: 'Incumplir restricciones de circulación en actos o manifestaciones',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Incumplir las restricciones de circulación peatonal o de itinerario acordadas con ocasión de un ' +
+      'acto público, reunión o manifestación, cuando provoquen alteraciones menores en su normal ' +
+      'desarrollo (art. 37.3 LO 4/2015). Se diferencia de la desobediencia del art. 36.6 por la menor ' +
+      'entidad de la conducta.',
+    terminos: [
+      'saltarse un corte de calle',
+      'no respetar el itinerario de la manifestacion',
+      'cruzar un perimetro de un acto publico',
+      'incumplir una restriccion de paso',
+      'colarse en una zona cortada por un evento',
+      'saltarse el vallado de una manifestacion',
+      'no respetar las restricciones de circulacion en un acto',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 36.6 (desobediencia) y con el art. 37.15 (remoción de ' +
+      'vallas/precintos): aquí basta la alteración MENOR. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-exhibicion-obscena',
+    articulo: ART_LOSC_37_5,
+    tituloCorto: 'Actos de exhibición obscena en lugar público',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Realizar o incitar a la realización de actos que atenten contra la libertad e indemnidad sexual, ' +
+      'o ejecutar actos de exhibición obscena, cuando la conducta no sea constitutiva de delito (art. ' +
+      '37.5 LO 4/2015). FRONTERA PENAL: el exhibicionismo ante menores o personas con discapacidad ' +
+      'necesitada de especial protección es delito (art. 185 CP); la vía administrativa es residual.',
+    terminos: [
+      'ensenar los genitales en la calle',
+      'exhibicionismo',
+      'hacer sus necesidades exhibiendose',
+      'acto obsceno en la via publica',
+      'masturbarse en publico',
+      'exhibicion obscena',
+      'ensenarse desnudo de forma obscena',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito de exhibicionismo (art. 185 CP), especialmente ante ' +
+      'menores o personas necesitadas de especial protección, en cuyo caso es DELITO y no infracción. ' +
+      'Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-remocion-precinto-perimetro',
+    articulo: ART_LOSC_37_15,
+    tituloCorto: 'Remover vallas o precintos de un perímetro de seguridad',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Remover vallas, encintados u otros elementos, fijos o móviles, colocados por las Fuerzas y ' +
+      'Cuerpos de Seguridad para delimitar un perímetro de seguridad, aun con carácter preventivo, ' +
+      'cuando la conducta no sea constitutiva de infracción grave (art. 37.15 LO 4/2015). Caso típico: ' +
+      'quitar el precinto policial de una zona acordonada.',
+    terminos: [
+      'quitar el precinto policial',
+      'saltarse el cordon policial',
+      'retirar una valla de la policia',
+      'romper el precinto de una zona acordonada',
+      'quitar el encintado policial',
+      'cruzar la cinta policial',
+      'remover el vallado de seguridad',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el deslinde con las infracciones graves (p. ej. desórdenes del art. 36.3) cuando la ' +
+      'remoción del perímetro genere una alteración grave, y con la desobediencia del art. 36.6. ' +
+      'Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-animales-sueltos-abandono',
+    articulo: ART_LOSC_37_16,
+    tituloCorto: 'Dejar sueltos animales peligrosos o abandonarlos con peligro',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Dejar sueltos o en disposición de causar daños a animales feroces o dañinos, así como abandonar ' +
+      'animales domésticos en condiciones en que pueda peligrar su vida (art. 37.16 LO 4/2015). Es el ' +
+      'tipo de SEGURIDAD CIUDADANA, distinto del régimen de bienestar animal (Ley 7/2023), de los ' +
+      'animales potencialmente peligrosos (Ley 50/1999) y de las ordenanzas municipales; pueden ' +
+      'concurrir. FRONTERA PENAL: el maltrato o abandono con resultado puede ser delito (arts. 337 y ' +
+      '337 bis CP).',
+    terminos: [
+      'perro suelto peligroso',
+      'animal suelto que puede morder',
+      'dejar un perro peligroso suelto',
+      'abandonar un perro',
+      'abandonar un animal en la calle',
+      'soltar un animal peligroso',
+      'perro sin atar que ataca',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR la concurrencia con el régimen de PPP (Ley 50/1999), bienestar animal (Ley 7/2023) y ' +
+      'ordenanzas municipales, y el deslinde con el delito de maltrato/abandono animal (arts. 337 y 337 ' +
+      'bis CP). Confirmar con el revisor jurídico.',
   }),
 ];
 

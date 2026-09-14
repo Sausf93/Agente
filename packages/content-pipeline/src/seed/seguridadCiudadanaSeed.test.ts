@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 37 entradas de calle (23 de las dos primeras olas + 14 de la 3ª ola: 12 infracciones nuevas de los arts. 35/36/37 LOSC + 2 de ARMAS RD 137/1993)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(37);
+  it('siembra 49 entradas de calle (37 de las olas previas + 12 de la 4ª ola: nuevos huecos de los arts. 36/37 LOSC para paridad SPPLB)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(49);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {

@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 91 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(91);
+  it('siembra 103 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(103);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -492,6 +492,80 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
     const artOla2 = new Set(IDS_OLA2.map((id) => find(id)!.infraccion.articuloId));
     for (const id of ola1) {
       expect(artOla2.has(find(id)!.infraccion.articuloId), id).toBe(false);
+    }
+  });
+});
+
+describe('SEED_TRAFICO: 4ª ola (conductores, VMP, placas, bajas, ITV)', () => {
+  const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+
+  // Las 12 fichas nuevas de sub-áreas poco cubiertas frente a SPPLB.
+  const IDS_OLA4 = [
+    'inf-permiso-clase-inadecuada',
+    'inf-permiso-caducado-reconocimiento',
+    'inf-conductor-novel-sin-l',
+    'inf-permiso-extranjero-no-valido',
+    'inf-vmp-acera',
+    'inf-vmp-pasajero',
+    'inf-vmp-nocturno-sin-luces',
+    'inf-vehiculo-dado-baja',
+    'inf-titular-no-identifica-conductor',
+    'inf-sin-placa-o-no-reglamentaria',
+    'inf-remolque-sin-documentacion',
+    'inf-circular-itv-negativa-inmovilizado',
+  ];
+
+  it('las 12 existen, son administrativas del marco trafico y quedan pendientes de revisión con nota "a verificar"', () => {
+    for (const id of IDS_OLA4) {
+      const item = find(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('administrativa');
+      expect(item!.marcoImporte, id).toBe('trafico');
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+    }
+  });
+
+  it('todas validan su importe en el marco trafico y superan los mínimos de publicación', () => {
+    for (const id of IDS_OLA4) {
+      const item = find(id)!;
+      expect(validarImporte(item.infraccion, 'trafico'), id).toEqual([]);
+      expect(validarMinimosPublicacion(item.infraccion, item.sinonimos.length), id).toEqual([]);
+    }
+  });
+
+  it('citan un artículo sembrado (fuente visible en la ficha)', () => {
+    for (const id of IDS_OLA4) {
+      expect(idsArticulos.has(find(id)!.infraccion.articuloId), id).toBe(true);
+    }
+  });
+
+  it.each([
+    ['camion con el carnet de coche', 'inf-permiso-clase-inadecuada'],
+    ['no ha renovado el carnet', 'inf-permiso-caducado-reconocimiento'],
+    ['sin la l de novel', 'inf-conductor-novel-sin-l'],
+    ['carnet no canjeado', 'inf-permiso-extranjero-no-valido'],
+    ['patinete por la acera', 'inf-vmp-acera'],
+    ['dos en el patinete', 'inf-vmp-pasajero'],
+    ['patinete de noche sin luces', 'inf-vmp-nocturno-sin-luces'],
+    ['coche dado de baja', 'inf-vehiculo-dado-baja'],
+    ['no identifica al conductor', 'inf-titular-no-identifica-conductor'],
+    ['sin placa de matricula', 'inf-sin-placa-o-no-reglamentaria'],
+    ['remolque sin documentacion', 'inf-remolque-sin-documentacion'],
+    ['itv negativa circulando', 'inf-circular-itv-negativa-inmovilizado'],
+  ])('«%s» resuelve SOLO a %s', (termino, id) => {
+    const duenos = SEED_TRAFICO.infracciones
+      .filter((i) => i.sinonimos.some((s) => s.termino === termino))
+      .map((i) => i.infraccion.id);
+    expect(duenos).toEqual([id]);
+  });
+
+  it('las muy graves de baja/ITV llevan inmovilización con lenguaje orientativo', () => {
+    for (const id of ['inf-vehiculo-dado-baja', 'inf-circular-itv-negativa-inmovilizado']) {
+      const inmov = find(id)!.consecuencias.find((c) => c.tipo === 'inmovilizacion');
+      expect(inmov, id).toBeDefined();
+      expect(inmov!.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
+      expect(inmov!.textoCorto.toLowerCase(), id).not.toMatch(/\bdeten\b|\bdetén\b/);
     }
   });
 });

@@ -818,7 +818,165 @@ const ART_CP_154 = articuloCp({
     'consolidado en el BOE.',
 });
 
+// --- Artículos de la 2ª OLA DE CALLE: armas, fraude y protección (paridad SPPLB) 2026-09-14 -----
+const ART_CP_566 = articuloCp({
+  numero: '566',
+  titulo: 'Depósito de armas o municiones de guerra; depósito y tráfico de armas',
+  texto:
+    'Castiga a quienes fabriquen, comercialicen o establezcan depósitos de armas o municiones no ' +
+    'autorizados. El art. 566.1 pena el depósito de ARMAS o municiones de GUERRA, o de armas ' +
+    'químicas, biológicas, nucleares o radiológicas: a los promotores y organizadores, prisión de ' +
+    'cinco a diez años; a los que hayan cooperado, prisión de tres a cinco años (566.1.1º). El ' +
+    'depósito de ARMAS DE FUEGO reglamentadas o municiones no autorizadas se pena de forma menor ' +
+    '(566.1.2º-3º). El art. 567 define qué se entiende por depósito (a partir de cinco armas, y ' +
+    'basta una sola cuando es arma de guerra o arma química/biológica) y considera arma de guerra la ' +
+    'determinada como tal en las disposiciones reguladoras de la defensa nacional. El art. 568 ' +
+    'castiga la tenencia o el depósito de sustancias o aparatos explosivos, inflamables, incendiarios ' +
+    'o asfixiantes, y su fabricación, tráfico o transporte. Se distingue de la tenencia ilícita de ' +
+    'armas de fuego reglamentadas del art. 564 y de la tenencia de armas prohibidas del art. 563. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_551 = articuloCp({
+  numero: '551',
+  titulo: 'Atentado en sus modalidades agravadas',
+  texto:
+    'Impone las penas superiores en grado a las del art. 550 cuando el atentado se comete con alguna ' +
+    'de estas circunstancias (art. 551): hacer uso de armas u otros objetos peligrosos; ejecutar el ' +
+    'acto con un vehículo de motor; lanzar objetos contundentes, líquidos inflamables o fuego que ' +
+    'creen un peligro relevante para la vida o la integridad de las personas; acometer causando ' +
+    'lesiones del art. 147.2 (menor entidad); o llevar a cabo actos con peligro para la vida o que ' +
+    'puedan causar lesiones graves. El tipo básico de atentado (agresión, intimidación grave o ' +
+    'violencia contra autoridad, agentes o funcionarios en el ejercicio de sus funciones) es el art. ' +
+    '550; la resistencia o desobediencia grave sin llegar al atentado, el art. 556. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_450 = articuloCp({
+  numero: '450',
+  titulo: 'Omisión de los deberes de impedir delitos o de promover su persecución',
+  texto:
+    'El art. 450.1 castiga a quien, pudiendo hacerlo con su intervención inmediata y sin riesgo ' +
+    'propio o ajeno, no impide la comisión de un delito que afecte a las personas en su vida, ' +
+    'integridad o salud, libertad o libertad sexual: prisión de seis meses a dos años si el delito ' +
+    'fuera contra la vida, y multa de seis a veinticuatro meses en los demás casos. El art. 450.2 ' +
+    'castiga con la misma pena a quien, pudiendo hacerlo, no acude a la autoridad o a sus agentes ' +
+    'para que impidan un delito de esa naturaleza del que tenga noticia y se esté cometiendo o vaya ' +
+    'a cometerse. No exige poner en riesgo al omitente. Se distingue de la omisión del deber de ' +
+    'socorro (art. 195, persona desamparada y en peligro) y del encubrimiento (arts. 451-454, ayuda ' +
+    'posterior al delito ya cometido). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_386 = articuloCp({
+  numero: '386',
+  titulo: 'Falsificación de moneda',
+  texto:
+    'El art. 386.1 castiga con prisión de ocho a doce años y multa a quien altere la moneda o ' +
+    'fabrique moneda falsa, introduzca en el país o exporte moneda falsa o alterada, o la transporte, ' +
+    'expenda o distribuya en connivencia con el falsificador, alterador, introductor o exportador. La ' +
+    'tenencia de moneda falsa para su expendición o distribución se castiga con la pena inferior en ' +
+    'uno o dos grados, atendiendo al valor y al grado de connivencia (386.2). Quien habiéndola ' +
+    'recibido DE BUENA FE la expende o distribuye después de constarle su falsedad se castiga con una ' +
+    'pena mucho menor (prisión de tres a seis meses o multa, según el valor aparente; art. 386.3, ' +
+    'párrafo). La tenencia, recepción u obtención de moneda falsa para ponerla en circulación puede ' +
+    'castigarse aunque no medie connivencia. Moneda comprende la metálica, el papel moneda y las ' +
+    'tarjetas se tratan aparte (art. 399 bis). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_399_BIS = articuloCp({
+  numero: '399 bis',
+  titulo: 'Falsificación de tarjetas de crédito y débito y cheques de viaje',
+  texto:
+    'El art. 399 bis.1 castiga a quien altere, copie, reproduzca o de cualquier otro modo falsifique ' +
+    'tarjetas de crédito o débito o cheques de viaje: prisión de cuatro a ocho años, agravada si los ' +
+    'efectos afectan a una generalidad de personas o si los hechos se cometen en el marco de una ' +
+    'organización criminal. La tenencia de tarjetas o cheques de viaje falsos destinados a la ' +
+    'distribución o el tráfico se castiga con la pena señalada a la falsificación (399 bis.2). Quien, ' +
+    'sin haber intervenido en la falsificación, use, en perjuicio de otro y a sabiendas de la ' +
+    'falsedad, tarjetas o cheques de viaje falsos, se castiga con prisión de dos a cinco años (399 ' +
+    'bis.3). Es el tipo habitual del "clonado" de tarjetas y del uso de tarjetas duplicadas. Se ' +
+    'distingue del uso fraudulento de tarjeta ajena AUTÉNTICA, que puede ser estafa (arts. 248-249). ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_403 = articuloCp({
+  numero: '403',
+  titulo: 'Intrusismo profesional',
+  texto:
+    'Castiga a quien ejerza actos propios de una profesión sin poseer el correspondiente título ' +
+    'académico expedido o reconocido en España de acuerdo con la legislación vigente: multa de doce a ' +
+    'veinticuatro meses (art. 403.1). Si la actividad profesional exige un título oficial que acredite ' +
+    'la capacitación necesaria y habilite legalmente para su ejercicio, y no se posee, la pena es de ' +
+    'multa de seis a doce meses. La pena sube a PRISIÓN de seis meses a dos años (art. 403.2) cuando ' +
+    'el culpable se atribuye públicamente la cualidad de profesional amparada por el título, o ejerce ' +
+    'los actos en un local o establecimiento abierto al público en el que se anuncie la prestación de ' +
+    'servicios propios de esa profesión. Es el tipo del "falso médico", "falso abogado" o "falso ' +
+    'dentista". Se distingue de la usurpación de funciones públicas (art. 402, hacerse pasar por ' +
+    'autoridad o funcionario). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_184 = articuloCp({
+  numero: '184',
+  titulo: 'Acoso sexual',
+  texto:
+    'Castiga a quien solicite favores de naturaleza sexual, para sí o para un tercero, en el ámbito ' +
+    'de una relación laboral, docente o de prestación de servicios, continuada o habitual, y con tal ' +
+    'comportamiento provoque a la víctima una situación objetiva y gravemente intimidatoria, hostil o ' +
+    'humillante: prisión de seis a doce meses o multa de diez a quince meses e inhabilitación ' +
+    'especial (art. 184.1, redacción de la LO 10/2022). La pena sube (art. 184.2) cuando el culpable ' +
+    'se prevale de una situación de superioridad laboral, docente o jerárquica, o anuncia expresa o ' +
+    'tácitamente causar a la víctima un mal relacionado con las legítimas expectativas que pueda ' +
+    'tener en el ámbito de la relación. Se agrava cuando la víctima es especialmente vulnerable ' +
+    '(184.3). REQUISITO PROCESAL: es delito perseguible previa denuncia de la persona agraviada, de ' +
+    'su representante legal o del Ministerio Fiscal (art. 191). Se distingue del acoso o stalking ' +
+    '(art. 172 ter) y de la agresión sexual (art. 178). Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_CP_187 = articuloCp({
+  numero: '187',
+  titulo: 'Explotación de la prostitución ajena (prostitución coactiva y proxenetismo)',
+  texto:
+    'El art. 187.1, párrafo primero, castiga a quien, empleando violencia, intimidación o engaño, o ' +
+    'abusando de una situación de superioridad o de necesidad o vulnerabilidad de la víctima, ' +
+    'determine a una persona mayor de edad a ejercer o a mantenerse en la prostitución: prisión de ' +
+    'dos a cinco años y multa de doce a veinticuatro meses. El párrafo segundo castiga al proxeneta ' +
+    'que se lucre explotando la prostitución de otra persona, aun con su consentimiento, cuando ' +
+    'concurra alguna de esas situaciones (superioridad, necesidad o vulnerabilidad) o cuando la ' +
+    'víctima se halle en una situación de subordinación derivada de las condiciones en que ejerce la ' +
+    'actividad: prisión de dos a cuatro años y multa. Los subtipos agravados (art. 187.2) elevan la ' +
+    'pena (víctima especialmente vulnerable, prevalimiento, organización, peligro para la vida o la ' +
+    'salud). Cuando la víctima es menor de edad o persona con discapacidad se aplican los arts. ' +
+    '188 y ss.; si media captación con fines de explotación, la trata del art. 177 bis. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_229 = articuloCp({
+  numero: '229',
+  titulo: 'Abandono de menores o personas con discapacidad',
+  texto:
+    'Castiga el abandono de un menor de edad o de una persona con discapacidad necesitada de especial ' +
+    'protección por parte de quien tenga a su cargo su guarda (art. 229.1): prisión de uno a dos ' +
+    'años. Cuando el abandono lo realiza el padre, la madre, el tutor o el guardador legal, la pena es ' +
+    'de prisión de dieciocho meses a tres años (art. 229.2). Si por las circunstancias del abandono ' +
+    'se ha puesto en concreto peligro la vida, la salud, la integridad física o la libertad sexual del ' +
+    'menor o de la persona con discapacidad, se impone la pena en su mitad superior; los jueces ' +
+    'podrán imponer una pena inferior en atención a las circunstancias (art. 229.3). El abandono ' +
+    'temporal se castiga aparte con pena menor (art. 230), y la entrega a terceros o a establecimientos ' +
+    'sin autorización, por el art. 231. Se distingue de la omisión del deber de socorro (art. 195). ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_566,
+  ART_CP_551,
+  ART_CP_450,
+  ART_CP_386,
+  ART_CP_399_BIS,
+  ART_CP_403,
+  ART_CP_184,
+  ART_CP_187,
+  ART_CP_229,
   ART_CP_238,
   ART_CP_235,
   ART_CP_266,
@@ -3253,6 +3411,378 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'peligrosos y opera cuando NO se individualiza la autoría de las lesiones. DESLINDE con las ' +
       'LESIONES (arts. 147-148) si consta la autoría concreta y con los DESÓRDENES PÚBLICOS (art. 557). ' +
       'Confirmar penas y requisitos contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // === 2ª OLA DE CALLE: armas, fraude y protección (paridad SPPLB) 2026-09-14 ==================
+  // --- Depósito y tráfico de armas de guerra (566-568) ----------------------------------------
+  construirDelito({
+    id: 'del-deposito-armas-guerra',
+    articulo: ART_CP_566,
+    tituloCorto: 'Depósito de armas de guerra o explosivos',
+    // Caso modelado: depósito de armas/municiones de GUERRA o de explosivos (566.1.1º / 568) →
+    // prisión de 5 a 10 años (promotores) → GRAVE.
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 5 a 10 años (promotores, art. 566.1.1º CP); explosivos, art. 568',
+    textoBoletin:
+      'Establecer un depósito no autorizado de armas o municiones de GUERRA (o de armas químicas, ' +
+      'biológicas, nucleares o radiológicas), o de sustancias o aparatos explosivos, inflamables, ' +
+      'incendiarios o asfixiantes (arts. 566 a 568 CP): a los promotores y organizadores, prisión de 5 ' +
+      'a 10 años; a los cooperadores, de 3 a 5 años. Basta UNA sola arma cuando es de guerra o química/' +
+      'biológica (art. 567). El depósito de armas de fuego reglamentadas o de municiones no autorizadas ' +
+      'y la tenencia o el tráfico de explosivos tienen penas propias. FRONTERAS: la tenencia ilícita de ' +
+      'armas de fuego reglamentadas sin licencia es el art. 564, y la de armas prohibidas, el art. 563. ' +
+      'La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'deposito de armas',
+      'arsenal',
+      'armas de guerra',
+      'trafico de armas',
+      'alijo de armas',
+      'explosivos',
+      'material explosivo',
+      'municion de guerra',
+      'arsenal ilegal',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: el depósito de armas o municiones de GUERRA o de ' +
+      'explosivos (arts. 566-568 CP) → prisión de 5 a 10 años (promotores) → GRAVE. CLAVE la definición ' +
+      'de depósito y de arma de guerra del art. 567 (basta una sola arma de guerra o química/biológica; ' +
+      'a partir de cinco en armas de fuego reglamentadas). DESLINDE con la tenencia ilícita de armas de ' +
+      'fuego reglamentadas (art. 564, ficha del-tenencia-armas) y con la tenencia de armas prohibidas ' +
+      '(art. 563, ficha del-armas-prohibidas). Confirmar penas, umbrales del depósito y la remisión a la ' +
+      'normativa de defensa nacional contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Atentado agravado (551): con arma, vehículo, fuego o líquidos inflamables --------------
+  construirDelito({
+    id: 'del-atentado-agravado',
+    articulo: ART_CP_551,
+    tituloCorto: 'Atentado agravado (arma, vehículo o fuego)',
+    // Caso modelado: atentado con arma/objeto peligroso o con vehículo (art. 551) → pena superior en
+    // grado a la del 550; puede alcanzar prisión > 5 años → GRAVE.
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión superior en grado a la del art. 550 (art. 551 CP), p. ej. 2 a 4½ años o más',
+    textoBoletin:
+      'Atentado (agresión, intimidación grave o violencia contra autoridad, agentes o funcionarios en ' +
+      'el ejercicio de sus funciones) cometido con alguna de las circunstancias AGRAVANTES del art. ' +
+      '551 CP: uso de armas u objetos peligrosos; empleo de un vehículo de motor; lanzamiento de ' +
+      'objetos contundentes, líquidos inflamables o fuego con peligro relevante para la vida o la ' +
+      'integridad; o acometimiento con peligro para la vida. La pena es la superior en grado a la del ' +
+      'atentado básico (art. 550). FRONTERAS: el atentado básico es la ficha del-atentado-agente (art. ' +
+      '550); la resistencia o desobediencia grave sin atentado, del-resistencia-desobediencia (art. ' +
+      '556). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'atentado con arma',
+      'atentado agravado',
+      'atropello a un policia',
+      'atentado con vehiculo',
+      'lanzar coctel molotov a la policia',
+      'agredir a un agente con un arma',
+      'embestir a la policia',
+      'quemar a un agente',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la circunstancia agravante concreta: el atentado agravado del art. ' +
+      '551 CP impone la pena SUPERIOR EN GRADO a la del art. 550 (que ya distingue autoridad/agente y la ' +
+      'presencia de violencia). Modelado como GRAVE porque con la elevación en grado puede superar los 5 ' +
+      'años (art. 33 CP); confirmar según cuál sea la modalidad (arma, vehículo, fuego/líquidos ' +
+      'inflamables, peligro para la vida) y la condición del sujeto pasivo. DESLINDE con el atentado ' +
+      'básico (del-atentado-agente, art. 550) y con la resistencia grave (del-resistencia-desobediencia, ' +
+      'art. 556). Confirmar penas y agravantes contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Omisión del deber de impedir delitos (450) ---------------------------------------------
+  construirDelito({
+    id: 'del-omision-impedir-delitos',
+    articulo: ART_CP_450,
+    tituloCorto: 'Omisión del deber de impedir delitos',
+    // Caso modelado: no impedir, pudiendo y sin riesgo, un delito contra la vida (art. 450.1) →
+    // prisión de 6 meses a 2 años → MENOS GRAVE (tiene prisión en el escenario contra la vida).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 2 años (delito contra la vida) o multa de 6 a 24 meses (art. 450 CP)',
+    textoBoletin:
+      'No impedir, pudiendo hacerlo con la intervención inmediata y sin riesgo propio ni ajeno, la ' +
+      'comisión de un delito que afecte a las personas en su vida, integridad o salud, libertad o ' +
+      'libertad sexual; o no acudir a la autoridad o a sus agentes para que lo impidan (art. 450 CP). ' +
+      'Pena: prisión de 6 meses a 2 años si el delito fuera contra la vida, y multa de 6 a 24 meses en ' +
+      'los demás casos. NO exige poner en riesgo al que omite. FRONTERAS: la omisión del deber de ' +
+      'socorro (persona desamparada y en peligro) es el art. 195 (ficha del-omision-socorro); la ayuda ' +
+      'POSTERIOR al delito ya cometido es encubrimiento (arts. 451-454). La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'no impedir un delito',
+      'omision del deber de impedir delitos',
+      'no avisar a la policia de un delito',
+      'presenciar un delito y no hacer nada',
+      'no impedir una agresion',
+      'no denunciar un delito grave',
+      'dejar que agredan a alguien',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el deslinde: la omisión del deber de impedir delitos (art. 450 CP) ' +
+      'se pena con PRISIÓN de 6 meses a 2 años solo cuando el delito no impedido es contra la VIDA; en ' +
+      'los demás casos es MULTA de 6 a 24 meses. La ficha modela el escenario contra la vida → MENOS ' +
+      'GRAVE (por eso NO se marca penaSoloMulta); si el delito no impedido no es contra la vida, la pena ' +
+      'es solo multa (revisar entonces penaSoloMulta). CLAVE que exige posibilidad de intervención SIN ' +
+      'RIESGO. DESLINDE con la omisión del deber de socorro (art. 195, del-omision-socorro) y con el ' +
+      'encubrimiento (arts. 451-454). Confirmar contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Falsificación de moneda (386): billetes falsos -----------------------------------------
+  construirDelito({
+    id: 'del-falsificacion-moneda',
+    articulo: ART_CP_386,
+    tituloCorto: 'Falsificación de moneda (billetes falsos)',
+    // Caso modelado: fabricar/introducir/distribuir en connivencia moneda falsa (art. 386.1) →
+    // prisión de 8 a 12 años → GRAVE.
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 8 a 12 años y multa (fabricación/introducción, art. 386.1 CP)',
+    textoBoletin:
+      'Alterar la moneda o fabricar moneda falsa; introducirla en el país o exportarla; o ' +
+      'transportarla, expenderla o distribuirla en connivencia con el falsificador o introductor (art. ' +
+      '386.1 CP): prisión de 8 a 12 años y multa. La tenencia de moneda falsa para expenderla o ' +
+      'distribuirla tiene pena inferior en uno o dos grados (386.2). Quien la recibió DE BUENA FE y la ' +
+      'expende tras constarle su falsedad se castiga con pena mucho menor (prisión de 3 a 6 meses o ' +
+      'multa, según el valor; art. 386.3). FRONTERAS: la falsificación de TARJETAS de crédito/débito ' +
+      'va por el art. 399 bis (ficha del-falsificacion-tarjetas). La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'billetes falsos',
+      'moneda falsa',
+      'falsificacion de moneda',
+      'dinero falso',
+      'billetes falsificados',
+      'pasar billetes falsos',
+      'euros falsos',
+      'monedas falsas',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: la fabricación/alteración/introducción de moneda falsa ' +
+      '(art. 386.1 CP) → prisión de 8 a 12 años y multa → GRAVE. La ficha modela ese caso; OJO al ' +
+      'escenario de calle más frecuente (expender de BUENA FE tras conocer la falsedad, art. 386.3), muy ' +
+      'atenuado (prisión de 3 a 6 meses o multa según el valor) → cambiaría la gravedad y la ruta de ' +
+      'detención. CLAVE la connivencia con el falsificador para el 386.1. DESLINDE con la falsificación ' +
+      'de tarjetas (art. 399 bis, del-falsificacion-tarjetas). Confirmar penas y grados de connivencia ' +
+      'contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Falsificación de tarjetas (399 bis): clonado de tarjetas -------------------------------
+  construirDelito({
+    id: 'del-falsificacion-tarjetas',
+    articulo: ART_CP_399_BIS,
+    tituloCorto: 'Falsificación de tarjetas (clonado)',
+    // Caso modelado: falsificar/copiar tarjetas de crédito o débito o cheques de viaje (399 bis.1) →
+    // prisión de 4 a 8 años → GRAVE.
+    gravedadCp: 'grave',
+    penaTexto: 'Prisión de 4 a 8 años (falsificación, art. 399 bis.1 CP); uso a sabiendas, 2 a 5 años (399 bis.3)',
+    textoBoletin:
+      'Alterar, copiar, reproducir o de cualquier otro modo falsificar tarjetas de crédito o débito o ' +
+      'cheques de viaje (art. 399 bis.1 CP): prisión de 4 a 8 años, agravada si afecta a una ' +
+      'generalidad de personas o se comete en organización criminal. La tenencia de tarjetas o cheques ' +
+      'falsos para su distribución o tráfico tiene la misma pena (399 bis.2). El uso, a sabiendas de la ' +
+      'falsedad y en perjuicio de otro, por quien no las falsificó, se castiga con prisión de 2 a 5 ' +
+      'años (399 bis.3). Es el tipo del "clonado" o duplicado de tarjetas. FRONTERA: el uso fraudulento ' +
+      'de una tarjeta ajena AUTÉNTICA puede ser estafa (arts. 248-249, ficha del-estafa). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'clonar tarjeta',
+      'clonado de tarjetas',
+      'tarjeta clonada',
+      'falsificacion de tarjetas',
+      'tarjeta de credito falsa',
+      'duplicar tarjeta',
+      'skimming',
+      'copiar la banda de la tarjeta',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: la falsificación/copia de tarjetas de crédito o débito ' +
+      'o cheques de viaje (art. 399 bis.1 CP) → prisión de 4 a 8 años → GRAVE. La ficha modela ese caso; ' +
+      'el USO a sabiendas por quien no falsificó (399 bis.3) baja a prisión de 2 a 5 años (sigue GRAVE en ' +
+      'su franja alta). DESLINDE clave con la ESTAFA (arts. 248-249, del-estafa) cuando se usa de forma ' +
+      'fraudulenta una tarjeta ajena AUTÉNTICA (no falsificada). Confirmar penas, subtipos y agravantes ' +
+      '(generalidad de personas, organización) contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Intrusismo profesional (403): falso médico, falso abogado ------------------------------
+  construirDelito({
+    id: 'del-intrusismo',
+    articulo: ART_CP_403,
+    tituloCorto: 'Intrusismo profesional',
+    // Caso modelado (base): ejercer sin título → MULTA (12-24 o 6-12 meses). Multa > 3 meses es MENOS
+    // GRAVE (art. 33 CP), pero al ser pena de SOLO MULTA se enruta la detención por proporcionalidad.
+    gravedadCp: 'menos_grave',
+    penaSoloMulta: true,
+    penaTexto: 'Multa de 6 a 24 meses (art. 403.1 CP); prisión de 6 meses a 2 años si se anuncia (403.2)',
+    textoBoletin:
+      'Ejercer actos propios de una profesión sin el título académico correspondiente (multa de 12 a 24 ' +
+      'meses) o sin el título oficial que habilite para ella (multa de 6 a 12 meses), art. 403.1 CP. La ' +
+      'pena sube a PRISIÓN de 6 meses a 2 años (art. 403.2) cuando el culpable se atribuye públicamente ' +
+      'la cualidad de profesional o ejerce en un local abierto al público que anuncia esos servicios. Es ' +
+      'el tipo del "falso médico" o "falso abogado". FRONTERA: hacerse pasar por autoridad o funcionario ' +
+      '(p. ej. falso policía) es la usurpación de funciones del art. 402 (ficha del-usurpacion-funciones). ' +
+      'La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'intrusismo',
+      'falso medico',
+      'falso abogado',
+      'ejercer sin titulo',
+      'falso dentista',
+      'curandero',
+      'medico sin titulo',
+      'hacerse pasar por medico',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: el intrusismo básico (art. 403.1 CP) se castiga con ' +
+      'MULTA (12-24 meses sin título académico; 6-12 sin título oficial habilitante) → la ficha lo modela ' +
+      'como pena de SOLO MULTA (penaSoloMulta true → detención por la rama de proporcionalidad, art. 492 ' +
+      'LECrim). OJO: si el autor se ATRIBUYE PÚBLICAMENTE la cualidad de profesional o abre local al ' +
+      'público (art. 403.2), hay PRISIÓN de 6 meses a 2 años → revisar entonces penaSoloMulta. DESLINDE ' +
+      'con la usurpación de funciones públicas (art. 402, del-usurpacion-funciones). Confirmar penas y la ' +
+      'exigencia del título contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Daños leves (263, franja ≤ 400 €): grafitis, roturas menores ---------------------------
+  construirDelito({
+    id: 'del-danos-leves',
+    articulo: ART_CP_263,
+    tituloCorto: 'Daños leves (hasta 400 €)',
+    // Caso modelado: daños dolosos de cuantía ≤ 400 € → delito leve (multa de 1 a 3 meses) → LEVE.
+    gravedadCp: 'leve',
+    penaSoloMulta: true,
+    penaTexto: 'Multa de 1 a 3 meses (delito leve, daños hasta 400 €, art. 263.1 CP)',
+    textoBoletin:
+      'Causar daños en propiedad ajena, no comprendidos en otros títulos del CP, cuando la cuantía del ' +
+      'daño NO excede de 400 euros: delito leve, multa de 1 a 3 meses (art. 263.1 CP, párrafo segundo). ' +
+      'Por encima de 400 € es delito menos grave (ficha del-danos); los daños por incendio, explosión o ' +
+      'medios peligrosos van por el art. 266 (ficha del-danos-agravados). REQUISITO PROCESAL (a ' +
+      'verificar): los delitos leves patrimoniales suelen exigir DENUNCIA previa de la persona agraviada. ' +
+      'FRONTERA: el deslucimiento de bienes muebles o inmuebles en la vía pública (grafiti) puede ser ' +
+      'infracción administrativa (art. 37.13 LO 4/2015) si no hay daño patrimonial. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'danos leves',
+      'rotura de espejo',
+      'romper un retrovisor',
+      'grafiti',
+      'pintadas',
+      'rayar un coche',
+      'romper el cristal',
+      'destrozos pequenos',
+      'vandalismo menor',
+    ],
+    notaRevision:
+      'A VERIFICAR la frontera de cuantía y el requisito procesal: los daños dolosos de cuantía ≤ 400 € ' +
+      'son DELITO LEVE (multa de 1 a 3 meses, art. 263.1 CP, párrafo segundo) → la ficha lo modela como ' +
+      'LEVE + penaSoloMulta (detención regida por el art. 495 LECrim). Por encima de 400 € pasa a MENOS ' +
+      'GRAVE (ficha del-danos). REQUISITO PROCESAL a confirmar: perseguibilidad de los delitos leves ' +
+      'patrimoniales (posible exigencia de denuncia del agraviado). DESLINDE con los daños agravados por ' +
+      'medios peligrosos (art. 266, del-danos-agravados) y con el deslucimiento/grafiti como infracción ' +
+      'administrativa (LO 4/2015). Confirmar contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Acoso sexual (184): chantaje sexual laboral/docente ------------------------------------
+  construirDelito({
+    id: 'del-acoso-sexual',
+    articulo: ART_CP_184,
+    tituloCorto: 'Acoso sexual',
+    // Caso modelado: solicitar favores sexuales en relación laboral/docente creando situación
+    // intimidatoria (art. 184.1) → prisión de 6 a 12 meses o multa → MENOS GRAVE (tiene prisión).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 a 12 meses o multa de 10 a 15 meses (art. 184.1 CP)',
+    textoBoletin:
+      'Solicitar favores de naturaleza sexual, para sí o para un tercero, en el ámbito de una relación ' +
+      'laboral, docente o de prestación de servicios, continuada o habitual, provocando a la víctima una ' +
+      'situación objetiva y gravemente intimidatoria, hostil o humillante (art. 184.1 CP): prisión de 6 ' +
+      'a 12 meses o multa de 10 a 15 meses. La pena sube si el autor se prevale de superioridad ' +
+      'jerárquica o anuncia causar un mal a la víctima (184.2) o si esta es especialmente vulnerable ' +
+      '(184.3). REQUISITO PROCESAL: perseguible previa DENUNCIA de la persona agraviada, su representante ' +
+      'o el Ministerio Fiscal (art. 191). FRONTERAS: el acoso persecutorio (stalking) es el art. 172 ter ' +
+      '(del-acoso-stalking); el acto sexual sin consentimiento, la agresión sexual del art. 178 ' +
+      '(del-agresion-sexual). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'acoso sexual',
+      'acoso sexual en el trabajo',
+      'chantaje sexual',
+      'favores sexuales en el trabajo',
+      'acoso del jefe',
+      'proposiciones sexuales en el trabajo',
+      'acoso sexual laboral',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el REQUISITO PROCESAL: el acoso sexual (art. 184.1 CP, redacción LO ' +
+      '10/2022) → prisión de 6 a 12 meses o multa de 10 a 15 meses → MENOS GRAVE (tiene prisión ' +
+      'alternativa, por eso NO se marca penaSoloMulta). REQUISITO PROCESAL: perseguible previa DENUNCIA ' +
+      'del agraviado o del Ministerio Fiscal (art. 191), lo que limita la actuación de oficio. CLAVE que ' +
+      'exige un contexto de relación laboral/docente/servicios y una situación intimidatoria, hostil o ' +
+      'humillante. DESLINDE con el stalking (art. 172 ter, del-acoso-stalking) y con la agresión sexual ' +
+      '(art. 178, del-agresion-sexual). Confirmar penas y subtipos contra el texto consolidado del CP.',
+  }),
+  // --- Prostitución coactiva y proxenetismo (187) ---------------------------------------------
+  construirDelito({
+    id: 'del-prostitucion-coactiva',
+    articulo: ART_CP_187,
+    tituloCorto: 'Prostitución coactiva y proxenetismo',
+    // Caso modelado: determinar coactivamente a persona mayor de edad a la prostitución (art. 187.1) →
+    // prisión de 2 a 5 años y multa → MENOS GRAVE (2-5 años).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 2 a 5 años y multa (prostitución coactiva, art. 187.1 CP)',
+    textoBoletin:
+      'Determinar, empleando violencia, intimidación o engaño, o abusando de superioridad, necesidad o ' +
+      'vulnerabilidad de la víctima, a una persona mayor de edad a ejercer o mantenerse en la ' +
+      'prostitución (art. 187.1, párrafo primero, CP): prisión de 2 a 5 años y multa. El proxeneta que ' +
+      'se lucra explotando la prostitución ajena, aun con consentimiento, cuando concurre alguna de esas ' +
+      'situaciones o subordinación, se castiga con prisión de 2 a 4 años y multa (párrafo segundo). ' +
+      'Subtipos agravados en el art. 187.2. FRONTERAS: si la víctima es MENOR o persona con discapacidad, ' +
+      'arts. 188 y ss.; si media captación/traslado con fin de explotación, la TRATA del art. 177 bis ' +
+      '(del-trata-seres-humanos), donde la persona es VÍCTIMA. La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'prostitucion coactiva',
+      'proxenetismo',
+      'proxeneta',
+      'obligar a prostituirse',
+      'explotacion sexual',
+      'chulo de prostitutas',
+      'lucrarse de la prostitucion',
+      'club de alterne ilegal',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: determinar coactivamente (violencia, intimidación, ' +
+      'engaño o abuso de superioridad/necesidad/vulnerabilidad) a una persona MAYOR de edad a la ' +
+      'prostitución (art. 187.1 CP) → prisión de 2 a 5 años y multa → MENOS GRAVE; el proxenetismo ' +
+      'lucrativo del párrafo segundo, 2 a 4 años. Los agravados (187.2) pueden pasar a GRAVE. CLAVE que ' +
+      'la víctima sea MAYOR de edad: si es MENOR o con discapacidad se aplican los arts. 188 y ss. ' +
+      'DESLINDE esencial con la TRATA de seres humanos (art. 177 bis, del-trata-seres-humanos): la ' +
+      'persona prostituida coactivamente es VÍCTIMA, no infractora. Confirmar penas, subtipos y el ' +
+      'deslinde con la trata contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Abandono de menores o personas con discapacidad (229) ----------------------------------
+  construirDelito({
+    id: 'del-abandono-menores',
+    articulo: ART_CP_229,
+    tituloCorto: 'Abandono de menores o personas con discapacidad',
+    // Caso modelado: abandono por el guardador (art. 229.1) → prisión de 1 a 2 años → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 2 años (art. 229.1 CP); 18 meses a 3 años si es progenitor/tutor (229.2)',
+    textoBoletin:
+      'Abandonar a un menor de edad o a una persona con discapacidad necesitada de especial protección ' +
+      'por quien tenga a su cargo su guarda (art. 229.1 CP): prisión de 1 a 2 años. Si el abandono lo ' +
+      'realiza el progenitor, tutor o guardador legal, prisión de 18 meses a 3 años (229.2); si se pone ' +
+      'en concreto peligro la vida, la salud, la integridad o la libertad sexual, la pena se impone en su ' +
+      'mitad superior (229.3). El abandono TEMPORAL tiene pena menor (art. 230). FRONTERAS: dejar de ' +
+      'pagar la pensión es el art. 227 (del-abandono-familia); no socorrer a persona desamparada y en ' +
+      'peligro es el art. 195 (del-omision-socorro). La calificación final corresponde a la autoridad ' +
+      'judicial.',
+    terminos: [
+      'abandono de menores',
+      'dejar solo a un nino',
+      'abandono de un menor',
+      'dejar a un bebe abandonado',
+      'nino abandonado',
+      'abandono de persona dependiente',
+      'dejar a un menor sin cuidado',
+      'abandonar a un discapacitado',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el subtipo: el abandono de un menor o persona con discapacidad por ' +
+      'su guardador (art. 229.1 CP) → prisión de 1 a 2 años → MENOS GRAVE; si es el progenitor/tutor ' +
+      '(229.2), 18 meses a 3 años; con peligro concreto para la vida/salud/integridad/libertad sexual ' +
+      '(229.3), mitad superior. El abandono TEMPORAL (art. 230) tiene pena menor. DESLINDE con el impago ' +
+      'de pensiones (art. 227, del-abandono-familia) y con la omisión del deber de socorro (art. 195, ' +
+      'del-omision-socorro). Confirmar penas, subtipos y la condición del autor contra el texto ' +
+      'consolidado del CP con el revisor jurídico.',
   }),
 ];
 

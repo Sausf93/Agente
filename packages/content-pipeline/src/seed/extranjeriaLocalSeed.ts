@@ -359,6 +359,84 @@ const ART_LBA_LISTADO = articuloSeed({
     'verificarse en el texto consolidado. Resumen orientativo; consúltese el BOE.',
 });
 
+// --- Artículos de la 2.ª OLEADA de ANIMALES (paridad SPPLB, 2026-09-14) -----------------------
+const ART_LBA_SANIDAD = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74 (sanidad y desparasitación)',
+  titulo: 'Bienestar animal: sanidad, vacunación y desparasitación obligatorias',
+  texto:
+    'La Ley 7/2023 impone obligaciones de sanidad animal (vacunaciones y tratamientos ' +
+    'antiparasitarios obligatorios, revisiones veterinarias) para prevenir zoonosis y proteger la ' +
+    'salud del animal. Su incumplimiento se tipifica como infracción (leve, art. 73; o grave, art. ' +
+    '74, según el caso), con la sanción por tramos del art. 76. El apartado exacto y la frontera ' +
+    'leve/grave deben verificarse en el texto consolidado, ya que gran parte del calendario sanitario ' +
+    'la concretan la CCAA y el reglamento. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_MENDICIDAD = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74 (mendicidad)',
+  titulo: 'Bienestar animal: uso de animales en mendicidad',
+  texto:
+    'La Ley 7/2023 prohíbe utilizar animales en la mendicidad, o como reclamo con esa finalidad, y ' +
+    'usarlos de forma que se comprometa su bienestar. Su incumplimiento se tipifica como infracción ' +
+    '(grave, art. 74; muy grave, art. 75, si concurre sufrimiento relevante), con la sanción por ' +
+    'tramos del art. 76. El apartado exacto debe verificarse en el texto consolidado. Resumen ' +
+    'orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_SACRIFICIO = articuloSeed({
+  normaId: ID_LBA,
+  numero: '75 (sacrificio)',
+  titulo: 'Bienestar animal: sacrificio no justificado',
+  texto:
+    'La Ley 7/2023 prohíbe el sacrificio de animales de compañía salvo por motivos de seguridad de ' +
+    'las personas o de los animales, o por razones sanitarias o de sufrimiento irreversible, y siempre ' +
+    'bajo control veterinario. El sacrificio injustificado se tipifica como infracción MUY GRAVE (art. ' +
+    '75), con la sanción por tramos del art. 76. DESLINDE PENAL: matar a un animal causándole ' +
+    'sufrimiento, o cuando concurran los elementos del tipo, puede ser DELITO del art. 340 bis CP, cuya ' +
+    'calificación corresponde a la autoridad judicial. El apartado exacto debe verificarse. Resumen orientativo.',
+});
+
+const ART_LBA_FORMACION = articuloSeed({
+  normaId: ID_LBA,
+  numero: '73/74 (tenencia responsable y formación)',
+  titulo: 'Bienestar animal: curso de formación y tenencia responsable',
+  texto:
+    'La Ley 7/2023 introduce obligaciones de tenencia responsable, entre ellas la realización de un ' +
+    'curso de formación (gratuito) para la tenencia de perros y la contratación de un seguro de ' +
+    'responsabilidad civil. Su incumplimiento se tipifica como infracción (leve, art. 73; o grave, art. ' +
+    '74, según el caso), con la sanción por tramos del art. 76. El desarrollo de estas obligaciones ' +
+    'quedó pendiente de reglamento y su exigibilidad y clasificación deben verificarse en el texto ' +
+    'consolidado. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_INHABILITACION = articuloSeed({
+  normaId: ID_LBA,
+  numero: '75 (tenencia tras inhabilitación)',
+  titulo: 'Bienestar animal: tenencia estando inhabilitado',
+  texto:
+    'La Ley 7/2023 prevé como sanción accesoria la inhabilitación para la tenencia de animales y para ' +
+    'actividades relacionadas. Tener o adquirir animales estando inhabilitado por resolución ' +
+    'administrativa firme o por sentencia se tipifica como infracción MUY GRAVE (art. 75), con la ' +
+    'sanción por tramos del art. 76. DESLINDE PENAL: la inhabilitación puede provenir también de una ' +
+    'condena penal (art. 340 bis CP), cuyo quebrantamiento valora la autoridad judicial. El apartado ' +
+    'exacto debe verificarse. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_CONTROL = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74 (control en la vía pública)',
+  titulo: 'Bienestar animal: control del animal en lugares públicos',
+  texto:
+    'La Ley 7/2023 impone el deber de mantener al animal bajo control (correa, supervisión) en la vía ' +
+    'y los espacios públicos, para su seguridad y la de terceros; a diferencia de los animales ' +
+    'potencialmente peligrosos (Ley 50/1999), aquí el marco es el de bienestar/tenencia responsable. ' +
+    'Su incumplimiento se tipifica como infracción (leve, art. 73; o grave, art. 74) con la sanción del ' +
+    'art. 76, sin perjuicio de lo que concrete la ORDENANZA municipal. El apartado exacto y la ' +
+    'clasificación deben verificarse en el texto consolidado. Resumen orientativo; consúltese el BOE.',
+});
+
 export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_53,
   ART_LOEX_53_TRABAJO,
@@ -381,6 +459,12 @@ export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LBA_COMERCIO,
   ART_LBA_ESPECTACULOS,
   ART_LBA_LISTADO,
+  ART_LBA_SANIDAD,
+  ART_LBA_MENDICIDAD,
+  ART_LBA_SACRIFICIO,
+  ART_LBA_FORMACION,
+  ART_LBA_INHABILITACION,
+  ART_LBA_CONTROL,
 ];
 
 // --- Constructor de una infracción administrativa con sus sinónimos y consecuencias ---------
@@ -1709,6 +1793,473 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'transitorio para animales ya tenidos; clasificación (grave art. 74 / muy grave si especie protegida o ' +
       'invasora) e importe del art. 76 (el seed usa el mínimo grave 10.001 €). Concurre la Ley 42/2007 y el ' +
       'catálogo de invasoras (RD 630/2013). Revisor de animales.',
+  }),
+  // --- 2.ª OLEADA de ANIMALES (paridad SPPLB, 2026-09-14): PPP (Ley 50/1999) ---------------------
+  construirInfraccion({
+    id: 'ppp-abandono',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Abandono de un animal potencialmente peligroso (PPP)',
+    gravedad: 'muy_grave',
+    // Ley 50/1999 art. 13.5: muy graves, de 2.404,06 a 15.025,30 €. Mínimo del tramo.
+    importeEur: 2404.06,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Abandonar a un animal potencialmente peligroso (perro de raza o características de PPP): la propia ' +
+      'Ley 50/1999 lo tipifica como infracción MUY GRAVE específica (art. 13.1), distinta y más severa que ' +
+      'el abandono ordinario de la Ley 7/2023. DESLINDE PENAL: si del abandono se deriva riesgo para la ' +
+      'vida/integridad del animal puede ser DELITO del art. 340 ter CP; y por su peligrosidad puede haber ' +
+      'riesgo para terceros. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'abandonar perro peligroso',
+      'ppp abandonado',
+      'perro peligroso abandonado',
+      'soltar un pitbull',
+      'abandono de ppp',
+      'dejar tirado un perro peligroso',
+      'pitbull abandonado',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la recogida e intervención cautelar del animal (con las cautelas por su peligrosidad) y su ' +
+          'puesta a disposición de la autoridad o servicio competente (Ley 50/1999 y RD 287/2002).',
+        fuente: 'Ley 50/1999 art. 13',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta: el abandono de un PPP es MUY GRAVE del art. 13.1 Ley 50/1999 (letra ' +
+      'concreta a confirmar contra el consolidado), tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el ' +
+      'mínimo. Deslinde con el abandono ordinario de la Ley 7/2023 (`animal-abandono`) y con el delito del ' +
+      'art. 340 ter CP. Confirmar con el revisor de animales antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'ppp-suelto-sin-bozal-ni-correa',
+    articulo: ART_PPP_13,
+    tituloCorto: 'PPP suelto y a la vez sin bozal ni correa en la vía pública',
+    gravedad: 'grave',
+    // Ley 50/1999 art. 13.5: graves, de 300,52 a 2.404,05 €. Mínimo del tramo.
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Dejar suelto en un lugar público a un animal potencialmente peligroso careciendo AL MISMO TIEMPO de ' +
+      'bozal y de correa no extensible, con incumplimiento acumulado de las medidas de seguridad exigidas: ' +
+      'infracción GRAVE de la Ley 50/1999 (art. 13.2). Es la modalidad AGRAVADA de campo/calle frente a la ' +
+      'simple falta de bozal, por la mayor peligrosidad de la situación. La valoración final corresponde a la ' +
+      'autoridad competente.',
+    terminos: [
+      'perro peligroso suelto sin bozal ni correa',
+      'ppp suelto sin bozal y sin correa',
+      'pitbull suelto sin nada',
+      'perro peligroso corriendo suelto',
+      'ppp sin control en la calle',
+      'perro peligroso sin bozal y suelto',
+      'perro peligroso sin correa ni bozal',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar el aseguramiento (intervención cautelar) inmediato del animal por el riesgo que ' +
+          'entraña estar suelto y sin bozal ni correa, poniéndolo a disposición de la autoridad competente ' +
+          '(Ley 50/1999 y RD 287/2002).',
+        fuente: 'Ley 50/1999 art. 13',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR: modalidad AGRAVADA (suelto + sin bozal + sin correa) frente a `ppp-sin-bozal`; sigue siendo ' +
+      'GRAVE del art. 13.2 Ley 50/1999 (LETRA a confirmar), tramo 300,52-2.404,05 € (art. 13.5), el seed fija ' +
+      'el mínimo pero el cúmulo de incumplimientos justificaría subir en la horquilla. No duplicar con ' +
+      '`ppp-sin-bozal`: aquí concurren varias faltas a la vez. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'ppp-no-comunicar-incidencias',
+    articulo: ART_PPP_13,
+    tituloCorto: 'No comunicar venta, traspaso, robo, pérdida o muerte del PPP',
+    gravedad: 'grave',
+    importeEur: 300.52,
+    importeReducidoEur: null,
+    textoBoletin:
+      'No comunicar al Registro de Animales Potencialmente Peligrosos, en el plazo reglamentario, la venta, ' +
+      'traspaso, donación, robo, muerte o pérdida del animal, o el cambio de domicilio del titular: ' +
+      'incumplimiento de los deberes registrales de la Ley 50/1999 y del RD 287/2002. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'no comunicar venta del perro peligroso',
+      'no dar de baja al ppp',
+      'no comunicar muerte del perro peligroso',
+      'no notificar robo del ppp',
+      'perro peligroso vendido sin avisar',
+      'traspaso de perro peligroso sin comunicar',
+      'no actualizar el registro de ppp',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al titular, comprobar la inscripción registral y requerir la comunicación ' +
+          'pendiente; la subsanación no siempre excluye la sanción.',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002 art. 5',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR (revisor de animales): la obligación de comunicar al Registro la venta/traspaso/robo/muerte/ ' +
+      'pérdida y el cambio de domicilio está en el RD 287/2002 (art. 5); su clasificación como GRAVE debe ' +
+      'anclarse a la LETRA concreta del art. 13.2 Ley 50/1999 (podría ser LEVE del art. 13.4 o vía ordenanza). ' +
+      'Tramo grave 300,52-2.404,05 € (art. 13.5), el seed fija el mínimo. Reclasificar tras el visto bueno.',
+  }),
+  construirInfraccion({
+    id: 'ppp-criar-comerciar-sin-autorizacion',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Criar o comerciar con PPP sin autorización',
+    gravedad: 'muy_grave',
+    // Ley 50/1999 art. 13.5: muy graves, de 2.404,06 a 15.025,30 €. Mínimo del tramo.
+    importeEur: 2404.06,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Criar, adiestrar o comercializar animales potencialmente peligrosos incumpliendo la obligación de ' +
+      'estar en posesión de la licencia y de la inscripción correspondientes, o al margen de las condiciones ' +
+      'legalmente exigidas (Ley 50/1999, art. 4). Se tipifica como infracción MUY GRAVE (art. 13.1). La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'criar perros peligrosos sin licencia',
+      'vender pitbulls sin autorizacion',
+      'criadero de perros peligrosos ilegal',
+      'comerciar con ppp',
+      'venta de perros peligrosos sin permiso',
+      'criar ppp para vender',
+      'negocio de perros peligrosos ilegal',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede identificar al responsable, requerir licencias e inscripciones y valorar la intervención ' +
+          'cautelar de los animales criados o comercializados sin autorización (Ley 50/1999 y RD 287/2002).',
+        fuente: 'Ley 50/1999 arts. 4 y 13',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR (revisor de animales): la cría/comercio de PPP se somete a licencia (Ley 50/1999 art. 4); ' +
+      'su falta se ancla a la LETRA del art. 13.1 (MUY GRAVE, "posesión sin licencia/inscripción"), a confirmar ' +
+      'contra el consolidado. Tramo muy grave 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Concurre ' +
+      'la normativa de NÚCLEOS ZOOLÓGICOS (autonómica) y la Ley 7/2023 (`animal-venta-ilegal`). Reclasificar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'ppp-sin-cartel-advertencia',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Instalación con PPP sin cartel de advertencia',
+    gravedad: 'leve',
+    // Ley 50/1999 art. 13.5: leves, de 150,25 a 300,51 €. Mínimo del tramo.
+    importeEur: 150.25,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Mantener un animal potencialmente peligroso en una vivienda, finca o instalación sin colocar en lugar ' +
+      'visible el cartel de advertencia de su presencia que exige la normativa de desarrollo (RD 287/2002). Es ' +
+      'una medida de seguridad de tipo formal cuyo incumplimiento suele encuadrarse como infracción LEVE. La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'sin cartel de perro peligroso',
+      'finca con perro peligroso sin aviso',
+      'falta cartel peligro perro',
+      'casa con ppp sin señalizar',
+      'no avisa que hay perro peligroso',
+      'sin señal de perro peligroso',
+      'perro peligroso sin cartel de advertencia',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al responsable y requerir la colocación del cartel de advertencia; se trata de ' +
+          'una medida de seguridad formal, normalmente subsanable.',
+        fuente: 'Ley 50/1999 art. 13; RD 287/2002',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR (revisor de animales): la obligación de señalizar con cartel la presencia de un PPP es del ' +
+      'RD 287/2002 (desarrollo); su clasificación como LEVE debe anclarse a la LETRA del art. 13.4 Ley 50/1999 ' +
+      '(o remitirse a la ORDENANZA municipal). Tramo leve 150,25-300,51 € (art. 13.5), el seed fija el mínimo. ' +
+      'Reclasificar tras el visto bueno del revisor.',
+  }),
+  // --- 2.ª OLEADA de ANIMALES (paridad SPPLB, 2026-09-14): BIENESTAR (Ley 7/2023) ----------------
+  construirInfraccion({
+    id: 'animal-no-vacunar-desparasitar',
+    articulo: ART_LBA_SANIDAD,
+    tituloCorto: 'No vacunar o desparasitar al animal cuando es obligatorio',
+    gravedad: 'grave',
+    // Ley 7/2023 art. 76: graves 10.001-50.000 €. Mínimo del tramo como referencia.
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'No someter al animal a las vacunaciones y tratamientos antiparasitarios obligatorios, o a las revisiones ' +
+      'veterinarias exigidas para prevenir enfermedades y zoonosis, incumpliendo la Ley 7/2023 y la normativa ' +
+      'sanitaria. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro sin vacunar',
+      'animal sin vacunas',
+      'sin la rabia el perro',
+      'perro sin desparasitar',
+      'no vacunar al gato',
+      'mascota sin vacunas obligatorias',
+      'animal sin cartilla veterinaria',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al responsable y requerir la cartilla/documentación sanitaria; orientar a la ' +
+          'regularización del calendario vacunal, sin que ello excluya siempre la sanción.',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta y la frontera leve/grave: el incumplimiento de vacunación/desparasitación ' +
+      'obligatoria puede ser LEVE (art. 73, importe 500-10.000 €) o GRAVE (art. 74, el seed usa el mínimo grave ' +
+      '10.001 €). Gran parte del calendario sanitario lo fijan la CCAA y el reglamento (rabia obligatoria según ' +
+      'comunidad). Confirmar con el revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-mendicidad',
+    articulo: ART_LBA_MENDICIDAD,
+    tituloCorto: 'Uso de animales en la mendicidad',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Utilizar animales en la mendicidad, o como reclamo para ella, o de cualquier modo que comprometa su ' +
+      'bienestar con esa finalidad: conducta prohibida por la Ley 7/2023. DESLINDE PENAL: si concurre trato ' +
+      'cruel o sufrimiento relevante puede procederse por el art. 340 bis CP; y el uso de personas o menores en ' +
+      'la mendicidad tiene su propio reproche. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'mendigo con perro',
+      'usar perro para pedir dinero',
+      'animal para mendigar',
+      'pedir limosna con un animal',
+      'perro utilizado en la mendicidad',
+      'cachorro para dar pena y pedir',
+      'mendicidad con animales',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede identificar al responsable y valorar la intervención cautelar del animal cuando su uso en la ' +
+          'mendicidad comprometa su bienestar, poniéndolo a disposición de la autoridad o servicio competente.',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta y la clasificación: la prohibición de usar animales en la mendicidad es de la ' +
+      'Ley 7/2023; podría ser GRAVE (art. 74) o MUY GRAVE (art. 75) según el sufrimiento. Importe del art. 76 ' +
+      '(el seed usa el mínimo grave 10.001 €). Deslinde con el art. 340 bis CP si hay maltrato. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-sacrificio-injustificado',
+    articulo: ART_LBA_SACRIFICIO,
+    tituloCorto: 'Sacrificar a un animal de compañía sin causa justificada',
+    gravedad: 'muy_grave',
+    // Ley 7/2023 art. 76: muy graves 50.001-200.000 €. Mínimo del tramo como referencia.
+    importeEur: 50001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Sacrificar a un animal de compañía sin las causas legalmente admitidas (seguridad de personas o ' +
+      'animales, razones sanitarias o sufrimiento irreversible) o sin control veterinario, en contra de la Ley ' +
+      '7/2023 (sacrificio cero): infracción MUY GRAVE (art. 75). DESLINDE PENAL: matar a un animal causándole ' +
+      'sufrimiento, o cuando concurran los elementos del tipo, es DELITO del art. 340 bis CP, cuya calificación ' +
+      'corresponde a la autoridad judicial. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'sacrificar un perro sano',
+      'matar un animal sin motivo',
+      'sacrificio de animal injustificado',
+      'sacrificar gatos',
+      'eutanasia de perro sin causa',
+      'matar mascota sin razon',
+      'sacrificio cero animales',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede documentar los hechos y dar parte; si el sacrificio causó sufrimiento o muerte, valorar la ' +
+          'frontera penal (art. 340 bis CP) y coordinar con la autoridad judicial.',
+        fuente: 'Ley 7/2023 arts. 75 y 76; art. 340 bis CP',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta del art. 75 (sacrificio no justificado como MUY GRAVE) y las EXCEPCIONES ' +
+      'admitidas (seguridad, sanidad, sufrimiento irreversible, control veterinario). Importe del art. 76 (muy ' +
+      'grave 50.001-200.000 €, el seed fija el mínimo). Deslinde PENAL con el art. 340 bis CP (matar con ' +
+      'sufrimiento) para no solaparse con la ficha penal. Revisor de animales obligatorio.',
+  }),
+  construirInfraccion({
+    id: 'animal-tenencia-tras-inhabilitacion',
+    articulo: ART_LBA_INHABILITACION,
+    tituloCorto: 'Tener animales estando inhabilitado para ello',
+    gravedad: 'muy_grave',
+    importeEur: 50001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tener o adquirir animales estando INHABILITADO para su tenencia por resolución administrativa firme o ' +
+      'por sentencia: infracción MUY GRAVE de la Ley 7/2023 (art. 75). La inhabilitación es una sanción/medida ' +
+      'accesoria que impide poseer animales durante un tiempo. DESLINDE PENAL: si la inhabilitación proviene de ' +
+      'una condena penal (art. 340 bis CP), su quebrantamiento lo valora la autoridad judicial. La valoración ' +
+      'final corresponde a la autoridad competente.',
+    terminos: [
+      'tener animales estando inhabilitado',
+      'prohibido tener animales y tiene uno',
+      'condenado por maltrato con perro',
+      'inhabilitacion tenencia de animales',
+      'tiene perro pese a la prohibicion',
+      'adquirir animales estando inhabilitado',
+      'sancionado que vuelve a tener animales',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede identificar al responsable, comprobar en bases/registros la inhabilitación vigente y valorar ' +
+          'la intervención cautelar del animal, dando parte a la autoridad que la impuso.',
+        fuente: 'Ley 7/2023 arts. 75 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta del art. 75 (tenencia estando inhabilitado como MUY GRAVE) y el régimen de la ' +
+      'inhabilitación como sanción accesoria. Importe del art. 76 (muy grave 50.001-200.000 €, el seed fija el ' +
+      'mínimo). Deslinde con el quebrantamiento de la inhabilitación PENAL (art. 340 bis CP / art. 468 CP). Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-transporte-inadecuado',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Transporte de un animal en condiciones inadecuadas',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Transportar a un animal en condiciones que comprometan su bienestar o seguridad (en el maletero cerrado, ' +
+      'suelto en la caja de un vehículo, sin ventilación, sin sujeción o hacinado), incumpliendo la Ley 7/2023. ' +
+      'Es distinto del transporte de un PPP sin medidas (Ley 50/1999). DESLINDE PENAL: si el transporte causa ' +
+      'lesión/menoscabo grave o riesgo para la vida, puede procederse por los arts. 340 bis/340 ter CP. La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro en el maletero',
+      'animal mal transportado',
+      'perro suelto en la caja del pickup',
+      'transportar animal sin ventilacion',
+      'perro sin sujetar en el coche',
+      'animales hacinados en un vehiculo',
+      'gato transportado sin condiciones',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede requerir la corrección de las condiciones de transporte y, ante riesgo para el animal, ' +
+          'valorar su intervención cautelar (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta del art. 74 (transporte en condiciones inadecuadas) y la frontera leve/grave; ' +
+      'importe del art. 76 (el seed usa el mínimo grave 10.001 €). No duplicar con `ppp-transporte` (marco Ley ' +
+      '50/1999) ni con `animal-vehiculo-terraza-riesgo` (encierro con calor). Concurre el Rgto (CE) 1/2005 en ' +
+      'transporte comercial. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-perro-suelto-sin-control',
+    articulo: ART_LBA_CONTROL,
+    tituloCorto: 'Perro suelto o sin control en la vía pública (no PPP)',
+    gravedad: 'leve',
+    // Ley 7/2023 art. 76: leves 500-10.000 €. Mínimo del tramo como referencia.
+    importeEur: 500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Llevar a un perro suelto o sin el control necesario (sin correa donde es exigible, sin supervisión) en la ' +
+      'vía y espacios públicos, incumpliendo el deber de tenencia responsable de la Ley 7/2023. NO es un animal ' +
+      'potencialmente peligroso (para el PPP rige la Ley 50/1999, más severa). Lo concreto de la correa y las ' +
+      'zonas lo suele detallar la ORDENANZA municipal. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro suelto en la calle',
+      'perro sin correa',
+      'perro sin control en el parque',
+      'dueño con el perro suelto',
+      'perro sin atar en la via publica',
+      'perro corriendo sin correa',
+      'llevar el perro suelto',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al responsable y requerir que ponga al animal bajo control (correa/supervisión); ' +
+          'valorar la ordenanza municipal aplicable.',
+        fuente: 'Ley 7/2023 arts. 73/74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR la LETRA exacta y la clasificación (LEVE art. 73 / GRAVE art. 74) del deber de control en vía ' +
+      'pública; importe del art. 76 (el seed usa el mínimo leve 500 €). Punto de solape con la ORDENANZA ' +
+      'municipal (correa obligatoria, zonas de esparcimiento) — deslindar de PPP (`ppp-sin-bozal`). Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-sin-curso-ni-seguro',
+    articulo: ART_LBA_FORMACION,
+    tituloCorto: 'Tenencia de perro sin el curso de formación o sin seguro (Ley 7/2023)',
+    gravedad: 'leve',
+    importeEur: 500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tener un perro sin haber realizado el curso de formación para la tenencia responsable o sin el seguro de ' +
+      'responsabilidad civil que introdujo la Ley 7/2023. IMPORTANTE: buena parte de estas obligaciones quedó ' +
+      'PENDIENTE de desarrollo reglamentario, por lo que su exigibilidad efectiva y su régimen sancionador deben ' +
+      'comprobarse antes de aplicarlas. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro sin curso de formacion',
+      'sin el cursillo obligatorio del perro',
+      'perro sin seguro ley 7 2023',
+      'tenencia de perro sin seguro',
+      'curso obligatorio para tener perro',
+      'sin seguro de responsabilidad civil del perro',
+      'formacion obligatoria dueño de perro',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar al responsable e informar de las obligaciones de tenencia responsable; comprobar ' +
+          'antes su exigibilidad efectiva (desarrollo reglamentario pendiente).',
+        fuente: 'Ley 7/2023 arts. 73/74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR de forma PRIORITARIA la EXIGIBILIDAD: el curso de formación y el seguro de RC de la Ley 7/2023 ' +
+      'quedaron pendientes de reglamento; podrían NO ser sancionables aún. LETRA exacta y clasificación (LEVE art. ' +
+      '73 / GRAVE art. 74) e importe del art. 76 (el seed usa el mínimo leve 500 €). Punto SENSIBLE por el estado ' +
+      'del desarrollo normativo: puede requerir marcar la ficha como no publicable hasta el reglamento. Revisor de animales.',
   }),
 ];
 

@@ -965,7 +965,52 @@ const ART_LOTT_VTC = articuloSeed({
     'Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// --- Artículos de la 4ª OLA DE TRÁFICO (paridad SPPLB: conductores, VMP, placas, ITV) ---------
+// Sub-áreas poco cubiertas frente a SPPLB: Reglamento de Conductores (RD 818/2009), VMP
+// desglosado, régimen del titular (art. 11 LSV), bajas de vehículos y circular tras rechazo de
+// ITV. Cada artículo es un RESUMEN NEUTRO redactado por nosotros; el apartado/importe/puntos y la
+// gravedad concretos quedan "a verificar" en la nota de cada infracción.
+const ART_LSV_75 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '75',
+  titulo: 'Infracciones leves (catálogo del art. 75)',
+  texto:
+    'Enumera con carácter de cierre las infracciones LEVES de tráfico: las conductas contrarias a ' +
+    'la ley y sus reglamentos (RGC, RGV, Reglamento General de Conductores RD 818/2009) que no estén ' +
+    'calificadas expresamente como graves o muy graves. Encajan aquí incumplimientos formales o de ' +
+    'menor riesgo, como no exhibir determinadas señales o placas obligatorias del vehículo o del ' +
+    'conductor (p. ej. la señal "L" de conductor novel durante el primer año). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LSV_11 = articuloSeed({
+  normaId: ID_LSV,
+  numero: '11',
+  titulo: 'Obligaciones del titular y del conductor habitual: deber de identificar al conductor',
+  texto:
+    'Impone al titular del vehículo (y, en su caso, al conductor habitual o al arrendatario) el deber ' +
+    'de facilitar a la Administración la identificación veraz del conductor responsable de una ' +
+    'infracción cuando sea debidamente requerido para ello. El incumplimiento de este deber sin causa ' +
+    'justificada se sanciona de forma autónoma como infracción MUY GRAVE (art. 77.j LSV), con una ' +
+    'cuantía agravada respecto de la infracción originaria. Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_RGV_35 = articuloSeed({
+  normaId: ID_RGV,
+  numero: '35',
+  titulo: 'Bajas de vehículos en el Registro',
+  texto:
+    'Regula la baja de los vehículos en el Registro de Vehículos (baja temporal —voluntaria, por robo ' +
+    'o por transmisión— y baja definitiva por desguace/fin de vida útil). Un vehículo dado de baja NO ' +
+    'puede circular por las vías públicas; hacerlo es infracción y puede motivar su inmovilización y ' +
+    'retirada. Resumen orientativo; consúltese el texto consolidado y el RD 265/2021 de bajas.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
+  ART_LSV_75,
+  ART_LSV_11,
+  ART_RGV_35,
   ART_RGC_11,
   ART_RGC_15,
   ART_RGC_38,
@@ -4514,6 +4559,408 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       '13/2018): la captación indebida puede ser grave o muy grave según el supuesto y el territorio. El seed ' +
       'ancla GRAVE con horquilla 601–800 € por prudencia; A VERIFICAR el importe y el precepto por territorio. ' +
       'Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  // --- 4ª OLA DE TRÁFICO (paridad SPPLB, 2026-09-14): sub-áreas poco cubiertas -----------------
+  // Reglamento de Conductores (permiso de clase inadecuada, caducado por reconocimiento, novel,
+  // permiso extranjero), VMP desglosado, régimen del titular (art. 11 LSV), placas, bajas, ITV.
+  construirInfraccion({
+    id: 'inf-permiso-clase-inadecuada',
+    articulo: ART_LSV_77,
+    tituloCorto: 'Conducir con permiso de clase no válida para el vehículo',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'Conducir un vehículo careciendo del permiso de la clase que corresponde a ese vehículo, es ' +
+      'decir, con un permiso que NO habilita para conducirlo (por ejemplo, conducir un camión o un ' +
+      'autobús con el permiso B, o una motocicleta de gran cilindrada con un A1/A2 que no la ' +
+      'autoriza), cuando el hecho no sea constitutivo de delito. Distinto de no haber obtenido nunca ' +
+      'permiso (delito del art. 384 CP) y de conducir con el permiso caducado (ver ' +
+      '`inf-permiso-caducado-reconocimiento`).',
+    terminos: [
+      'permiso de otra clase',
+      'carnet que no vale para ese vehiculo',
+      'camion con el carnet de coche',
+      'autobus con el carnet b',
+      'moto grande con a2',
+      'sin el carnet adecuado',
+      'clase de permiso incorrecta',
+      'no tiene el carnet para ese vehiculo',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras no se haga cargo un conductor ' +
+          'habilitado para esa clase de vehículo (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad e importe: se ancla MUY GRAVE (500 €, art. 77 LSV) por conducir sin el ' +
+      'permiso de la clase requerida, cuando NO sea delito. Contrastar con el Reglamento General de ' +
+      'Conductores (RD 818/2009, clases de permiso y equivalencias) y el codificado DGT antes de ' +
+      'publicar; confirmar que no detrae puntos y el tratamiento del pronto pago.',
+  }),
+  construirInfraccion({
+    id: 'inf-permiso-caducado-reconocimiento',
+    articulo: ART_LSV_76,
+    tituloCorto: 'Permiso caducado por no renovar (reconocimiento psicofísico)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Conducir con el permiso o licencia de conducción caducado por no haberlo renovado en plazo, ' +
+      'cuando la renovación estaba condicionada a superar el reconocimiento de aptitudes psicofísicas ' +
+      'y este no se ha pasado. Se trata de una infracción ADMINISTRATIVA (distinta del delito del ' +
+      'art. 384 CP, que exige la pérdida de vigencia por pérdida total de puntos, la privación ' +
+      'judicial o no haberlo obtenido nunca). El simple retraso administrativo en la renovación, ' +
+      'cumpliendo los requisitos, suele ser de menor entidad.',
+    terminos: [
+      'permiso caducado sin renovar',
+      'carnet caducado por no pasar el reconocimiento',
+      'no ha renovado el carnet',
+      'carnet vencido',
+      'no paso el reconocimiento medico del carnet',
+      'renovacion del carnet caducada',
+      'carnet sin renovar',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad e importe: se ancla GRAVE (200 €) para el caso de caducidad ligada al ' +
+      'reconocimiento psicofísico no superado; el mero retraso administrativo de la renovación puede ' +
+      'ser LEVE. Contrastar con el Reglamento General de Conductores (RD 818/2009, vigencia y ' +
+      'renovación) y el codificado DGT. Confirmar puntos (previsiblemente 0) antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-conductor-novel-sin-l',
+    articulo: ART_LSV_75,
+    tituloCorto: 'Conductor novel sin la señal "L"',
+    gravedad: 'leve',
+    importeEur: 80,
+    importeReducidoEur: 40,
+    puntos: 0,
+    textoBoletin:
+      'Circular un conductor novel sin exhibir la señal "L" (conductor novel) en el vehículo durante ' +
+      'el periodo en que es obligatoria (primer año desde la obtención del permiso). Es un ' +
+      'incumplimiento formal de menor entidad. Distinto de las prácticas de aprendizaje sin la señal ' +
+      'de la autoescuela o sin profesor, que tienen su propio régimen.',
+    terminos: [
+      'sin la l de novel',
+      'conductor novel sin l',
+      'sin pegatina de novel',
+      'novel sin la l',
+      'sin la l',
+      'primer año de carnet sin l',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR con carácter prioritario: confirmar si la falta de la señal "L" del conductor novel ' +
+      'es HOY sancionable y su importe/gravedad (Reglamento General de Conductores RD 818/2009 y RGV ' +
+      'Anexo XI de señales). Se ancla LEVE (80 €) por prudencia; podría no ser sancionable de forma ' +
+      'autónoma. No detrae puntos. Revisar antes de publicar (posible ficha meramente informativa).',
+  }),
+  construirInfraccion({
+    id: 'inf-permiso-extranjero-no-valido',
+    articulo: ART_LSV_77,
+    tituloCorto: 'Conducir con permiso extranjero no válido en España',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'Conducir con un permiso de conducción extranjero que no es válido para circular en España: por ' +
+      'no ser canjeable, por haber transcurrido el plazo de validez del permiso de residencia sin ' +
+      'canjearlo (con carácter general, seis meses desde la adquisición de la residencia), o por no ' +
+      'reunir los requisitos exigidos. Equivale a conducir careciendo del permiso correspondiente ' +
+      '(art. 77 LSV), cuando el hecho no sea constitutivo de delito.',
+    terminos: [
+      'permiso extranjero',
+      'carnet de otro pais',
+      'carnet extranjero caducado en españa',
+      'sin canjear el carnet',
+      'carnet no canjeado',
+      'licencia extranjera no valida',
+      'conducir con carnet de fuera',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR: el régimen del permiso extranjero (validez, canje y plazos) lo fija el Reglamento ' +
+      'General de Conductores (RD 818/2009) y los convenios/acuerdos con cada país; el plazo general ' +
+      'de canje tras adquirir residencia y las excepciones deben confirmarse. Se ancla MUY GRAVE ' +
+      '(500 €, art. 77 LSV) por asimilación a conducir sin permiso válido. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vmp-acera',
+    articulo: ART_RGC_121,
+    tituloCorto: 'VMP (patinete) por la acera o zona peatonal',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo de movilidad personal (patinete eléctrico) por la acera, por zonas ' +
+      'peatonales o por espacios reservados a los peatones, donde el VMP tiene prohibida la ' +
+      'circulación. El VMP no detrae puntos porque no requiere permiso de conducción. Desglose de la ' +
+      'ficha general `inf-vmp-patinete` para el supuesto concreto de circulación por la acera.',
+    terminos: [
+      'patinete por la acera',
+      'vmp por la acera',
+      'patinete por zona peatonal',
+      'patinete entre peatones',
+      'patinete por el paseo',
+      'patin por la acera',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la retención (inmovilización cautelar) del VMP cuando su circulación ' +
+          'entrañe riesgo, hasta que cese la causa; la medida la concreta la ordenanza municipal.',
+        fuente: 'RGC (RD 1428/2003, reforma RD 970/2020) y ordenanza municipal',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y gravedad: se ancla en unos 200 € (criterio DGT), pero los VMP se regulan ' +
+      'además por la ORDENANZA municipal, que puede endurecer o matizar. Confirmar por supuesto y ' +
+      'advertir de la variación municipal. Convive con la ficha general `inf-vmp-patinete`: valorar si ' +
+      'se mantienen desglosadas o se fusionan. No detrae puntos. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vmp-pasajero',
+    articulo: ART_RGC_121,
+    tituloCorto: 'VMP (patinete) con un pasajero',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo de movilidad personal (patinete eléctrico) transportando a otra ' +
+      'persona, cuando el VMP está diseñado y homologado para un único ocupante. El VMP no detrae ' +
+      'puntos porque no requiere permiso de conducción. Desglose de la ficha general ' +
+      '`inf-vmp-patinete` para el supuesto concreto de llevar pasajero.',
+    terminos: [
+      'dos en el patinete',
+      'patinete con pasajero',
+      'patinete con dos personas',
+      'llevar a alguien en el patinete',
+      'patin con acompañante',
+      'montado detras en el patinete',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y gravedad: se ancla LEVE (unos 100 €, criterio DGT) para el VMP con dos ' +
+      'ocupantes; la ORDENANZA municipal puede matizar. Convive con la ficha general ' +
+      '`inf-vmp-patinete`: valorar si se mantienen desglosadas o se fusionan. No detrae puntos. ' +
+      'Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vmp-nocturno-sin-luces',
+    articulo: ART_RGC_121,
+    tituloCorto: 'VMP (patinete) de noche sin alumbrado ni reflectantes',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo de movilidad personal (patinete eléctrico) de noche, o en condiciones ' +
+      'de escasa visibilidad, sin el alumbrado y los elementos reflectantes exigibles para ser visto ' +
+      'por el resto de usuarios. El VMP no detrae puntos porque no requiere permiso de conducción. ' +
+      'Desglose de la ficha general `inf-vmp-patinete` para el supuesto concreto de circulación ' +
+      'nocturna sin alumbrado.',
+    terminos: [
+      'patinete de noche sin luces',
+      'vmp sin luces de noche',
+      'patinete sin reflectantes',
+      'patinete sin alumbrado nocturno',
+      'patin de noche sin luz',
+      'patinete sin luz por la noche',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe y gravedad: se ancla en unos 200 € (criterio DGT) por el riesgo de no ser ' +
+      'visto de noche; la ORDENANZA municipal puede concretar el equipamiento (alumbrado, chaleco). ' +
+      'Convive con la ficha general `inf-vmp-patinete`: valorar si se mantienen desglosadas o se ' +
+      'fusionan. No detrae puntos. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vehiculo-dado-baja',
+    articulo: ART_RGV_35,
+    tituloCorto: 'Circular con un vehículo dado de baja',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo que consta dado de baja en el Registro de Vehículos (baja temporal ' +
+      'voluntaria, por robo o por transmisión, o baja definitiva por desguace), pese a que un vehículo ' +
+      'de baja no puede circular por las vías públicas. Suele concurrir con la falta de seguro y de ' +
+      'ITV en vigor.',
+    terminos: [
+      'coche dado de baja',
+      'vehiculo dado de baja circulando',
+      'coche de baja',
+      'circular con un coche de baja',
+      'vehiculo de baja temporal',
+      'coche desguazado circulando',
+      'baja definitiva circulando',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización y, en su caso, la retirada del vehículo, que al estar de ' +
+          'baja no puede circular (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad e importe: se ancla MUY GRAVE (500 €) por circular con un vehículo dado de ' +
+      'baja (RGV y RD 265/2021 de bajas; sanción por la vía del art. 77 LSV). Contrastar el precepto ' +
+      'sancionador exacto y el tratamiento del pronto pago con el codificado DGT. Advertir de la ' +
+      'concurrencia habitual con falta de seguro (`inf-sin-seguro`) e ITV. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-titular-no-identifica-conductor',
+    articulo: ART_LSV_11,
+    tituloCorto: 'El titular no identifica al conductor infractor',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'No facilitar el titular del vehículo (o el conductor habitual o arrendatario), debidamente ' +
+      'requerido para ello, la identificación veraz del conductor responsable de una infracción, sin ' +
+      'causa justificada. Se sanciona de forma autónoma como infracción muy grave (art. 77.j LSV), ' +
+      'con una cuantía agravada respecto de la infracción originaria. No corresponde a una conducta ' +
+      'de circulación, sino al deber de colaboración del titular (art. 11 LSV).',
+    terminos: [
+      'el titular no dice quien conducia',
+      'no identifica al conductor',
+      'no facilita el conductor',
+      'el dueño no dice quien iba conduciendo',
+      'no identificar al conductor',
+      'obligacion de identificar al conductor',
+      'multa por no identificar al conductor',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR importe: la sanción por no identificar al conductor (art. 77.j LSV) es un MÚLTIPLO ' +
+      'de la infracción originaria (el doble si es leve; el triple si es grave o muy grave), por lo ' +
+      'que el importe real varía y puede superar el tope fijo de muy grave. Se ancla en 500 € (muy ' +
+      'grave) como referencia; modelar la horquilla/cálculo con el revisor. No detrae puntos al ' +
+      'titular. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-sin-placa-o-no-reglamentaria',
+    articulo: ART_RGV_25,
+    tituloCorto: 'Sin placa de matrícula o con placa no reglamentaria',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo al que le falta una o ambas placas de matrícula, o que lleva una placa ' +
+      'no reglamentaria (caracteres, tamaño, color de fondo o material no homologados, o placa ' +
+      'artesanal/manipulada). Distinto de la placa colocada pero oculta, doblada o ilegible (ver ' +
+      '`inf-matricula-oculta`).',
+    terminos: [
+      'sin matricula',
+      'sin placa de matricula',
+      'le falta la matricula',
+      'matricula no reglamentaria',
+      'matricula casera',
+      'placa no homologada',
+      'circular sin matricula',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad e importe: se ancla GRAVE (200 €) por circular sin placa reglamentaria ' +
+      '(RGV art. 25 y Anexo XVIII de placas). Contrastar con el codificado DGT si el supuesto de ' +
+      'ausencia total de placa se agrava respecto de la placa no reglamentaria. Confirmar puntos ' +
+      '(previsiblemente 0) y deslindar de `inf-matricula-oculta`. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-remolque-sin-documentacion',
+    articulo: ART_RGV_11,
+    tituloCorto: 'Remolque ligero sin documentación ni placa',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular arrastrando un remolque (incluido el remolque ligero, de masa máxima autorizada hasta ' +
+      '750 kg) sin la documentación exigible o sin la placa de matrícula/identificación que le ' +
+      'corresponda. Distinto del enganche o acoplamiento en malas condiciones (ver ' +
+      '`inf-remolque-mal-enganchado`).',
+    terminos: [
+      'remolque sin documentacion',
+      'remolque sin ficha tecnica',
+      'remolque ligero sin papeles',
+      'remolque sin permiso de circulacion',
+      'documentacion del remolque',
+      'remolque sin placa',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del conjunto hasta subsanar la falta de documentación o ' +
+          'placa del remolque (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad, importe y régimen documental del remolque LIGERO (≤ 750 kg) frente al que ' +
+      'requiere matriculación propia (RGV art. 11 y concordantes). Se ancla GRAVE (200 €) por ' +
+      'prudencia; el supuesto puede ser leve según el defecto documental concreto. SOLAPA con ' +
+      '`inf-remolque-mal-enganchado`, que ya recoge el caso "sin matriculación/autorización": VALORAR ' +
+      'con el revisor si se mantienen separadas (documental vs. seguridad del enganche) o se fusionan. ' +
+      'Confirmar la inmovilización orientativa. No detrae puntos. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-circular-itv-negativa-inmovilizado',
+    articulo: ART_RGV_10,
+    tituloCorto: 'Circular tras rechazo de ITV con el vehículo inmovilizado',
+    gravedad: 'muy_grave',
+    importeEur: 500,
+    importeReducidoEur: 250,
+    puntos: 0,
+    textoBoletin:
+      'Circular con un vehículo cuya inspección técnica (ITV) resultó NEGATIVA por defectos graves o ' +
+      'muy graves, incumpliendo la limitación de circulación impuesta (que solo permite, en su caso, ' +
+      'el traslado al taller o a una nueva inspección) o pese a haber sido inmovilizado por ello. Es ' +
+      'más grave que la simple ITV caducada (ver `inf-itv-caducada`) porque el vehículo tiene ' +
+      'defectos que comprometen la seguridad.',
+    terminos: [
+      'itv negativa circulando',
+      'circular con la itv rechazada',
+      'itv desfavorable grave',
+      'vehiculo inmovilizado por la itv',
+      'saltarse la inmovilizacion de la itv',
+      'circular con defectos graves de itv',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta subsanar los defectos y superar una ' +
+          'nueva inspección (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR gravedad e importe: se ancla MUY GRAVE (500 €) por circular con ITV negativa por ' +
+      'defectos graves/muy graves o pese a la inmovilización, frente a la ITV caducada (grave, ' +
+      '`inf-itv-caducada`). Contrastar el precepto y el tratamiento con el codificado DGT y el Manual ' +
+      'de Procedimiento de ITV (RD 920/2017). Revisar antes de publicar.',
   }),
 ];
 
