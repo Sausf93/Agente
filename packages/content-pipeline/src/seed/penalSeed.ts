@@ -1057,6 +1057,12 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'droga para vender',
       'papelinas para vender',
       'punto de venta de droga',
+      // Añadidos de calle (validador 2026-09): indicios de tráfico que NO deben caer en la ficha
+      // administrativa de consumo (36.16), sino en el delito del art. 368.
+      'papelinas',
+      'dosis preparadas',
+      'balanza',
+      'dinero fraccionado',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena y la clasificación: tráfico del art. 368 CP → prisión de 3 a 6 ' +
@@ -1333,6 +1339,16 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'estafador',
       'timador',
       'me han timado',
+      // Fraude con tarjeta: uso fraudulento de tarjeta ajena/sustraída ≈ estafa (art. 249; la tarjeta
+      // FALSIFICADA es falsedad, art. 399 bis → ver del-falsedad-documental). Vocabulario de calle.
+      'uso fraudulento de tarjeta',
+      'uso de tarjeta ajena',
+      'compras con mi tarjeta',
+      'pago con tarjeta robada',
+      'fraude con tarjeta',
+      'me clonaron la tarjeta',
+      'estafa por internet',
+      'estafa informatica',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena y la frontera leve/menos grave: estafa del art. 249 CP → prisión ' +

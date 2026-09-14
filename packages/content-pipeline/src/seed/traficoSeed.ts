@@ -1100,6 +1100,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'grua',
       'inmoviliza',
       'deposito',
+      // Añadidos de calle (validador 2026-09).
+      'no pago el seguro',
+      'coche sin asegurar',
+      'no tiene el coche asegurado',
+      'seguro vencido',
+      'seguro dado de baja',
+      'poliza vencida',
     ],
     consecuencias: [
       {
@@ -1141,6 +1148,14 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'con el movil en la mano',
       'usando el movil',
       'telefono en la mano',
+      // Añadidos de calle (validador 2026-09).
+      'con el telefono',
+      'tecleando conduciendo',
+      'escribiendo al volante',
+      'wasapeando',
+      'el guasap',
+      'mandando mensajes conduciendo',
+      'sin manos libres',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1171,6 +1186,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'itv en rojo',
       'itv desfavorable',
       'paso la itv mal',
+      // Añadidos de calle (validador 2026-09).
+      'no tiene la itv',
+      'itv sin pasar',
+      'sin pegatina de la itv',
+      'sin pegatina',
+      'no ha pasado la revision',
+      'itv atrasada',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1198,6 +1220,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'sin cinturon de seguridad',
       'sin abrochar',
       'sin abrocharse',
+      // Añadidos de calle (validador 2026-09): también pasajeros.
+      'no lleva el cinturon puesto',
+      'iba sin cinturon',
+      'el copiloto sin cinturon',
+      'de atras sin cinturon',
+      'no se puso el cinturon',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1222,6 +1250,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'casco',
       'sin casco homologado',
       'en moto sin casco',
+      // Añadidos de calle (validador 2026-09): también el pasajero ("paquete").
+      'no lleva casco',
+      'sin el casco puesto',
+      'de paquete sin casco',
+      'el paquete sin casco',
+      'moto sin el casco',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1250,6 +1284,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'saltarse el rojo',
       'no respetar el semaforo',
       'semaforo rojo',
+      // Añadidos de calle (validador 2026-09). No se añade "ambar" (supuesto distinto).
+      'se comio el semaforo',
+      'paso con el rojo',
+      'cruzar en rojo',
+      'se lo salto en rojo',
+      'el disco en rojo',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1292,6 +1332,17 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'demasiado rapido',
       'sobrepasar el limite',
       'iba a 150',
+      // Añadidos de calle (validador 2026-09): jerga y variantes numéricas que teclea el agente.
+      'cazado por radar',
+      'me cazo el radar',
+      'iba pasado',
+      'pasado de velocidad',
+      'a 180',
+      'a 200',
+      'foto radar',
+      'iba pisando',
+      'iba lanzado',
+      'control de velocidad',
     ],
     marcoImporte: 'velocidad',
     notaRevision:
@@ -1333,6 +1384,15 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'conducir bebido',
       'tasa de alcohol',
       'alcolemia',
+      // Añadidos de calle (validador 2026-09): jerga y variantes de tasa.
+      'dar positivo',
+      'positivo de alcohol',
+      'borracho al volante',
+      'conducir borracho',
+      'iba mamado',
+      'iba pedo',
+      'olia a alcohol',
+      'control de alcoholemia',
     ],
     consecuencias: [
       {
@@ -1572,6 +1632,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'sin carne',
       'sin carnet',
       '384',
+      // Añadidos de calle (validador 2026-09): carné retirado por el juez → vía penal (384).
+      'carne retirado',
+      'carnet retirado',
+      'se lo quito el juez',
     ],
     consecuencias: [
       {
@@ -1699,6 +1763,14 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'aparcado en carga y descarga',
       'estacionamento',
       'aparcamiendo',
+      // Añadidos de calle (validador 2026-09). NO se añade zona azul/ORA (ver comentario arriba).
+      'bloqueando la salida',
+      'obstruyendo el paso',
+      'en sitio de minusvalidos',
+      'aparcado en curva',
+      'en la parada del bus',
+      'mal estacionado',
+      'en zona prohibida',
     ],
     consecuencias: [
       {
@@ -3125,6 +3197,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'no lleva el carnet encima',
       'olvido la documentacion',
       'sin documentacion del coche',
+      // Añadidos de calle (validador 2026-09).
+      'no lleva papeles del coche',
+      'sin los papeles del vehiculo',
+      'se dejo los papeles en casa',
+      'no exhibe la documentacion',
     ],
     marcoImporte: 'trafico',
     notaRevision:

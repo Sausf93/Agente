@@ -539,6 +539,11 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'sin dni encima',
       'llevar a comisaria a identificar',
       'resenar',
+      // Añadidos de calle (validador 2026-09).
+      'identificar a un tio',
+      'identificar a un sospechoso',
+      'tomar los datos',
+      'pedir papeles a alguien',
     ],
     consecuencias: [
       {
@@ -584,6 +589,12 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'ignora al agente',
       'desacato',
       'no acata las ordenes',
+      // Añadidos de calle (validador 2026-09). Con violencia/intimidación → atentado (550 CP).
+      'se pone chulo',
+      'chulearse con la policia',
+      'plantar cara',
+      'hace lo que le da la gana',
+      'se encara con el agente',
     ],
     consecuencias: [
       {
@@ -670,6 +681,14 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'cocaina en la calle',
       'esnifando',
       'droga para consumo propio',
+      // Añadidos de calle (validador 2026-09). Indicios de TRÁFICO (papelinas, balanza) → 368 CP.
+      'fumando un peta',
+      'un peta',
+      'un canuto',
+      'piti de maria',
+      'chocolate',
+      'colocandose en la calle',
+      'lleva un par de porros',
     ],
     consecuencias: [
       {
@@ -712,6 +731,20 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'spray de defensa',
       'exhibir un arma',
       'nunchaku',
+      // Añadidos de calle (validador 2026-09). Navaja pequeña de uso común puede NO ser prohibida;
+      // armas de fuego/simuladas → fichas de armas o penal (563/564 CP).
+      'una navaja',
+      'llevaba una navaja',
+      'la defensa',
+      'spray pimienta',
+      'spray de pimienta',
+      'navaja mariposa',
+      'puñal',
+      'machete',
+      'kubotan',
+      'estrella ninja',
+      'shuriken',
+      'taser',
     ],
     consecuencias: [
       {
@@ -1024,6 +1057,17 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'pelea en la via publica',
       'disturbios',
       'alboroto',
+      // Añadidos de calle (validador 2026-09). Pelea con heridos → lesiones (147/148 CP).
+      'una pelea',
+      'se estan pegando',
+      'una movida',
+      'un follon en la calle',
+      'tangana',
+      'tanganas',
+      'bronca',
+      'gresca',
+      'riña',
+      'lio en la puerta del bar',
     ],
     notaRevision:
       NOTA_GRAVE_IMPORTE +
@@ -1106,6 +1150,14 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'menosprecio a la policia',
       'palabras despectivas',
       'contestar mal al agente',
+      // Añadidos de calle (validador 2026-09).
+      'me insulto',
+      'me falto',
+      'me llamo de todo',
+      'me vacilo',
+      'vacilar al agente',
+      'me llamo madero',
+      'gestos despectivos',
     ],
     notaRevision:
       NOTA_LEVE_IMPORTE +
