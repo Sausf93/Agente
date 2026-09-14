@@ -100,6 +100,27 @@ Varias fichas marcadas `verificado` conservan el sufijo "**A verificar**" dentro
 
 ---
 
+## Segundo pase — doble-chequeo de las 8 fichas recién marcadas `verificado` por la sesión de `main`
+
+Verificación independiente de las fichas que el commit `3a6cba9` (otra sesión) añadió a
+`VERIFICADOS_BOE`, cotejando su `gravedadCp`/`penaTexto` contra el BOE. **Resultado: 7/8 confirmadas
+correctas; 0 errores. 1 no re-cotejada en este pase** (el DOM del consolidado no expuso su ancla).
+
+| Ficha | Art. | Pena en el BOE | gravedadCp | Veredicto |
+|---|---|---|---|---|
+| `del-rina-tumultuaria` | 154 | prisión 3m-1a **o** multa 6-24m | menos_grave | ✅ coincide exacto |
+| `del-usurpacion-funciones` | 402 | prisión 1-3 años | menos_grave | ✅ correcto (≤5 años) |
+| `del-allanamiento-establecimiento` | 203.1 | prisión 6m-1a + multa 6-10m | menos_grave | ✅ correcto (203.2 = multa 1-3m leve; 203.3 violencia 6m-3a) |
+| `del-acoso-stalking` | 172 ter.1 | prisión 3m-2a **o** multa 6-24m | menos_grave | ✅ correcto |
+| `del-trata-seres-humanos` | 177 bis.1 | prisión 5-8 años | grave | ✅ correcto (**art. 13.4**: 5 años cae en "hasta 5" y >5 en "grave" ⇒ grave) |
+| `del-intrusismo` | 403 | multa 12-24m (o 6-12m); 403.2 prisión 6m-2a | menos_grave | ✅ correcto *(matiz: el `penaTexto` unifica como "multa 6-24m"; el 403.1 son dos tramos según el tipo de título — 12-24m académico / 6-12m oficial)* |
+| `del-armas-prohibidas` | 563 | prisión 1-3 años | menos_grave | ✅ correcto |
+| `del-maltrato-animal` | 340 bis | — | menos_grave | ⚠️ **no re-cotejado en este pase** (el consolidado no cargó el ancla `a340bis` en el DOM). Verificado en trabajo previo (Ola G, tras la LO 3/2023 que trasladó el maltrato del 337 al 340 bis). Pendiente de re-confirmar el ancla en una lectura posterior. |
+
+**Conclusión del segundo pase:** las verificaciones penales de la otra sesión son **sólidas** (ningún
+importe/gravedad mal). Único fleco: re-confirmar el articulado del **340 bis** cuando el consolidado
+exponga su ancla.
+
 ### Método (reutilizable)
 
 Lectura del articulado sancionador desde el navegador in-app (los subagentes con WebFetch **no**
