@@ -1123,6 +1123,18 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-odio-discriminacion', // 510: prisión 1-4 años → menos grave
   'del-trato-degradante', // 173.1: prisión 6m-2a → menos grave
   'del-simulacion-delito', // 457: multa (penaSoloMulta) → menos grave
+  'del-rina-tumultuaria', // 154: prisión 3m-1a o multa → menos grave
+  'del-usurpacion-funciones', // 402: prisión 1-3 años → menos grave
+  'del-allanamiento-establecimiento', // 203: prisión 6m-1a + multa → menos grave
+  'del-maltrato-animal', // 340 bis.1: prisión 3-18 meses o multa → menos grave
+  'del-acoso-stalking', // 172 ter: prisión 3m-2a o multa → menos grave
+  'del-trata-seres-humanos', // 177 bis: prisión 5-8 años → grave (art. 13.4)
+  'del-intrusismo', // 403: multa 12-24 meses → menos grave
+  'del-armas-prohibidas', // 563: prisión 1-3 años → menos grave
+  // NO se verifican (posible clasificación a revisar, siguen pendiente): del-atentado-agravado (551
+  // "superior en grado" probablemente GRAVE, no menos grave) y del-favorecimiento-inmigracion-ilegal
+  // (318 bis base es menos grave, no grave); del-administracion-desleal/del-apropiacion-indebida
+  // remiten al 248/250 (grave si concurre el 250). Al jurista.
 ]);
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
