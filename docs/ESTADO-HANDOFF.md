@@ -70,6 +70,18 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - Contenido siempre `pendiente_revision`; detención en lenguaje orientativo; nada de datos de terceros
   al servidor; sin escudos/insignias oficiales.
 - `SendMessage` a subagentes está deshabilitado: no se puede inyectar a un agente en vuelo → serializar.
+- **REGLA DE PROCESO (CI la caza si se salta)**: `normas.integration.test.ts` valida contra el `.db`
+  COMPILADO (`apps/mobile/assets/content/contenido-0.1.0.db`), no contra los seeds. Orden obligatorio tras
+  tocar un seed: (1) `corepack pnpm -F @agente/content-pipeline build:content`; (2) `cp` del `.sqlite` de
+  `output/` a `apps/mobile/assets/content/` como `.db` **y** `.manifest.json`; (3) **entonces** `-r test`;
+  (4) commit. Además, toda ficha nueva de tráfico/penal/seguridad/animales necesita su entrada en
+  `SUBTEMA_POR_INFRACCION` (`apps/mobile/src/features/normas/normas.ts`): el test exige subtema para todas
+  y ≥3 por grupo visible (el cajón "otras" orden 99 `esCajon:true` está exento).
+- **Verificación con FUENTE PRIMARIA (BOE)**: los subagentes revisores usan WebFetch, que TRUNCA las
+  páginas grandes del BOE y no llega al articulado sancionador. El agente principal SÍ puede: navegador
+  in-app + extracción por DOM (`document.getElementById('aNN')` e iterar `nextElementSibling`). Para dar
+  una nota por "CONFIRMADO contra el BOE", léelo tú desde el navegador; los subagentes solo dejan
+  "a verificar".
 
 ## Estado del producto (2026-09-09)
 - **Contenido**: 26 normas (articulado completo del BOE), **104 infracciones** (todas pendiente_revision),
@@ -84,6 +96,29 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 - Suite verde: ~466 mobile · ~232 content-pipeline · ~199 shared.
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
+
+### YA HECHO el 2026-09-14 (ronda de verificación BOE) — `main` + Expo `preview`, CI verde (Run 105)
+- **QA final + verificación con fuente primaria** (commit `3681195`): ronda propia del agente principal
+  sobre las **306 infracciones**, leyendo el BOE consolidado desde el navegador (lo que los subagentes no
+  pueden por el truncado de WebFetch). Correcciones aplicadas y notas elevadas de "a verificar" a
+  **CONFIRMADO contra el BOE**:
+  - **PPP (Ley 50/1999 art. 13, leído 2026-09-14)**: reclasificadas a **LEVE** (art. 13.4 residual,
+    150,25 €) las conductas que NO figuran en muy graves (13.1) ni graves (13.2): `ppp-menor-conduciendo`,
+    `ppp-mas-de-uno`, `ppp-sin-seguro`. `ppp-sin-licencia` acotada a la falta de LICENCIA (muy grave
+    13.1.b), separada de la mera falta de inscripción registral (grave 13.2.c). Confirmadas: `ppp-abandono`
+    (13.1.a), `ppp-sin-bozal` y `ppp-suelto-sin-bozal-ni-correa` (13.2.d), `ppp-transporte` (13.2.e),
+    `ppp-adiestramiento-ataque` (13.1.d/e), `ppp-criar-comerciar` (13.1.b/c).
+  - **Extranjería**: `ext-matrimonio-conveniencia` (54.1.f, deslinde del matrimonio de conveniencia) y
+    `ext-no-portar-documentacion` (art. 4.1, `no_sancionador`) verificadas.
+  - Se arrastran las correcciones de esta misma ronda en **penal, tráfico, seguridad ciudadana y
+    autonómico Canarias** (aplicadas antes en la sesión: art. 39 LO 4/2015, RD 518/2026 real pero no en
+    vigor hasta 1-oct-2026, negativa-prueba marco penal, cese Canarias 65.2 vs 56/57, atentado agravado,
+    daños 263.1 de oficio…).
+  - Todo sigue `pendiente_revision` (puerta del **2.º revisor humano**, el compañero agente). SQLite
+    reconstruido: 306 infracciones, 2.631 sinónimos. CI verde: lint + `-r typecheck` + `-r test` (744 tests).
+- **Pendiente de esta línea**: verificar contra el BOE las letras de la **Ley 7/2023 (bienestar animal)
+  arts. 74/76** de las fichas `animal-*` (hoy revisor-APTO por subagente, no leídas literal por el
+  principal). Y la **guía de uso de fuerza** (art. 5 LO 2/1986) a construir CON el compañero.
 
 ### YA HECHO el 2026-09-09 (tarde) — todo en `main` y publicado en Expo `preview`
 - **Ola 2 de Transporte revisada y publicada** (commit `879d55e`): `revisor-juridico` + verificación BOE.

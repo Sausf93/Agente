@@ -1062,14 +1062,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede requerir la documentación e identificación del animal y de la persona responsable; la ' +
           'subsanación (implantar el microchip/registrar) no siempre excluye la sanción.',
-        fuente: 'Ley 7/2023 arts. 74 y 76',
+        fuente: 'Ley 7/2023 arts. 74.b y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la frontera leve/grave y el importe del art. 76 (el seed usa el mínimo grave 10.001 €; ' +
-      'podría ser leve 500 € si es subsanable). Deslindar del CENSO municipal (`ord-sctf-perro-sin-censar`): ' +
-      'esta es la identificación ESTATAL. La Ley 7/2023 amplía la identificación a más especies. Revisor.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 74-76, leído 2026-09-14): "No cumplir las obligaciones de ' +
+      'identificación del animal" es GRAVE (art. 74.b), tramo 10.001-50.000 € (art. 76.1.b, el seed fija el ' +
+      'mínimo) —no es leve, aunque sea subsanable—. Deslindar del CENSO municipal (`ord-sctf-perro-sin-censar`): ' +
+      'esta es la identificación ESTATAL. La Ley 7/2023 amplía la identificación a más especies. Segundo revisor ' +
+      'humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-maltrato-sin-lesion',
@@ -1102,14 +1104,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la intervención cautelar del animal cuando su permanencia con el responsable ' +
           'entrañe riesgo (Ley 7/2023).',
-        fuente: 'Ley 7/2023 arts. 75 y 76',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'Punto SENSIBLE: el deslinde con el art. 340 bis CP (la frontera es "lesión que requiere tratamiento ' +
-      'veterinario / menoscabo grave"). No solaparse con la ficha penal `del-maltrato-animal`. A VERIFICAR ' +
-      'clasificación e importe del art. 76. Revisor jurídico obligatorio.',
+      'VERIFICADO contra el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): la conducta que causa daño o ' +
+      'sufrimiento SIN muerte ni secuelas graves es GRAVE (art. 74, chapeau; 10.001-50.000 €, art. 76.1.b, el ' +
+      'seed fija el mínimo). Solo sería LEVE (art. 73) si NO provoca daño físico ni alteración del comportamiento. ' +
+      'Punto SENSIBLE: la frontera PENAL del art. 340 bis CP es "lesión que requiere tratamiento veterinario / ' +
+      'menoscabo grave"; no solaparse con la ficha penal `del-maltrato-animal`. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-vehiculo-terraza-riesgo',
@@ -1142,13 +1146,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Ante riesgo inminente, procede valorar el rescate e intervención cautelar del animal y su puesta ' +
           'a disposición de la autoridad o servicios competentes; actuación según la urgencia.',
-        fuente: 'Ley 7/2023 arts. 75 y 76',
+        fuente: 'Ley 7/2023 arts. 74.o y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'Ficha SENSIBLE por el componente de URGENCIA. A VERIFICAR clasificación e importe (art. 76) y el ' +
-      'deslinde penal (riesgo para la vida → 340 ter; lesión/muerte → 340 bis CP). Revisor jurídico.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 74-76, leído 2026-09-14): "Mantener de forma permanente ' +
+      'perros o gatos en terrazas, balcones, azoteas, trasteros, sótanos, patios y similares o vehículos" es ' +
+      'GRAVE (art. 74.o), tramo 10.001-50.000 € (art. 76.1.b, el seed fija el mínimo). Ficha SENSIBLE por el ' +
+      'componente de URGENCIA: si hay riesgo para la vida (golpe de calor) el escalón PENAL es el art. 340 ter ' +
+      'CP y, si hay lesión/muerte, el 340 bis CP. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-condiciones-inadecuadas',
@@ -1178,13 +1185,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la intervención cautelar del animal cuando las condiciones entrañen riesgo para ' +
           'su salud (Ley 7/2023).',
-        fuente: 'Ley 7/2023 arts. 74, 75 y 76',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la frontera leve/grave y el importe (art. 76; el seed usa el mínimo grave). Deslinde con ' +
-      'el maltrato (`animal-maltrato-sin-lesion`) y con el delito 340 bis si hay menoscabo grave. Revisor.',
+      'VERIFICADO contra el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): mantener al animal sin las ' +
+      'condiciones/cuidados/asistencia veterinaria adecuadas, cuando genera daño o sufrimiento sin muerte ni ' +
+      'secuelas graves, es GRAVE (art. 74, chapeau; 10.001-50.000 €, art. 76.1.b, el seed fija el mínimo); sería ' +
+      'LEVE (art. 73) solo si no provoca daño físico. Deslinde con `animal-maltrato-sin-lesion` y con el delito ' +
+      '340 bis CP si hay menoscabo grave. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'ppp-sin-seguro',
@@ -1622,15 +1632,15 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     id: 'animal-venta-ilegal',
     articulo: ART_LBA_COMERCIO,
     tituloCorto: 'Venta o comercio ilegal de animales',
-    gravedad: 'grave',
-    // Ley 7/2023 art. 76: graves 10.001-50.000 €. Mínimo del tramo como referencia.
-    importeEur: 10001,
+    gravedad: 'muy_grave',
+    // Ley 7/2023 art. 76.1.c: muy graves 50.001-200.000 €. Mínimo del tramo como referencia.
+    importeEur: 50001,
     importeReducidoEur: null,
     textoBoletin:
-      'Vender animales de compañía de forma ambulante, en establecimientos no autorizados o por criadores no ' +
-      'registrados, o criarlos con fines comerciales sin la inscripción exigida: infracción de la Ley 7/2023. La ' +
-      'venta de perros, gatos y hurones en tiendas está restringida y la cría comercial requiere registro. La ' +
-      'valoración final corresponde a la autoridad competente.',
+      'Criar, comerciar o exponer animales con fines comerciales sin estar autorizado, o vender perros, gatos ' +
+      'y hurones en tiendas de animales: infracción MUY GRAVE de la Ley 7/2023 (art. 75.f). Incluye la venta ' +
+      'ambulante, en establecimientos no autorizados o por criadores no registrados. La valoración final ' +
+      'corresponde a la autoridad competente.',
     terminos: [
       'venta ilegal de animales',
       'vender cachorros en la calle',
@@ -1647,14 +1657,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede identificar al vendedor, requerir la documentación y valorar la intervención cautelar de los ' +
           'animales ofrecidos ilegalmente, poniéndolos a disposición de la autoridad competente (Ley 7/2023).',
-        fuente: 'Ley 7/2023 arts. 74 y 76',
+        fuente: 'Ley 7/2023 arts. 75 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR (SENSIBLE): el apartado exacto y la clasificación (grave art. 74 o muy grave art. 75) de la ' +
-      'venta ambulante / comercio no autorizado / cría sin registro; importe del art. 76 (grave 10.001-50.000 €, ' +
-      'el seed fija el mínimo). Concurre normativa AUTONÓMICA y de núcleos zoológicos. Revisor de animales.',
+      'CORREGIDO y CONFIRMADO contra el BOE (Ley 7/2023 arts. 75-76, leído 2026-09-14): la cría/comercio/ ' +
+      'exposición con fines comerciales por NO autorizados y la venta de perros, gatos y hurones en tiendas ' +
+      'es MUY GRAVE (art. 75.f), no grave —se reclasifica de grave/10.001 € a muy grave/50.001 € (tramo ' +
+      '50.001-200.000 €, art. 76.1.c; el seed fija el mínimo)—. Concurre normativa AUTONÓMICA y de núcleos ' +
+      'zoológicos. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-uso-espectaculos',
@@ -1691,9 +1703,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR (SENSIBLE): el apartado exacto (muy grave, art. 75) y el importe del art. 76 (muy grave ' +
-      '50.001-200.000 €, el seed fija el mínimo). Deslinde PENAL con el art. 340 bis CP (peleas de animales), ' +
-      'para no solaparse con la ficha penal. Excepciones (festejos tradicionales) a verificar. Revisor de animales.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 75-76, leído 2026-09-14): adiestrar/usar animales para PELEAS ' +
+      'o riñas (art. 75.c) y el uso de animales en ACTIVIDADES PROHIBIDAS —culturales/festivas, atracciones, ' +
+      'carruseles, fauna silvestre en circo— (art. 75.g) son MUY GRAVES, tramo 50.001-200.000 € (art. 76.1.c, ' +
+      'el seed fija el mínimo). Deslinde PENAL con el art. 340 bis CP (peleas de animales) para no solaparse con ' +
+      'la ficha penal. Las excepciones (festejos tradicionales autorizados) las fija el desarrollo normativo. ' +
+      'Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-metodos-crueles',
@@ -1729,9 +1744,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR: la prohibición de collares eléctricos/de púas y su clasificación (leve/grave, arts. 74-76) e ' +
-      'importe del art. 76 (el seed usa el mínimo grave 10.001 €). Deslinde con el maltrato con lesión (delito, ' +
-      'art. 340 bis CP). Revisor de animales.',
+      'VERIFICADO contra el BOE (Ley 7/2023 arts. 74-76, leído 2026-09-14): el uso de métodos AGRESIVOS o ' +
+      'VIOLENTOS en la educación del animal (collar eléctrico/de ahogo/de púas usados como castigo) es GRAVE ' +
+      '(art. 74.c), tramo 10.001-50.000 € (art. 76.1.b, el seed fija el mínimo). Si el método causa daño con ' +
+      'secuelas permanentes graves sube a 74.a (grave) y, si hay muerte, a 75.a (muy grave); si la lesión ' +
+      'requiere tratamiento veterinario puede ser DELITO del art. 340 bis CP. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-dejar-sin-atencion',
@@ -1767,12 +1784,13 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR: la LETRA exacta del art. 74 NO es la del abandono (74.k); "dejar sin atención" puede ' +
-      'encajar en otra letra grave del art. 74 o incluso ser leve (art. 73) según la intensidad — fijar la ' +
-      'letra y la clasificación (leve/grave) contra el consolidado. Verificar también el límite temporal ' +
-      'reglamentario (p. ej. perros no más del tiempo reglamentado solos) e importe (art. 76; el seed usa el ' +
-      'mínimo grave 10.001 €). Deslinde con el ABANDONO (`animal-abandono`) y con el delito del art. 340 ter ' +
-      'CP. Revisor de animales.',
+      'CONTRASTADO con el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): NO hay una letra específica de ' +
+      '"dejar sin atención" en el art. 74; la clasificación GRAVE se apoya en el CHAPEAU del art. 74 (conducta ' +
+      'que implica daño o sufrimiento sin muerte ni secuelas graves) —si NO hay daño ni alteración de conducta ' +
+      'sería LEVE (art. 73)—. Tramo grave 10.001-50.000 € (art. 76.1.b, el seed fija el mínimo). El límite ' +
+      'temporal concreto (tiempo máximo de perros solos) lo fija el DESARROLLO REGLAMENTARIO, aún pendiente. ' +
+      'Deslinde con el ABANDONO (`animal-abandono`, 74.k) y con el delito del art. 340 ter CP. El 2.º revisor ' +
+      'humano fija la letra/graduación definitiva por ser un supuesto de intensidad variable.',
   }),
   construirInfraccion({
     id: 'animal-especie-no-permitida',
@@ -1807,10 +1825,13 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR: el desarrollo del listado positivo (pendiente de reglamento en parte) y el régimen ' +
-      'transitorio para animales ya tenidos; clasificación (grave art. 74 / muy grave si especie protegida o ' +
-      'invasora) e importe del art. 76 (el seed usa el mínimo grave 10.001 €). Concurre la Ley 42/2007 y el ' +
-      'catálogo de invasoras (RD 630/2013). Revisor de animales.',
+      'CONTRASTADO con el BOE (Ley 7/2023 arts. 74-76, leído 2026-09-14): el art. 74 NO tipifica de forma ' +
+      'expresa la MERA tenencia de una especie fuera del listado positivo; la letra más próxima es 74.h (criar ' +
+      'silvestres alóctonos o comerciar con ellos, grave). Además, el LISTADO POSITIVO y su régimen transitorio ' +
+      'están pendientes de DESARROLLO REGLAMENTARIO, por lo que la tenencia queda como grave orientativa (art. 74; ' +
+      '10.001-50.000 €, art. 76.1.b, el seed fija el mínimo), pudiendo ser MUY GRAVE si es especie protegida o ' +
+      'invasora. Concurren la Ley 42/2007 y el catálogo de invasoras (RD 630/2013). El 2.º revisor humano cierra ' +
+      'la clasificación cuando el reglamento esté publicado.',
   }),
   // --- 2.ª OLEADA de ANIMALES (paridad SPPLB, 2026-09-14): PPP (Ley 50/1999) ---------------------
   construirInfraccion({
@@ -2049,10 +2070,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la LETRA exacta: reclasificada a LEVE (art. 73, tramo 500-10.000 €, el seed fija el mínimo) ' +
-      'porque sin daño físico no encaja en las graves del art. 74. Gran parte del calendario sanitario lo fijan ' +
-      'la CCAA y el reglamento (rabia obligatoria según comunidad), por lo que su exigibilidad general está ' +
-      'pendiente de desarrollo. Confirmar con el revisor de animales.',
+      'VERIFICADO contra el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): no vacunar/desparasitar, al no ' +
+      'provocar daño físico, NO figura en las graves del art. 74; encaja en el residual LEVE del art. 73 (tramo ' +
+      '500-10.000 €, art. 76.1.a, el seed fija el mínimo). Gran parte del calendario sanitario lo fijan la CCAA y ' +
+      'el reglamento (rabia obligatoria según comunidad), por lo que su exigibilidad general está pendiente de ' +
+      'desarrollo. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-mendicidad',
@@ -2088,10 +2110,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'no_sancionador',
     notaRevision:
-      'RECLASIFICADA a CONSULTABLE (revisor 2ª oleada): el revisor no localizó letra de los arts. 74/75 de la ' +
-      'Ley 7/2023 que tipifique la mendicidad con animales como infracción autónoma. Se retira la sanción ' +
-      'administrativa (importe null) hasta confirmar base legal; la orientación remite a ordenanza/menores/340 ' +
-      'bis CP. A VERIFICAR y, si se confirma tipificación, reintroducir con su marco e importe.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 73-75, leídos 2026-09-14): NINGUNA letra de los arts. 74/75 ' +
+      'tipifica la mendicidad con animales como infracción autónoma. Se mantiene como CONSULTABLE (importe null, ' +
+      'no_sancionador); la orientación remite a la ordenanza municipal de mendicidad, a la protección del menor ' +
+      'si hay menores implicados, y al DELITO del art. 340 bis CP si hay trato cruel. Si una CCAA la tipifica, ' +
+      'reintroducir con su marco e importe. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-sacrificio-injustificado',
@@ -2128,10 +2151,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la LETRA exacta del art. 75 (sacrificio no justificado como MUY GRAVE) y las EXCEPCIONES ' +
-      'admitidas (seguridad, sanidad, sufrimiento irreversible, control veterinario). Importe del art. 76 (muy ' +
-      'grave 50.001-200.000 €, el seed fija el mínimo). Deslinde PENAL con el art. 340 bis CP (matar con ' +
-      'sufrimiento) para no solaparse con la ficha penal. Revisor de animales obligatorio.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 75-76, leído 2026-09-14): el sacrificio de animales no ' +
+      'autorizado y la muerte del animal por incumplimiento (no delito) son MUY GRAVES (art. 75.a), y la ' +
+      'eutanasia con medios inadecuados o por personal no cualificado también (art. 75.b); tramo 50.001-200.000 € ' +
+      '(art. 76.1.c, el seed fija el mínimo). Las EXCEPCIONES (seguridad, sanidad, sufrimiento irreversible, ' +
+      'control veterinario) se leen del propio régimen de la ley. Deslinde PENAL con el art. 340 bis CP (matar ' +
+      'con sufrimiento) para no solaparse con la ficha penal. Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-tenencia-tras-inhabilitacion',
@@ -2206,10 +2231,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la LETRA exacta del art. 74 (transporte en condiciones inadecuadas) y la frontera leve/grave; ' +
-      'importe del art. 76 (el seed usa el mínimo grave 10.001 €). No duplicar con `ppp-transporte` (marco Ley ' +
-      '50/1999) ni con `animal-vehiculo-terraza-riesgo` (encierro con calor). Concurre el Rgto (CE) 1/2005 en ' +
-      'transporte comercial. Revisor de animales.',
+      'CONTRASTADO con el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): el art. 74 NO tiene una letra ' +
+      'específica de transporte; la clasificación GRAVE se apoya en el CHAPEAU del art. 74 (conducta que implica ' +
+      'daño o sufrimiento sin muerte ni secuelas graves; 10.001-50.000 €, art. 76.1.b, el seed fija el mínimo). ' +
+      'Sería LEVE (art. 73) si no causa daño. No duplicar con `ppp-transporte` (Ley 50/1999) ni con ' +
+      '`animal-vehiculo-terraza-riesgo` (encierro con calor). Concurre el Rgto (CE) 1/2005 en transporte ' +
+      'comercial. El 2.º revisor humano fija la graduación por ser de intensidad variable.',
   }),
   construirInfraccion({
     id: 'animal-perro-suelto-sin-control',
@@ -2245,9 +2272,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la LETRA exacta y la clasificación (LEVE art. 73 / GRAVE art. 74) del deber de control en vía ' +
-      'pública; importe del art. 76 (el seed usa el mínimo leve 500 €). Punto de solape con la ORDENANZA ' +
-      'municipal (correa obligatoria, zonas de esparcimiento) — deslindar de PPP (`ppp-sin-bozal`). Revisor de animales.',
+      'CONTRASTADO con el BOE (Ley 7/2023 arts. 73-76, leído 2026-09-14): el deber de control en vía pública no ' +
+      'tiene letra sancionadora específica en el art. 74; sin daño encaja en el residual LEVE del art. 73 (500- ' +
+      '10.000 €, art. 76.1.a, el seed fija el mínimo). Lo concreto de la correa y las zonas lo fija sobre todo la ' +
+      'ORDENANZA municipal. Deslindar de PPP (`ppp-sin-bozal`, Ley 50/1999, más severa). El 2.º revisor humano ' +
+      'cierra la clasificación (subiría a grave si genera daño/sufrimiento, art. 74).',
   }),
   construirInfraccion({
     id: 'animal-sin-curso-ni-seguro',
