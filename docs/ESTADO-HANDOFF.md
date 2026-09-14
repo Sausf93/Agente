@@ -97,7 +97,9 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
-### CAMBIO DE MODELO (2026-09-14): `verificado` vs `pendiente_revision` — 118/307 ya verificadas
+### CAMBIO DE MODELO (2026-09-14): `verificado` vs `pendiente_revision` — 130/307 ya verificadas
+(Actualización: +12 fichas estatales de EXTRANJERÍA cotejadas contra la LOEX arts. 52-55; total 130.)
+
 Antes TODA ficha quedaba `pendiente_revision` (sello "Borrador beta") por defecto. Ahora el agente
 principal COTEJA contra el BOE consolidado (leído en el navegador, no WebFetch) y marca `verificado`
 lo que confirma directamente en la fuente. Mecanismo: un set `VERIFICADAS_BOE`/`VERIFICADOS_BOE` al
