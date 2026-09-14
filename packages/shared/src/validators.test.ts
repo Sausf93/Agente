@@ -286,24 +286,24 @@ describe('validarImporte (entrada consultable no sancionadora)', () => {
 });
 
 describe('validarMinimosPublicacion (sección 8.3)', () => {
-  it('exige al menos 2 sinónimos', () => {
-    const problemas = validarMinimosPublicacion(infraccion(), 1);
-    expect(problemas.some((p) => p.campo === 'sinonimos')).toBe(true);
+  it('exige al menos 3 sinónimos (2 ya no basta)', () => {
+    expect(validarMinimosPublicacion(infraccion(), 1).some((p) => p.campo === 'sinonimos')).toBe(true);
+    expect(validarMinimosPublicacion(infraccion(), 2).some((p) => p.campo === 'sinonimos')).toBe(true);
   });
 
-  it('pasa con todo lo mínimo cumplido', () => {
-    expect(validarMinimosPublicacion(infraccion(), 2)).toEqual([]);
+  it('pasa con todo lo mínimo cumplido (3 sinónimos)', () => {
+    expect(validarMinimosPublicacion(infraccion(), 3)).toEqual([]);
   });
 
   it('detecta falta de importe en administrativa', () => {
-    const problemas = validarMinimosPublicacion(infraccion({ importeEur: null }), 2);
+    const problemas = validarMinimosPublicacion(infraccion({ importeEur: null }), 3);
     expect(problemas.some((p) => p.campo === 'importeEur')).toBe(true);
   });
 
   it('NO exige importe a una entrada `no_sancionador` (facultad/diligencia, no sanción)', () => {
     const problemas = validarMinimosPublicacion(
       infraccion({ importeEur: null }),
-      2,
+      3,
       'no_sancionador',
     );
     expect(problemas.some((p) => p.campo === 'importeEur')).toBe(false);

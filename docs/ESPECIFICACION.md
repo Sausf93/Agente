@@ -475,7 +475,7 @@ Este es el corazón del producto. Si falla, la app es una más.
 
 ## 8.3 Calidad del contenido
 
-- Toda `Infraccion` publicada requiere: artículo enlazado, importe, gravedad, texto de boletín, al menos dos sinónimos, fuente y fecha.
+- Toda `Infraccion` publicada requiere: artículo enlazado, importe, gravedad, texto de boletín, al menos tres sinónimos, fuente y fecha. (El mínimo se subió de 2 a 3 el 2026-09-14: el contenido real nunca baja de 5 y tres es el estándar de facto para que el buscador de calle enganche variantes.)
 - Test automático: importes dentro de los rangos legales por gravedad (LSV art. 80: leve hasta 100 €, grave 200 €, muy grave 500 €; LO 4/2015 art. 39: leves 100-600, graves 601-30.000, muy graves 30.001-600.000).
 - Revisión a dos ojos para consecuencias y sustancias.
 - Registro público en la app de la fecha de actualización de cada norma.

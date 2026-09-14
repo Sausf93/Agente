@@ -263,10 +263,10 @@ export function validarMinimosPublicacion(
   if (infraccion.tipo === 'administrativa' && infraccion.importeEur === null && !esNoSancionador) {
     problemas.push({ campo: 'importeEur', mensaje: 'Falta el importe' });
   }
-  if (numSinonimos < 2) {
+  if (numSinonimos < 3) {
     problemas.push({
       campo: 'sinonimos',
-      mensaje: `Se requieren al menos 2 sinónimos (hay ${numSinonimos})`,
+      mensaje: `Se requieren al menos 3 sinónimos (hay ${numSinonimos})`,
     });
   }
 
