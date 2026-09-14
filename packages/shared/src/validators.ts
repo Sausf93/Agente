@@ -101,9 +101,10 @@ export const RANGOS_IMPORTE_ANIMALES = {
 
 /**
  * Rangos de importe de BIENESTAR ANIMAL (Ley 7/2023, de protección de los derechos y el bienestar
- * de los animales, art. 80): leves 500–10.000 €; graves 10.001–50.000 €; muy graves 50.001–200.000 €.
+ * de los animales, art. 76): leves 500–10.000 €; graves 10.001–50.000 €; muy graves 50.001–200.000 €.
  * Es un marco DISTINTO del de PPP (Ley 50/1999): sus cuantías son un orden de magnitud mayores y no
- * encajan en `RANGOS_IMPORTE_ANIMALES`. Fuente: Ley 7/2023 (BOE-A-2023-7936) art. 80. "A verificar":
+ * encajan en `RANGOS_IMPORTE_ANIMALES`. Fuente: Ley 7/2023 (BOE-A-2023-7936) art. 76 (sanciones
+ * principales; el art. 80 es "órganos competentes"). "A verificar":
  * muchas competencias y la graduación efectiva las concretan la CCAA y la ordenanza municipal.
  */
 export const RANGOS_IMPORTE_BIENESTAR_ANIMAL = {

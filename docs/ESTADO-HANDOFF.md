@@ -140,7 +140,21 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **190 infracciones, 30 normas, 1830 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **243 infracciones, 30 normas, 2199 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (8ª parte): OLA GRANDE DE PARIDAD SPPLB (+53 infracciones).** Cuatro agentes de
+  ingesta en paralelo (un fichero cada uno) + revisor por ola: **Tráfico/Transporte +15** (RGC/RGV +
+  LOTT: adelantamiento, distancia, cambio de sentido, autovía, carga, reformas, frenos, alumbrado,
+  menor delante, tiempos de conducción, tacógrafo, limitador, carta de porte, VTC), **Penal +12**
+  (robo con fuerza, hurto agravado, daños agravados, apropiación indebida, administración desleal,
+  defraudación de fluido, armas prohibidas 563, amenazas leves, abandono de familia, calumnias/injurias,
+  usurpación de estado civil, riña tumultuaria), **Seguridad Ciudadana/Armas +14** (arts. 35/36/37 LOSC:
+  reuniones, servicios de emergencia, infraestructuras, uniforme, drogas en local, láser, daños/
+  escalada, espectáculos + coleccionismo/pérdida de arma RD 137/1993), **Extranjería/Animales +12**
+  (LOEX 53/54 + Ley 7/2023/50/1999). Revisor **APTO CON CORRECCIONES** en las 4 olas; correcciones
+  aplicadas (destacadas: cinturón/SRI 3→**4 puntos** por Ley 18/2021; amenazas leves 171.7 solo por
+  DENUNCIA; cuantías Ley 7/2023 son art. **76** no 80; 54.1.f es simular relación laboral, no matrimonio
+  de conveniencia). Todo `pendiente_revision`; PENDIENTE 2º revisor con BOE consolidado para varios
+  ordinales antes de `verificado`. 917 tests verdes.
 - **SPRINT 2026-09-14 (7ª parte): +5 fichas autonómicas de Canarias.** Ampliada la Ley 7/2011 (CAN-ESP)
   con negativa a agentes (62.9), drogas en el local (62.11 + cese), medidas de seguridad/salidas de
   emergencia (62.2 + cese), derecho de admisión arbitrario (63.13) y sacar bebidas del local (63.6).

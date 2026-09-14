@@ -15,8 +15,8 @@ const idsArticulos = new Set(SEED_PENAL.articulos.map((a) => a.id));
 const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_PENAL: integridad de los delitos', () => {
-  it('siembra 43 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(43);
+  it('siembra 55 delitos, todos por vía penal y sin importe administrativo', () => {
+    expect(SEED_PENAL.infracciones).toHaveLength(55);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -282,8 +282,10 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '147',
       '148',
       '153',
+      '154',
       '163',
       '169',
+      '171',
       '172',
       '172 ter',
       '173.1',
@@ -299,14 +301,22 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '197',
       '202',
       '203',
+      '205',
       '225 bis',
+      '227',
       '234',
+      '235',
+      '238',
       '241',
       '242',
       '244',
       '245',
       '249',
+      '252',
+      '253',
+      '255',
       '263',
+      '266',
       '298',
       '318 bis',
       '340 bis',
@@ -319,6 +329,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '383',
       '384',
       '392',
+      '401',
       '402',
       '457',
       '468',
@@ -326,6 +337,7 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '550',
       '556',
       '557',
+      '563',
       '564',
     ]);
   });

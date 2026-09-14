@@ -148,7 +148,7 @@ const ART_LBA_ABANDONO = articuloSeed({
   titulo: 'Bienestar animal: abandono (infracción grave)',
   texto:
     'La Ley 7/2023 tipifica como infracción GRAVE el abandono de un animal de compañía (art. 74.k), con la ' +
-    'sanción por tramos del art. 80 (grave 10.001-50.000 €). DESLINDE PENAL: si del abandono se deriva un ' +
+    'sanción por tramos del art. 76 (grave 10.001-50.000 €). DESLINDE PENAL: si del abandono se deriva un ' +
     'riesgo para la vida o integridad del animal, el hecho puede ser DELITO del art. 340 ter CP. Resumen ' +
     'orientativo; consúltese el BOE.',
 });
@@ -159,7 +159,7 @@ const ART_LBA_IDENTIFICACION = articuloSeed({
   titulo: 'Bienestar animal: identificación y registro (infracción grave)',
   texto:
     'La Ley 7/2023 tipifica como infracción GRAVE (art. 74.b) mantener sin identificar (microchip) o sin ' +
-    'registrar a un animal de compañía sujeto a ello, con la sanción del art. 80. Es el deber ESTATAL de ' +
+    'registrar a un animal de compañía sujeto a ello, con la sanción del art. 76. Es el deber ESTATAL de ' +
     'identificación, distinto del censo municipal que fije la ordenanza. Resumen orientativo; consúltese el ' +
     'texto consolidado.',
 });
@@ -171,7 +171,7 @@ const ART_LBA_MALTRATO = articuloSeed({
   texto:
     'La Ley 7/2023 obliga a mantener a los animales en condiciones adecuadas (alojamiento, alimentación, ' +
     'atención veterinaria) y tipifica como GRAVES (art. 74, p. ej. 74.o) los tratos que les causen ' +
-    'sufrimiento sin llegar a la lesión que requiera tratamiento (sanción del art. 80). Las infracciones muy ' +
+    'sufrimiento sin llegar a la lesión que requiera tratamiento (sanción del art. 76). Las infracciones muy ' +
     'graves están en el art. 75. DESLINDE PENAL: el maltrato con lesión que requiera tratamiento veterinario ' +
     'o menoscabo grave es DELITO del art. 340 bis.1 CP; el maltrato grave o cruel SIN esa lesión también ' +
     'puede ser delito (art. 340 bis.4 CP). Resumen orientativo.',
@@ -248,6 +248,117 @@ const ART_LOEX_53_1_G = articuloSeed({
     '(art. 318 bis CP). Resumen orientativo; consúltese el texto consolidado.',
 });
 
+// --- Artículos de la OLA DE PARIDAD SPPLB (2026-09-14): más catálogo de calle ----------------
+const ART_LOEX_53_1_C = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '53.1.c',
+  titulo: 'Infracción grave: ocultación dolosa o falsedad en la comunicación de cambios',
+  texto:
+    'Tipifica como infracción GRAVE la ocultación DOLOSA o la falsedad grave en el cumplimiento del deber ' +
+    'de comunicar a las autoridades los cambios de nacionalidad, estado civil o domicilio, así como las ' +
+    'demás circunstancias determinantes de la situación laboral (art. 31). Se distingue de la mera omisión o ' +
+    'retraso, que es LEVE (art. 52.a): aquí lo que agrava es el DOLO/la falsedad. No es delito por sí sola ni ' +
+    'conlleva detención penal; su tratamiento es administrativo. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOEX_53_1_D = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '53.1.d',
+  titulo: 'Infracción grave: incumplir las medidas de seguridad impuestas',
+  texto:
+    'Tipifica como infracción GRAVE el incumplimiento de las medidas de seguridad pública impuestas de ' +
+    'presentación periódica o de alejamiento de fronteras o de núcleos de población concretados ' +
+    'singularmente, cuando el extranjero esté sujeto a ellas (art. 53.1.d). Es la desatención de una medida ' +
+    'YA acordada por la autoridad, no una situación irregular. Su tratamiento es administrativo. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOEX_53_1_F = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '53.1.f',
+  titulo: 'Infracción grave: actividades contrarias al orden público (graves)',
+  texto:
+    'Tipifica como infracción GRAVE la participación del extranjero en la realización de actividades ' +
+    'contrarias al orden público previstas como graves en la Ley Orgánica de protección de la seguridad ' +
+    'ciudadana (art. 53.1.f). Se distingue de la modalidad MUY GRAVE del art. 54.1.a (seguridad nacional o ' +
+    'actividades contrarias al orden público muy graves). La conducta administrativa que aquí se sanciona no ' +
+    'prejuzga la posible responsabilidad penal separada de los hechos. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOEX_54_1_A = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '54.1.a',
+  titulo: 'Infracción muy grave: seguridad nacional u orden público (muy graves)',
+  texto:
+    'Tipifica como infracción MUY GRAVE participar en actividades contrarias a la seguridad nacional o que ' +
+    'puedan perjudicar las relaciones de España con otros países, o estar implicado en actividades contrarias ' +
+    'al orden público previstas como muy graves en la Ley Orgánica de protección de la seguridad ciudadana ' +
+    '(art. 54.1.a). Es la modalidad agravada frente a la del art. 53.1.f (grave). Su tratamiento es ' +
+    'administrativo (multa o expulsión), sin perjuicio de la responsabilidad penal separada que puedan tener ' +
+    'los hechos. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOEX_54_1_B = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '54.1.b',
+  titulo: 'Infracción muy grave: favorecer con ánimo de lucro la inmigración clandestina',
+  texto:
+    'Tipifica como infracción MUY GRAVE inducir, promover, favorecer o facilitar con ánimo de lucro, ' +
+    'individualmente o formando parte de una organización, la inmigración clandestina de personas en tránsito ' +
+    'o con destino a España, siempre que el hecho no constituya delito (art. 54.1.b). FRONTERA PENAL: cuando ' +
+    'concurren los elementos del tipo, la ayuda a la entrada, tránsito o permanencia irregular es DELITO del ' +
+    'art. 318 bis CP, cuya calificación corresponde a la autoridad judicial. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOEX_54_1_F = articuloSeed({
+  normaId: ID_LOEX,
+  numero: '54.1.f',
+  titulo: 'Infracción muy grave: simular relación laboral o matrimonio de conveniencia',
+  texto:
+    'Tipifica como infracción MUY GRAVE simular con ánimo de lucro una relación laboral con un extranjero, ' +
+    'cuando dicha conducta se lleve a cabo para facilitarle la obtención de una autorización (art. 54.1.f). En ' +
+    'la práctica se conecta con los "matrimonios de conveniencia" y demás simulaciones para obtener papeles; el ' +
+    'apartado exacto y su deslinde con las modalidades del art. 53 debe verificarse en el texto consolidado. Su ' +
+    'tratamiento es administrativo, sin perjuicio de la posible responsabilidad penal. Resumen orientativo.',
+});
+
+// --- Artículos de PARIDAD de ANIMALES (Ley 7/2023) --------------------------------------------
+const ART_LBA_COMERCIO = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74 (venta y comercio)',
+  titulo: 'Bienestar animal: venta y comercio no autorizados',
+  texto:
+    'La Ley 7/2023 restringe el comercio de animales de compañía: prohíbe su venta ambulante y su venta en ' +
+    'establecimientos no autorizados o por criadores no registrados, y sujeta la cría con fines comerciales a ' +
+    'registro. Su incumplimiento se tipifica como infracción (grave, art. 74; muy grave, art. 75, según el ' +
+    'caso), con la sanción por tramos del art. 76. El apartado y la clasificación exactos deben verificarse en ' +
+    'el texto consolidado. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_ESPECTACULOS = articuloSeed({
+  normaId: ID_LBA,
+  numero: '75 (espectáculos y peleas)',
+  titulo: 'Bienestar animal: uso en espectáculos o peleas',
+  texto:
+    'La Ley 7/2023 prohíbe el uso de animales en peleas y en espectáculos u otras actividades que les causen ' +
+    'sufrimiento o que sean contrarias a su bienestar. Su incumplimiento se tipifica como infracción (muy ' +
+    'grave, art. 75), con la sanción por tramos del art. 76. DESLINDE PENAL: la organización o participación en ' +
+    'peleas de animales puede ser DELITO del art. 340 bis CP, cuya calificación corresponde a la autoridad ' +
+    'judicial. El apartado exacto debe verificarse. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LBA_LISTADO = articuloSeed({
+  normaId: ID_LBA,
+  numero: '74 (listado positivo)',
+  titulo: 'Bienestar animal: tenencia fuera del listado positivo',
+  texto:
+    'La Ley 7/2023 establece un "listado positivo" de especies que pueden tenerse como animales de compañía; ' +
+    'la tenencia de una especie NO incluida (fauna silvestre o exótica no permitida) sin amparo legal se ' +
+    'tipifica como infracción (grave, art. 74; muy grave si es especie de especial protección), con la sanción ' +
+    'del art. 76 y, en su caso, el comiso del animal. El régimen transitorio y el apartado exacto deben ' +
+    'verificarse en el texto consolidado. Resumen orientativo; consúltese el BOE.',
+});
+
 export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_53,
   ART_LOEX_53_TRABAJO,
@@ -257,10 +368,19 @@ export const ARTICULOS_EXTRANJERIA_LOCAL_SEED: Articulo[] = [
   ART_LOEX_4,
   ART_LOEX_58_3_A,
   ART_LOEX_53_1_G,
+  ART_LOEX_53_1_C,
+  ART_LOEX_53_1_D,
+  ART_LOEX_53_1_F,
+  ART_LOEX_54_1_A,
+  ART_LOEX_54_1_B,
+  ART_LOEX_54_1_F,
   ART_PPP_13,
   ART_LBA_ABANDONO,
   ART_LBA_IDENTIFICACION,
   ART_LBA_MALTRATO,
+  ART_LBA_COMERCIO,
+  ART_LBA_ESPECTACULOS,
+  ART_LBA_LISTADO,
 ];
 
 // --- Constructor de una infracción administrativa con sus sinónimos y consecuencias ---------
@@ -793,7 +913,7 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     articulo: ART_LBA_ABANDONO,
     tituloCorto: 'Abandono de un animal de compañía',
     gravedad: 'grave',
-    // Ley 7/2023 art. 80: graves 10.001-50.000 €. Mínimo del tramo como referencia.
+    // Ley 7/2023 art. 76: graves 10.001-50.000 €. Mínimo del tramo como referencia.
     importeEur: 10001,
     importeReducidoEur: null,
     textoBoletin:
@@ -819,12 +939,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la recogida e intervención cautelar del animal y su puesta a disposición del ' +
           'servicio o autoridad competente (Ley 7/2023).',
-        fuente: 'Ley 7/2023 art. 80',
+        fuente: 'Ley 7/2023 art. 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR clasificación (leve/grave/muy grave, arts. 74-76) e importe del art. 80 (grave ' +
+      'A VERIFICAR clasificación (leve/grave/muy grave, arts. 74-76) e importe del art. 76 (grave ' +
       '10.001-50.000 €, el seed fija el mínimo). Punto SENSIBLE: deslinde con el art. 340 ter CP (abandono ' +
       'con riesgo para la vida/integridad = delito). Revisor jurídico obligatorio.',
   }),
@@ -856,12 +976,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede requerir la documentación e identificación del animal y de la persona responsable; la ' +
           'subsanación (implantar el microchip/registrar) no siempre excluye la sanción.',
-        fuente: 'Ley 7/2023 arts. 74 y 80',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la frontera leve/grave y el importe del art. 80 (el seed usa el mínimo grave 10.001 €; ' +
+      'A VERIFICAR la frontera leve/grave y el importe del art. 76 (el seed usa el mínimo grave 10.001 €; ' +
       'podría ser leve 500 € si es subsanable). Deslindar del CENSO municipal (`ord-sctf-perro-sin-censar`): ' +
       'esta es la identificación ESTATAL. La Ley 7/2023 amplía la identificación a más especies. Revisor.',
   }),
@@ -896,14 +1016,14 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la intervención cautelar del animal cuando su permanencia con el responsable ' +
           'entrañe riesgo (Ley 7/2023).',
-        fuente: 'Ley 7/2023 arts. 75 y 80',
+        fuente: 'Ley 7/2023 arts. 75 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
       'Punto SENSIBLE: el deslinde con el art. 340 bis CP (la frontera es "lesión que requiere tratamiento ' +
       'veterinario / menoscabo grave"). No solaparse con la ficha penal `del-maltrato-animal`. A VERIFICAR ' +
-      'clasificación e importe del art. 80. Revisor jurídico obligatorio.',
+      'clasificación e importe del art. 76. Revisor jurídico obligatorio.',
   }),
   construirInfraccion({
     id: 'animal-vehiculo-terraza-riesgo',
@@ -936,12 +1056,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Ante riesgo inminente, procede valorar el rescate e intervención cautelar del animal y su puesta ' +
           'a disposición de la autoridad o servicios competentes; actuación según la urgencia.',
-        fuente: 'Ley 7/2023 arts. 75 y 80',
+        fuente: 'Ley 7/2023 arts. 75 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'Ficha SENSIBLE por el componente de URGENCIA. A VERIFICAR clasificación e importe (art. 80) y el ' +
+      'Ficha SENSIBLE por el componente de URGENCIA. A VERIFICAR clasificación e importe (art. 76) y el ' +
       'deslinde penal (riesgo para la vida → 340 ter; lesión/muerte → 340 bis CP). Revisor jurídico.',
   }),
   construirInfraccion({
@@ -972,12 +1092,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede valorar la intervención cautelar del animal cuando las condiciones entrañen riesgo para ' +
           'su salud (Ley 7/2023).',
-        fuente: 'Ley 7/2023 arts. 74, 75 y 80',
+        fuente: 'Ley 7/2023 arts. 74, 75 y 76',
       },
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la frontera leve/grave y el importe (art. 80; el seed usa el mínimo grave). Deslinde con ' +
+      'A VERIFICAR la frontera leve/grave y el importe (art. 76; el seed usa el mínimo grave). Deslinde con ' +
       'el maltrato (`animal-maltrato-sin-lesion`) y con el delito 340 bis si hay menoscabo grave. Revisor.',
   }),
   construirInfraccion({
@@ -1120,6 +1240,475 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR el apartado e importe (art. 13.5, mínimo grave 300,52 €); condiciones de transporte en el ' +
       'RD 287/2002. Revisor.',
+  }),
+  // --- OLA DE PARIDAD SPPLB (2026-09-14): EXTRANJERÍA (arts. 53/54) ------------------------------
+  construirInfraccion({
+    id: 'ext-ocultacion-dolosa-cambios',
+    articulo: ART_LOEX_53_1_C,
+    tituloCorto: 'Ocultación dolosa o falsedad en la comunicación de cambios',
+    gravedad: 'grave',
+    // LO 4/2000 art. 55.1.b: graves, multa de 501 a 10.000 €. Mínimo del tramo como referencia.
+    importeEur: 501,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Ocultar de forma DOLOSA o falsear los cambios de nacionalidad, estado civil o domicilio, o las demás ' +
+      'circunstancias determinantes de la situación laboral que obliga a comunicar el art. 31: infracción GRAVE ' +
+      'ADMINISTRATIVA (art. 53.1.c LO 4/2000). DESLINDE: la mera omisión o el retraso, sin dolo, es LEVE (art. ' +
+      '52.a). MENSAJE CLAVE: no es delito por sí sola ni procede detención penal; su tratamiento es ' +
+      'administrativo. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'ocultar datos extranjeria',
+      'falsear datos extranjeria',
+      'mentir en los datos de extranjeria',
+      'ocultacion dolosa cambios',
+      'falsedad estado civil extranjero',
+      'ocultar domicilio real extranjeria',
+      'datos falsos residencia',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y documentar el hecho; distinguir el olvido leve (52.a) de la ocultación DOLOSA ' +
+          'o falsedad (grave, 53.1.c). Vía administrativa; si hay falsedad documental valorar la frontera penal.',
+        fuente: 'LO 4/2000 arts. 53.1.c, 52.a y 31',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 53.1.c (ocultación dolosa/falsedad = grave) frente al 52.a (omisión/retraso = leve). ' +
+      'Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. Deslinde con la falsedad documental penal ' +
+      '(arts. 390 y ss. CP) cuando se aporten documentos falsos. Revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-incumplir-medidas-seguridad',
+    articulo: ART_LOEX_53_1_D,
+    tituloCorto: 'Incumplir las medidas de seguridad impuestas (presentación/alejamiento)',
+    gravedad: 'grave',
+    importeEur: 501,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Incumplir las medidas de seguridad pública impuestas de presentación periódica o de alejamiento de ' +
+      'fronteras o de núcleos de población concretados singularmente, cuando el extranjero esté sujeto a ellas: ' +
+      'infracción GRAVE ADMINISTRATIVA (art. 53.1.d LO 4/2000). Es la desatención de una medida YA acordada por ' +
+      'la autoridad, no una situación irregular. MENSAJE CLAVE: no es delito por sí sola ni procede detención ' +
+      'penal. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'no se presenta en comisaria',
+      'incumplir presentacion periodica',
+      'no cumple la medida de alejamiento extranjeria',
+      'salta la medida de seguridad extranjero',
+      'no acude a firmar extranjeria',
+      'incumplir medida cautelar extranjeria',
+      'medida de presentacion incumplida',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y comprobar en bases si el extranjero tiene medidas de presentación o ' +
+          'alejamiento en vigor y su incumplimiento; dar parte a la autoridad que las acordó. Vía administrativa.',
+        fuente: 'LO 4/2000 art. 53.1.d',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 53.1.d (incumplir medidas de presentación periódica/alejamiento por seguridad pública). ' +
+      'Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. Confirmar el alcance de las medidas y su ' +
+      'relación con los arts. 61-62 (medidas cautelares). Revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-actividades-orden-publico',
+    articulo: ART_LOEX_53_1_F,
+    tituloCorto: 'Actividades contrarias al orden público (grave)',
+    gravedad: 'grave',
+    importeEur: 501,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Participar en la realización de actividades contrarias al orden público previstas como GRAVES en la ' +
+      'normativa de protección de la seguridad ciudadana: infracción GRAVE ADMINISTRATIVA de extranjería (art. ' +
+      '53.1.f LO 4/2000). DESLINDE: si son actividades contrarias a la seguridad nacional o al orden público ' +
+      'calificadas como MUY GRAVES, la conducta pasa al art. 54.1.a. MENSAJE CLAVE: la sanción de extranjería es ' +
+      'administrativa y no prejuzga la responsabilidad penal separada que puedan tener los hechos. La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'extranjero altera el orden publico',
+      'actividades contra el orden publico extranjero',
+      'extranjero en disturbios',
+      'orden publico extranjeria',
+      'participar en desordenes extranjero',
+      'actividad contraria orden publico',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y documentar los hechos; la sanción de extranjería (grave, 53.1.f) es ' +
+          'administrativa y se acumula, en su caso, a la responsabilidad por la LO 4/2015 o penal de los hechos.',
+        fuente: 'LO 4/2000 arts. 53.1.f y 54.1.a',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 53.1.f (orden público GRAVE) frente al 54.1.a (seguridad nacional / orden público MUY ' +
+      'GRAVE). Tramo grave 501-10.000 € (55.1.b), el seed fija el mínimo. Punto SENSIBLE: no confundir la ' +
+      'sanción de extranjería con la de la LO 4/2015 ni con el delito. Revisor jurídico obligatorio.',
+  }),
+  construirInfraccion({
+    id: 'ext-actividades-seguridad-nacional',
+    articulo: ART_LOEX_54_1_A,
+    tituloCorto: 'Actividades contra la seguridad nacional u orden público (muy grave)',
+    gravedad: 'muy_grave',
+    // LO 4/2000 art. 55.1.c: muy graves, multa de 10.001 a 100.000 €. Mínimo del tramo como referencia.
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Participar en actividades contrarias a la seguridad nacional o que puedan perjudicar las relaciones de ' +
+      'España con otros países, o estar implicado en actividades contrarias al orden público previstas como MUY ' +
+      'GRAVES: infracción MUY GRAVE ADMINISTRATIVA de extranjería (art. 54.1.a LO 4/2000). Es la modalidad ' +
+      'agravada del art. 53.1.f. MENSAJE CLAVE: la sanción de extranjería es administrativa (multa o expulsión) ' +
+      'y no prejuzga la responsabilidad penal separada que puedan tener los hechos. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'extranjero seguridad nacional',
+      'actividad contra la seguridad del estado extranjero',
+      'extranjero orden publico muy grave',
+      'amenaza a la seguridad nacional extranjeria',
+      'implicado en actividades peligrosas extranjero',
+      'seguridad nacional extranjeria',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y dar parte a la autoridad competente; la sanción de extranjería (muy grave, ' +
+          '54.1.a) es administrativa y concurre, en su caso, con la responsabilidad penal separada de los hechos.',
+        fuente: 'LO 4/2000 art. 54.1.a',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 54.1.a (muy grave) y su deslinde con el 53.1.f (grave). Tramo muy grave 10.001-100.000 € ' +
+      '(55.1.c), el seed fija el mínimo. Punto SENSIBLE por su relación con el terrorismo y la seguridad del ' +
+      'Estado (posible vía penal). Revisor jurídico obligatorio.',
+  }),
+  construirInfraccion({
+    id: 'ext-favorecer-inmigracion-clandestina',
+    articulo: ART_LOEX_54_1_B,
+    tituloCorto: 'Favorecer con ánimo de lucro la inmigración clandestina (muy grave)',
+    gravedad: 'muy_grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Inducir, promover, favorecer o facilitar CON ÁNIMO DE LUCRO, individualmente o dentro de una ' +
+      'organización, la inmigración clandestina de personas en tránsito o con destino a España, siempre que el ' +
+      'hecho no constituya delito: infracción MUY GRAVE ADMINISTRATIVA (art. 54.1.b LO 4/2000). FRONTERA PENAL ' +
+      'CLAVE: cuando concurren los elementos del tipo, la ayuda a la entrada, tránsito o permanencia irregular ' +
+      'es DELITO del art. 318 bis CP (y, si hay explotación, trata del art. 177 bis CP), cuya calificación ' +
+      'corresponde a la autoridad judicial. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'favorecer inmigracion ilegal',
+      'ayudar a entrar sin papeles',
+      'trafico de personas administrativo',
+      'promover inmigracion clandestina',
+      'facilitar entrada ilegal',
+      'patera con animo de lucro',
+      'red de inmigracion ilegal',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y valorar los indicios: si hay ánimo de lucro y elementos del tipo, la vía es ' +
+          'PENAL (art. 318 bis CP; trata, 177 bis CP), no la mera sanción administrativa. Dar parte y coordinar.',
+        fuente: 'LO 4/2000 art. 54.1.b; arts. 318 bis y 177 bis CP',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR: art. 54.1.b (muy grave), tramo 10.001-100.000 € (55.1.c), el seed fija el mínimo. Punto MUY ' +
+      'SENSIBLE: la cláusula "siempre que no constituya delito" hace que en la práctica lo habitual sea la vía ' +
+      'PENAL del art. 318 bis CP (y trata, 177 bis CP). Confirmar el deslinde con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'ext-matrimonio-conveniencia',
+    articulo: ART_LOEX_54_1_F,
+    tituloCorto: 'Simular relación laboral con extranjero para papeles (muy grave)',
+    gravedad: 'muy_grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Simular con ánimo de lucro una relación laboral con un extranjero para facilitarle la obtención de ' +
+      'una autorización de residencia o trabajo: infracción MUY GRAVE ADMINISTRATIVA (art. 54.1.f LO ' +
+      '4/2000). DESLINDE IMPORTANTE: el "matrimonio de conveniencia" NO es esta infracción; se combate por ' +
+      'la vía de la nulidad / fraude de ley y, en su caso, por falsedad documental (arts. 390 y ss. CP) o ' +
+      'favorecimiento de la inmigración clandestina (art. 318 bis CP), no por el art. 54.1.f. MENSAJE ' +
+      'CLAVE: su tratamiento es administrativo, sin perjuicio de la posible vía penal. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'matrimonio de conveniencia',
+      'boda por papeles',
+      'casarse por los papeles',
+      'matrimonio fraudulento extranjeria',
+      'simular relacion laboral extranjero',
+      'contrato falso para papeles',
+      'matrimonio blanco',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y documentar los indicios de simulación de la relación laboral ficticia ' +
+          'para el expediente; vía administrativa, con posible frontera penal por falsedad documental o 318 bis.',
+        fuente: 'LO 4/2000 art. 54.1.f',
+      },
+    ],
+    marcoImporte: 'extranjeria',
+    notaRevision:
+      'A VERIFICAR (SENSIBLE): el apartado exacto —art. 54.1.f (simular relación laboral con ánimo de lucro)— y ' +
+      'su encaje con los "matrimonios de conveniencia", que la doctrina y la jurisprudencia tratan de forma ' +
+      'específica (posible fraude de ley / falsedad documental, arts. 390 y ss. CP). Tramo muy grave ' +
+      '10.001-100.000 € (55.1.c), el seed fija el mínimo. Confirmar la calificación con el revisor jurídico.',
+  }),
+  // --- OLA DE PARIDAD SPPLB (2026-09-14): ANIMALES (Ley 50/1999 y Ley 7/2023) --------------------
+  construirInfraccion({
+    id: 'ppp-adiestramiento-ataque',
+    articulo: ART_PPP_13,
+    tituloCorto: 'Adiestrar un PPP para el ataque o las peleas',
+    gravedad: 'muy_grave',
+    // Ley 50/1999 art. 13.5: muy graves, de 2.404,06 a 15.025,30 €. Mínimo del tramo.
+    importeEur: 2404.06,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Adiestrar a un animal potencialmente peligroso para activar su agresividad, para el ataque o para ' +
+      'finalidades prohibidas, así como adiestrarlo sin la habilitación oficial exigida: infracción MUY GRAVE de ' +
+      'la Ley 50/1999 (art. 13.1). DESLINDE PENAL: organizar o participar en PELEAS de perros puede ser DELITO ' +
+      'del art. 340 bis CP, cuya calificación corresponde a la autoridad judicial. La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'adiestrar perro para atacar',
+      'entrenar perro para pelea',
+      'perro adiestrado para el ataque',
+      'adiestramiento de ataque ppp',
+      'perro de pelea',
+      'entrenar pitbull para pelear',
+      'adiestrar para agresividad',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del animal y dar parte; si hay peleas organizadas, valorar ' +
+          'la frontera penal (art. 340 bis CP).',
+        fuente: 'Ley 50/1999 art. 13; art. 340 bis CP',
+      },
+    ],
+    marcoImporte: 'animales',
+    notaRevision:
+      'A VERIFICAR: adiestramiento para el ataque/finalidades prohibidas como MUY GRAVE (Ley 50/1999 art. 13.1), ' +
+      'tramo 2.404,06-15.025,30 € (art. 13.5), el seed fija el mínimo. Deslinde PENAL con el art. 340 bis CP ' +
+      '(peleas de animales) para no solaparse con la ficha penal. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-venta-ilegal',
+    articulo: ART_LBA_COMERCIO,
+    tituloCorto: 'Venta o comercio ilegal de animales',
+    gravedad: 'grave',
+    // Ley 7/2023 art. 76: graves 10.001-50.000 €. Mínimo del tramo como referencia.
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Vender animales de compañía de forma ambulante, en establecimientos no autorizados o por criadores no ' +
+      'registrados, o criarlos con fines comerciales sin la inscripción exigida: infracción de la Ley 7/2023. La ' +
+      'venta de perros, gatos y hurones en tiendas está restringida y la cría comercial requiere registro. La ' +
+      'valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'venta ilegal de animales',
+      'vender cachorros en la calle',
+      'venta ambulante de perros',
+      'criadero ilegal',
+      'vender mascotas sin licencia',
+      'venta de animales por internet',
+      'comprar perro sin papeles',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede identificar al vendedor, requerir la documentación y valorar la intervención cautelar de los ' +
+          'animales ofrecidos ilegalmente, poniéndolos a disposición de la autoridad competente (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR (SENSIBLE): el apartado exacto y la clasificación (grave art. 74 o muy grave art. 75) de la ' +
+      'venta ambulante / comercio no autorizado / cría sin registro; importe del art. 76 (grave 10.001-50.000 €, ' +
+      'el seed fija el mínimo). Concurre normativa AUTONÓMICA y de núcleos zoológicos. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-uso-espectaculos',
+    articulo: ART_LBA_ESPECTACULOS,
+    tituloCorto: 'Uso de animales en peleas o espectáculos que causan sufrimiento',
+    gravedad: 'muy_grave',
+    // Ley 7/2023 art. 76: muy graves 50.001-200.000 €. Mínimo del tramo como referencia.
+    importeEur: 50001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Utilizar animales en peleas o en espectáculos, atracciones u otras actividades que les causen sufrimiento ' +
+      'o sean contrarias a su bienestar, cuando estén prohibidos por la Ley 7/2023: infracción MUY GRAVE (art. ' +
+      '75). DESLINDE PENAL: organizar o participar en PELEAS de animales puede ser DELITO del art. 340 bis CP, ' +
+      'cuya calificación corresponde a la autoridad judicial. La valoración final corresponde a la autoridad ' +
+      'competente.',
+    terminos: [
+      'peleas de perros',
+      'peleas de gallos',
+      'animales en espectaculos',
+      'usar animales en atracciones',
+      'espectaculo con animales prohibido',
+      'exhibicion de animales con sufrimiento',
+      'pelea de animales',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar de los animales y dar parte; si hay peleas organizadas, la ' +
+          'vía puede ser PENAL (art. 340 bis CP). Coordinar con la autoridad competente.',
+        fuente: 'Ley 7/2023 arts. 75 y 76; art. 340 bis CP',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR (SENSIBLE): el apartado exacto (muy grave, art. 75) y el importe del art. 76 (muy grave ' +
+      '50.001-200.000 €, el seed fija el mínimo). Deslinde PENAL con el art. 340 bis CP (peleas de animales), ' +
+      'para no solaparse con la ficha penal. Excepciones (festejos tradicionales) a verificar. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-metodos-crueles',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Uso de collar eléctrico u otros métodos que causan daño',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Emplear con un animal collares eléctricos, de ahogo, de púas u otros instrumentos o métodos que le ' +
+      'causen daño, dolor o sufrimiento innecesario, prohibidos por la Ley 7/2023: infracción de la citada ley ' +
+      '(condiciones de mantenimiento y trato, art. 74). DESLINDE PENAL: si el método causa lesión que requiera ' +
+      'tratamiento veterinario o menoscabo grave, el hecho puede ser DELITO del art. 340 bis CP. La valoración ' +
+      'final corresponde a la autoridad competente.',
+    terminos: [
+      'collar electrico perro',
+      'collar de pinchos',
+      'collar de ahogo',
+      'metodos crueles con animales',
+      'castigar al perro con descargas',
+      'collar de castigo',
+      'instrumento que hace dano al animal',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede requerir la retirada del instrumento prohibido y valorar la intervención cautelar del animal ' +
+          'si su permanencia con el responsable entrañe riesgo (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR: la prohibición de collares eléctricos/de púas y su clasificación (leve/grave, arts. 74-76) e ' +
+      'importe del art. 76 (el seed usa el mínimo grave 10.001 €). Deslinde con el maltrato con lesión (delito, ' +
+      'art. 340 bis CP). Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-dejar-sin-atencion',
+    articulo: ART_LBA_MALTRATO,
+    tituloCorto: 'Dejar al animal solo o atado sin la atención necesaria',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Dejar a un animal de compañía sin la supervisión y atención necesarias durante un tiempo prolongado, o ' +
+      'mantenerlo atado de forma permanente o limitando gravemente su movimiento, incumpliendo la Ley 7/2023 ' +
+      '(que, por ejemplo, prohíbe dejar a los perros solos más del tiempo reglamentado). DESLINDE: si el animal ' +
+      'queda en situación de desamparo estable es ABANDONO (ficha `animal-abandono`) y, con riesgo para su vida, ' +
+      'puede ser DELITO del art. 340 ter CP. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'perro solo mucho tiempo',
+      'perro atado todo el dia',
+      'dejar al perro solo en casa',
+      'animal atado permanentemente',
+      'perro encadenado',
+      'dejar al perro sin atencion',
+      'perro atado sin moverse',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar del animal cuando la falta de atención entrañe riesgo para ' +
+          'su bienestar; distinguir de la recogida por abandono. (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR: la LETRA exacta del art. 74 NO es la del abandono (74.k); "dejar sin atención" puede ' +
+      'encajar en otra letra grave del art. 74 o incluso ser leve (art. 73) según la intensidad — fijar la ' +
+      'letra y la clasificación (leve/grave) contra el consolidado. Verificar también el límite temporal ' +
+      'reglamentario (p. ej. perros no más del tiempo reglamentado solos) e importe (art. 76; el seed usa el ' +
+      'mínimo grave 10.001 €). Deslinde con el ABANDONO (`animal-abandono`) y con el delito del art. 340 ter ' +
+      'CP. Revisor de animales.',
+  }),
+  construirInfraccion({
+    id: 'animal-especie-no-permitida',
+    articulo: ART_LBA_LISTADO,
+    tituloCorto: 'Tener una especie no incluida en el listado positivo',
+    gravedad: 'grave',
+    importeEur: 10001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Tener como animal de compañía una especie NO incluida en el "listado positivo" de la Ley 7/2023 (fauna ' +
+      'silvestre o exótica no permitida) sin amparo legal ni el régimen transitorio aplicable: infracción de la ' +
+      'citada ley (grave, art. 74; puede ser muy grave si es especie de especial protección o del catálogo de ' +
+      'invasoras). Puede proceder el comiso del animal. La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'tener un animal exotico',
+      'mascota exotica prohibida',
+      'animal silvestre en casa',
+      'especie no permitida como mascota',
+      'tener un reptil peligroso',
+      'animal fuera del listado positivo',
+      'mascota ilegal exotica',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede identificar al tenedor, comprobar si la especie está permitida o amparada por el régimen ' +
+          'transitorio y valorar el comiso y traslado del animal a un centro autorizado (Ley 7/2023).',
+        fuente: 'Ley 7/2023 arts. 74 y 76',
+      },
+    ],
+    marcoImporte: 'bienestar_animal',
+    notaRevision:
+      'A VERIFICAR: el desarrollo del listado positivo (pendiente de reglamento en parte) y el régimen ' +
+      'transitorio para animales ya tenidos; clasificación (grave art. 74 / muy grave si especie protegida o ' +
+      'invasora) e importe del art. 76 (el seed usa el mínimo grave 10.001 €). Concurre la Ley 42/2007 y el ' +
+      'catálogo de invasoras (RD 630/2013). Revisor de animales.',
   }),
 ];
 

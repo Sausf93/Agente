@@ -858,7 +858,122 @@ const ART_RGV_11 = articuloSeed({
     'conjunto contar con la autorización y documentación exigibles. Resumen orientativo; consúltese el BOE.',
 });
 
+// --- Artículos de la 3ª OLA DE TRÁFICO/TRANSPORTE (volumen de catálogo, 2026-09-14) ----------
+// Amplía el catálogo de calle acercándonos a la paridad con SPPLB (su fuerte es el volumen).
+// Cada artículo es un RESUMEN NEUTRO redactado por nosotros; el apartado/importe/puntos concretos
+// quedan "a verificar" en la nota de cada infracción.
+const ART_RGC_11 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '11',
+  titulo: 'Número de personas transportadas y su colocación',
+  texto:
+    'Regula que no se puede transportar un número de personas superior al de las plazas autorizadas del ' +
+    'vehículo ni en emplazamientos no acondicionados para ello (por ejemplo, en la caja de una furgoneta o ' +
+    'camión, en el maletero o en lugares que no ofrezcan garantías de seguridad). El exceso de ocupantes o el ' +
+    'transporte de personas fuera de los asientos habilitados es infracción de circulación y, cuando ' +
+    'comprometa la seguridad, puede ser grave (concordante con el art. 76 LSV). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_15 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '15',
+  titulo: 'Dimensiones de la carga y su señalización (V-20)',
+  texto:
+    'Regula la posición de la carga y sus dimensiones: cuándo la carga puede sobresalir del vehículo y la ' +
+    'obligación de señalizarla con el dispositivo reglamentario (señal V-20 y, de noche o con poca ' +
+    'visibilidad, luces) para hacerla visible al resto de usuarios. Transportar una carga que sobresale sin ' +
+    'la señalización reglamentaria, o que sobresale más de lo permitido, es infracción de circulación y ' +
+    'puede motivar la inmovilización hasta subsanar. Resumen orientativo; consúltese el texto consolidado y ' +
+    'la normativa de señalización de cargas.',
+});
+
+const ART_RGC_38 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '38',
+  titulo: 'Vehículos y usuarios excluidos de autopistas y autovías',
+  texto:
+    'Prohíbe la circulación por autopistas y autovías de determinados usuarios y vehículos: peatones, ' +
+    'animales, ciclos (con matices según la vía y su señalización), ciclomotores, vehículos de tracción ' +
+    'animal, vehículos de movilidad personal (VMP) y, en general, los que no puedan alcanzar la velocidad ' +
+    'mínima exigible. Acceder o circular por autovía o autopista con un vehículo o como usuario no ' +
+    'autorizado es infracción de circulación y entraña un riesgo elevado. Resumen orientativo; consúltese el ' +
+    'texto consolidado y la señalización aplicable.',
+});
+
+const ART_RGC_79 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '79',
+  titulo: 'Cambio de sentido de la marcha',
+  texto:
+    'Regula la maniobra de cambio de sentido: el conductor que pretenda invertir el sentido de su marcha ' +
+    'debe elegir un lugar adecuado y con visibilidad, advertir la maniobra con antelación y cerciorarse de ' +
+    'que no crea peligro ni obstáculo para otros usuarios; y tiene prohibido hacerlo en cambios de rasante, ' +
+    'curvas de visibilidad reducida, pasos a nivel, túneles, autopistas y autovías, y allí donde la ' +
+    'señalización lo prohíba. El cambio de sentido en lugar prohibido o sin las debidas garantías es ' +
+    'infracción de circulación (concordante con el art. 31 LSV). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_90 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '90',
+  titulo: 'Parada y estacionamiento en autopistas y autovías',
+  texto:
+    'Prohíbe, con carácter general, parar o estacionar en autopistas y autovías salvo en las zonas ' +
+    'habilitadas para ello (áreas de servicio y de descanso). Si el vehículo queda inmovilizado por avería o ' +
+    'emergencia, debe sacarse de la calzada al arcén o al lugar más seguro posible, preseñalizarlo y avisar. ' +
+    'Detenerse o estacionar en la calzada o el arcén de una autovía o autopista fuera de esos supuestos es ' +
+    'infracción de circulación por el elevado riesgo que genera. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_RGC_100 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '100',
+  titulo: 'Empleo de la luz de carretera y deslumbramiento',
+  texto:
+    'Regula el uso de la luz de carretera (larga) y el cambio a la de cruce (corta) para no deslumbrar a los ' +
+    'demás conductores: al cruzarse con otro vehículo, al circular detrás de otro a corta distancia y en ' +
+    'tramos suficientemente iluminados. Deslumbrar por no cambiar a la luz de cruce, o por llevar el ' +
+    'alumbrado mal reglado, dificulta la visión del resto de usuarios y es infracción de circulación. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_RGC_106 = articuloSeed({
+  normaId: ID_RGC,
+  numero: '106',
+  titulo: 'Alumbrado en condiciones meteorológicas o ambientales adversas',
+  texto:
+    'Obliga a emplear el alumbrado que corresponda (luz de cruce y, en su caso, las luces de niebla) cuando ' +
+    'existan condiciones meteorológicas o ambientales que disminuyan sensiblemente la visibilidad, como ' +
+    'niebla, lluvia intensa, nevada, nubes de humo o de polvo, con independencia de la hora, para ver y ser ' +
+    'visto. No encender el alumbrado en esas condiciones es infracción de circulación. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_VTC = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '140/141 (VTC y taxi)',
+  titulo: 'Infracciones en el arrendamiento con conductor (VTC) y el taxi',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte de viajeros el incumplimiento de las ' +
+    'condiciones específicas de los vehículos de arrendamiento con conductor (VTC) y del taxi: prestar el ' +
+    'servicio sin la preceptiva autorización o licencia, captar o recoger viajeros en la vía pública sin la ' +
+    'contratación previa exigible al VTC, o circular buscando clientes fuera de los supuestos permitidos. La ' +
+    'ausencia total de autorización es muy grave (ver `inf-transporte-sin-titulo`); las conductas de ' +
+    'captación/contratación indebida se gradúan como graves según el supuesto. La cuantía la concreta el ' +
+    'art. 143 LOTT y su reglamento (ROTT), además de la normativa autonómica y municipal del taxi y del VTC. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_SEED: Articulo[] = [
+  ART_RGC_11,
+  ART_RGC_15,
+  ART_RGC_38,
+  ART_RGC_79,
+  ART_RGC_90,
+  ART_RGC_100,
+  ART_RGC_106,
+  ART_LOTT_VTC,
   ART_RGC_98,
   ART_RGC_114,
   ART_RGC_130,
@@ -3908,6 +4023,497 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'ap. 15); reglamentario, señales de los agentes arts. 141-143 y prevalencia art. 133 RGC. (El art. ' +
       '143 RGC define "tipos de semáforos"; corregida la cita.) FRONTERA: desobediencia grave a la autoridad ' +
       '→ LO 4/2015 art. 36.6 o art. 556 CP; no confundir con el art. 383 CP (negativa a pruebas, ficha propia).',
+  }),
+  // === 3ª OLA DE TRÁFICO/TRANSPORTE (volumen vs SPPLB, 2026-09-14) ============================
+  // 15 conductas FRECUENTES de calle que faltaban, sin duplicar las 77 ya existentes. Fuente: RGC
+  // (RD 1428/2003), RGV (RD 2822/1998) y LOTT (Ley 16/1987) ya ingeridos + cuadro DGT. TODO queda
+  // `pendiente_revision`; el apartado/importe/gravedad/puntos dudosos van marcados "a verificar".
+  // --- Maniobras y colocación en la vía ------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-cambio-sentido-prohibido',
+    articulo: ART_RGC_79,
+    tituloCorto: 'Cambio de sentido en lugar prohibido',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Realizar el cambio de sentido de la marcha en un lugar prohibido o sin las debidas garantías: en ' +
+      'cambio de rasante, curva de visibilidad reducida, túnel, paso a nivel, autovía o autopista, o donde ' +
+      'la señalización lo prohíbe, o sin advertir la maniobra y cerciorarse de que no crea peligro (art. 79 ' +
+      'RGC). No confundir con el cambio de sentido que invade el sentido contrario o con circular en sentido ' +
+      'contrario (ficha propia, más grave).',
+    terminos: [
+      'cambio de sentido prohibido',
+      'cambio de sentido donde no se puede',
+      'dar la vuelta prohibida',
+      'giro en u',
+      'giro en u prohibido',
+      'cambiar de sentido en linea continua',
+      'media vuelta antirreglamentaria',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR contra el codificado DGT el precepto sancionador y la GRAVEDAD por supuesto (art. 79 RGC / ' +
+      'art. 76 LSV): el cambio de sentido antirreglamentario se cita como GRAVE (200 €); el seed lo ancla ahí. ' +
+      'A VERIFICAR los PUNTOS (el seed fija 0 por prudencia; algún supuesto podría detraer 3). Si el cambio de ' +
+      'sentido equivale a invadir el sentido contrario, valorar reconducir a `inf-sentido-contrario` (muy grave). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vehiculo-no-autorizado-autovia',
+    articulo: ART_RGC_38,
+    tituloCorto: 'Vehículo o usuario no autorizado en autovía/autopista',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Acceder o circular por autopista o autovía con un vehículo o como usuario no autorizado: peatón, ' +
+      'animal, ciclomotor, vehículo de tracción animal, vehículo de movilidad personal (patinete) y, en ' +
+      'general, los vehículos que no puedan alcanzar la velocidad mínima exigible (art. 38 RGC). Es infracción ' +
+      'de circulación por el elevado riesgo que genera.',
+    terminos: [
+      'patinete en autovia',
+      'peaton en autopista',
+      'ciclomotor en autovia',
+      'circular por autovia sin poder',
+      'vehiculo no autorizado en autopista',
+      'andar por la autovia',
+      'meterse en la autovia con patinete',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el precepto sancionador y la GRAVEDAD por tipo de usuario/vehículo contra el codificado DGT ' +
+      '(art. 38 RGC / art. 76 LSV): el seed ancla GRAVE (200 €) por prudencia. A VERIFICAR los PUNTOS (el seed ' +
+      'fija 0). Distinguir del peatón por autovía como mera infracción de peatón (importe menor). Revisar por supuesto.',
+  }),
+  construirInfraccion({
+    id: 'inf-personas-lugar-no-acondicionado',
+    articulo: ART_RGC_11,
+    tituloCorto: 'Transportar personas en lugar no acondicionado',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Transportar personas en un emplazamiento del vehículo no acondicionado ni autorizado para ello: en la ' +
+      'caja de una furgoneta o camión, en el maletero, en el remolque o en cualquier lugar que no ofrezca ' +
+      'garantías de seguridad (art. 11 RGC). Distinto del mero exceso de ocupantes sobre las plazas ' +
+      'autorizadas (ver `inf-exceso-ocupantes`): aquí lo determinante es el lugar peligroso.',
+    terminos: [
+      'personas en la caja del camion',
+      'gente en el maletero',
+      'llevar personas en la furgoneta detras',
+      'pasajeros sin asiento',
+      'transportar personas en el remolque',
+      'gente en la parte de carga',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el precepto y la GRAVEDAD contra el codificado DGT (art. 11 RGC / art. 76 LSV): transportar ' +
+      'personas en lugar no acondicionado se cita como GRAVE (200 €); el seed lo ancla ahí por prudencia. A ' +
+      'VERIFICAR los PUNTOS (el seed fija 0). No solaparlo con `inf-exceso-ocupantes` (exceso sobre plazas). Revisar.',
+  }),
+  // --- Estado, equipamiento y carga del vehículo ---------------------------------------------
+  construirInfraccion({
+    id: 'inf-carga-sobresale-sin-senalizar',
+    articulo: ART_RGC_15,
+    tituloCorto: 'Carga que sobresale sin señalizar (V-20)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Transportar una carga que sobresale del vehículo sin la señalización reglamentaria (señal V-20 y, de ' +
+      'noche o con poca visibilidad, luces), o que sobresale más de lo permitido (art. 15 RGC). Distinto de la ' +
+      'carga mal estibada o sin sujeción (ver `inf-sujecion-carga`): aquí el problema es la falta de ' +
+      'señalización o el exceso de dimensiones de la carga.',
+    terminos: [
+      'carga que sobresale',
+      'carga sin señalizar',
+      'sin la señal v20',
+      'v-20',
+      'carga larga sin marcar',
+      'hierros sobresaliendo',
+      'transportar algo que sobresale',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se señalice o reduzca la carga que ' +
+          'sobresale, cuando suponga un riesgo para la circulación (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR contra el codificado DGT el precepto (art. 15 RGC / normativa de señalización de cargas) y ' +
+      'la GRAVEDAD por supuesto: la carga que sobresale sin señalizar se cita como GRAVE (200 €); el seed lo ' +
+      'ancla ahí. A VERIFICAR los PUNTOS (el seed fija 0) y el límite de dimensiones aplicable. Distinguir de la ' +
+      'mala estiba (`inf-sujecion-carga`). Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-reforma-sin-homologar',
+    articulo: ART_RGV_7,
+    tituloCorto: 'Reforma del vehículo sin homologar ni legalizar',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con una reforma de importancia del vehículo que altera sus características sin estar ' +
+      'homologada, aprobada y anotada en la documentación (ficha técnica): cambios de motor, suspensión, ' +
+      'llantas/neumáticos, carrocería, potencia, etc. (art. 7 RGV; RD 866/2010 de reformas de vehículos). ' +
+      'Distinto de los supuestos específicos ya sembrados (lunas tintadas, escape/ruido, luces no homologadas): ' +
+      'aquí se trata de la reforma no legalizada en general.',
+    terminos: [
+      'reforma sin homologar',
+      'coche modificado sin papeles',
+      'sin legalizar la reforma',
+      'reforma no anotada en la ficha tecnica',
+      'modificacion no homologada',
+      'tuning ilegal',
+      'cambio de motor sin legalizar',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se legalice o retire la reforma no ' +
+          'homologada, cuando afecte a la seguridad (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el precepto y la GRAVEDAD contra el codificado DGT (art. 7 RGV; RD 866/2010 y Manual de ' +
+      'Reformas): la reforma de importancia sin legalizar se cita como GRAVE (200 €); el seed lo ancla ahí. A ' +
+      'VERIFICAR los PUNTOS (el seed fija 0) y que no solape con las fichas específicas (lunas, escape, luces). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-frenos-direccion-deficientes',
+    articulo: ART_RGV_12,
+    tituloCorto: 'Frenos o dirección en mal estado',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Circular con el sistema de frenado o de dirección en deficientes condiciones o sin reunir las ' +
+      'condiciones técnicas reglamentarias, comprometiendo la seguridad (RGV, condiciones técnicas del ' +
+      'vehículo). Distinto de los neumáticos en mal estado (ver `inf-neumaticos-mal-estado`).',
+    terminos: [
+      'frenos en mal estado',
+      'sin frenos',
+      'frenos deficientes',
+      'direccion en mal estado',
+      'coche que no frena bien',
+      'holgura en la direccion',
+      'fallo de frenos circulando',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el estado de los frenos o la dirección ' +
+          'suponga un riesgo grave para la seguridad, hasta que se subsane (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR el precepto sancionador exacto (RGV / condiciones técnicas y Manual de Procedimiento de ITV) ' +
+      'y la GRAVEDAD contra el codificado DGT: el seed ancla GRAVE (200 €). A VERIFICAR los PUNTOS (el seed fija ' +
+      '0) y si el riesgo manifiesto eleva la clasificación. Confirmar antes de publicar.',
+  }),
+  // --- Alumbrado (uso) -----------------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-deslumbrar-luz-larga',
+    articulo: ART_RGC_100,
+    tituloCorto: 'Deslumbrar por no cambiar a la luz de cruce',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: 0,
+    textoBoletin:
+      'Deslumbrar a otros conductores por no cambiar la luz de carretera (larga) a la de cruce (corta) al ' +
+      'cruzarse con otro vehículo, al circular detrás de otro a corta distancia o en tramos suficientemente ' +
+      'iluminados, o por llevar el alumbrado mal reglado (art. 100 RGC).',
+    terminos: [
+      'deslumbrar',
+      'luces largas deslumbrando',
+      'no bajar las luces',
+      'no dar las cortas',
+      'circular con largas en ciudad',
+      'faros mal reglados deslumbrando',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR contra el codificado DGT el precepto (art. 100 RGC) y la GRAVEDAD: el mal uso del alumbrado ' +
+      'suele citarse como LEVE (el seed ancla 100 €); ciertos supuestos de deslumbramiento peligroso podrían ' +
+      'graduarse como GRAVE. A VERIFICAR los PUNTOS (el seed fija 0). Revisar por supuesto antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-alumbrado-lluvia-niebla',
+    articulo: ART_RGC_106,
+    tituloCorto: 'No usar el alumbrado con niebla, lluvia o poca visibilidad',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: 0,
+    textoBoletin:
+      'No emplear el alumbrado que corresponde (luz de cruce y, en su caso, luces de niebla) cuando las ' +
+      'condiciones meteorológicas o ambientales reducen sensiblemente la visibilidad —niebla, lluvia intensa, ' +
+      'nieve, humo o polvo—, con independencia de la hora (art. 106 RGC). Distinto del alumbrado deficiente ' +
+      'por avería (ver `inf-alumbrado-deficiente`) y del alumbrado en túnel (ver `inf-alumbrado-tunel`).',
+    terminos: [
+      'sin luces con niebla',
+      'sin luces con lluvia',
+      'no encender las luces con niebla',
+      'circular sin luces con mala visibilidad',
+      'sin luces de niebla',
+      'sin alumbrado con lluvia intensa',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR contra el codificado DGT el precepto (art. 106 RGC) y la GRAVEDAD: no usar el alumbrado en ' +
+      'condiciones de baja visibilidad suele citarse como LEVE (el seed ancla 100 €). A VERIFICAR los PUNTOS ' +
+      '(el seed fija 0). No solapar con `inf-alumbrado-deficiente` (avería) ni `inf-alumbrado-tunel`. Revisar.',
+  }),
+  // --- Parada/estacionamiento en vías rápidas ------------------------------------------------
+  construirInfraccion({
+    id: 'inf-parar-autovia',
+    articulo: ART_RGC_90,
+    tituloCorto: 'Parar o estacionar en autovía/autopista',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Parar o estacionar en la calzada o el arcén de una autopista o autovía fuera de las zonas habilitadas ' +
+      '(áreas de servicio y de descanso) y de los supuestos de emergencia, sin sacar el vehículo al lugar más ' +
+      'seguro ni preseñalizarlo (art. 90 RGC). Es infracción de circulación por el elevado riesgo que genera. ' +
+      'Distinto de la parada en lugar peligroso general (ver `inf-parada-lugar-peligroso`).',
+    terminos: [
+      'parar en autovia',
+      'parado en la autopista',
+      'estacionar en autovia',
+      'detenerse en el arcen de la autovia',
+      'coche parado en autopista',
+      'parar en la calzada de la autovia',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR contra el codificado DGT el precepto (art. 90 RGC) y la GRAVEDAD por supuesto: parar/estacionar ' +
+      'en autovía o autopista se cita como GRAVE (200 €); el seed lo ancla ahí. A VERIFICAR los PUNTOS (el seed ' +
+      'fija 0). Valorar si la detención en la calzada con riesgo puede escalar a temeraria (art. 380 CP). Revisar.',
+  }),
+  // --- Seguridad pasiva (SRI desglosado) -----------------------------------------------------
+  construirInfraccion({
+    id: 'inf-menor-asiento-delantero',
+    articulo: ART_RGC_117,
+    tituloCorto: 'Menor en asiento delantero sin cumplir los requisitos',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
+    textoBoletin:
+      'Circular con un menor de edad de estatura igual o inferior a 135 cm ocupando el asiento delantero sin ' +
+      'cumplir los requisitos legales (por regla general debe viajar en los asientos traseros con el sistema ' +
+      'de retención infantil adecuado a su talla y peso), fuera de las excepciones tasadas (art. 117 RGC). ' +
+      'Distinto de circular sin ningún sistema de retención infantil (ver `inf-menor-sin-sri`).',
+    terminos: [
+      'niño en el asiento de delante',
+      'menor delante sin sillita',
+      'niño delante',
+      'menor en el asiento delantero',
+      'llevar al niño delante',
+      'niño copiloto sin sillita',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'GRAVE (200 €) y 4 PUNTOS conforme al Anexo II LSV, reformado por la Ley 18/2021 (en vigor ' +
+      '21/03/2022), que elevó de 3 a 4 los puntos por no usar/usar mal cinturón, SRI, casco y demás ' +
+      'elementos de protección. A VERIFICAR contra el codificado DGT el apartado exacto del art. 117 RGC ' +
+      'y las EXCEPCIONES (talla ≤135 cm, ocupación de plazas traseras, desactivación del airbag). Si el ' +
+      'código DGT del supuesto "asiento delantero con SRI" fuera de solo multa, serían 0 puntos; en ningún ' +
+      'caso 3 (valor previo a la reforma). No solapar con `inf-menor-sin-sri`. Revisar antes de publicar.',
+  }),
+  // --- Transporte (LOTT) ---------------------------------------------------------------------
+  construirInfraccion({
+    id: 'inf-tiempos-conduccion-descanso',
+    articulo: ART_LOTT_140,
+    tituloCorto: 'Exceso de tiempos de conducción o falta de descanso',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Incumplir los tiempos de conducción y los periodos de descanso del Reglamento (CE) 561/2006: superar ' +
+      'el tiempo máximo de conducción diaria o continuada, o no respetar los descansos obligatorios. Es ' +
+      'infracción de la LOTT, sancionable con multa y con la posibilidad de inmovilizar el vehículo hasta que ' +
+      'se cumpla el descanso. Distinto de la manipulación del tacógrafo (ver `inf-tacografo`). La valoración ' +
+      'final corresponde a la autoridad competente.',
+    terminos: [
+      'exceso de tiempo de conduccion',
+      'sin descanso obligatorio',
+      'conducir mas horas de las permitidas',
+      'no respetar el descanso del camion',
+      'exceso de jornada del camionero',
+      'sin parar a descansar',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que el conductor cumpla el periodo de ' +
+          'descanso obligatorio, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto del art. 140/141 LOTT (reformado por la Ley 13/2021) y la GRAVEDAD por ' +
+      'magnitud del exceso contra el texto consolidado y el ROTT: el exceso grave de tiempos y la falta de ' +
+      'descanso se citan como MUY GRAVE; el seed ancla la horquilla 2.001–4.000 € como referencia, A VERIFICAR ' +
+      'el tramo efectivo por supuesto. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+  }),
+  construirInfraccion({
+    id: 'inf-tacografo-tarjeta-ajena',
+    articulo: ART_LOTT_140,
+    tituloCorto: 'Usar la tarjeta de tacógrafo de otro conductor',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Utilizar en el tacógrafo la tarjeta de conductor de otra persona, o conducir sin insertar la tarjeta ' +
+      'para ocultar los tiempos reales de conducción y descanso: es una forma de falseamiento de los datos del ' +
+      'tacógrafo. Es infracción muy grave de la LOTT. Distinto de no llevar/no conservar las hojas o registros ' +
+      '(ver `inf-tacografo-sin-registros`, grave). La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'tarjeta de tacografo de otro',
+      'usar la tarjeta de otro conductor',
+      'tarjeta ajena del tacografo',
+      'conducir con la tarjeta de un compañero',
+      'ocultar horas con otra tarjeta',
+      'tacografo con tarjeta de otro',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo conforme al régimen sancionador de ' +
+          'la LOTT, sin perjuicio de las responsabilidades por falseamiento.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto del art. 140 LOTT (falseamiento/mal uso del tacógrafo; Reglamento (UE) ' +
+      '165/2014) y si concurre además responsabilidad penal por falsedad. El seed ancla MUY GRAVE con horquilla ' +
+      '2.001–4.000 €; A VERIFICAR el tramo efectivo por supuesto contra el texto consolidado y el ROTT. Sin pronto ' +
+      'pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-limitador-velocidad',
+    articulo: ART_LOTT_140,
+    tituloCorto: 'Limitador de velocidad manipulado o ausente',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Circular con el limitador de velocidad manipulado, desconectado o inexistente en los vehículos ' +
+      'obligados a llevarlo (camiones y autobuses), de forma que no cumpla su función de limitar la velocidad ' +
+      'máxima. Es infracción muy grave de la LOTT, con la posibilidad de inmovilizar o precintar el vehículo. ' +
+      'La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'limitador de velocidad manipulado',
+      'sin limitador',
+      'limitador desconectado',
+      'camion sin limitador',
+      'trucar el limitador',
+      'autobus con el limitador anulado',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización o el precinto del vehículo hasta que se restablezca el ' +
+          'limitador de velocidad, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto del art. 140 LOTT (manipulación del limitador/tacógrafo y sus elementos) ' +
+      'contra el texto consolidado y el ROTT. El seed ancla MUY GRAVE con horquilla 2.001–4.000 €; A VERIFICAR ' +
+      'el tramo efectivo por supuesto. Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-carta-porte',
+    articulo: ART_LOTT_142_DOCS,
+    tituloCorto: 'Mercancías sin carta de porte ni documento de control',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: null,
+    importeMaxEur: 300,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte de mercancías sin llevar a bordo la carta de porte u otro documento de control que ' +
+      'ampare la expedición, o no exhibirlo a la inspección. Es, por lo general, infracción leve de la LOTT, ' +
+      'subsanable. Distinto de carecer del título habilitante (ver `inf-transporte-sin-titulo`, muy grave) y ' +
+      'de no exhibir la tarjeta de transporte (ver `inf-documentacion-control`).',
+    terminos: [
+      'sin carta de porte',
+      'camion sin carta de porte',
+      'sin documento de control de la mercancia',
+      'sin albaran de transporte',
+      'mercancia sin documentacion de porte',
+      'falta la carta de porte',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto del art. 142 LOTT (documentos de control; obligación de carta de porte, ' +
+      'Ley 15/2009 del contrato de transporte terrestre de mercancías) y la GRAVEDAD contra el texto consolidado ' +
+      'y el ROTT: el seed ancla LEVE con horquilla 100–400 € por prudencia; A VERIFICAR el importe efectivo. Sin ' +
+      'pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-vtc-captacion',
+    articulo: ART_LOTT_VTC,
+    tituloCorto: 'VTC captando o recogiendo viajeros indebidamente',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: null,
+    importeMaxEur: 800,
+    puntos: null,
+    textoBoletin:
+      'Prestar servicio con un vehículo de arrendamiento con conductor (VTC) captando o recogiendo viajeros en ' +
+      'la vía pública sin la contratación previa exigible, o circulando en busca de clientes fuera de los ' +
+      'supuestos permitidos. Distinto de carecer por completo de la autorización VTC/taxi (ver ' +
+      '`inf-transporte-sin-titulo`, muy grave). La valoración final corresponde a la autoridad competente y a ' +
+      'la normativa autonómica y municipal del taxi y del VTC.',
+    terminos: [
+      'vtc captando clientes',
+      'vtc recogiendo en la calle',
+      'vtc sin contrato previo',
+      'uber sin contratacion previa',
+      'vtc buscando clientes',
+      'coger viajeros en la calle con vtc',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. 140-142), el ' +
+      'ROTT y, sobre todo, la NORMATIVA AUTONÓMICA/MUNICIPAL del taxi y del VTC (competencia transferida, RD-ley ' +
+      '13/2018): la captación indebida puede ser grave o muy grave según el supuesto y el territorio. El seed ' +
+      'ancla GRAVE con horquilla 601–800 € por prudencia; A VERIFICAR el importe y el precepto por territorio. ' +
+      'Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
   }),
 ];
 

@@ -745,6 +745,22 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-animal-suelto-habitaculo': 'traf-distracciones',
   'inf-apertura-puertas-apearse': 'traf-maniobras-senales',
   'inf-desobedecer-agente': 'traf-senales',
+  // 3ª ola de tráfico/transporte (2026-09-14): volumen de calle vs SPPLB.
+  'inf-cambio-sentido-prohibido': 'traf-maniobras-senales',
+  'inf-vehiculo-no-autorizado-autovia': 'traf-otras',
+  'inf-personas-lugar-no-acondicionado': 'traf-otras',
+  'inf-carga-sobresale-sin-senalizar': 'traf-estado-vehiculo',
+  'inf-reforma-sin-homologar': 'traf-estado-vehiculo',
+  'inf-frenos-direccion-deficientes': 'traf-estado-vehiculo',
+  'inf-deslumbrar-luz-larga': 'traf-estado-vehiculo',
+  'inf-alumbrado-lluvia-niebla': 'traf-estado-vehiculo',
+  'inf-parar-autovia': 'traf-estacionamiento',
+  'inf-menor-asiento-delantero': 'traf-seguridad-pasiva',
+  'inf-tiempos-conduccion-descanso': 'traf-transporte',
+  'inf-tacografo-tarjeta-ajena': 'traf-transporte',
+  'inf-limitador-velocidad': 'traf-transporte',
+  'inf-carta-porte': 'traf-transporte',
+  'inf-vtc-captacion': 'traf-transporte',
   // Penal (taxonomía reestructurada 2026-09-14). Los delitos VIALES (del-alcoholemia-penal, etc.)
   // viven en la materia tráfico (traf-delitos), no aquí.
   // · Vida e integridad
@@ -755,6 +771,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-omision-socorro': 'pen-vida',
   'del-torturas': 'pen-vida',
   'del-trato-degradante': 'pen-vida',
+  'del-rina-tumultuaria': 'pen-vida',
   // · Libertad sexual y menores
   'del-agresion-sexual': 'pen-sexual',
   'del-agresion-sexual-menor': 'pen-sexual',
@@ -771,6 +788,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-violencia-genero': 'pen-libertad',
   'del-quebrantamiento': 'pen-libertad',
   'del-trata-seres-humanos': 'pen-libertad',
+  'del-amenazas-leves': 'pen-libertad',
   // · Patrimonio
   'del-hurto': 'pen-patrimonio',
   'del-robo-violencia': 'pen-patrimonio',
@@ -781,6 +799,12 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-usurpacion': 'pen-patrimonio',
   'del-receptacion': 'pen-patrimonio',
   'del-allanamiento-establecimiento': 'pen-patrimonio',
+  'del-robo-fuerza': 'pen-patrimonio',
+  'del-hurto-agravado': 'pen-patrimonio',
+  'del-danos-agravados': 'pen-patrimonio',
+  'del-apropiacion-indebida': 'pen-patrimonio',
+  'del-administracion-desleal': 'pen-patrimonio',
+  'del-defraudacion-fluido': 'pen-patrimonio',
   // · Autoridad, orden público y odio
   'del-atentado-agente': 'pen-autoridad',
   'del-resistencia-desobediencia': 'pen-autoridad',
@@ -795,6 +819,10 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-revelacion-secretos': 'pen-otros',
   'del-favorecimiento-inmigracion-ilegal': 'pen-otros',
   'del-falsedad-documental': 'pen-otros',
+  'del-armas-prohibidas': 'pen-otros',
+  'del-abandono-familia': 'pen-otros',
+  'del-calumnias-injurias': 'pen-otros',
+  'del-usurpacion-estado-civil': 'pen-otros',
   // Delito vial (materia tráfico vía override): la conducción con desprecio a la vida (381 CP)
   // se agrupa con los demás delitos contra la seguridad vial.
   'del-conduccion-temeraria-desprecio': 'traf-delitos',

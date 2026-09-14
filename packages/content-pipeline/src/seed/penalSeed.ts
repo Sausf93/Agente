@@ -642,7 +642,195 @@ const ART_CP_177_BIS = articuloCp({
     'inmigración ilegal (art. 318 bis). Resumen orientativo; consúltese el CP.',
 });
 
+// --- Artículos de la OLA DE PATRIMONIO Y CALLE (paridad SPPLB) 2026-09-14 ----------------------
+const ART_CP_238 = articuloCp({
+  numero: '238',
+  titulo: 'Robo con fuerza en las cosas',
+  texto:
+    'Son reos de robo con fuerza en las cosas (arts. 237 y 238) quienes ejecuten el hecho de ' +
+    'apoderarse de cosas muebles ajenas empleando alguno de estos medios: escalamiento; rompimiento ' +
+    'de pared, techo o suelo, o fractura de puerta o ventana; fractura de armarios, arcas u otra ' +
+    'clase de muebles u objetos cerrados o sellados, o forzamiento de sus cerraduras, o descubrimiento ' +
+    'de sus claves; uso de llaves falsas (incluidas las ganzúas, tarjetas magnéticas o perforadas y ' +
+    'mandos); o inutilización de sistemas específicos de alarma o guarda. La pena base es prisión de ' +
+    'uno a tres años (art. 240.1); se agrava con la mitad superior si concurre alguna circunstancia ' +
+    'del art. 235 (art. 240.2) y por el art. 241 cuando se comete en casa habitada, edificio público ' +
+    'o local abierto al público. Se distingue del hurto (sin fuerza) y del robo con violencia o ' +
+    'intimidación en las personas (art. 242). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_235 = articuloCp({
+  numero: '235',
+  titulo: 'Hurto agravado',
+  texto:
+    'Agrava el hurto (prisión de uno a tres años) cuando concurre alguna circunstancia del art. 235.1: ' +
+    'cosas de valor artístico, histórico, cultural o científico; cosas de primera necesidad con grave ' +
+    'situación de desabastecimiento; conducciones, cableado, equipos o componentes de infraestructuras ' +
+    'de suministro (luz, telecomunicaciones…); productos agrarios o ganaderos en instalaciones ' +
+    'destinadas a su explotación; especial gravedad por el valor de lo sustraído o los perjuicios; ' +
+    'aprovechamiento de las circunstancias personales de la víctima o de su situación de desamparo, o ' +
+    'abuso de las circunstancias de un accidente o infortunio; multirreincidencia (art. 235.1.7ª); o ' +
+    'uso de menores de dieciséis años. Si concurren dos o más, la pena se impone en su mitad superior ' +
+    '(art. 235.2). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_266 = articuloCp({
+  numero: '266',
+  titulo: 'Daños agravados (incendio, explosión o medios peligrosos)',
+  texto:
+    'Agrava los daños del art. 263 cuando se cometen por medios peligrosos: mediante incendio, ' +
+    'explosión o utilizando cualquier otro medio de similar potencia destructiva, o poniendo en ' +
+    'peligro la vida o la integridad de las personas (art. 266.1: prisión de uno a tres años y multa ' +
+    'de doce a veinticuatro meses). Los apartados 266.2 y 266.3 elevan la pena cuando se agravan por ' +
+    'el art. 264 (daños informáticos) o por el art. 265 (daños a bienes militares o de servicios ' +
+    'esenciales). Cuando además se pone en concreto peligro la vida o integridad de las personas, se ' +
+    'impone la pena en su mitad superior (art. 266.4). El incendio propiamente dicho (de edificios, ' +
+    'montes) tiene tipos propios (arts. 351 y ss.). Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_253 = articuloCp({
+  numero: '253',
+  titulo: 'Apropiación indebida',
+  texto:
+    'Castiga a quien, en perjuicio de otro, se apropia para sí o para un tercero de dinero, efectos, ' +
+    'valores o cualquier otra cosa mueble que hubiera recibido en depósito, comisión o custodia, o que ' +
+    'le hubiera sido confiada en virtud de cualquier otro título que produzca la obligación de ' +
+    'entregarla o devolverla, o niega haberla recibido (art. 253.1). La pena se fija por remisión al ' +
+    'art. 249 o al art. 250 (según cuantía y circunstancias): con carácter general, prisión de seis ' +
+    'meses a tres años. Si la cuantía no excede de 400 euros, es delito leve (multa, art. 253.2). Se ' +
+    'diferencia del hurto (no hay entrega previa) y de la administración desleal del art. 252 ' +
+    '(exceso en las facultades de administrar un patrimonio ajeno). Resumen orientativo; consúltese el CP.',
+});
+
+const ART_CP_252 = articuloCp({
+  numero: '252',
+  titulo: 'Administración desleal',
+  texto:
+    'Castiga a quienes, teniendo facultades para administrar un patrimonio ajeno emanadas de la ley, ' +
+    'encomendadas por la autoridad o asumidas mediante un negocio jurídico, las infrinjan excediéndose ' +
+    'en su ejercicio y, de ese modo, causen un perjuicio al patrimonio administrado (art. 252.1). La ' +
+    'pena se fija por remisión a los arts. 249 o 250 (prisión de seis meses a tres años con carácter ' +
+    'general). Si el perjuicio no excede de 400 euros, es delito leve (multa, art. 252.2). Se distingue ' +
+    'de la apropiación indebida (art. 253), que exige apropiación de cosa recibida, y de la estafa ' +
+    '(art. 248), que exige engaño. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_255 = articuloCp({
+  numero: '255',
+  titulo: 'Defraudación de fluido eléctrico y análogos',
+  texto:
+    'Castiga a quien comete defraudación utilizando energía eléctrica, gas, agua, telecomunicaciones u ' +
+    'otro elemento, energía o fluido ajenos, por alguno de estos medios: valiéndose de mecanismos ' +
+    'instalados para realizar la defraudación; alterando maliciosamente las indicaciones o aparatos ' +
+    'contadores; o empleando cualesquiera otros medios clandestinos (art. 255.1). La pena es multa de ' +
+    'tres a doce meses. Si la cuantía de lo defraudado no excede de 400 euros, es delito leve (multa de ' +
+    'uno a tres meses, art. 255.2). Es el tipo habitual de los "enganches" ilegales y del ' +
+    'autoconsumo eléctrico de cultivos indoor. Resumen orientativo; consúltese el texto consolidado.',
+});
+
+const ART_CP_563 = articuloCp({
+  numero: '563',
+  titulo: 'Depósito o tenencia de armas prohibidas',
+  texto:
+    'Castiga la tenencia de armas prohibidas y la de aquellas que sean resultado de la modificación ' +
+    'sustancial de las características de fabricación de armas reglamentadas (art. 563): prisión de uno ' +
+    'a tres años. Las armas prohibidas son las que define el Reglamento de Armas (RD 137/1993, art. 4: ' +
+    'p. ej. armas de fuego que sean resultado de transformar armas de fuego semiautomáticas en ' +
+    'automáticas, defensas eléctricas, sprays y aerosoles de defensa no autorizados, determinadas ' +
+    'armas blancas, etc.). Se distingue de la tenencia ilícita de armas de fuego REGLAMENTADAS sin ' +
+    'licencia (art. 564) y de la infracción administrativa del art. 36.10 LO 4/2015 (portar, exhibir ' +
+    'o usar armas prohibidas por la normativa, o armas de otra clase fuera del domicilio). El depósito ' +
+    'de armas de GUERRA se castiga aparte, con mayor pena (arts. 566-567). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_171 = articuloCp({
+  numero: '171',
+  titulo: 'Amenazas de un mal no constitutivo de delito y amenazas leves',
+  texto:
+    'El art. 171.1 castiga las amenazas de un mal que NO constituya delito cuando la amenaza es ' +
+    'condicional y la condición no consiste en una conducta debida (prisión de tres meses a un año o ' +
+    'multa de seis a veinticuatro meses, según se consiga o no el propósito). El chantaje (exigir una ' +
+    'cantidad amenazando con revelar hechos) se regula en el 171.2-3. El art. 171.4 castiga como ' +
+    'delito la AMENAZA LEVE a quien sea o haya sido esposa o mujer ligada por análoga relación de ' +
+    'afectividad, o a persona especialmente vulnerable que conviva con el autor (prisión de seis meses ' +
+    'a un año, ámbito de violencia de género/doméstica). El art. 171.7 (párrafo primero) castiga como ' +
+    'DELITO LEVE la amenaza leve a otras personas (multa de uno a tres meses); el párrafo segundo, la ' +
+    'amenaza leve en el ámbito del art. 173.2 (localización distinta de la del 171.4). Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_227 = articuloCp({
+  numero: '227',
+  titulo: 'Abandono de familia: impago de prestaciones económicas',
+  texto:
+    'Castiga a quien deja de pagar durante dos meses consecutivos o cuatro meses no consecutivos ' +
+    'cualquier tipo de prestación económica a favor de su cónyuge o de sus hijos, establecida en ' +
+    'convenio judicialmente aprobado o en resolución judicial en los supuestos de separación legal, ' +
+    'divorcio, declaración de nulidad del matrimonio, proceso de filiación o proceso de alimentos ' +
+    '(art. 227.1): prisión de tres meses a un año o multa de seis a veinticuatro meses. La misma pena ' +
+    'se impone a quien deje de pagar cualquier otra prestación económica establecida de forma conjunta ' +
+    'o única a favor de sus hijos (art. 227.2). La reparación del daño supone el pago de las cuantías ' +
+    'adeudadas (art. 227.3). Es un delito PERSEGUIBLE previa denuncia del agraviado o de su ' +
+    'representante legal (art. 228). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_205 = articuloCp({
+  numero: '205',
+  titulo: 'Calumnia e injuria',
+  texto:
+    'La CALUMNIA (art. 205) es la imputación de un delito hecha con conocimiento de su falsedad o ' +
+    'temerario desprecio hacia la verdad: se castiga con prisión de seis meses a dos años o multa de ' +
+    'doce a veinticuatro meses si se propaga con publicidad, y con multa de seis a doce meses en otro ' +
+    'caso (art. 206). La INJURIA (art. 208) es la acción o expresión que lesiona la dignidad de otra ' +
+    'persona, menoscabando su fama o su propia estimación; solo son delito las injurias graves y, las ' +
+    'que consisten en imputación de hechos, cuando se hacen con conocimiento de su falsedad o temerario ' +
+    'desprecio hacia la verdad: multa de seis a catorce meses si hay publicidad y de tres a siete meses ' +
+    'en otro caso (art. 209). Ambos son delitos PRIVADOS, perseguibles solo mediante querella del ' +
+    'ofendido (art. 215); las dirigidas contra funcionario público sobre hechos de su cargo pueden ' +
+    'perseguirse de oficio. NO confundir con el atentado, la resistencia o la desobediencia (arts. ' +
+    '550-556). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_401 = articuloCp({
+  numero: '401',
+  titulo: 'Usurpación del estado civil',
+  texto:
+    'Castiga a quien usurpare el estado civil de otro (art. 401): prisión de seis meses a tres años. ' +
+    'Consiste en hacerse pasar de forma permanente por otra persona real, arrogándose su identidad y ' +
+    'ejerciendo sus derechos y acciones (no basta con dar un nombre falso puntual). Se distingue de la ' +
+    'falsedad documental (arts. 390-399) y del uso de documento de identidad ajeno o falso (art. 392, ' +
+    'y art. 400 bis para el uso de documento auténtico por quien no está legitimado), así como de la ' +
+    'mera negativa a identificarse o la identificación falsa ante el agente, que puede ser infracción ' +
+    'administrativa (LO 4/2015). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_154 = articuloCp({
+  numero: '154',
+  titulo: 'Participación en riña tumultuaria',
+  texto:
+    'Castiga a quienes riñeren entre sí, acometiéndose tumultuariamente y utilizando medios o ' +
+    'instrumentos que pongan en peligro la vida o la integridad de las personas (art. 154): prisión de ' +
+    'tres meses a un año o multa de seis a veinticuatro meses. Es un delito de peligro que sanciona la ' +
+    'participación en la pelea confusa (típica pelea multitudinaria de ocio nocturno) cuando no puede ' +
+    'individualizarse quién causó cada lesión concreta; si consta la autoría de una lesión, se aplica el ' +
+    'delito de lesiones correspondiente (arts. 147-148). Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_238,
+  ART_CP_235,
+  ART_CP_266,
+  ART_CP_253,
+  ART_CP_252,
+  ART_CP_255,
+  ART_CP_563,
+  ART_CP_171,
+  ART_CP_227,
+  ART_CP_205,
+  ART_CP_401,
+  ART_CP_154,
   ART_CP_318_BIS,
   ART_CP_177_BIS,
   ART_CP_381,
@@ -2634,6 +2822,437 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'agravados; y el régimen de protección del art. 59 bis LO 4/2000 (periodo de restablecimiento y ' +
       'reflexión mínimo, exención de responsabilidad). DESLINDE: 177 bis protege a la persona; 318 bis ' +
       'protege el control de flujos. Lenguaje MUY orientativo y foco en la víctima. Doble revisión jurídica.',
+  }),
+  // === OLA DE PATRIMONIO Y CALLE (paridad SPPLB) — 2026-09-14 ==================================
+  // --- Robo con fuerza en las cosas (238/240): coche forzado, nave, trastero -------------------
+  construirDelito({
+    id: 'del-robo-fuerza',
+    articulo: ART_CP_238,
+    tituloCorto: 'Robo con fuerza en las cosas',
+    // Caso modelado: robo con fuerza básico del art. 240.1 → prisión de 1 a 3 años → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 3 años (art. 240.1 CP)',
+    textoBoletin:
+      'Apoderamiento de cosas muebles ajenas empleando FUERZA EN LAS COSAS: escalamiento, rompimiento ' +
+      'de pared/techo/suelo o fractura de puerta o ventana, forzamiento de cerraduras o de muebles ' +
+      'cerrados, uso de llaves falsas o ganzúas, o inutilización de alarmas (arts. 237-238 CP). Pena ' +
+      'base: prisión de 1 a 3 años (art. 240.1). FRONTERAS: sin fuerza ni violencia es HURTO (art. ' +
+      '234); si se emplea violencia o intimidación sobre las personas es robo del art. 242; si es en ' +
+      'casa habitada o local abierto al público, se agrava por el art. 241. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'robo con fuerza',
+      'robo en las cosas',
+      'coche forzado',
+      'me han forzado el coche',
+      'butron',
+      'escalo',
+      'reventar una cerradura',
+      'llaves falsas',
+      'robo en trastero',
+      'robo en nave',
+      'palanqueta',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y el encaje: robo con fuerza en las cosas (arts. 237-240 CP), pena ' +
+      'base prisión de 1 a 3 años (art. 240.1) → MENOS GRAVE; mitad superior si concurre circunstancia ' +
+      'del art. 235 (art. 240.2) y agravado del art. 241 (casa habitada, edificio público o local ' +
+      'abierto al público). DESLINDE con HURTO (234, sin fuerza) y con ROBO CON VIOLENCIA (242, sobre ' +
+      'las personas). Confirmar penas y medios comisivos del art. 238 contra el texto consolidado del CP.',
+  }),
+  // --- Hurto agravado (235): cableado, multirreincidencia, valor especial ----------------------
+  construirDelito({
+    id: 'del-hurto-agravado',
+    articulo: ART_CP_235,
+    tituloCorto: 'Hurto agravado',
+    // Caso modelado: hurto con circunstancia del art. 235.1 → prisión de 1 a 3 años → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 3 años (art. 235.1 CP)',
+    textoBoletin:
+      'Hurto (apoderamiento sin fuerza, violencia ni intimidación) que se AGRAVA a prisión de 1 a 3 ' +
+      'años cuando concurre alguna circunstancia del art. 235.1 CP: objetos de valor artístico o ' +
+      'cultural; cosas de primera necesidad en desabastecimiento; cableado, conducciones o componentes ' +
+      'de infraestructuras de suministro; productos agrarios o ganaderos en sus instalaciones; especial ' +
+      'gravedad por el valor o el perjuicio; aprovechamiento del desamparo de la víctima; ' +
+      'multirreincidencia (art. 235.1.7ª); o uso de menores de 16 años. Si concurren dos o más, la pena ' +
+      'se impone en su mitad superior (art. 235.2). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'hurto agravado',
+      'robo de cable',
+      'robo de cobre',
+      'hurto de cableado',
+      'hurto multirreincidente',
+      'ladron habitual',
+      'robo en el campo',
+      'hurto de aceitunas',
+    ],
+    notaRevision:
+      'A VERIFICAR las circunstancias del art. 235.1 CP y el marco de pena: hurto agravado → prisión de ' +
+      '1 a 3 años → MENOS GRAVE; mitad superior si concurren dos o más (235.2). ATENCIÓN a la ' +
+      'multirreincidencia (art. 235.1.7ª): exige condenas previas por delitos del mismo Título. ' +
+      'DESLINDE con el hurto básico (234, delito leve hasta 400 € / menos grave por encima) que ya tiene ' +
+      'ficha propia (del-hurto). Confirmar penas y circunstancias contra el texto consolidado del CP.',
+  }),
+  // --- Daños agravados (266): incendio, explosión o medios peligrosos --------------------------
+  construirDelito({
+    id: 'del-danos-agravados',
+    articulo: ART_CP_266,
+    tituloCorto: 'Daños con incendio o medios peligrosos',
+    // Caso modelado: daños del art. 266.1 (incendio/explosión/medio peligroso) → prisión de 1 a 3
+    // años y multa → MENOS GRAVE. El incendio de edificios/montes tiene tipo propio (arts. 351 y ss.).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 3 años y multa de 12 a 24 meses (art. 266.1 CP)',
+    textoBoletin:
+      'Causar daños en propiedad ajena (art. 263) por MEDIOS PELIGROSOS: mediante incendio, explosión o ' +
+      'cualquier otro medio de similar potencia destructiva, o poniendo en peligro la vida o la ' +
+      'integridad de las personas (art. 266.1 CP): prisión de 1 a 3 años y multa de 12 a 24 meses. Si ' +
+      'además se pone en concreto peligro la vida o integridad, la pena se impone en su mitad superior ' +
+      '(art. 266.4). FRONTERAS: los daños simples van por el art. 263 (delito leve hasta 400 €); el ' +
+      'incendio de edificios, viviendas o montes tiene tipos propios más graves (arts. 351 y ss.). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'danos con incendio',
+      'quemar un coche',
+      'coche quemado',
+      'quemar un contenedor',
+      'incendio de contenedores',
+      'danos agravados',
+      'explosion danos',
+      'sabotaje',
+    ],
+    notaRevision:
+      'A VERIFICAR el encaje y el marco de pena: daños agravados por incendio/explosión/medio peligroso ' +
+      'del art. 266.1 CP → prisión de 1 a 3 años y multa de 12 a 24 meses → MENOS GRAVE; mitad superior ' +
+      'si hay concreto peligro para las personas (266.4). DESLINDE CLAVE con el INCENDIO de los arts. ' +
+      '351 y ss. (edificios, viviendas, montes → pena MÁS grave, puede ser GRAVE) y con los daños ' +
+      'simples del art. 263 (delito leve hasta 400 €, ficha del-danos). Confirmar la calificación ' +
+      'incendio vs. daños con incendio contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Apropiación indebida (253) --------------------------------------------------------------
+  construirDelito({
+    id: 'del-apropiacion-indebida',
+    articulo: ART_CP_253,
+    tituloCorto: 'Apropiación indebida',
+    // Caso modelado: apropiación de cuantía > 400 € → pena del art. 249 (prisión 6 meses a 3 años) →
+    // MENOS GRAVE. Hasta 400 € es delito leve (multa, art. 253.2) — ver notaRevision.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 3 años (art. 253.1 en relación con el art. 249 CP)',
+    textoBoletin:
+      'Apropiarse en perjuicio de otro de dinero, efectos, valores o cosa mueble recibidos en depósito, ' +
+      'comisión o custodia, o confiados por cualquier título que obligue a entregarlos o devolverlos, o ' +
+      'negar haberlos recibido (art. 253 CP). La pena se fija por remisión al art. 249 (con carácter ' +
+      'general, prisión de 6 meses a 3 años). Si la cuantía no excede de 400 euros, es DELITO LEVE ' +
+      '(multa, art. 253.2). FRONTERAS: a diferencia del hurto, la cosa se recibió lícitamente; a ' +
+      'diferencia de la estafa, no hubo engaño previo. Casos típicos: no devolver algo prestado o ' +
+      'depositado, quedarse con dinero de una cuenta ajena. La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'apropiacion indebida',
+      'no me devuelve el dinero',
+      'se quedo con el dinero',
+      'quedarse con lo ajeno',
+      'no devolver lo prestado',
+      'no devuelve el coche prestado',
+      'gestor que no devuelve el dinero',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena por remisión (arts. 249/250 CP) y la frontera de cuantía: > 400 € → ' +
+      'pena del art. 249 (prisión de 6 meses a 3 años) → MENOS GRAVE; ≤ 400 € → DELITO LEVE (multa, art. ' +
+      '253.2). DESLINDE con el HURTO (no hay entrega previa), con la ESTAFA (no hay engaño) y con la ' +
+      'ADMINISTRACIÓN DESLEAL del art. 252 (exceso en la administración de patrimonio ajeno). Confirmar ' +
+      'penas y remisiones contra el texto consolidado del CP.',
+  }),
+  // --- Administración desleal (252) ------------------------------------------------------------
+  construirDelito({
+    id: 'del-administracion-desleal',
+    articulo: ART_CP_252,
+    tituloCorto: 'Administración desleal',
+    // Caso modelado: perjuicio > 400 € → pena del art. 249 (prisión 6 meses a 3 años) → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 3 años (art. 252.1 en relación con el art. 249 CP)',
+    textoBoletin:
+      'Quien, teniendo facultades para administrar un patrimonio ajeno (por ley, por encargo de la ' +
+      'autoridad o por un negocio jurídico), se excede en su ejercicio y causa así un perjuicio al ' +
+      'patrimonio administrado (art. 252 CP). La pena se fija por remisión al art. 249 (con carácter ' +
+      'general, prisión de 6 meses a 3 años); si el perjuicio no excede de 400 euros, es DELITO LEVE ' +
+      '(multa, art. 252.2). Casos típicos: administrador o apoderado que dispone del patrimonio en ' +
+      'perjuicio del titular. FRONTERA: la apropiación de cosa recibida es apropiación indebida (art. ' +
+      '253). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'administracion desleal',
+      'administrador desleal',
+      'gestion desleal del patrimonio',
+      'apoderado que arruina la empresa',
+      'malversar dinero de la empresa',
+      'perjuicio al patrimonio administrado',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena por remisión (arts. 249/250 CP) y la frontera de cuantía (≤ 400 € → ' +
+      'delito leve, art. 252.2). DESLINDE con la APROPIACIÓN INDEBIDA (art. 253, apropiación de cosa ' +
+      'recibida) y con la MALVERSACIÓN (arts. 432 y ss.) cuando el patrimonio es público. Confirmar ' +
+      'penas y remisiones contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Defraudación de fluido eléctrico y análogos (255): enganches, cultivos indoor -----------
+  construirDelito({
+    id: 'del-defraudacion-fluido',
+    articulo: ART_CP_255,
+    tituloCorto: 'Defraudación de fluido eléctrico',
+    // Caso modelado más frecuente en la calle: cuantía defraudada ≤ 400 € → delito leve (multa de 1 a
+    // 3 meses, art. 255.2) → LEVE. Por encima de 400 €: multa de 3 a 12 meses (art. 255.1).
+    gravedadCp: 'leve',
+    penaTexto: 'Multa de 1 a 3 meses (delito leve, hasta 400 €; art. 255.2 CP)',
+    textoBoletin:
+      'Defraudar energía eléctrica, gas, agua, telecomunicaciones u otro fluido ajeno valiéndose de ' +
+      'mecanismos instalados para defraudar, alterando los contadores o por cualquier medio clandestino ' +
+      '(art. 255 CP): "enganches" ilegales, puentear el contador, autoconsumo de cultivos indoor. Si la ' +
+      'cuantía no excede de 400 euros es DELITO LEVE (multa de 1 a 3 meses, art. 255.2); por encima, ' +
+      'multa de 3 a 12 meses (art. 255.1). FRONTERA: el uso de terminal de telecomunicación ajeno sin ' +
+      'consentimiento del titular, con perjuicio superior a 400 €, va por el art. 256. La calificación ' +
+      'final corresponde a la autoridad judicial.',
+    terminos: [
+      'defraudacion de fluido electrico',
+      'enganche ilegal',
+      'enganche de luz',
+      'luz pinchada',
+      'puentear el contador',
+      'robar la luz',
+      'contador manipulado',
+      'enganche electrico cultivo',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y la frontera de cuantía: la ficha modela el caso LEVE (defraudación ' +
+      '≤ 400 € → multa de 1 a 3 meses, art. 255.2) → detención regida por el art. 495 LECrim; por encima ' +
+      'de 400 € la pena es multa de 3 a 12 meses (art. 255.1) y sigue siendo MENOS GRAVE de pena de ' +
+      'MULTA (valorar penaSoloMulta y la proporcionalidad del art. 492 LECrim). DESLINDE con el uso ' +
+      'ilícito de terminal de telecomunicación (art. 256) y con el hurto de infraestructuras (art. ' +
+      '235.1). Confirmar cuantía-frontera y penas contra el texto consolidado del CP con el revisor.',
+  }),
+  // --- Depósito o tenencia de armas prohibidas (563) ------------------------------------------
+  construirDelito({
+    id: 'del-armas-prohibidas',
+    articulo: ART_CP_563,
+    tituloCorto: 'Tenencia de armas prohibidas',
+    // Caso modelado: tenencia de arma prohibida o de arma reglamentada modificada (art. 563) →
+    // prisión de 1 a 3 años → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 1 a 3 años (art. 563 CP)',
+    textoBoletin:
+      'Tenencia de ARMAS PROHIBIDAS y de las resultantes de modificar sustancialmente las ' +
+      'características de fabricación de armas reglamentadas (art. 563 CP): prisión de 1 a 3 años. Las ' +
+      'armas prohibidas las define el Reglamento de Armas (RD 137/1993, art. 4). FRONTERAS: la tenencia ' +
+      'de armas de fuego REGLAMENTADAS sin licencia va por el art. 564 (ficha del-tenencia-armas); ' +
+      'PORTAR, exhibir o usar armas prohibidas por la normativa —o armas de otra clase fuera del ' +
+      'domicilio— sin llegar al tipo penal es infracción administrativa (art. 36.10 LO 4/2015); el ' +
+      'depósito de armas de GUERRA se castiga aparte y con más pena (arts. 566-567). La calificación ' +
+      'final corresponde a la autoridad judicial.',
+    terminos: [
+      'armas prohibidas',
+      'arma prohibida',
+      'defensa electrica',
+      'puno americano',
+      'arma modificada',
+      'pistola detonadora modificada',
+      'deposito de armas',
+    ],
+    // Intervención (comiso) del arma prohibida como efecto/instrumento del delito (art. 127 CP).
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la intervención del arma prohibida como efecto o instrumento del delito, a ' +
+          'disposición de la autoridad judicial (comiso, art. 127 CP). La valoración final corresponde ' +
+          'a la autoridad judicial.',
+        fuente: 'CP art. 127 (comiso de efectos e instrumentos del delito)',
+      },
+    ],
+    notaRevision:
+      'A VERIFICAR el encaje y el marco de pena: tenencia de armas PROHIBIDAS o de armas reglamentadas ' +
+      'modificadas sustancialmente (art. 563 CP) → prisión de 1 a 3 años → MENOS GRAVE. CLAVE el ' +
+      'concepto de "arma prohibida" del RD 137/1993 (art. 4) y su distinción de las reglamentadas sin ' +
+      'licencia (art. 564, ficha del-tenencia-armas). DESLINDE con la infracción administrativa del ' +
+      'art. 36.10 LO 4/2015 (portar/exhibir/usar) y con el depósito de armas de guerra (arts. 566-567, ' +
+      'pena MÁS grave). Confirmar penas y catálogo de armas prohibidas contra el texto consolidado.',
+  }),
+  // --- Amenazas leves / de mal no constitutivo de delito (171) --------------------------------
+  construirDelito({
+    id: 'del-amenazas-leves',
+    articulo: ART_CP_171,
+    tituloCorto: 'Amenazas leves',
+    // Caso modelado más frecuente: amenaza LEVE a persona fuera del ámbito de VG/doméstica → delito
+    // leve (multa de 1 a 3 meses, art. 171.7 párrafo primero) → LEVE. La amenaza leve del 171.4
+    // (VG/doméstica) es MENOS GRAVE (prisión) — ver notaRevision.
+    gravedadCp: 'leve',
+    penaTexto: 'Multa de 1 a 3 meses (amenaza leve, delito leve, art. 171.7 CP)',
+    textoBoletin:
+      'Proferir una AMENAZA LEVE (art. 171.7 CP): la amenaza leve a personas fuera del ámbito familiar ' +
+      'es DELITO LEVE (multa de 1 a 3 meses) y SOLO es perseguible mediante DENUNCIA de la persona ' +
+      'agraviada o de su representante legal (art. 171.7), lo que limita la actuación de oficio. Distinto ' +
+      'es la amenaza CONDICIONAL de un mal no constitutivo de delito (art. 171.1), que es MENOS GRAVE ' +
+      '(prisión 3 meses-1 año o multa) y NO es el caso leve aquí modelado. Si la amenaza leve se dirige ' +
+      'a quien sea o haya sido esposa o mujer ligada por análoga relación de afectividad, o a persona ' +
+      'especialmente vulnerable que conviva con el autor, es DELITO con PRISIÓN (art. 171.4, ámbito de ' +
+      'violencia de género/doméstica). FRONTERA: amenazar con un mal que SÍ es delito (matar, lesionar) ' +
+      'va por el art. 169. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'amenazas leves',
+      'amenaza leve',
+      'me ha amenazado',
+      'te vas a enterar',
+      'amenaza sin arma',
+      'me amenaza el vecino',
+      'amenaza de mal no delito',
+    ],
+    notaRevision:
+      'A VERIFICAR el subtipo y el marco de pena: la ficha modela la AMENAZA LEVE del art. 171.7 CP ' +
+      '(delito leve, multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. ATENCIÓN: la ' +
+      'amenaza leve del art. 171.4 (esposa/mujer ligada por análoga relación o persona vulnerable ' +
+      'conviviente) es DELITO con pena de PRISIÓN (ámbito de VG/doméstica) → MENOS GRAVE, con posible ' +
+      'orden de protección; y la amenaza de un mal CONSTITUTIVO DE DELITO va por el art. 169 (ficha ' +
+      'del-amenazas). REQUISITO PROCESAL: la amenaza leve del 171.7 solo es perseguible por DENUNCIA del ' +
+      'agraviado (limita la actuación de oficio). Confirmar el deslinde 169/171 y las penas contra el ' +
+      'texto consolidado del CP.',
+  }),
+  // --- Abandono de familia: impago de pensiones (227) -----------------------------------------
+  construirDelito({
+    id: 'del-abandono-familia',
+    articulo: ART_CP_227,
+    tituloCorto: 'Impago de pensiones (abandono de familia)',
+    // Caso modelado: impago de la prestación del art. 227.1 → prisión de 3 meses a 1 año o multa de 6
+    // a 24 meses → MENOS GRAVE (tiene pena de prisión alternativa).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 3 meses a 1 año o multa de 6 a 24 meses (art. 227 CP)',
+    textoBoletin:
+      'Dejar de pagar durante dos meses consecutivos o cuatro no consecutivos la prestación económica ' +
+      'a favor del cónyuge o de los hijos fijada en convenio judicialmente aprobado o en resolución ' +
+      'judicial (separación, divorcio, nulidad, filiación o alimentos): art. 227 CP, prisión de 3 meses ' +
+      'a 1 año o multa de 6 a 24 meses. Es un delito PERSEGUIBLE previa denuncia del agraviado o su ' +
+      'representante legal (art. 228); el Ministerio Fiscal puede denunciar si la víctima es menor, ' +
+      'persona con discapacidad o desvalida. La reparación del daño exige pagar lo adeudado (art. ' +
+      '227.3). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'impago de pensiones',
+      'no paga la pension',
+      'no paga la manutencion',
+      'abandono de familia',
+      'impago pension alimenticia',
+      'no pasa la pension de los hijos',
+      'dejar de pagar la pension',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y los requisitos: impago del art. 227 CP → prisión de 3 meses a 1 ' +
+      'año o multa de 6 a 24 meses → MENOS GRAVE (tiene pena de prisión alternativa, por eso NO se marca ' +
+      'penaSoloMulta). REQUISITO PROCESAL: es delito PERSEGUIBLE previa denuncia del agraviado (art. ' +
+      '228), lo que limita la actuación de oficio. Verificar los periodos de impago (2 meses ' +
+      'consecutivos / 4 no consecutivos) y la existencia de resolución judicial que fije la prestación ' +
+      'contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Calumnia e injuria (205-209) -----------------------------------------------------------
+  construirDelito({
+    id: 'del-calumnias-injurias',
+    articulo: ART_CP_205,
+    tituloCorto: 'Calumnias e injurias',
+    // Caso modelado: injuria/calumnia castigada con pena de MULTA. La cuantía de la multa (más de 3
+    // meses) la hace MENOS GRAVE por el art. 33 CP, pero al ser pena de SOLO MULTA se enruta la
+    // detención por la rama de PROPORCIONALIDAD (penaSoloMulta) del motor.
+    gravedadCp: 'menos_grave',
+    penaSoloMulta: true,
+    penaTexto: 'Multa (calumnia: art. 206 CP; injuria grave: art. 209 CP)',
+    textoBoletin:
+      'CALUMNIA: imputar a alguien un delito con conocimiento de su falsedad o temerario desprecio a la ' +
+      'verdad (art. 205); con publicidad, prisión de 6 meses a 2 años o multa de 12 a 24 meses, y sin ' +
+      'publicidad, multa (art. 206). INJURIA grave: expresión o acción que lesiona la dignidad de otro ' +
+      'menoscabando su fama o estimación (art. 208); se castiga con multa (art. 209). Son delitos ' +
+      'PRIVADOS, perseguibles solo mediante QUERELLA del ofendido (art. 215), salvo las dirigidas contra ' +
+      'funcionario público sobre hechos de su cargo. FRONTERA: no confundir con el atentado, la ' +
+      'resistencia o la desobediencia a los agentes (arts. 550-556). La calificación final corresponde ' +
+      'a la autoridad judicial.',
+    terminos: [
+      'calumnias',
+      'injurias',
+      'calumnia',
+      'injuria grave',
+      'me ha difamado',
+      'difamacion',
+      'acusar en falso de un delito',
+      'insultos graves',
+    ],
+    notaRevision:
+      'A VERIFICAR el marco de pena y, sobre todo, el REQUISITO PROCESAL: la calumnia y la injuria son ' +
+      'delitos PRIVADOS perseguibles solo mediante QUERELLA del ofendido (art. 215 CP), salvo las ' +
+      'dirigidas a funcionario público sobre hechos de su cargo → esto limita mucho la actuación ' +
+      'policial de oficio. La ficha modela el caso de pena de MULTA (injuria grave, art. 209; calumnia ' +
+      'sin publicidad, art. 206) → penaSoloMulta true (detención por la rama de proporcionalidad, art. ' +
+      '492 LECrim). La calumnia con publicidad puede llevar PRISIÓN de 6 meses a 2 años (art. 206). ' +
+      'Confirmar penas, publicidad y régimen de perseguibilidad contra el texto consolidado del CP.',
+  }),
+  // --- Usurpación del estado civil (401): suplantación de identidad ----------------------------
+  construirDelito({
+    id: 'del-usurpacion-estado-civil',
+    articulo: ART_CP_401,
+    tituloCorto: 'Usurpación del estado civil',
+    // Caso modelado: usurpar el estado civil de otro (art. 401) → prisión de 6 meses a 3 años →
+    // MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 3 años (art. 401 CP)',
+    textoBoletin:
+      'Usurpar el estado civil de otro (art. 401 CP): prisión de 6 meses a 3 años. Consiste en hacerse ' +
+      'pasar de forma permanente por otra persona REAL, arrogándose su identidad y ejerciendo sus ' +
+      'derechos y acciones (no basta dar un nombre falso de forma puntual). FRONTERAS: falsificar o usar ' +
+      'un documento de identidad ajeno o falso va por los arts. 392/400 bis (ficha ' +
+      'del-falsedad-documental); la mera negativa a identificarse o dar una identidad falsa ante el ' +
+      'agente, sin usurpar de forma permanente la identidad de otro, puede ser infracción ' +
+      'administrativa (LO 4/2015). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'usurpacion de estado civil',
+      'suplantacion de identidad',
+      'hacerse pasar por otro',
+      'usar la identidad de otro',
+      'suplantar a otra persona',
+      'robo de identidad',
+      'identidad de un familiar',
+    ],
+    notaRevision:
+      'A VERIFICAR el encaje y el marco de pena: usurpación del estado civil (art. 401 CP) → prisión de ' +
+      '6 meses a 3 años → MENOS GRAVE. CLAVE la exigencia jurisprudencial de suplantación PERMANENTE de ' +
+      'la identidad de una persona real (no basta un nombre falso puntual). DESLINDE con la FALSEDAD ' +
+      'DOCUMENTAL (arts. 390-399, ficha del-falsedad-documental), el uso de documento de identidad ajeno ' +
+      '(art. 400 bis) y la infracción administrativa de identificación falsa (LO 4/2015). Confirmar ' +
+      'penas y doctrina contra el texto consolidado del CP con el revisor jurídico.',
+  }),
+  // --- Participación en riña tumultuaria (154): peleas de ocio nocturno ------------------------
+  construirDelito({
+    id: 'del-rina-tumultuaria',
+    articulo: ART_CP_154,
+    tituloCorto: 'Riña tumultuaria',
+    // Caso modelado: participación en riña con medios peligrosos (art. 154) → prisión de 3 meses a 1
+    // año o multa de 6 a 24 meses → MENOS GRAVE (tiene pena de prisión alternativa).
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 3 meses a 1 año o multa de 6 a 24 meses (art. 154 CP)',
+    textoBoletin:
+      'Reñir entre sí acometiéndose tumultuariamente y utilizando medios o instrumentos que pongan en ' +
+      'peligro la vida o la integridad de las personas (art. 154 CP): prisión de 3 meses a 1 año o ' +
+      'multa de 6 a 24 meses. Es un delito de PELIGRO típico de las peleas multitudinarias (ocio ' +
+      'nocturno) cuando no puede individualizarse quién causó cada lesión. FRONTERA: si consta quién ' +
+      'causó una lesión concreta, se aplica el delito de LESIONES (arts. 147-148); si el grupo actúa ' +
+      'contra la paz pública con violencia o intimidación, puede ser desorden público (art. 557). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'rina tumultuaria',
+      'pelea multitudinaria',
+      'pelea de bar',
+      'pelea a la salida de la discoteca',
+      'pelea entre varios',
+      'reyerta',
+      'trifulca',
+      'pelea con botellas',
+    ],
+    notaRevision:
+      'A VERIFICAR el encaje y el marco de pena: participación en riña tumultuaria con medios peligrosos ' +
+      '(art. 154 CP) → prisión de 3 meses a 1 año o multa de 6 a 24 meses → MENOS GRAVE (tiene pena de ' +
+      'prisión alternativa, por eso NO se marca penaSoloMulta). CLAVE que el tipo exige TUMULTO + medios ' +
+      'peligrosos y opera cuando NO se individualiza la autoría de las lesiones. DESLINDE con las ' +
+      'LESIONES (arts. 147-148) si consta la autoría concreta y con los DESÓRDENES PÚBLICOS (art. 557). ' +
+      'Confirmar penas y requisitos contra el texto consolidado del CP con el revisor jurídico.',
   }),
 ];
 

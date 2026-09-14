@@ -29,8 +29,8 @@ const porId = (id: string) =>
   SEED_SEGURIDAD_CIUDADANA.infracciones.find((i) => i.infraccion.id === id);
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
-  it('siembra 23 entradas de calle (10 infracciones LOSC base + 7 de la ola de ARMAS + 6 consultables: identificación art. 16, consumo de alcohol 37.17, MENA, régimen del menor, derechos de la víctima y cacheo/registro)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(23);
+  it('siembra 37 entradas de calle (23 de las dos primeras olas + 14 de la 3ª ola: 12 infracciones nuevas de los arts. 35/36/37 LOSC + 2 de ARMAS RD 137/1993)', () => {
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(37);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {
@@ -163,17 +163,28 @@ describe('SEED_SEGURIDAD_CIUDADANA: calidad de importes (§8.3, art. 39)', () =>
     }
   });
 
-  it('las graves fijan el extremo inferior (601 €) y las leves (100 €); el pronto pago es el 50 %', () => {
+  it('graves 601 € y leves 100 € con pronto pago del 50 %; muy graves 30.001 € SIN pronto pago', () => {
     for (const { infraccion, marcoImporte } of SEED_SEGURIDAD_CIUDADANA.infracciones) {
       // Las entradas sin sanción (identificación, art. 16) no llevan importe: se excluyen.
       if (marcoImporte === 'no_sancionador') {
         expect(infraccion.importeEur, infraccion.id).toBeNull();
         continue;
       }
-      if (infraccion.gravedad === 'grave') expect(infraccion.importeEur, infraccion.id).toBe(601);
-      if (infraccion.gravedad === 'leve') expect(infraccion.importeEur, infraccion.id).toBe(100);
-      // Reducido = 50 % del base (art. 54: procedimiento abreviado / pago voluntario).
-      expect(infraccion.importeReducidoEur, infraccion.id).toBeCloseTo(infraccion.importeEur! / 2);
+      if (infraccion.gravedad === 'grave') {
+        expect(infraccion.importeEur, infraccion.id).toBe(601);
+        // Reducido = 50 % del base (art. 54: procedimiento abreviado / pago voluntario).
+        expect(infraccion.importeReducidoEur, infraccion.id).toBeCloseTo(infraccion.importeEur! / 2);
+      }
+      if (infraccion.gravedad === 'leve') {
+        expect(infraccion.importeEur, infraccion.id).toBe(100);
+        expect(infraccion.importeReducidoEur, infraccion.id).toBeCloseTo(infraccion.importeEur! / 2);
+      }
+      // Muy graves: extremo inferior del tramo (30.001 €). El pronto pago del art. 54 NO se aplica a
+      // las muy graves, por lo que NO llevan importe reducido.
+      if (infraccion.gravedad === 'muy_grave') {
+        expect(infraccion.importeEur, infraccion.id).toBe(30_001);
+        expect(infraccion.importeReducidoEur, infraccion.id).toBeNull();
+      }
     }
   });
 });

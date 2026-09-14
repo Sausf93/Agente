@@ -349,6 +349,129 @@ const ART_EVD_VICTIMA = articuloDe(ID_EVD, {
     'la valoración final corresponde a la autoridad competente.',
 });
 
+// --- Artículos de la 3ª ola (paridad SPPLB): huecos de los arts. 35, 36 y 37 LO 4/2015 -------
+// Numeración COTEJADA contra el BOE consolidado (BOE-A-2015-3442, 2026-09). Textos redactados por
+// nosotros (resúmenes neutros, no copiados). Todo el contenido queda `pendiente_revision`.
+const ART_LOSC_35_3 = articuloLosc({
+  numero: '35.3',
+  titulo: 'Celebración de espectáculos prohibidos o suspendidos por seguridad pública (muy grave)',
+  texto:
+    'Tipifica como infracción MUY GRAVE la celebración de espectáculos públicos o actividades ' +
+    'recreativas quebrantando la prohibición o la suspensión ordenada por la autoridad competente ' +
+    'por razones de seguridad pública. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_35_4 = articuloLosc({
+  numero: '35.4',
+  titulo: 'Proyección de haces de luz o láser sobre conductores o pilotos (muy grave)',
+  texto:
+    'Tipifica como infracción MUY GRAVE la proyección de haces de luz, mediante cualquier tipo de ' +
+    'dispositivo, sobre los pilotos o conductores de medios de transporte que pueda deslumbrarles o ' +
+    'distraer su atención y provocar accidentes. Se distingue del art. 37.6 (haces de luz sobre ' +
+    'agentes, leve). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_5 = articuloLosc({
+  numero: '36.5',
+  titulo: 'Obstaculización del funcionamiento de los servicios de emergencia (grave)',
+  texto:
+    'Tipifica como infracción grave las acciones y omisiones que impidan u obstaculicen el ' +
+    'funcionamiento de los servicios de emergencia, provocando o incrementando un riesgo para la vida ' +
+    'o la integridad de las personas o daños en los bienes, o agravando las consecuencias del suceso ' +
+    'que motive su actuación. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_7 = articuloLosc({
+  numero: '36.7',
+  titulo: 'Negativa a la disolución de reuniones y manifestaciones (grave)',
+  texto:
+    'Tipifica como infracción grave la negativa a la disolución de reuniones y manifestaciones en ' +
+    'lugares de tránsito público ordenada por la autoridad competente cuando concurran los supuestos ' +
+    'del art. 5 de la Ley Orgánica 9/1983, de 15 de julio, reguladora del derecho de reunión. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_8 = articuloLosc({
+  numero: '36.8',
+  titulo: 'Perturbación del desarrollo de una reunión o manifestación lícita (grave)',
+  texto:
+    'Tipifica como infracción grave la perturbación del desarrollo de una reunión o manifestación ' +
+    'lícita, cuando no constituya infracción penal. Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_LOSC_36_9 = articuloLosc({
+  numero: '36.9',
+  titulo: 'Intrusión en infraestructuras o instalaciones de servicios básicos (grave)',
+  texto:
+    'Tipifica como infracción grave la intrusión en infraestructuras o instalaciones en las que se ' +
+    'prestan servicios básicos para la comunidad, incluyendo su sobrevuelo, cuando se haya producido ' +
+    'una interferencia grave en su funcionamiento. Si se genera un riesgo para la vida o la integridad ' +
+    'física puede ser MUY GRAVE (art. 35.1). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_11 = articuloLosc({
+  numero: '36.11',
+  titulo: 'Demanda de servicios sexuales retribuidos en zonas de riesgo (grave)',
+  texto:
+    'Tipifica como infracción grave la solicitud o aceptación por el demandante de servicios sexuales ' +
+    'retribuidos en zonas de tránsito público en las proximidades de lugares destinados a su uso por ' +
+    'menores (centros educativos, parques infantiles o espacios de ocio accesibles a menores), o cuando ' +
+    'estas conductas, por el lugar en que se realicen, puedan generar un riesgo para la seguridad vial. ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_14 = articuloLosc({
+  numero: '36.14',
+  titulo: 'Uso público e indebido de uniformes, insignias o equipamiento oficiales (grave)',
+  texto:
+    'Tipifica como infracción grave el uso público e indebido de uniformes, insignias o condecoraciones ' +
+    'oficiales, o réplicas de los mismos, así como otros elementos del equipamiento de los cuerpos ' +
+    'policiales o de los servicios de emergencia que puedan generar engaño acerca de la condición de ' +
+    'quien los use, cuando no sea constitutivo de infracción penal (frontera con la usurpación de ' +
+    'funciones/uso de uniforme del art. 402 y 402 bis CP). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOSC_36_19 = articuloLosc({
+  numero: '36.19',
+  titulo: 'Tolerancia del consumo o tráfico de drogas en locales o establecimientos (grave)',
+  texto:
+    'Tipifica como infracción grave la tolerancia del consumo ilegal o del tráfico de drogas tóxicas, ' +
+    'estupefacientes o sustancias psicotrópicas en locales o establecimientos públicos, o la falta de ' +
+    'diligencia en orden a impedirlos por parte de los propietarios, administradores o encargados. La ' +
+    'responsabilidad recae en el titular del local. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_6 = articuloLosc({
+  numero: '37.6',
+  titulo: 'Proyección de haces de luz sobre agentes (leve)',
+  texto:
+    'Tipifica como infracción leve la proyección de haces de luz, mediante cualquier tipo de ' +
+    'dispositivo, sobre miembros de las Fuerzas y Cuerpos de Seguridad para impedir o dificultar el ' +
+    'ejercicio de sus funciones. Se distingue del art. 35.4 (haces sobre conductores/pilotos con riesgo ' +
+    'de accidente, muy grave). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_13 = articuloLosc({
+  numero: '37.13',
+  titulo: 'Daños o deslucimiento de bienes de uso público o privados en la vía pública (leve)',
+  texto:
+    'Tipifica como infracción leve los daños o el deslucimiento de bienes muebles o inmuebles de uso o ' +
+    'servicio público, así como de bienes muebles o inmuebles privados situados en la vía pública, ' +
+    'cuando no sean constitutivos de infracción penal (frontera con el delito de daños del art. 263 CP ' +
+    'y con la deslucimiento/graffiti del art. 323 CP en bienes protegidos). Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_14 = articuloLosc({
+  numero: '37.14',
+  titulo: 'Escalamiento de edificios o monumentos sin autorización (leve)',
+  texto:
+    'Tipifica como infracción leve el escalamiento de edificios o monumentos sin autorización cuando ' +
+    'exista un riesgo cierto de que se ocasionen daños a las personas o a los bienes. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_16,
   ART_LOSC_20,
@@ -367,6 +490,19 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_36_12,
   ART_LOPJM_MENA,
   ART_LOPJM_REGIMEN_MENOR,
+  // 3ª ola (paridad SPPLB)
+  ART_LOSC_35_3,
+  ART_LOSC_35_4,
+  ART_LOSC_36_5,
+  ART_LOSC_36_7,
+  ART_LOSC_36_8,
+  ART_LOSC_36_9,
+  ART_LOSC_36_11,
+  ART_LOSC_36_14,
+  ART_LOSC_36_19,
+  ART_LOSC_37_6,
+  ART_LOSC_37_13,
+  ART_LOSC_37_14,
 ];
 
 // --- Constructor de una infracción de seguridad ciudadana -----------------------------------
@@ -491,6 +627,13 @@ const NOTA_LEVE_IMPORTE =
   'a 600 € (art. 39). El seed fija el extremo inferior (100 €) como referencia conservadora; el ' +
   'importe efectivo lo gradúa la autoridad según las circunstancias del art. 33. El pronto pago ' +
   '(art. 54) reduce el 50 %.';
+
+const NOTA_MUY_GRAVE_IMPORTE =
+  'A VERIFICAR el importe: la LO 4/2015 sanciona las infracciones MUY GRAVES con una horquilla de ' +
+  '30.001 a 600.000 € (art. 39). El seed fija el extremo inferior (30.001 €) como referencia ' +
+  'conservadora; el importe efectivo lo gradúa la autoridad según las circunstancias del art. 33. ' +
+  'IMPORTANTE: el pronto pago del art. 54 NO se aplica a las MUY GRAVES (solo a graves y leves), por ' +
+  'lo que la ficha no lleva importe reducido.';
 
 // --- Infracciones sembradas -----------------------------------------------------------------
 export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
@@ -1508,6 +1651,440 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       'del art. 553 LECrim; y (iv) la presentación en la ficha de una entrada sin sanción. Punto sensible ' +
       'por afectar a derechos fundamentales: mantener el lenguaje orientativo y confirmar toda la ' +
       'redacción antes de publicar.',
+  }),
+  // --- 3ª OLA (paridad SPPLB): huecos de los arts. 35, 36 y 37 LO 4/2015 -----------------------
+  // Conductas de calle frecuentes que faltaban. Numeración de apartados COTEJADA contra el BOE
+  // consolidado (2026-09). Todo `pendiente_revision`; nada se autopublica.
+  construirInfraccion({
+    id: 'sc-negativa-disolver-reunion',
+    articulo: ART_LOSC_36_7,
+    tituloCorto: 'Negativa a disolver una reunión o manifestación',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Negarse a la disolución de una reunión o manifestación en lugar de tránsito público ordenada ' +
+      'por la autoridad competente cuando concurran los supuestos del art. 5 de la LO 9/1983 (peligro ' +
+      'para personas o bienes, uso de uniformes paramilitares, carácter ilícito conforme al Código ' +
+      'Penal) (art. 36.7 LO 4/2015). La orden de disolución la da la autoridad; la mera asistencia no ' +
+      'es infracción por sí sola.',
+    terminos: [
+      'no se disuelve la manifestacion',
+      'negarse a disolver',
+      'no desalojan la concentracion',
+      'siguen manifestandose tras la orden',
+      'no obedecen la orden de disolucion',
+      'manifestacion que no se disuelve',
+      'se niegan a marcharse',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR: la disolución exige que concurran los supuestos del art. 5 LO 9/1983 y una orden ' +
+      'previa y clara de la autoridad; el derecho de reunión es fundamental (art. 21 CE). Distinguir ' +
+      'de la perturbación de reunión lícita (36.8) y de la muy grave del art. 35.1 (infraestructuras ' +
+      'críticas). Confirmar el encaje con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-perturbar-reunion-licita',
+    articulo: ART_LOSC_36_8,
+    tituloCorto: 'Perturbar una reunión o manifestación lícita',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Perturbar el desarrollo de una reunión o manifestación lícita, cuando la conducta no constituya ' +
+      'infracción penal (art. 36.8 LO 4/2015). Protege el ejercicio pacífico del derecho de reunión ' +
+      'frente a quien lo obstaculiza.',
+    terminos: [
+      'reventar una manifestacion',
+      'boicotear una concentracion',
+      'perturbar una manifestacion',
+      'impedir una manifestacion legal',
+      'grupo que ataca la manifestacion',
+      'contramanifestacion violenta',
+      'estropear un acto reivindicativo',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito (coacciones art. 172 CP; desórdenes art. 557 CP) y que ' +
+      'la reunión perturbada sea LÍCITA. Confirmar el encaje con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-obstruir-servicios-emergencia',
+    articulo: ART_LOSC_36_5,
+    tituloCorto: 'Obstaculizar a los servicios de emergencia',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Impedir u obstaculizar, por acción u omisión, el funcionamiento de los servicios de emergencia ' +
+      '(bomberos, sanitarios, protección civil, FCSE), provocando o incrementando un riesgo para la ' +
+      'vida o la integridad de las personas o daños en los bienes, o agravando las consecuencias del ' +
+      'suceso (art. 36.5 LO 4/2015).',
+    terminos: [
+      'impedir el paso a una ambulancia',
+      'obstaculizar a los bomberos',
+      'no dejar pasar a emergencias',
+      'estorbar a los sanitarios',
+      'bloquear el paso de una ambulancia',
+      'molestar en un incendio',
+      'entorpecer un rescate',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito (denegación de auxilio, atentado o desórdenes) y que ' +
+      'concurra el riesgo o el agravamiento exigido por el tipo. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-intrusion-infraestructuras',
+    articulo: ART_LOSC_36_9,
+    tituloCorto: 'Intrusión en infraestructuras de servicios básicos',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Introducirse sin autorización en infraestructuras o instalaciones en las que se prestan ' +
+      'servicios básicos para la comunidad (agua, energía, transporte, telecomunicaciones), incluido su ' +
+      'sobrevuelo con drones, cuando se produzca una interferencia grave en su funcionamiento (art. ' +
+      '36.9 LO 4/2015). Escala a MUY GRAVE (art. 35.1) si genera riesgo para la vida o la integridad.',
+    terminos: [
+      'colarse en una central electrica',
+      'entrar en las vias del tren',
+      'intrusion en una subestacion',
+      'sobrevolar con dron una central',
+      'meterse en una planta de agua',
+      'acceso no autorizado a infraestructura critica',
+      'dron sobre instalacion critica',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con la muy grave del art. 35.1 (riesgo para la vida/integridad) y con ' +
+      'la normativa de drones (AESA) y de infraestructuras críticas (Ley 8/2011). Confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'sc-uso-indebido-uniforme',
+    articulo: ART_LOSC_36_14,
+    tituloCorto: 'Uso público indebido de uniforme o insignias oficiales',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Usar en público e indebidamente uniformes, insignias o condecoraciones oficiales, o réplicas de ' +
+      'los mismos, así como otros elementos del equipamiento de los cuerpos policiales o de los ' +
+      'servicios de emergencia que puedan generar engaño acerca de la condición de quien los usa, ' +
+      'cuando la conducta no sea constitutiva de delito (art. 36.14 LO 4/2015). FRONTERA PENAL: si se ' +
+      'usa para atribuirse funciones públicas o cometer otro delito, puede ser usurpación de funciones ' +
+      'o uso indebido de uniforme (arts. 402 y 402 bis CP). Orientativo.',
+    terminos: [
+      'hacerse pasar por policia',
+      'uniforme de policia falso',
+      'chaleco de policia sin serlo',
+      'placa falsa de policia',
+      'llevar equipacion policial sin ser agente',
+      'disfraz de guardia civil para engañar',
+      'insignias policiales falsas',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) del uniforme, placa o equipamiento y su ' +
+          'puesta a disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito de usurpación de funciones y uso público de uniforme ' +
+      '(arts. 402 y 402 bis CP): si hay atribución de funciones o comisión de otro delito, es vía ' +
+      'penal. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-tolerancia-drogas-local',
+    articulo: ART_LOSC_36_19,
+    tituloCorto: 'Tolerar el consumo o tráfico de drogas en un local',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Tolerar el consumo ilegal o el tráfico de drogas tóxicas, estupefacientes o sustancias ' +
+      'psicotrópicas en locales o establecimientos públicos, o no actuar con la diligencia debida para ' +
+      'impedirlo, siendo propietario, administrador o encargado del local (art. 36.19 LO 4/2015). La ' +
+      'responsabilidad recae en el titular o responsable del establecimiento.',
+    terminos: [
+      'droga en la discoteca',
+      'consienten drogas en el bar',
+      'trapicheo en el local',
+      'el dueño deja consumir droga',
+      'droga en el after',
+      'permiten drogas en el pub',
+      'consumo de droga tolerado en el local',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR que el sujeto responsable sea el titular/encargado y la frontera con el delito ' +
+      'contra la salud pública del art. 368 CP (favorecimiento del consumo). Confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'sc-servicios-sexuales-riesgo',
+    articulo: ART_LOSC_36_11,
+    tituloCorto: 'Demanda de servicios sexuales en zona de riesgo',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Solicitar o aceptar, como demandante, servicios sexuales retribuidos en zonas de tránsito ' +
+      'público próximas a lugares de uso por menores (centros educativos, parques infantiles o espacios ' +
+      'de ocio para menores), o cuando la conducta, por el lugar en que se realice, pueda generar un ' +
+      'riesgo para la seguridad vial (art. 36.11 LO 4/2015). Sanciona al DEMANDANTE.',
+    terminos: [
+      'prostitucion cerca de un colegio',
+      'servicios sexuales junto a un parque infantil',
+      'demanda de prostitucion en la via publica',
+      'cliente de prostitucion con riesgo vial',
+      'buscar prostitutas cerca de un colegio',
+      'prostitucion en zona de menores',
+      'pagar por sexo cerca de un parque infantil',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR: el tipo sanciona al DEMANDANTE y EXIGE proximidad a lugares de menores o riesgo ' +
+      'para la seguridad vial; no cualquier demanda. Frontera con delitos relativos a la prostitución/' +
+      'trata (arts. 187 y ss. CP) y con las ordenanzas municipales. Punto sensible: confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'sc-laser-conductores-pilotos',
+    articulo: ART_LOSC_35_4,
+    tituloCorto: 'Haz de luz o láser a conductores o pilotos',
+    gravedad: 'muy_grave',
+    importeEur: 30_001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Proyectar haces de luz, con cualquier dispositivo (puntero láser incluido), sobre pilotos o ' +
+      'conductores de medios de transporte de modo que pueda deslumbrarles o distraer su atención y ' +
+      'provocar accidentes (art. 35.4 LO 4/2015). Es infracción MUY GRAVE. Se distingue del art. 37.6 ' +
+      '(haces sobre agentes, leve). FRONTERA PENAL: si se pone en concreto peligro la vida (p. ej. láser ' +
+      'a la cabina de un avión) puede ser delito contra la seguridad del tráfico o de estragos.',
+    terminos: [
+      'laser a un avion',
+      'puntero laser a un piloto',
+      'deslumbrar a un conductor con laser',
+      'laser a la cabina del avion',
+      'apuntar con laser a un tren',
+      'laser a un helicoptero',
+      'deslumbrar con laser al trafico',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) del dispositivo láser y su puesta a ' +
+          'disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_MUY_GRAVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito (peligro concreto para la aeronave/vehículo: arts. 385 ' +
+      'bis y ss. CP y delitos contra la seguridad del tráfico) y el deslinde con el art. 37.6 (láser a ' +
+      'agentes, leve). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-espectaculo-prohibido',
+    articulo: ART_LOSC_35_3,
+    tituloCorto: 'Celebrar un espectáculo prohibido o suspendido',
+    gravedad: 'muy_grave',
+    importeEur: 30_001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Celebrar espectáculos públicos o actividades recreativas quebrantando la prohibición o la ' +
+      'suspensión ordenada por la autoridad competente por razones de seguridad pública (art. 35.3 LO ' +
+      '4/2015). Es infracción MUY GRAVE. La responsabilidad recae en los organizadores o promotores. Se ' +
+      'diferencia de los espectáculos deportivos, que tienen su régimen propio (Ley 19/2007).',
+    terminos: [
+      'fiesta ilegal prohibida',
+      'rave prohibida',
+      'concierto suspendido que sigue adelante',
+      'evento prohibido por la autoridad',
+      'macrofiesta clausurada que continua',
+      'espectaculo prohibido por seguridad',
+      'celebrar un evento suspendido',
+    ],
+    notaRevision:
+      NOTA_MUY_GRAVE_IMPORTE +
+      ' A VERIFICAR que exista una prohibición o suspensión previa y expresa de la autoridad por ' +
+      'razones de SEGURIDAD PÚBLICA (no otro motivo) y el deslinde con las sanciones de espectáculos ' +
+      'de la normativa autonómica. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-danos-deslucimiento-bienes',
+    articulo: ART_LOSC_37_13,
+    tituloCorto: 'Daños o deslucimiento de bienes en la vía pública (pintadas)',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Dañar o deslucir bienes muebles o inmuebles de uso o servicio público, o bienes privados ' +
+      'situados en la vía pública (pintadas, grafitis, pegado de carteles, deterioro de mobiliario ' +
+      'urbano), cuando la conducta no sea constitutiva de delito (art. 37.13 LO 4/2015). FRONTERA ' +
+      'PENAL: los daños de cierta entidad son delito (art. 263 CP) y el deslucimiento de bienes de ' +
+      'valor histórico/cultural es delito específico (art. 323 CP). Orientativo.',
+    terminos: [
+      'pintadas',
+      'grafiti',
+      'graffiti',
+      'pintar una pared',
+      'pegar carteles',
+      'deslucir mobiliario urbano',
+      'rayar un banco',
+      'ensuciar la fachada',
+      'vandalismo urbano leve',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR la frontera con el delito de daños (art. 263 CP) y con el deslucimiento de bienes ' +
+      'protegidos (art. 323 CP), según la entidad del daño y el tipo de bien. Muchas ordenanzas ' +
+      'municipales sancionan también el grafiti/pintadas: comprobar concurrencia. Confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'sc-escalada-edificios',
+    articulo: ART_LOSC_37_14,
+    tituloCorto: 'Escalar edificios o monumentos sin autorización',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Escalar o trepar a edificios o monumentos sin autorización cuando exista un riesgo cierto de que ' +
+      'se ocasionen daños a las personas o a los bienes (art. 37.14 LO 4/2015). Típico del "urban ' +
+      'climbing"/parkour en fachadas, grúas o monumentos.',
+    terminos: [
+      'trepar a un edificio',
+      'escalar una fachada',
+      'subirse a un monumento',
+      'urban climbing',
+      'trepar a una grua',
+      'escalar sin permiso un edificio',
+      'subirse a una estatua',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR que concurra el "riesgo cierto" de daños a personas o bienes que exige el tipo (no ' +
+      'basta la mera escalada). Frontera con daños o allanamiento según el caso. Confirmar con el revisor.',
+  }),
+  construirInfraccion({
+    id: 'sc-laser-agentes',
+    articulo: ART_LOSC_37_6,
+    tituloCorto: 'Haz de luz o láser sobre agentes',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Proyectar haces de luz, con cualquier dispositivo (puntero láser incluido), sobre miembros de ' +
+      'las Fuerzas y Cuerpos de Seguridad para impedir o dificultar el ejercicio de sus funciones (art. ' +
+      '37.6 LO 4/2015). Es infracción LEVE. Se distingue del art. 35.4 (haces sobre conductores/pilotos ' +
+      'con riesgo de accidente, muy grave).',
+    terminos: [
+      'laser a la policia',
+      'puntero laser a un agente',
+      'deslumbrar al agente con laser',
+      'apuntar con laser a la policia',
+      'laser a los antidisturbios',
+      'cegar al policia con laser',
+      'laser a un guardia',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) del dispositivo láser y su puesta a ' +
+          'disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 35.4 (láser a conductores/pilotos, muy grave) y con el ' +
+      'delito de atentado (art. 550 CP) si el láser causa lesión o pone en peligro al agente. Confirmar con el revisor.',
+  }),
+  // --- Ola de ARMAS (ampliación RD 137/1993; sanción LO 4/2015 art. 36.12) ---------------------
+  construirInfraccion({
+    id: 'arma-coleccionismo-sin-autorizacion',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'Coleccionismo de armas sin autorización',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Poseer una colección de armas (o armas de museo/históricas) sin la autorización de ' +
+      'coleccionismo exigida, o incumpliendo sus condiciones (inscripción, libro-registro, ' +
+      'inutilización cuando proceda), cuando la conducta no sea constitutiva de delito (art. 36.12 LO ' +
+      '4/2015; régimen de coleccionismo de los arts. 107 y ss. del RD 137/1993: autorización especial, ' +
+      'libro-registro del coleccionista e inutilización cuando proceda). FRONTERA PENAL: si las armas son aptas para ' +
+      'el disparo y carecen de toda documentación puede haber tenencia ilícita (art. 564 CP) o depósito ' +
+      '(arts. 566-568 CP). Orientativo.',
+    terminos: [
+      'coleccion de armas sin permiso',
+      'coleccionista de armas sin autorizacion',
+      'armas de museo sin papeles',
+      'coleccion de pistolas antiguas',
+      'armas historicas sin inutilizar',
+      'guardar una coleccion de armas ilegal',
+      'coleccionismo de armas sin licencia',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) de las armas y su puesta a disposición de la ' +
+          'autoridad competente (Intervención de Armas de la Guardia Civil).',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR los artículos del RD 137/1993 sobre coleccionismo (autorización, inscripción, ' +
+      'inutilización y libro-registro) y el deslinde con la tenencia ilícita/depósito (arts. 564 y ' +
+      '566-568 CP) según la aptitud para el disparo. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'arma-no-comunicar-perdida-arma',
+    articulo: ART_LOSC_36_12,
+    tituloCorto: 'No comunicar la pérdida o sustracción del arma',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'No comunicar a la autoridad la pérdida, extravío o sustracción del ARMA reglamentada (no solo de ' +
+      'su documentación), o no adoptar las medidas de custodia que lo habrían evitado, incumpliendo la ' +
+      'normativa de armas (art. 36.12 LO 4/2015; deber de dar cuenta inmediata de la pérdida o ' +
+      'sustracción del arma a la Intervención de Armas de la Guardia Civil, art. 149 RD 137/1993 ' +
+      '—ordinal a verificar en el texto consolidado—, y deberes de custodia de los arts. 105 y ss.). ' +
+      'Se diferencia del art. 37.8 (leve), que se refiere a la pérdida de la DOCUMENTACIÓN, no del arma. ' +
+      'FRONTERA PENAL: si el arma acaba en manos de terceros con indicios de destino ilícito, puede ' +
+      'haber depósito/tráfico (arts. 566-568 CP). Orientativo.',
+    terminos: [
+      'no denuncio el robo del arma',
+      'le robaron la pistola y no lo comunico',
+      'perdio la escopeta sin avisar',
+      'arma sustraida no comunicada',
+      'no comunico la perdida del arma',
+      'le desaparecio el arma y no dijo nada',
+      'no denuncia la sustraccion del arma',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención cautelar de las armas restantes y su puesta a disposición ' +
+          'de la autoridad competente (Intervención de Armas de la Guardia Civil).',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el precepto del RD 137/1993 que fija el plazo y la forma de comunicar la pérdida/' +
+      'sustracción del arma y el deslinde con el art. 37.8 (documentación, leve) y con el depósito/' +
+      'tráfico (arts. 566-568 CP). Confirmar con el revisor jurídico.',
   }),
 ];
 
