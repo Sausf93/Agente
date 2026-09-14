@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Fingerprint,
   FlaskConical,
+  Globe,
   Languages,
   MessageSquarePlus,
   MessageSquareText,
@@ -76,6 +77,14 @@ export default function MasScreen() {
             icon={Baby}
             titulo="Menores"
             descripcion="Inimputable menor de 14, régimen 14-17 con garantías y MENA."
+          />
+        </Link>
+        <Link href="/guia-extranjeria" asChild>
+          <FilaMas
+            t={t}
+            icon={Globe}
+            titulo="Extranjería en la calle"
+            descripcion="Irregular ≠ delito: vía administrativa, detención cautelar y cuándo es penal."
           />
         </Link>
       </View>

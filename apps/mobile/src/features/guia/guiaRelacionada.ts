@@ -8,6 +8,7 @@
 import { GUIA_IDENTIFICACION } from './guiaIdentificacion';
 import { FICHAS_ALCOHOL } from './guiaAlcoholemia';
 import { GUIA_MENORES } from './guiaMenores';
+import { GUIA_EXTRANJERIA } from './guiaExtranjeria';
 
 export interface GuiaRelacionada {
   /** Ruta de la guía (pantalla de la app). */
@@ -34,6 +35,12 @@ const GUIA_MENORES_REL: GuiaRelacionada = {
   descripcion: 'Inimputable < 14, régimen del menor 14-17 con garantías y MENA.',
 };
 
+const GUIA_EXTRANJERIA_REL: GuiaRelacionada = {
+  ruta: '/guia-extranjeria',
+  titulo: 'Guía de extranjería en la calle',
+  descripcion: 'Irregular ≠ delito: vía administrativa, detención cautelar y cuándo es penal.',
+};
+
 /**
  * Ficha → guía relacionada, construido a partir de las fichas que declara cada guía. Si dos secciones
  * de una guía apuntan a la misma ficha (p. ej. cacheo y vehículo → `sc-cacheo-registro`), la clave se
@@ -42,7 +49,11 @@ const GUIA_MENORES_REL: GuiaRelacionada = {
 export const GUIA_POR_FICHA: Readonly<Record<string, GuiaRelacionada>> = {
   ...Object.fromEntries(GUIA_IDENTIFICACION.map((s) => [s.fichaId, GUIA_IDENTIFICACION_REL])),
   ...Object.fromEntries(FICHAS_ALCOHOL.map((f) => [f.id, GUIA_ALCOHOLEMIA_REL])),
-  // Solo las secciones de la guía de menores que declaran ficha (MENA → sc-mena-consulta).
+  // Extranjería primero (fichas ext-*); la guía de menores se aplica DESPUÉS para que la ficha MENA
+  // (sc-mena-consulta, que ambas guías declaran) resuelva a la guía de menores, más específica.
+  ...Object.fromEntries(
+    GUIA_EXTRANJERIA.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_EXTRANJERIA_REL]),
+  ),
   ...Object.fromEntries(
     GUIA_MENORES.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_MENORES_REL]),
   ),

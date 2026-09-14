@@ -342,26 +342,36 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Estancia irregular (extranjería)',
     gravedad: 'grave',
     // LO 4/2000 art. 55.1.b: infracciones graves, multa de 501 a 10.000 €. Se fija el mínimo como
-    // referencia; en la estancia irregular la sanción PRINCIPAL suele ser la expulsión (art. 57).
+    // referencia. Cotejado (revisor 2026-09): en la MERA estancia irregular la sanción PREFERENTE es
+    // la MULTA (doctrina TS Sala 3.ª 2023); la expulsión (art. 57) exige agravantes y motivación.
     importeEur: 501,
     importeReducidoEur: null,
     textoBoletin:
       'Encontrarse irregularmente en territorio español (sin autorización de estancia o residencia, ' +
       'o con ella caducada más de tres meses sin solicitar renovación). Es una infracción GRAVE ' +
       'ADMINISTRATIVA del art. 53.1.a LO 4/2000. MENSAJE CLAVE: la estancia irregular NO es delito y ' +
-      'NO procede detención penal por ella; su tratamiento es administrativo y la sanción principal ' +
-      'suele ser la expulsión (arts. 57 y 58 LO 4/2000), no la multa. La detención cautelar del ' +
-      'expediente de expulsión tiene requisitos y plazos propios (art. 61) y la acuerda la autoridad ' +
-      'competente. La valoración final corresponde a la autoridad administrativa/judicial.',
+      'NO procede detención penal por ella; su tratamiento es administrativo. En la MERA estancia ' +
+      'irregular la sanción PREFERENTE es la MULTA (art. 55.1); la expulsión (arts. 57 y 58) exige ' +
+      'circunstancias agravantes añadidas y resolución motivada (doctrina del Tribunal Supremo, Sala ' +
+      '3.ª, 2023). La detención cautelar gubernativa del expediente de expulsión tiene un máximo de 72 ' +
+      'horas (art. 61) y el internamiento en CIE lo autoriza el Juez de Instrucción (art. 62). La ' +
+      'valoración final corresponde a la autoridad administrativa/judicial.',
     terminos: [
       'estancia irregular',
       'sin papeles',
+      'no tiene papeles',
+      'no lleva papeles',
       'situacion irregular',
       'irregular en españa',
       'extranjero sin papeles',
+      'extranjero sin documentacion',
+      'indocumentado',
+      'ilegal',
       'sin permiso de residencia',
       'residencia caducada',
+      'se le caduco el permiso',
       'sin autorizacion de residencia',
+      'sin residencia',
       'inmigrante irregular',
       'sin documentacion de extranjero',
     ],
@@ -371,10 +381,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         tipo: 'identificacion',
         textoCorto:
           'Procede la identificación y la comprobación documental; la estancia irregular se tramita ' +
-          'por vía administrativa (multa o expulsión, arts. 57/58 LO 4/2000). NO procede la ' +
-          'detención penal por la mera situación irregular; cualquier medida cautelar de internamiento ' +
-          'la acuerda la autoridad competente con los requisitos del art. 61 y ss.',
-        fuente: 'LO 4/2000 arts. 53, 57, 58 y 61',
+          'por vía administrativa. En la mera estancia irregular la sanción preferente es la MULTA ' +
+          '(art. 55.1); la expulsión (arts. 57/58) exige agravantes y motivación (TS 2023). NO procede ' +
+          'detención penal por la mera situación irregular; la detención cautelar gubernativa es de ' +
+          'máx. 72 h (art. 61) y el internamiento en CIE lo autoriza el Juez de Instrucción (art. 62).',
+        fuente: 'LO 4/2000 arts. 53, 55, 57, 58, 61 y 62; TS Sala 3.ª 2023',
       },
     ],
     marcoImporte: 'extranjeria',
@@ -544,11 +555,14 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'encima. La valoración final corresponde al agente y a la autoridad competente.',
     terminos: [
       'no lleva papeles encima',
+      'no lleva la documentacion',
+      'no me da los papeles',
       'sin documentacion encima',
       'no lleva el nie',
       'olvido la tarjeta',
       'sin pasaporte encima',
       'no lleva la tie',
+      'tarjeta de residencia',
       'indocumentado extranjero',
       'acreditar identidad extranjero',
     ],

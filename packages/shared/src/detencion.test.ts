@@ -320,12 +320,14 @@ describe('evaluarDetencion — RAMA B1: solo hecho migratorio (extranjería, LO 
     expect(r.avisosMenor).toBeUndefined();
   });
 
-  it('aclara la detención cautelar del art. 61 (a verificar) y la separa del CIE (art. 62)', () => {
+  it('aclara la detención cautelar gubernativa 72 h (art. 61) y la separa del CIE judicial (art. 62)', () => {
     const r = evaluarDetencion({ gravedadCp: 'grave', soloHechoMigratorio: true });
-    // Cautelar para incoar/ejecutar la expulsión: que el agente no lea "no puede retener".
+    // Cautelar para asegurar la expulsión: que el agente no lea "no puede retener".
     expect(r.motivo).toMatch(/cautelar/i);
     expect(r.motivo).toMatch(/art\. 61/);
-    expect(r.motivo).toMatch(/a verificar/);
+    expect(r.motivo).toMatch(/72 horas/);
+    // Cotejado (revisor 2026-09): en la mera estancia irregular la sanción preferente es la MULTA.
+    expect(r.motivo).toMatch(/MULTA/);
     // El CIE (art. 62, judicial) queda separado.
     expect(r.motivo).toMatch(/CIE/);
     expect(r.motivo).toMatch(/art\. 62/);

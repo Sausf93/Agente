@@ -88,9 +88,10 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   buscar('Desobediencia'),
   buscar('Drogas en vía pública'),
   buscar('Hurto'),
-  // Extranjería es media plantilla de PN: 'estancia irregular' abre la ficha (NO es delito, vía
-  // administrativa); desde ahí y con 'mena' se llega a la consulta del menor no acompañado.
-  buscar('Extranjería', 'estancia irregular'),
+  // Extranjería es media plantilla de PN: abre la GUÍA de extranjería en la calle (irregular ≠ delito,
+  // detención cautelar/CIE, cuándo es penal, MENA), más útil en directo que una sola ficha; desde la
+  // guía se enlaza a la ficha de estancia irregular y a la de MENA.
+  { label: 'Extranjería', destino: { tipo: 'ruta', valor: '/guia-extranjeria' } },
   // "Leer derechos" abre la pantalla de derechos del detenido (no es una búsqueda).
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
   // "Identificación" lleva a la ficha del REQUERIMIENTO de identificación (art. 16 LOSC), la
@@ -116,7 +117,7 @@ export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
   buscar('Alcoholemia'),
   buscar('Sin seguro'),
   buscar('Tacógrafo', 'tacografo'),
-  buscar('Extranjería', 'estancia irregular'),
+  { label: 'Extranjería', destino: { tipo: 'ruta', valor: '/guia-extranjeria' } },
   { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
 ];

@@ -140,7 +140,20 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **185 infracciones, 30 normas, 1627 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **185 infracciones, 30 normas, 1637 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (3ª parte): Guía de extranjería en la calle + componente compartido.** Nueva
+  **Guía de extranjería** (`guiaExtranjeria.ts` + `GuiaExtranjeriaScreen.tsx`, ruta `/guia-extranjeria`)
+  con 7 secciones acción-primero: estancia irregular ≠ delito (multa preferente), documentación (qué
+  documentos valen + traslado art. 16 LO 4/2015), orden de expulsión vigente, **asilo/protección
+  internacional** (no devolución art. 19.1 Ley 12/2009), detención cautelar gubernativa 72 h (art. 61)
+  / CIE judicial (art. 62), cuándo es penal (318 bis/177 bis), MENA con determinación de edad (35.3).
+  **Componente compartido `GuiaAccionScreen`** (menores y extranjería lo reutilizan; el chip de acción
+  es lo que lo distingue de la guía de identificación). Revisor **APTO CON CORRECCIONES** en 2 pasadas.
+  **Error factual corregido EN PRODUCCIÓN**: la sanción preferente en la mera estancia irregular es la
+  MULTA (doctrina TS Sala 3.ª 2023), no la expulsión — estaba mal en el motor (`ramaSoloMigratorio`) y
+  en la ficha `ext-estancia-irregular`, ahora alineados con la guía. Acceso "Extranjería" de PN/GC
+  ahora abre la guía (antes buscaba la ficha). Sinónimos de calle ext ampliados ("indocumentado",
+  "no tiene papeles", "se le caducó el permiso"…). 912 tests verdes.
 - **SPRINT 2026-09-14 (2ª parte): Guía de menores + hub de guías.** Nueva **Guía rápida de menores**
   (`apps/mobile/src/features/guia/guiaMenores.ts` + `GuiaMenoresScreen.tsx`, ruta `/guia-menores`),
   patrón de la guía de identificación pero con **chip de ACCIÓN operativa** por sección (feedback del

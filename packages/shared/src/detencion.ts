@@ -248,14 +248,14 @@ function ramaSoloMigratorio(v: EntradaDetencionNormalizada): ResultadoDetencion 
     motivo:
       'La estancia irregular en España es una infracción administrativa grave, no un delito (art. ' +
       '53.1.a LO 4/2000): no procede detención penal por ese motivo. Procede la identificación y, ' +
-      'en su caso, la incoación del procedimiento administrativo sancionador de extranjería, cuya ' +
-      'sanción puede ser multa (art. 55.1) o, con preferencia en la estancia irregular, la ' +
-      'expulsión (art. 57), con prohibición de entrada (art. 58). Aunque no es una detención ' +
-      'penal, cabe (a verificar) la DETENCIÓN CAUTELAR a efectos de incoar o ejecutar la ' +
-      'expulsión (art. 61 LO 4/2000), con límites temporales y control judicial: no equivale a ' +
-      '"no se puede retener". El internamiento en CIE es una medida cautelar DISTINTA, que acuerda ' +
-      'la autoridad judicial a instancia de la Administración (art. 62 LO 4/2000), no una ' +
-      'detención penal policial.',
+      'en su caso, la incoación del procedimiento administrativo sancionador de extranjería. En la ' +
+      'MERA estancia irregular la sanción preferente es la MULTA (art. 55.1); la EXPULSIÓN (art. 57, ' +
+      'con prohibición de entrada del art. 58) exige circunstancias agravantes añadidas y resolución ' +
+      'motivada (doctrina del Tribunal Supremo, Sala 3.ª, 2023). Aunque no es una detención penal, ' +
+      'cabe la DETENCIÓN CAUTELAR gubernativa por un máximo de 72 horas, previa a la solicitud de ' +
+      'internamiento, para asegurar la expulsión (art. 61 LO 4/2000): no equivale a "no se puede ' +
+      'retener". El internamiento en CIE es una medida cautelar DISTINTA, que autoriza el Juez de ' +
+      'Instrucción a instancia de la Administración (art. 62 LO 4/2000), no una detención penal policial.',
     fuentes: [ART_LOEX_53_1_A, ART_LOEX_55_1, ART_LOEX_57, ART_LOEX_58, ART_LOEX_61, ART_LOEX_62],
     pie: PIE_EXTRANJERIA,
     ...(esMenor ? { avisosMenor: AVISO_MENOR_MIGRATORIO } : {}),
