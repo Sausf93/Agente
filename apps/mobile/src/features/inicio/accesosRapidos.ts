@@ -51,6 +51,7 @@ export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [
   buscar('Zona azul'),
   buscar('Patinete'),
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
+  { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
 ];
 
 /**
@@ -67,6 +68,7 @@ export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
   // Menores es transversal (validación de calle): el crío bebiendo, el vandalismo o el MENA los ve
   // cualquier cuerpo. Abre la guía del menor (inimputable < 14, régimen 14-17, MENA).
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
+  { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
 ];
 
 /**
@@ -101,6 +103,8 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   // "Menores" abre la GUÍA del menor (inimputable < 14, régimen 14-17 con garantías, MENA): oficio
   // diario de PN (extranjería/MENA y vía penal del menor), no una búsqueda de una única ficha.
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
+  // VG es intervención universal y prioritaria: abre la guía (proteger, VPR/VioGén, orden de protección).
+  { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
 ];
 
 /**
@@ -120,6 +124,7 @@ export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
   { label: 'Extranjería', destino: { tipo: 'ruta', valor: '/guia-extranjeria' } },
   { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
+  { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
 ];
 
 /**

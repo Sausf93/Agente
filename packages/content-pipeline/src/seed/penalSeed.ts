@@ -985,6 +985,14 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'orden de proteccion',
       'viola el alejamiento',
       'incumple el alejamiento',
+      // Añadidos de calle (validador 2026-09): jerga de VG y dispositivos.
+      'quebranta la orden',
+      'rompe el alejamiento',
+      'incumple la orden',
+      'se salto la orden',
+      'pulsera antimaltrato',
+      'pulsera de maltratador',
+      'dispositivo telematico',
     ],
     notaRevision:
       'A VERIFICAR el marco de pena: quebrantamiento del art. 468.2 CP (pena o medida de ' +
@@ -1206,6 +1214,27 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'maltrato habitual',
       '173.2',
       'maltrato psicologico',
+      // Añadidos de calle (validador 2026-09).
+      'malos tratos en casa',
+      'violencia familiar',
+      'le pega a la mujer',
+      'maltrata a su mujer',
+      'discusion de pareja',
+      'pelea de pareja',
+      'riña domestica',
+      'bronca en casa',
+      'bronca de pareja',
+      'pelea entre marido y mujer',
+      'le esta pegando',
+      'la esta pegando',
+      'aviso de malos tratos',
+      '016',
+      'expareja',
+      'exmarido',
+      'no quiere denunciar',
+      'retirar la denuncia',
+      'viogen',
+      'vpr',
     ],
     // La PROTECCIÓN de la víctima sube DESTACADA (no enterrada en el texto): orden de protección y
     // valoración policial del riesgo. Orientativa; la acuerda/ratifica la autoridad judicial.

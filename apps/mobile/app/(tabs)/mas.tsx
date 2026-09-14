@@ -13,6 +13,7 @@ import {
   MessageSquarePlus,
   MessageSquareText,
   Settings,
+  ShieldAlert,
   Signpost,
   Wine,
   type LucideProps,
@@ -85,6 +86,14 @@ export default function MasScreen() {
             icon={Globe}
             titulo="Extranjería en la calle"
             descripcion="Irregular ≠ delito: vía administrativa, detención cautelar y cuándo es penal."
+          />
+        </Link>
+        <Link href="/guia-violencia-genero" asChild>
+          <FilaMas
+            t={t}
+            icon={ShieldAlert}
+            titulo="Violencia de género"
+            descripcion="Proteger primero: valoración del riesgo, orden de protección y detención."
           />
         </Link>
       </View>

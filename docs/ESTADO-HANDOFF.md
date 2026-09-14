@@ -140,7 +140,17 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **185 infracciones, 30 normas, 1760 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **185 infracciones, 30 normas, 1787 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (5ª parte): Guía de violencia de género.** Nueva **Guía de VG y doméstica**
+  (`guiaViolenciaGenero.ts` + `GuiaViolenciaGeneroScreen.tsx`, ruta `/guia-violencia-genero`), 9
+  secciones acción-primero con la PROTECCIÓN primero: proteger + VioGén/VPR, **se persigue de oficio
+  (aunque no denuncie)** con matiz de la dispensa del art. 416 LECrim, **denuncias cruzadas** (quién es
+  agresor principal), tipos (153/173.2/147-148), detención (490+492; y el agresor que ya no está),
+  **armas** (aprehensión cautelar vs. pena de privación), orden de protección (544 ter/bis),
+  quebrantamiento (468) y agravantes (153.3). Revisor **APTO CON CORRECCIONES** en 2 pasadas (contenido
+  MUY SENSIBLE); lenguaje estrictamente orientativo verificado. En "Más" > Guías rápidas y en accesos
+  rápidos de los 4 cuerpos. Sinónimos de VG/alejamiento ampliados. 912 tests verdes. La guía de USO DE
+  FUERZA sigue pendiente a propósito (hacer con el cofundador).
 - **SPRINT 2026-09-14 (4ª parte): sinónimos de calle + fraude con tarjeta.** +123 términos de calle
   (validador-calle) en las fichas más buscadas de tráfico y seguridad: velocidad ("cazado por radar",
   "a 180"), móvil ("wasapeando"), alcoholemia ("iba mamado"), semáforo ("se comió el semáforo"), armas

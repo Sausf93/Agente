@@ -9,6 +9,7 @@ import { GUIA_IDENTIFICACION } from './guiaIdentificacion';
 import { FICHAS_ALCOHOL } from './guiaAlcoholemia';
 import { GUIA_MENORES } from './guiaMenores';
 import { GUIA_EXTRANJERIA } from './guiaExtranjeria';
+import { GUIA_VIOLENCIA_GENERO } from './guiaViolenciaGenero';
 
 export interface GuiaRelacionada {
   /** Ruta de la guía (pantalla de la app). */
@@ -41,6 +42,12 @@ const GUIA_EXTRANJERIA_REL: GuiaRelacionada = {
   descripcion: 'Irregular ≠ delito: vía administrativa, detención cautelar y cuándo es penal.',
 };
 
+const GUIA_VIOLENCIA_GENERO_REL: GuiaRelacionada = {
+  ruta: '/guia-violencia-genero',
+  titulo: 'Guía de violencia de género',
+  descripcion: 'Proteger a la víctima, valorar el riesgo, orden de protección y detención.',
+};
+
 /**
  * Ficha → guía relacionada, construido a partir de las fichas que declara cada guía. Si dos secciones
  * de una guía apuntan a la misma ficha (p. ej. cacheo y vehículo → `sc-cacheo-registro`), la clave se
@@ -56,6 +63,12 @@ export const GUIA_POR_FICHA: Readonly<Record<string, GuiaRelacionada>> = {
   ),
   ...Object.fromEntries(
     GUIA_MENORES.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_MENORES_REL]),
+  ),
+  ...Object.fromEntries(
+    GUIA_VIOLENCIA_GENERO.filter((s) => s.fichaId).map((s) => [
+      s.fichaId as string,
+      GUIA_VIOLENCIA_GENERO_REL,
+    ]),
   ),
 };
 
