@@ -99,6 +99,19 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
 Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
+- **BUG estructural de la ficha de EXTRANJERÍA arreglado** (commit `1c1c8ef`, CI Run 114): `ficha.ts`
+  pintaba SIEMPRE un texto genérico ("multa o expulsión, art. 53.1.a LOEX") para toda ficha `ext-*` con
+  consecuencia `identificacion`, IGNORANDO el `textoCorto` propio → la mayoría mostraba un ARTÍCULO
+  INCORRECTO (p. ej. `ext-quebrantar-prohibicion-entrada`, que es devolución del 58.3.a). Ahora usa el
+  texto propio de cada consecuencia; y las fichas de deslinde sin sanción (importe null) ya no pintan el
+  tile "Multa o expulsión". Con tests de regresión. **Este era el fallo más grave detectado en todo el
+  run** (lo cazó la ronda de agentes, no los tests). Hallazgo del agente de extranjería.
+- **`matrimonio de conveniencia` desdoblado** (commit `3af4d8b`, Run 115): sus términos caían en la ficha
+  SANCIONADORA del 54.1.f (10.001 €) y la UI mostraba una multa que el texto dice que NO aplica. Nueva
+  entrada `ext-matrimonio-conveniencia-consulta` (no_sancionador, sin importe) con el deslinde. 307 fichas.
+- **`ord-sctf-ruido-convivencia`** (commit `2bb3232`, Run 116): la gravedad LEVE se funda ahora en la
+  ordenanza propia / LRBRL art. 141, no en una cifra sin cita de la Ley 37/2003.
+- **Rondas anteriores de este run:**
 - **Buscador — desambigua "perro suelto/sin correa"** (commit `d65f85e`, CI Run 109): el término
   genérico enrutaba a la ficha GRAVE de PPP (300,52 €) en vez del perro común LEVE (Ley 7/2023). Los
   términos genéricos se movieron a la ficha del perro común; la de PPP solo se alcanza con términos
@@ -135,16 +148,25 @@ Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
   COTEJADOS contra el BOE (LO 4/2015 art. 39.1). El QA transversal confirmó 0 IDs duplicados, 0
   imperativos en detención/decomiso/cese, 0 normas derogadas citadas como vigentes, 0 datos de terceros.
 - **Backlog que dejaron los agentes** (no bloquean lanzamiento, para valorar):
-  - Buscador de dos niveles: desambiguar "perro suelto"/"perro sin correa" (aparece en PPP grave, Ley
-    7/2023 leve y ordenanza) — priorizar por especificidad o preguntar "¿es PPP?" antes del importe.
+  - ~~Desambiguar "perro suelto"~~ **HECHO** (commit `d65f85e`). ~~`del-agresion-sexual` pie~~ **HECHO**
+    (`614f8ac`). ~~Subir mínimo de sinónimos a 3~~ **HECHO** (`200d817`). ~~Bug ficha extranjería~~
+    **HECHO** (`1c1c8ef`). ~~matrimonio de conveniencia~~ **HECHO** (`3af4d8b`). ~~Ley 37/2003 ruido~~
+    **HECHO** (`2bb3232`).
   - Panel admin: un estado/etiqueta `bloqueaPublicacion` distinto de `pendiente_revision` para las
     fichas que dicen "no publicar hasta confirmar" (`ord-sctf-terrazas`, `ord-sctf-zbe`,
     `animal-sin-curso-ni-seguro`), que el aprobador con prisa no las trate como un "a verificar" normal.
-  - `del-agresion-sexual` agrupa 178.1 (menos grave) y 179 (grave) bajo `gravedad: 'grave'`: dejar
-    constancia en el PIE de la ficha (no solo en la nota interna) de que el subtipo más leve podría
-    regirse por otro régimen, para que el motor de detención no sobre-oriente.
-  - Subir el mínimo de sinónimos del validador (`validarMinimosPublicacion`) de 2 a 3 para reflejar el
-    estándar real (nunca baja de 5).
+    (Requiere plumbing en el modelo compartido + consumo en el panel Next.js; sin consumidor hoy.)
+  - Ordenanzas SCTF: las fichas que fijan el TECHO del tramo (750/1.500 €) deberían usar `importeMaxEur`
+    (mínimo en `importeEur`, máximo en `importeMaxEur`) como hace Canarias, para que la UI lo pinte como
+    RANGO y no como cifra fija. Y los `numero` placeholder de artículo (VMP, CENSO, CONV, OCUP, ZBE) que
+    lleven un marcador explícito de "pendiente" (p. ej. `s/n`) para no parecer citas reales.
+  - Extranjería (MEDIO/BAJO del agente): matizar sinónimos genéricos que pueden desviar el buscador
+    ('indocumentado' en `ext-estancia-irregular` vs deslinde; 'tarjeta de residencia', 'empadronamiento
+    extranjero', 'trafico de personas administrativo'); añadir el deslinde penal (390 y ss. CP) al
+    `textoBoletin` visible de `ext-ocultacion-dolosa-cambios` (hoy solo en la nota).
+  - Segundo revisor humano para pasar de `pendiente_revision` a `verificado` (incl. cierre de la guía de
+    uso de la fuerza CON el cofundador, y corroboración en navegador de los tramos del art. 66 de la Ley
+    7/2011 de Canarias, que WebFetch no deja confirmar a los subagentes).
 
 ### YA HECHO el 2026-09-14 (ronda de verificación BOE) — `main` + Expo `preview`, CI verde (Run 105)
 - **QA final + verificación con fuente primaria** (commit `3681195`): ronda propia del agente principal
