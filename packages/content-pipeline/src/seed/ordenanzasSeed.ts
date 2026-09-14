@@ -606,8 +606,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'ord-sctf-ruido-convivencia',
     articulo: ART_RUIDO_CONV,
-    // Reclasificada a LEVE (revisor jurídico, 2026-09): 300 € queda por debajo del mínimo del tramo
-    // GRAVE de la Ley del Ruido (Ley 37/2003), por lo que encaja como infracción LEVE de convivencia.
+    // Modelada como LEVE de CONVIVENCIA: el ruido vecinal ordinario (música/escándalo) es el escalón
+    // más bajo de la Ordenanza municipal de ruidos y vibraciones (tramos propios leve/grave/muy grave)
+    // o, en su defecto, del régimen residual de la LRBRL (art. 141). El importe es ORIENTATIVO y queda
+    // "a verificar" contra el texto consolidado (revisor jurídico 2026-09; ajustado 2026-09-14 para no
+    // apoyarse en una cifra de la Ley 37/2003, que regula focos/actividades con otros tramos).
     tituloCorto: 'Ruido y molestias vecinales (música, escándalo)',
     gravedad: 'leve',
     importeEur: 300,
@@ -628,11 +631,12 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'fiesta ruidosa',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: los ruidos molestos se sancionan por la Ordenanza de ruidos y ' +
-      'vibraciones (tramos leve/grave/muy grave). Reclasificada a LEVE porque 300 € queda por debajo del ' +
-      'mínimo del tramo GRAVE de la Ley 37/2003 del Ruido; el importe (300/150 €) es ORIENTATIVO. ' +
-      'Confirmar artículo, tramo y cuantía con el texto consolidado y el revisor jurídico. Puede requerir ' +
-      'medición sonométrica para acreditar el exceso.',
+      'A VERIFICAR importe y clasificación: los ruidos molestos se sancionan por la ORDENANZA municipal de ' +
+      'ruidos y vibraciones (tramos propios leve/grave/muy grave) o, en su defecto, por el régimen residual ' +
+      'de la LRBRL (art. 141). Se modela como LEVE de convivencia con importe ORIENTATIVO (300/150 €); NO se ' +
+      'apoya en cifras de la Ley 37/2003 del Ruido (que regula focos/actividades, con tramos distintos). ' +
+      'Confirmar artículo, tramo y cuantía con el texto consolidado de la ordenanza y el revisor jurídico. ' +
+      'Puede requerir medición sonométrica para acreditar el exceso.',
   }),
   // TERRAZAS: la ordenanza de ocupación de vía pública con mesas/sillas/parasoles EXISTE y está en
   // vigor, pero NO hemos podido confirmar el artículo del régimen sancionador ni la cuantía. Siguiendo
