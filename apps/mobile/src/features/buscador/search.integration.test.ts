@@ -365,6 +365,33 @@ suite('desambiguación · "perro suelto/sin correa" común (leve) vs PPP (grave)
 });
 
 /**
+ * Extranjería (QA multiagente 2026-09-14): la acción operativa debe usar el TEXTO PROPIO de la
+ * consecuencia de cada ficha ext-*, no el genérico "multa o expulsión, art. 53.1.a" que antes se
+ * pintaba para todas (incorrecto: la mayoría no son estancia irregular). Y las fichas de deslinde
+ * SIN sanción (importe null) no deben pintar el tile "Multa o expulsión".
+ */
+suite('extranjería · detalle propio de cada ficha, sin tile de sanción en los deslindes', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  it('ext-quebrantar-prohibicion-entrada: el detalle es la DEVOLUCIÓN (58.3.a), no el genérico 53.1.a', async () => {
+    const ficha = await cargarFicha(runner, 'ext-quebrantar-prohibicion-entrada');
+    expect(ficha, 'falta ext-quebrantar-prohibicion-entrada').not.toBeNull();
+    const a = accionDeFicha(ficha!);
+    expect(a?.detalle).toMatch(/58\.3\.a|devoluci[oó]n/i);
+    expect(a?.detalle ?? '').not.toMatch(/multa o expulsi[oó]n, art\. 53\.1\.a/i);
+  });
+
+  it('los deslindes sin sanción (importe null) NO pintan el tile "Multa o expulsión"', async () => {
+    for (const id of ['ext-quebrantar-prohibicion-entrada', 'ext-no-portar-documentacion']) {
+      const ficha = await cargarFicha(runner, id);
+      expect(ficha, id).not.toBeNull();
+      const tiles = tilesFicha(ficha!, formatEuros);
+      expect(tiles.some((t) => t.valor === 'Multa o expulsión'), id).toBe(false);
+    }
+  });
+});
+
+/**
  * Presentación de las 8 DELITOS nuevos (QA): marco penal (sin tiles de importe), acción de
  * atestado + detención con su ÁRBOL de decisión (regla no vacía).
  */

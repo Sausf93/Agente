@@ -203,10 +203,12 @@ export function tilesFicha(
   // Extranjería: el dato principal NO es el importe. Se muestra la naturaleza de la sanción (multa
   // o expulsión) como tile que manda, y la multa mínima solo como referencia de-enfatizada.
   if (ficha.fichaKind === 'extranjeria') {
+    // Deslinde SIN sanción (importeEur === null: p. ej. `ext-no-portar-documentacion`,
+    // `ext-quebrantar-prohibicion-entrada`, modeladas como no_sancionador): NO se pinta el tile
+    // "Sanción: Multa o expulsión", que contradiría su mensaje clave (corrección revisor 2026-09-14).
+    if (ficha.importeEur === null) return [];
     const tiles: TileFicha[] = [{ etiqueta: 'Sanción', valor: 'Multa o expulsión' }];
-    if (ficha.importeEur !== null) {
-      tiles.push({ etiqueta: 'Multa desde', valor: formatEuros(ficha.importeEur) });
-    }
+    tiles.push({ etiqueta: 'Multa desde', valor: formatEuros(ficha.importeEur) });
     return tiles;
   }
   // Marcos de HORQUILLA: seguridad ciudadana (LO 4/2015) y todo lo autonómico/municipal. La multa
@@ -423,13 +425,20 @@ export function accionOperativaFrom(input: {
     // EXTRANJERÍA (estancia irregular, arts. 53.1.a / 61 LOEX): lo CLAVE es que NO procede la
     // detención PENAL por la mera situación irregular; se tramita por vía administrativa.
     if (input.fichaKind === 'extranjeria') {
+      // Usa el `textoCorto` REDACTADO de ESA consecuencia cuando existe (cada ficha ext-* tiene su
+      // mensaje clave: devolución del 58.3.a, deslinde del 4.1, no-portar-documentación…), cayendo al
+      // texto genérico de estancia irregular solo si la consecuencia no trae texto propio. Antes se
+      // ignoraba el texto propio y se pintaba SIEMPRE "multa o expulsión, art. 53.1.a", incorrecto para
+      // la mayoría de las fichas de extranjería (corrección revisor 2026-09-14).
+      const textoPropio = identificacion.textoCorto?.trim();
       return {
         kind: 'identificacion',
         titulo: 'Identificar · vía administrativa · NO detención penal',
-        detalle:
-          'Procede identificar y comprobar la documentación; la situación se tramita por vía ' +
-          'administrativa (multa o expulsión, art. 53.1.a LOEX). Cualquier internamiento cautelar lo ' +
-          'acuerda la autoridad competente con los requisitos del art. 61 LOEX.',
+        detalle: textoPropio
+          ? textoPropio
+          : 'Procede identificar y comprobar la documentación; la situación se tramita por vía ' +
+            'administrativa (multa o expulsión, art. 53.1.a LOEX). Cualquier internamiento cautelar lo ' +
+            'acuerda la autoridad competente con los requisitos del art. 61 LOEX.',
         fuente: identificacion.fuente,
         tono: 'informativo',
       };
