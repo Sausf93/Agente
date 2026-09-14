@@ -106,10 +106,15 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
     expect(ficha!.puntos).toBe(6);
     expect(ficha!.normaCodigo).toBe('RGC');
     expect(ficha!.articuloNumero).toBe('18');
-    // Tráfico sigue en beta (solo PPP/Ley 7/2023 se han marcado `verificado` tras cotejo BOE): la app
-    // muestra el distintivo "Borrador beta" en esta ficha.
-    expect(ficha!.estadoRevision).toBe('pendiente_revision');
+    // El móvil (6 puntos, Anexo II.8) se cotejó contra el BOE → `verificado` (sin "Borrador beta").
+    expect(ficha!.estadoRevision).toBe('verificado');
     expect(ficha!.actualizadoEn).toBeTruthy();
+  });
+
+  it('una ficha aún NO cotejada muestra el distintivo "Borrador beta" (pendiente_revision)', async () => {
+    // El seguro obligatorio (marco propio LRCSCVM) sigue en beta: sirve de testigo del sello.
+    const ficha = await cargarFicha(runner, 'inf-sin-seguro');
+    expect(ficha?.estadoRevision).toBe('pendiente_revision');
   });
 
   it('id inexistente → null', async () => {

@@ -84,18 +84,25 @@ describe('construirPaquete: estructura y metadatos', () => {
     expect(resultado.manifiesto.hash).toMatch(/^[0-9a-f]{64}$/);
     expect(resultado.manifiesto.firma).toBeNull();
     expect(resultado.manifiesto.schemaVersion).toBe(1);
-    expect(resultado.resumen.pendientesRevision).toBe(SEED_TRAFICO.infracciones.length);
+    const pendientesSeed = SEED_TRAFICO.infracciones.filter(
+      (i) => i.revision === 'pendiente_revision',
+    ).length;
+    expect(resultado.resumen.pendientesRevision).toBe(pendientesSeed);
   });
 
-  it('marca todas las infracciones del seed como pendientes de revisión', () => {
-    const n = (
+  it('el estado editorial del paquete coincide con el seed (verificado contra BOE vs pendiente)', () => {
+    const verificadasDb = (
       db
         .prepare(`SELECT COUNT(*) AS n FROM infraccion WHERE estado_revision = 'verificado'`)
-        .get() as {
-        n: number;
-      }
+        .get() as { n: number }
     ).n;
-    expect(n).toBe(0);
+    const verificadasSeed = SEED_TRAFICO.infracciones.filter(
+      (i) => i.revision === 'verificado',
+    ).length;
+    // El paquete refleja exactamente las fichas cotejadas contra el BOE (no más, no menos).
+    expect(verificadasDb).toBe(verificadasSeed);
+    // Y en tráfico ya hay al menos una verificada (móvil, cinturón, semáforo…).
+    expect(verificadasDb).toBeGreaterThan(0);
   });
 
   it('la columna cuerpos viaja como JSON y el RGC (tráfico) excluye a la Policía Nacional', () => {

@@ -1124,7 +1124,7 @@ export interface InfraccionSeed {
   consecuencias: Consecuencia[];
   /** Marco para `validarImporte` (LSV art. 80, LRCSCVM art. 3…). */
   marcoImporte: MarcoImporte;
-  /** Estado editorial. En el seed SIEMPRE `pendiente_revision` (nada se autopublica). */
+  /** Estado editorial: `verificado` si se cotejó contra el BOE (ver `VERIFICADAS_BOE`), si no `pendiente_revision`. */
   revision: EstadoRevision;
   /** Qué dato concreto debe confirmar el revisor ("a verificar"). */
   notaRevision: string;
@@ -1156,7 +1156,35 @@ interface InfraccionSeedInput {
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
   marcoImporte: MarcoImporte;
   notaRevision: string;
+  /** Estado editorial; por defecto `pendiente_revision`. Ver `VERIFICADAS_BOE`. */
+  revision?: EstadoRevision;
 }
+
+/**
+ * Fichas COTEJADAS contra el BOE de la LSV (RDL 6/2015; art. 77 muy graves, art. 80 importes —leve
+ * ≤100, grave 200, muy grave 500— y Anexo II de puntos, leídos en el navegador 2026-09-14): gravedad,
+ * importe y PUNTOS confirmados directamente. Se marcan `verificado`.
+ *
+ * NO se incluyen: el cuadro de VELOCIDAD (Anexo IV, por tramos), el ALCOHOL (importe/puntos por tasas,
+ * art. 80.2), el TRANSPORTE (LOTT, horquillas propias), lo que depende de reglamento/ITV, ni las fichas
+ * cuyos puntos no casan con el Anexo II (p. ej. `inf-marcha-atras-indebida`: la marcha atrás general no
+ * figura en el Anexo II, luego sus 4 puntos están a revisar). Para cobrar, visto bueno humano final.
+ */
+const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  'inf-movil-conduciendo', // grave, 6 puntos (Anexo II.8)
+  'inf-semaforo-rojo', // grave, 4 puntos (Anexo II.10)
+  'inf-stop-ceda-el-paso', // grave, 4 puntos (Anexo II.10)
+  'inf-prioridad-peatones', // grave, 4 puntos (Anexo II.10, preferencia de paso)
+  'inf-sin-cinturon', // grave, 4 puntos (Anexo II.15)
+  'inf-sin-casco', // grave, 4 puntos (Anexo II.15)
+  'inf-menor-sin-sri', // grave, 4 puntos (Anexo II.15)
+  'inf-auriculares-conduciendo', // grave, 3 puntos (Anexo II.20)
+  'inf-distancia-seguridad', // grave, 4 puntos (Anexo II.14)
+  'inf-adelantamiento-antirreglamentario', // grave, 4 puntos (Anexo II.11)
+  'inf-sentido-contrario', // muy grave (art. 77.f), 6 puntos (Anexo II.4)
+  'inf-drogas-volante', // muy grave (art. 77.c), 6 puntos (Anexo II.2)
+  'inf-marcha-atras-autopista', // grave, 4 puntos (Anexo II.18) — corregido de muy grave/6
+]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
 const COMPETENCIA_TRAFICO = {
@@ -1202,6 +1230,18 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     }),
   );
 
+  // Estado editorial: `verificado` cuando la ficha está en `VERIFICADAS_BOE` (gravedad/importe/puntos
+  // cotejados contra la LSV en el BOE) y no se ha forzado otro estado; se antepone a la nota la línea
+  // de cotejo. Si no, `pendiente_revision`.
+  const verificadaPorSet = input.revision === undefined && VERIFICADAS_BOE.has(input.id);
+  const revision: EstadoRevision =
+    input.revision ?? (verificadaPorSet ? 'verificado' : 'pendiente_revision');
+  const notaRevision =
+    verificadaPorSet && !/BOE/i.test(input.notaRevision)
+      ? `COTEJADO contra el BOE (LSV art. 80 y Anexo II de puntos, leído 2026-09-14): gravedad, importe ` +
+        `y puntos concuerdan con la ficha. ${input.notaRevision}`
+      : input.notaRevision;
+
   const consecuencias: Consecuencia[] = (input.consecuencias ?? []).map((c, i) =>
     Consecuencia.parse({
       id: `${input.id}:cons-${i}`,
@@ -1225,8 +1265,8 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias,
     marcoImporte: input.marcoImporte,
-    revision: 'pendiente_revision',
-    notaRevision: input.notaRevision,
+    revision,
+    notaRevision,
   };
 }
 
@@ -3143,34 +3183,36 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'Confirmar importe y puntos por supuesto contra el codificado DGT. Revisar.',
   }),
   construirInfraccion({
-    // Variante MUY GRAVE (revisor Ola 1): la marcha atrás / retroceso en autopista o autovía equivale
-    // a circular en sentido contrario → muy grave 500 € / 6 puntos (no los 200/4 de la marcha atrás
-    // común). Se separa para que el agente no infravalore el caso al copiar el boletín.
+    // CORREGIDO 2026-09-14 (cotejo BOE): la LSV Anexo II item 18 tipifica EXPRESAMENTE "realizar la
+    // maniobra de marcha atrás en autopistas y autovías" con 4 PUNTOS (infracción GRAVE), como conducta
+    // DISTINTA de "circular en sentido contrario" (art. 77.f, muy grave, 6 puntos, Anexo II item 4).
+    // Antes se modelaba muy grave 500/6 por analogía con el sentido contrario, lo que SOBRE-sancionaba.
     id: 'inf-marcha-atras-autopista',
     articulo: ART_RGC_80,
-    tituloCorto: 'Marcha atrás en autopista o autovía (sentido contrario)',
-    gravedad: 'muy_grave',
-    importeEur: 500,
-    importeReducidoEur: 250,
-    puntos: 6,
+    tituloCorto: 'Marcha atrás en autopista o autovía',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 4,
     textoBoletin:
-      'Efectuar la marcha atrás o retroceder en autopista o autovía. Por prohibición expresa (art. 80 ' +
-      'RGC) y por equivaler a circular en sentido contrario al establecido, es infracción MUY GRAVE, ' +
-      'con retirada de 6 puntos. Distíngase de la marcha atrás indebida común en vía ordinaria (grave, ' +
-      '200 €).',
+      'Efectuar la maniobra de marcha atrás o retroceder en autopista o autovía. Está tipificada de forma ' +
+      'específica como infracción GRAVE con retirada de 4 puntos (LSV Anexo II, item 18). DESLINDE: si la ' +
+      'conducta va más allá de una maniobra puntual y equivale a CIRCULAR EN SENTIDO CONTRARIO, procede la ' +
+      'calificación MUY GRAVE del art. 77.f (500 €, 6 puntos; ver `inf-sentido-contrario`). La valoración ' +
+      'final corresponde al agente.',
     terminos: [
       'marcha atras en autovia',
       'marcha atras en autopista',
       'retroceder en la autopista',
       'retroceder en autovia',
-      'sentido contrario en autopista',
     ],
     marcoImporte: 'trafico',
     notaRevision:
-      'MUY GRAVE 500 € / 6 puntos (art. 80 RGC en relación con la prohibición de circular en sentido ' +
-      'contrario). A VERIFICAR el precepto sancionador exacto (art. 77 LSV, apartado de sentido ' +
-      'contrario) y los puntos (Anexo II LSV) contra el codificado DGT. Distinta de la marcha atrás ' +
-      'indebida común (`inf-marcha-atras-indebida`, grave). Revisar.',
+      'COTEJADO contra el BOE (LSV Anexo II, item 18, leído 2026-09-14): la marcha atrás en autopista/ ' +
+      'autovía es GRAVE con 4 puntos (art. 80 LSV: grave = 200 €), NO muy grave. Se corrige la clasificación ' +
+      'anterior (muy grave/6), que sobre-sancionaba al asimilarla al sentido contrario. El deslinde con el ' +
+      'sentido contrario (art. 77.f, muy grave) queda en el boletín para el caso extremo. Segundo revisor ' +
+      'humano para el cierre.',
   }),
   // --- Estado del vehículo (RGV: condiciones técnicas, reformas y homologación) --------------
   construirInfraccion({

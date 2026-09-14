@@ -1,9 +1,9 @@
 {
   "version": "0.1.0",
-  "fecha": "2026-09-14T15:58:38.126Z",
+  "fecha": "2026-09-14T16:09:08.432Z",
   "schemaVersion": 1,
-  "hash": "5c9e90631cc54ae6cba4ba68b194f78c3e5389bd4a187c547ad67d826f450c34",
-  "tamanoBytes": 15958016,
+  "hash": "9ef67224df7c73cd6f78de4adbd40cda185599a4e4c8655822c66d4112d80ef1",
+  "tamanoBytes": 15962112,
   "algoritmoFirma": "ed25519",
   "firma": null,
   "changelog": {
