@@ -52,6 +52,7 @@ export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [
   buscar('Patinete'),
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
+  { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
 ];
 
 /**
@@ -69,6 +70,7 @@ export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
   // cualquier cuerpo. Abre la guía del menor (inimputable < 14, régimen 14-17, MENA).
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
+  { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
 ];
 
 /**
@@ -105,6 +107,7 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
   // VG es intervención universal y prioritaria: abre la guía (proteger, VPR/VioGén, orden de protección).
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
+  { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
 ];
 
 /**

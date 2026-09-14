@@ -127,6 +127,10 @@ export default function RootLayout() {
           options={{ headerShown: true, title: 'Violencia de género', presentation: 'card' }}
         />
         <Stack.Screen
+          name="guia-ocupacion"
+          options={{ headerShown: true, title: 'Ocupación (okupas)', presentation: 'card' }}
+        />
+        <Stack.Screen
           name="vehiculos/index"
           options={{ headerShown: true, title: 'Vehículos', presentation: 'card' }}
         />

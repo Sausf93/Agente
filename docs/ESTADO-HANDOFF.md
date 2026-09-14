@@ -140,7 +140,17 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **185 infracciones, 30 normas, 1787 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **185 infracciones, 30 normas, 1800 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (6ª parte): Guía de ocupación (okupas).** Nueva **Guía de ocupación**
+  (`guiaOcupacion.ts` + `GuiaOcupacionScreen.tsx`, ruta `/guia-ocupacion`), 7 secciones acción-primero
+  desde la distinción clave ¿es MORADA?: allanamiento 202 (morada, delito permanente) vs usurpación
+  245 (no morada) vs local/nave 203; flagrancia y desalojo (Instrucción 6/2020 SES y 1/2020 FGE, arts.
+  553/795.1 LECrim, 18.2 CE); **inquiokupa** (impago = vía civil/desahucio, la policía no desaloja);
+  **el propietario no puede tomarse la justicia por su mano** (455/172 CP, cortar suministros =
+  coacciones, enganche = defraudación art. 255 —abarca agua/gas/telecom, umbral 400 €); administrativo
+  37.7 LOSC. Revisor **APTO CON CORRECCIONES** en 2 pasadas. Sinónimos de okupas ampliados. En "Más" >
+  Guías rápidas y accesos de Local/PN/seguridad. Ya hay **6 guías** de calle (identificación,
+  alcoholemia, control carretera, menores, extranjería, VG, ocupación). 912 tests verdes.
 - **SPRINT 2026-09-14 (5ª parte): Guía de violencia de género.** Nueva **Guía de VG y doméstica**
   (`guiaViolenciaGenero.ts` + `GuiaViolenciaGeneroScreen.tsx`, ruta `/guia-violencia-genero`), 9
   secciones acción-primero con la PROTECCIÓN primero: proteger + VioGén/VPR, **se persigue de oficio

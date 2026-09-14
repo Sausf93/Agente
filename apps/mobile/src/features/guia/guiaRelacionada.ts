@@ -10,6 +10,7 @@ import { FICHAS_ALCOHOL } from './guiaAlcoholemia';
 import { GUIA_MENORES } from './guiaMenores';
 import { GUIA_EXTRANJERIA } from './guiaExtranjeria';
 import { GUIA_VIOLENCIA_GENERO } from './guiaViolenciaGenero';
+import { GUIA_OCUPACION } from './guiaOcupacion';
 
 export interface GuiaRelacionada {
   /** Ruta de la guía (pantalla de la app). */
@@ -48,6 +49,12 @@ const GUIA_VIOLENCIA_GENERO_REL: GuiaRelacionada = {
   descripcion: 'Proteger a la víctima, valorar el riesgo, orden de protección y detención.',
 };
 
+const GUIA_OCUPACION_REL: GuiaRelacionada = {
+  ruta: '/guia-ocupacion',
+  titulo: 'Guía de ocupación (okupas)',
+  descripcion: '¿Morada o no? Allanamiento (202) vs usurpación (245), flagrancia y desalojo.',
+};
+
 /**
  * Ficha → guía relacionada, construido a partir de las fichas que declara cada guía. Si dos secciones
  * de una guía apuntan a la misma ficha (p. ej. cacheo y vehículo → `sc-cacheo-registro`), la clave se
@@ -69,6 +76,9 @@ export const GUIA_POR_FICHA: Readonly<Record<string, GuiaRelacionada>> = {
       s.fichaId as string,
       GUIA_VIOLENCIA_GENERO_REL,
     ]),
+  ),
+  ...Object.fromEntries(
+    GUIA_OCUPACION.filter((s) => s.fichaId).map((s) => [s.fichaId as string, GUIA_OCUPACION_REL]),
   ),
 };
 

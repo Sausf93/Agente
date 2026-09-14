@@ -1520,6 +1520,17 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'okupas en un piso vacio',
       'usurpacion de inmueble',
       'ocupacion ilegal',
+      // Añadidos de calle (validador 2026-09).
+      'ocupas',
+      'me han okupado la casa',
+      'casa vacia okupada',
+      'okuparon un piso deshabitado',
+      'gente metida en una casa',
+      'sacar a los okupas',
+      'desalojo okupas',
+      'como desalojar okupas',
+      'denuncia okupas',
+      'llevan meses okupados',
     ],
     notaRevision:
       'A VERIFICAR la clasificación y la frontera: la ficha modela la OCUPACIÓN PACÍFICA del ' +
@@ -1558,6 +1569,10 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'okupas con gente dentro',
       'entrada en domicilio',
       'se ha colado en mi casa',
+      // Añadidos de calle (validador 2026-09).
+      'se han metido en mi casa',
+      'entraron en casa viviendo yo',
+      'estaban dentro de mi vivienda',
     ],
     notaRevision:
       'A VERIFICAR el subtipo y el marco de pena: allanamiento de morada del art. 202.1 CP → prisión ' +

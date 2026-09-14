@@ -9,6 +9,7 @@ import {
   Fingerprint,
   FlaskConical,
   Globe,
+  House,
   Languages,
   MessageSquarePlus,
   MessageSquareText,
@@ -94,6 +95,14 @@ export default function MasScreen() {
             icon={ShieldAlert}
             titulo="Violencia de género"
             descripcion="Proteger primero: valoración del riesgo, orden de protección y detención."
+          />
+        </Link>
+        <Link href="/guia-ocupacion" asChild>
+          <FilaMas
+            t={t}
+            icon={House}
+            titulo="Ocupación (okupas)"
+            descripcion="¿Morada o no? Allanamiento (202) vs usurpación (245), flagrancia y desalojo."
           />
         </Link>
       </View>
