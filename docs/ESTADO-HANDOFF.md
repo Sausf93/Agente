@@ -140,7 +140,16 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **175 infracciones, 29 normas, ~1523 sinónimos** (sprints 2026-09-10 y 2026-09-11).
+- Paquete: **184 infracciones, 30 normas, ~1590 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14: estructura de la información.** Tráfico r2 y Animales publicadas (revisor APTO);
+  **CI arreglado** (typecheck del `importeEur: null` en el seed de extranjería → interfaz `number | null`;
+  confirmado verde en GitHub). **Reestructurada la navegación por sub-temas** (commit `31724ba`, validada
+  con validador-calle): el cajón penal de 23 delitos se divide en 6 grupos ORDENADOS POR FRECUENCIA de
+  calle (Robos/hurtos · Amenazas/coacciones/VG · Atentado/resistencia/orden público · Homicidio/lesiones ·
+  Delitos sexuales · Otros); la conducción con desprecio a la vida (381) se movió a Tráfico>Delitos viales
+  (MATERIA_OVERRIDE); nueva materia **Animales con submenú** (PPP | Maltrato/abandono | ordenanzas). Web
+  comercial publicada como Artifact. Pendiente sugerido: **sinónimos de calle** del validador (mangó,
+  butrón, el tirón, me plantó cara, iba como un loco, perro suelto…) — es un cambio de contenido (.db).
 - **SPRINT 2026-09-11: motor de detención + más contenido.** Mismo flujo (ingesta → revisor → build → Expo):
   1. **Motor de detención — flag `penaSoloMulta`** (commit `439d34c`, publicado): un delito de solo multa
      (art. 457) ya NO sobre-orienta a detener; rama de proporcionalidad (art. 492), tests en shared.
