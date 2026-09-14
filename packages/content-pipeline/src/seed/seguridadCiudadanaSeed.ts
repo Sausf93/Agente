@@ -6,6 +6,7 @@ import {
   Sinonimo,
   RANGOS_IMPORTE_SEGURIDAD_CIUDADANA,
   type MarcoImporte,
+  type EstadoRevision,
 } from '@agente/shared';
 import { hashTexto } from '../parsers/boe-xml/hash.js';
 import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
@@ -771,7 +772,67 @@ interface InfraccionSeedInput {
    * infracción, por lo que no lleva importe y los validadores no lo exigen.
    */
   marcoImporte?: MarcoImporte;
+  /** Estado editorial; por defecto `pendiente_revision`. Ver `VERIFICADAS_BOE`. */
+  revision?: EstadoRevision;
 }
+
+/**
+ * Fichas COTEJADAS contra el BOE consolidado de la LO 4/2015 (arts. 35, 36, 37 y 39, leídos en el
+ * navegador el 2026-09-14): el ORDINAL del apartado, la conducta y el TRAMO de importe (art. 39:
+ * leve 100-600, grave 601-30.000, muy grave 30.001-600.000) se han confirmado directamente en el
+ * texto. Se marcan `verificado` (sin sello "Borrador beta"). El importe EFECTIVO lo gradúa la
+ * autoridad (art. 33), como recuerda la nota. NO se incluyen: el régimen de ARMAS reglamentarias
+ * (36.12/37.8), que depende del RD 137/1993 (material aún "a verificar"); el 36.23 (uso de imágenes
+ * de agentes), con inconstitucionalidad parcial (SSTC 172/2020 y 13/2021) que exige matiz; ni las
+ * entradas CONSULTABLES no sancionadoras (identificación, cacheo, MENA, régimen del menor, derechos
+ * de la víctima). Para el lanzamiento comercial sigue siendo prudente el visto bueno humano final.
+ */
+const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  // Muy graves (art. 35)
+  'sc-reunion-infraestructuras-riesgo', // 35.1
+  'sc-armas-explosivos-muy-grave', // 35.2 (perjuicios muy graves)
+  'sc-espectaculo-prohibido', // 35.3
+  'sc-laser-conductores-pilotos', // 35.4
+  // Graves (art. 36)
+  'sc-perturbacion-actos-espectaculos', // 36.1
+  'sc-perturbacion-sedes-parlamentarias', // 36.2
+  'sc-desordenes-obstaculizar-via', // 36.3
+  'sc-obstruccion-ejercicio-funciones', // 36.4
+  'sc-obstruir-servicios-emergencia', // 36.5
+  'sc-desobediencia-resistencia', // 36.6
+  'sc-negativa-identificarse', // 36.6
+  'sc-negativa-disolver-reunion', // 36.7
+  'sc-perturbar-reunion-licita', // 36.8
+  'sc-intrusion-infraestructuras', // 36.9
+  'sc-armas-prohibidas', // 36.10
+  'sc-servicios-sexuales-riesgo', // 36.11
+  'sc-obstruccion-inspecciones-controles', // 36.13
+  'sc-uso-indebido-uniforme', // 36.14
+  'sc-falta-colaboracion-fcs', // 36.15
+  'sc-drogas-via-publica', // 36.16
+  'sc-traslado-facilitar-drogas', // 36.17
+  'sc-cultivo-drogas-visible', // 36.18
+  'sc-tolerancia-drogas-local', // 36.19
+  'sc-carencia-registros-seguridad', // 36.20
+  'sc-datos-falsos-documentacion', // 36.21
+  // Leves (art. 37)
+  'sc-reunion-no-comunicada', // 37.1
+  'sc-exhibicion-objetos-peligrosos', // 37.2
+  'sc-restriccion-circulacion-actos', // 37.3
+  'sc-falta-respeto-agente', // 37.4
+  'sc-exhibicion-obscena', // 37.5
+  'sc-laser-agentes', // 37.6
+  'sc-ocupacion-inmueble', // 37.7
+  'sc-irregularidad-registros-seguridad', // 37.9
+  'sc-no-obtener-documentacion-personal', // 37.10
+  'sc-negligencia-custodia-documentacion', // 37.11
+  'sc-negativa-entregar-documentacion-retirada', // 37.12
+  'sc-danos-deslucimiento-bienes', // 37.13
+  'sc-escalada-edificios', // 37.14
+  'sc-remocion-precinto-perimetro', // 37.15
+  'sc-animales-sueltos-abandono', // 37.16
+  'sc-consumo-alcohol-via-publica', // 37.17
+]);
 
 /**
  * Máximo del tramo (horquilla del art. 39) por gravedad, tomado del RANGO LEGAL de shared (fuente
@@ -840,7 +901,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias,
     marcoImporte: marco,
-    revision: 'pendiente_revision',
+    revision: input.revision ?? (VERIFICADAS_BOE.has(input.id) ? 'verificado' : 'pendiente_revision'),
     notaRevision: input.notaRevision,
   };
 }

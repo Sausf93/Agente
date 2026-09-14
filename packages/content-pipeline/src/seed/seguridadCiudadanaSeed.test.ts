@@ -60,15 +60,38 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     }
   });
 
-  it('todas quedan pendientes de revisión con nota "a verificar" (nada se autopublica)', () => {
+  it('cada ficha tiene estado editorial válido, marco correcto y nota (con el importe efectivo a graduar)', () => {
     for (const item of SEED_SEGURIDAD_CIUDADANA.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       // Todas son del marco de seguridad ciudadana salvo el requerimiento de identificación
       // (art. 16), que es una entrada consultable sin sanción (`no_sancionador`).
       expect(['seguridad_ciudadana', 'no_sancionador'], item.infraccion.id).toContain(
         item.marcoImporte,
       );
+      // La nota sigue recordando que el importe EFECTIVO lo gradúa la autoridad (art. 33).
       expect(item.notaRevision.toUpperCase()).toContain('A VERIFICAR');
+    }
+  });
+
+  it('las fichas VERIFICADAS contra el BOE (arts. 35-37 LO 4/2015) citan el BOE y son la mayoría', () => {
+    const verificadas = SEED_SEGURIDAD_CIUDADANA.infracciones.filter(
+      (i) => i.revision === 'verificado',
+    );
+    expect(verificadas.length).toBeGreaterThanOrEqual(35);
+    for (const item of verificadas) {
+      expect(item.notaRevision.toUpperCase(), item.infraccion.id).toMatch(/BOE/);
+    }
+  });
+
+  it('el régimen de ARMAS (RD 137/1993), el 36.23 y las consultables siguen `pendiente_revision`', () => {
+    const debenSeguirPendientes = [
+      'sc-uso-imagenes-agentes', // 36.23: inconstitucionalidad parcial (SSTC 172/2020, 13/2021)
+      'sc-identificacion-requerimiento', // consultable (facultad art. 16)
+      'sc-cacheo-registro', // consultable (art. 20)
+    ];
+    for (const id of debenSeguirPendientes) {
+      const item = porId(id);
+      expect(item?.revision, id).toBe('pendiente_revision');
     }
   });
 
