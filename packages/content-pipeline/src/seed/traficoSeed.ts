@@ -4640,8 +4640,8 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     articulo: ART_LSV_75,
     tituloCorto: 'Conductor novel sin la señal "L"',
     gravedad: 'leve',
-    importeEur: 80,
-    importeReducidoEur: 40,
+    importeEur: 100,
+    importeReducidoEur: 50,
     puntos: 0,
     textoBoletin:
       'Circular un conductor novel sin exhibir la señal "L" (conductor novel) en el vehículo durante ' +
@@ -4660,8 +4660,9 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     notaRevision:
       'A VERIFICAR con carácter prioritario: confirmar si la falta de la señal "L" del conductor novel ' +
       'es HOY sancionable y su importe/gravedad (Reglamento General de Conductores RD 818/2009 y RGV ' +
-      'Anexo XI de señales). Se ancla LEVE (80 €) por prudencia; podría no ser sancionable de forma ' +
-      'autónoma. No detrae puntos. Revisar antes de publicar (posible ficha meramente informativa).',
+      'Anexo XI de señales). Se ancla LEVE (100 €, el valor bajo que citan las fuentes; NO hay respaldo ' +
+      'para 80 €); podría no ser sancionable de forma autónoma o llegar a 200 €. No detrae puntos. ' +
+      'Revisar antes de publicar (posible ficha meramente informativa).',
   }),
   construirInfraccion({
     id: 'inf-permiso-extranjero-no-valido',
@@ -4672,11 +4673,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     importeReducidoEur: 250,
     puntos: 0,
     textoBoletin:
-      'Conducir con un permiso de conducción extranjero que no es válido para circular en España: por ' +
-      'no ser canjeable, por haber transcurrido el plazo de validez del permiso de residencia sin ' +
-      'canjearlo (con carácter general, seis meses desde la adquisición de la residencia), o por no ' +
-      'reunir los requisitos exigidos. Equivale a conducir careciendo del permiso correspondiente ' +
-      '(art. 77 LSV), cuando el hecho no sea constitutivo de delito.',
+      'Conducir con un permiso de conducción extranjero que NO es válido para circular en España por ' +
+      'no ser canjeable o no reunir los requisitos exigidos: equivale a conducir careciendo del permiso ' +
+      'correspondiente (MUY GRAVE, art. 77 LSV), cuando el hecho no sea constitutivo de delito. FRONTERA ' +
+      'IMPORTANTE: el permiso extranjero SÍ canjeable pero con el plazo de canje vencido (con carácter ' +
+      'general, seis meses desde la residencia) es un supuesto distinto y MENOS grave —autorización sin ' +
+      'validez administrativa por no cumplir las condiciones exigidas (GRAVE, ~200 €, art. 76.ll LSV)—, ' +
+      'no esta muy grave. A verificar la calificación según cada caso.',
     terminos: [
       'permiso extranjero',
       'carnet de otro pais',
@@ -4831,14 +4834,16 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     tituloCorto: 'El titular no identifica al conductor infractor',
     gravedad: 'muy_grave',
     importeEur: 500,
-    importeReducidoEur: 250,
+    importeReducidoEur: null,
     puntos: 0,
     textoBoletin:
       'No facilitar el titular del vehículo (o el conductor habitual o arrendatario), debidamente ' +
       'requerido para ello, la identificación veraz del conductor responsable de una infracción, sin ' +
-      'causa justificada. Se sanciona de forma autónoma como infracción muy grave (art. 77.j LSV), ' +
-      'con una cuantía agravada respecto de la infracción originaria. No corresponde a una conducta ' +
-      'de circulación, sino al deber de colaboración del titular (art. 11 LSV).',
+      'causa justificada. Se sanciona de forma autónoma como infracción muy grave (art. 77.j LSV). ' +
+      'IMPORTE: NO es una cifra fija ni admite pronto pago; es un MÚLTIPLO de la infracción originaria ' +
+      '(el DOBLE si esta es leve, el TRIPLE si es grave o muy grave), por lo que puede superar los ' +
+      '500 €. No corresponde a una conducta de circulación, sino al deber de colaboración del titular ' +
+      '(art. 11 LSV).',
     terminos: [
       'el titular no dice quien conducia',
       'no identifica al conductor',

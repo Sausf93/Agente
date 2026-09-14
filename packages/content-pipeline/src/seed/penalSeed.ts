@@ -3456,10 +3456,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     id: 'del-atentado-agravado',
     articulo: ART_CP_551,
     tituloCorto: 'Atentado agravado (arma, vehículo o fuego)',
-    // Caso modelado: atentado con arma/objeto peligroso o con vehículo (art. 551) → pena superior en
-    // grado a la del 550; puede alcanzar prisión > 5 años → GRAVE.
-    gravedadCp: 'grave',
-    penaTexto: 'Prisión superior en grado a la del art. 550 (art. 551 CP), p. ej. 2 a 4½ años o más',
+    // Caso modelado: atentado con arma/objeto peligroso o con vehículo a un AGENTE/funcionario (el caso
+    // de calle) → superior en grado al 550 (agente 6m-3a) ≈ 3 a 4,5 años → MENOS GRAVE. Contra AUTORIDAD
+    // (base 1-4 años) sí puede superar los 5 años → GRAVE (ver notaRevision).
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión superior en grado a la del art. 550 (art. 551 CP): contra AGENTE/funcionario ≈ 3 a 4 años ' +
+      'y 6 meses (menos grave); contra AUTORIDAD ≈ 4 a 6 años (grave). A verificar',
     textoBoletin:
       'Atentado (agresión, intimidación grave o violencia contra autoridad, agentes o funcionarios en ' +
       'el ejercicio de sus funciones) cometido con alguna de las circunstancias AGRAVANTES del art. ' +
@@ -3760,8 +3763,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'Abandonar a un menor de edad o a una persona con discapacidad necesitada de especial protección ' +
       'por quien tenga a su cargo su guarda (art. 229.1 CP): prisión de 1 a 2 años. Si el abandono lo ' +
       'realiza el progenitor, tutor o guardador legal, prisión de 18 meses a 3 años (229.2); si se pone ' +
-      'en concreto peligro la vida, la salud, la integridad o la libertad sexual, la pena se impone en su ' +
-      'mitad superior (229.3). El abandono TEMPORAL tiene pena menor (art. 230). FRONTERAS: dejar de ' +
+      'en concreto peligro la vida, la salud, la integridad o la libertad sexual, la pena es de prisión ' +
+      'de 2 a 4 años (art. 229.3, pena autónoma, no "mitad superior"). El abandono TEMPORAL tiene pena ' +
+      'menor (art. 230). FRONTERAS: dejar de ' +
       'pagar la pensión es el art. 227 (del-abandono-familia); no socorrer a persona desamparada y en ' +
       'peligro es el art. 195 (del-omision-socorro). La calificación final corresponde a la autoridad ' +
       'judicial.',
@@ -3779,7 +3783,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'A VERIFICAR el marco de pena y el subtipo: el abandono de un menor o persona con discapacidad por ' +
       'su guardador (art. 229.1 CP) → prisión de 1 a 2 años → MENOS GRAVE; si es el progenitor/tutor ' +
       '(229.2), 18 meses a 3 años; con peligro concreto para la vida/salud/integridad/libertad sexual ' +
-      '(229.3), mitad superior. El abandono TEMPORAL (art. 230) tiene pena menor. DESLINDE con el impago ' +
+      '(229.3), prisión de 2 a 4 años (pena autónoma, no "mitad superior"). El abandono TEMPORAL (art. 230) tiene pena menor. DESLINDE con el impago ' +
       'de pensiones (art. 227, del-abandono-familia) y con la omisión del deber de socorro (art. 195, ' +
       'del-omision-socorro). Confirmar penas, subtipos y la condición del autor contra el texto ' +
       'consolidado del CP con el revisor jurídico.',

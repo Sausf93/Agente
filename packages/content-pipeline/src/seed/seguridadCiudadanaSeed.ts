@@ -555,7 +555,7 @@ const ART_LOSC_37_2 = articuloLosc({
   texto:
     'Tipifica como infracción leve la exhibición de objetos peligrosos para la vida y la integridad ' +
     'física de las personas con ánimo intimidatorio, siempre que la conducta no sea constitutiva de ' +
-    'infracción penal ni de la infracción grave de armas del art. 36.10. Resumen orientativo; ' +
+    'delito ni de infracción grave (en particular, la de armas del art. 36.10). Resumen orientativo; ' +
     'consúltese el texto consolidado en el BOE.',
 });
 

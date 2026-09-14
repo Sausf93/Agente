@@ -29,7 +29,7 @@ import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
  */
 
 /** Fecha de curación de este seed (la que verá el agente como "Actualizado el…"). */
-const FECHA_ACTUALIZACION = '2026-09-07';
+const FECHA_ACTUALIZACION = '2026-09-14';
 const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 // --- Identificadores de norma (BOE, legislación consolidada) --------------------------------
@@ -1880,8 +1880,8 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     id: 'ppp-no-comunicar-incidencias',
     articulo: ART_PPP_13,
     tituloCorto: 'No comunicar venta, traspaso, robo, pérdida o muerte del PPP',
-    gravedad: 'grave',
-    importeEur: 300.52,
+    gravedad: 'leve',
+    importeEur: 150.25,
     importeReducidoEur: null,
     textoBoletin:
       'No comunicar al Registro de Animales Potencialmente Peligrosos, en el plazo reglamentario, la venta, ' +
@@ -1910,9 +1910,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     marcoImporte: 'animales',
     notaRevision:
       'A VERIFICAR (revisor de animales): la obligación de comunicar al Registro la venta/traspaso/robo/muerte/ ' +
-      'pérdida y el cambio de domicilio está en el RD 287/2002 (art. 5); su clasificación como GRAVE debe ' +
-      'anclarse a la LETRA concreta del art. 13.2 Ley 50/1999 (podría ser LEVE del art. 13.4 o vía ordenanza). ' +
-      'Tramo grave 300,52-2.404,05 € (art. 13.5), el seed fija el mínimo. Reclasificar tras el visto bueno.',
+      'pérdida y el cambio de domicilio está en el RD 287/2002 (art. 5). RECLASIFICADA a LEVE (revisor 2ª ' +
+      'oleada): el art. 13.2 grave tipifica OMITIR la inscripción inicial, no las actualizaciones posteriores; ' +
+      'estas encajan mejor en el residual LEVE del art. 13.4 (tramo 150,25-300,51 €, el seed fija el mínimo). ' +
+      'A verificar la letra exacta.',
   }),
   construirInfraccion({
     id: 'ppp-criar-comerciar-sin-autorizacion',
@@ -1997,9 +1998,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     id: 'animal-no-vacunar-desparasitar',
     articulo: ART_LBA_SANIDAD,
     tituloCorto: 'No vacunar o desparasitar al animal cuando es obligatorio',
-    gravedad: 'grave',
-    // Ley 7/2023 art. 76: graves 10.001-50.000 €. Mínimo del tramo como referencia.
-    importeEur: 10001,
+    gravedad: 'leve',
+    // Reclasificada a LEVE (revisor 2ª oleada): sin daño físico encaja en el art. 73 (leve, 500-10.000 €);
+    // el seed fija el mínimo del tramo leve. Gran parte del calendario sanitario está pendiente de reglamento/CCAA.
+    importeEur: 500,
     importeReducidoEur: null,
     textoBoletin:
       'No someter al animal a las vacunaciones y tratamientos antiparasitarios obligatorios, o a las revisiones ' +
@@ -2026,23 +2028,24 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR la LETRA exacta y la frontera leve/grave: el incumplimiento de vacunación/desparasitación ' +
-      'obligatoria puede ser LEVE (art. 73, importe 500-10.000 €) o GRAVE (art. 74, el seed usa el mínimo grave ' +
-      '10.001 €). Gran parte del calendario sanitario lo fijan la CCAA y el reglamento (rabia obligatoria según ' +
-      'comunidad). Confirmar con el revisor de animales.',
+      'A VERIFICAR la LETRA exacta: reclasificada a LEVE (art. 73, tramo 500-10.000 €, el seed fija el mínimo) ' +
+      'porque sin daño físico no encaja en las graves del art. 74. Gran parte del calendario sanitario lo fijan ' +
+      'la CCAA y el reglamento (rabia obligatoria según comunidad), por lo que su exigibilidad general está ' +
+      'pendiente de desarrollo. Confirmar con el revisor de animales.',
   }),
   construirInfraccion({
     id: 'animal-mendicidad',
     articulo: ART_LBA_MENDICIDAD,
-    tituloCorto: 'Uso de animales en la mendicidad',
-    gravedad: 'grave',
-    importeEur: 10001,
+    tituloCorto: 'Uso de animales en la mendicidad (consulta)',
+    gravedad: 'leve', // valor de relleno; entrada CONSULTABLE sin importe (no tipificada de forma autónoma)
+    importeEur: null,
     importeReducidoEur: null,
     textoBoletin:
-      'Utilizar animales en la mendicidad, o como reclamo para ella, o de cualquier modo que comprometa su ' +
-      'bienestar con esa finalidad: conducta prohibida por la Ley 7/2023. DESLINDE PENAL: si concurre trato ' +
-      'cruel o sufrimiento relevante puede procederse por el art. 340 bis CP; y el uso de personas o menores en ' +
-      'la mendicidad tiene su propio reproche. La valoración final corresponde a la autoridad competente.',
+      'ENTRADA DE CONSULTA (no sancionadora por sí sola). El uso de animales en la mendicidad NO está ' +
+      'tipificado como infracción autónoma con letra propia en la Ley 7/2023 (a verificar). Según el caso, ' +
+      'la vía puede ser: ordenanza municipal de mendicidad; protección del menor si hay menores implicados; ' +
+      'o, si hay trato cruel o sufrimiento del animal, el DELITO del art. 340 bis CP. La valoración final ' +
+      'corresponde a la autoridad competente.',
     terminos: [
       'mendigo con perro',
       'usar perro para pedir dinero',
@@ -2062,11 +2065,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         fuente: 'Ley 7/2023 arts. 74 y 76',
       },
     ],
-    marcoImporte: 'bienestar_animal',
+    marcoImporte: 'no_sancionador',
     notaRevision:
-      'A VERIFICAR la LETRA exacta y la clasificación: la prohibición de usar animales en la mendicidad es de la ' +
-      'Ley 7/2023; podría ser GRAVE (art. 74) o MUY GRAVE (art. 75) según el sufrimiento. Importe del art. 76 ' +
-      '(el seed usa el mínimo grave 10.001 €). Deslinde con el art. 340 bis CP si hay maltrato. Revisor de animales.',
+      'RECLASIFICADA a CONSULTABLE (revisor 2ª oleada): el revisor no localizó letra de los arts. 74/75 de la ' +
+      'Ley 7/2023 que tipifique la mendicidad con animales como infracción autónoma. Se retira la sanción ' +
+      'administrativa (importe null) hasta confirmar base legal; la orientación remite a ordenanza/menores/340 ' +
+      'bis CP. A VERIFICAR y, si se confirma tipificación, reintroducir con su marco e importe.',
   }),
   construirInfraccion({
     id: 'animal-sacrificio-injustificado',
@@ -2111,16 +2115,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'animal-tenencia-tras-inhabilitacion',
     articulo: ART_LBA_INHABILITACION,
-    tituloCorto: 'Tener animales estando inhabilitado para ello',
-    gravedad: 'muy_grave',
-    importeEur: 50001,
+    tituloCorto: 'Tener animales estando inhabilitado (consulta)',
+    gravedad: 'leve', // valor de relleno; entrada CONSULTABLE sin importe (no es infracción autónoma del art. 75)
+    importeEur: null,
     importeReducidoEur: null,
     textoBoletin:
-      'Tener o adquirir animales estando INHABILITADO para su tenencia por resolución administrativa firme o ' +
-      'por sentencia: infracción MUY GRAVE de la Ley 7/2023 (art. 75). La inhabilitación es una sanción/medida ' +
-      'accesoria que impide poseer animales durante un tiempo. DESLINDE PENAL: si la inhabilitación proviene de ' +
-      'una condena penal (art. 340 bis CP), su quebrantamiento lo valora la autoridad judicial. La valoración ' +
-      'final corresponde a la autoridad competente.',
+      'ENTRADA DE CONSULTA (no sancionadora por sí sola). La inhabilitación para la tenencia de animales es una ' +
+      'MEDIDA ACCESORIA (art. 77 Ley 7/2023), NO una infracción autónoma de los arts. 73-75 (a verificar). ' +
+      'Tener animales pese a ella se gestiona por la vía que impuso la inhabilitación: si es ADMINISTRATIVA, por ' +
+      'la ejecución de ese expediente; si es PENAL (art. 340 bis CP), su quebrantamiento es el art. 468 CP, que ' +
+      'valora la autoridad judicial. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'tener animales estando inhabilitado',
       'prohibido tener animales y tiene uno',
@@ -2140,11 +2144,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         fuente: 'Ley 7/2023 arts. 75 y 76',
       },
     ],
-    marcoImporte: 'bienestar_animal',
+    marcoImporte: 'no_sancionador',
     notaRevision:
-      'A VERIFICAR la LETRA exacta del art. 75 (tenencia estando inhabilitado como MUY GRAVE) y el régimen de la ' +
-      'inhabilitación como sanción accesoria. Importe del art. 76 (muy grave 50.001-200.000 €, el seed fija el ' +
-      'mínimo). Deslinde con el quebrantamiento de la inhabilitación PENAL (art. 340 bis CP / art. 468 CP). Revisor de animales.',
+      'RECLASIFICADA a CONSULTABLE (revisor 2ª oleada): ninguna letra del art. 75 tipifica "tener animales ' +
+      'estando inhabilitado"; la inhabilitación es medida accesoria del art. 77, no infracción autónoma. Se ' +
+      'retira la sanción (importe null); la orientación remite a la ejecución del expediente sancionador o, si ' +
+      'la inhabilitación es penal, al art. 468 CP (vía judicial). A verificar.',
   }),
   construirInfraccion({
     id: 'animal-transporte-inadecuado',
@@ -2226,15 +2231,16 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'animal-sin-curso-ni-seguro',
     articulo: ART_LBA_FORMACION,
-    tituloCorto: 'Tenencia de perro sin el curso de formación o sin seguro (Ley 7/2023)',
-    gravedad: 'leve',
-    importeEur: 500,
+    tituloCorto: 'Tenencia de perro sin el curso de formación o sin seguro (consulta)',
+    gravedad: 'leve', // valor de relleno; entrada CONSULTABLE sin importe (exigibilidad pendiente de reglamento)
+    importeEur: null,
     importeReducidoEur: null,
     textoBoletin:
-      'Tener un perro sin haber realizado el curso de formación para la tenencia responsable o sin el seguro de ' +
-      'responsabilidad civil que introdujo la Ley 7/2023. IMPORTANTE: buena parte de estas obligaciones quedó ' +
-      'PENDIENTE de desarrollo reglamentario, por lo que su exigibilidad efectiva y su régimen sancionador deben ' +
-      'comprobarse antes de aplicarlas. La valoración final corresponde a la autoridad competente.',
+      'ENTRADA DE CONSULTA (no sancionadora por ahora). La Ley 7/2023 introdujo el curso de formación para la ' +
+      'tenencia responsable de perros y el seguro de responsabilidad civil, pero su desarrollo reglamentario ' +
+      'quedó PENDIENTE: mientras no se apruebe, su exigibilidad general y su régimen sancionador NO están ' +
+      'operativos (salvo que tu CCAA u ordenanza ya lo exijan). Consulta orientativa; a verificar antes de ' +
+      'sancionar. La valoración final corresponde a la autoridad competente.',
     terminos: [
       'perro sin curso de formacion',
       'sin el cursillo obligatorio del perro',
@@ -2251,14 +2257,14 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
         textoCorto:
           'Procede identificar al responsable e informar de las obligaciones de tenencia responsable; comprobar ' +
           'antes su exigibilidad efectiva (desarrollo reglamentario pendiente).',
-        fuente: 'Ley 7/2023 arts. 73/74 y 76',
+        fuente: 'Ley 7/2023 (desarrollo reglamentario pendiente)',
       },
     ],
-    marcoImporte: 'bienestar_animal',
+    marcoImporte: 'no_sancionador',
     notaRevision:
-      'A VERIFICAR de forma PRIORITARIA la EXIGIBILIDAD: el curso de formación y el seguro de RC de la Ley 7/2023 ' +
-      'quedaron pendientes de reglamento; podrían NO ser sancionables aún. LETRA exacta y clasificación (LEVE art. ' +
-      '73 / GRAVE art. 74) e importe del art. 76 (el seed usa el mínimo leve 500 €). Punto SENSIBLE por el estado ' +
+      'RECLASIFICADA a CONSULTABLE (revisor 2ª oleada): el curso de formación y el seguro de RC de la Ley 7/2023 ' +
+      'quedaron pendientes de reglamento; NO son sancionables con carácter general aún, así que se retira el ' +
+      'importe (null). Reintroducir con marco e importe cuando se apruebe el reglamento. Punto SENSIBLE por el estado ' +
       'del desarrollo normativo: puede requerir marcar la ficha como no publicable hasta el reglamento. Revisor de animales.',
   }),
 ];

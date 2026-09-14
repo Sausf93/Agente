@@ -140,7 +140,18 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **243 infracciones, 30 normas, 2199 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **289 infracciones, 30 normas, 2526 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **REGLA DE PROCESO (CI) — aprendida a las malas 2026-09-14:** el test `normas.integration.test.ts`
+  valida contra el **.db COMPILADO** (`assets/content/contenido-0.1.0.db`). SIEMPRE reconstruir el
+  paquete (`build:content`) y copiar el .db ANTES de correr los tests y de commitear; si no, se testea
+  el .db viejo y CI (que usa el committeado) falla aunque el local dé verde. Además, toda ficha nueva
+  de una materia con subtemas (tráfico/penal/seguridad/animales) DEBE añadirse a `SUBTEMA_POR_INFRACCION`
+  en `apps/mobile/src/features/normas/normas.ts` (el test exige subtema para todas y ≥3 por grupo visible).
+- **SPRINT 2026-09-14 (9ª parte): 2ª oleada de paridad (+46) + fix CI.** Otra ronda de 4 agentes de
+  ingesta en paralelo: tráfico +12 (conductores/VMP/seguro/matrícula), penal +10 (armas/orden/leves),
+  seguridad +12 (arts. 36/37), animales +12 (PPP + bienestar). db41385 rompió CI por subtemas de
+  seguridad/animales sin mapear; corregido en `234d0be` (CI #102 verde, confirmado en GitHub). Paquete
+  a 289 infracciones. PENDIENTE: aplicar correcciones del revisor de la 2ª oleada y publicar en Expo.
 - **SPRINT 2026-09-14 (8ª parte): OLA GRANDE DE PARIDAD SPPLB (+53 infracciones).** Cuatro agentes de
   ingesta en paralelo (un fichero cada uno) + revisor por ola: **Tráfico/Transporte +15** (RGC/RGV +
   LOTT: adelantamiento, distancia, cambio de sentido, autovía, carga, reformas, frenos, alumbrado,
