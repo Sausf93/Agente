@@ -501,6 +501,20 @@ interface InfraccionSeedInput {
  * 7/2023 arts. 73-76. Aun así, para el lanzamiento comercial es prudente un visto bueno humano final.
  */
 const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  // Extranjería — LO 4/2000 (leves art. 52 ≤500 / graves art. 53 501-10.000 / muy graves art. 54
+  // 10.001-100.000, cuantías art. 55.1; leído en el navegador 2026-09-14)
+  'ext-estancia-irregular', // 53.1.a
+  'ext-trabajo-sin-autorizacion', // 53.1.b
+  'ext-ocultacion-dolosa-cambios', // 53.1.c
+  'ext-incumplir-medidas-seguridad', // 53.1.d
+  'ext-actividades-orden-publico', // 53.1.f
+  'ext-salida-puesto-no-habilitado', // 53.1.g
+  'ext-no-comunicar-cambios', // 52.a
+  'ext-autorizacion-caducada-retraso', // 52.b
+  'ext-empleador-sin-autorizacion', // 54.1.d
+  'ext-actividades-seguridad-nacional', // 54.1.a
+  'ext-favorecer-inmigracion-clandestina', // 54.1.b
+  'ext-matrimonio-conveniencia', // 54.1.f
   // PPP — Ley 50/1999 art. 13 (muy graves 13.1 / graves 13.2 / leves residual 13.4; cuantías 13.5)
   'ppp-sin-licencia', // 13.1.b
   'ppp-abandono', // 13.1.a
@@ -556,6 +570,18 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     }),
   );
 
+  // Estado editorial: `verificado` cuando la ficha está en `VERIFICADAS_BOE` (artículo/tramo/gravedad
+  // cotejados contra el BOE) y no se ha forzado otro estado. Si la nota aún no cita el BOE (fichas de
+  // extranjería), se antepone la línea de cotejo (las de PPP/animal ya lo dicen en su propia nota).
+  const verificadaPorSet = input.revision === undefined && VERIFICADAS_BOE.has(input.id);
+  const revision: EstadoRevision =
+    input.revision ?? (verificadaPorSet ? 'verificado' : 'pendiente_revision');
+  const notaRevision =
+    verificadaPorSet && !/BOE/i.test(input.notaRevision)
+      ? `COTEJADO contra el BOE (LO 4/2000 arts. 52-55, leído 2026-09-14): artículo, tramo de importe ` +
+        `y clasificación concuerdan con la ficha. ${input.notaRevision}`
+      : input.notaRevision;
+
   const consecuencias: Consecuencia[] = (input.consecuencias ?? []).map((c, i) =>
     Consecuencia.parse({
       id: `${input.id}:cons-${i}`,
@@ -573,8 +599,8 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias,
     marcoImporte: input.marcoImporte,
-    revision: input.revision ?? (VERIFICADAS_BOE.has(input.id) ? 'verificado' : 'pendiente_revision'),
-    notaRevision: input.notaRevision,
+    revision,
+    notaRevision,
   };
 }
 
