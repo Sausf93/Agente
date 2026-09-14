@@ -106,7 +106,8 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
     expect(ficha!.puntos).toBe(6);
     expect(ficha!.normaCodigo).toBe('RGC');
     expect(ficha!.articuloNumero).toBe('18');
-    // El seed no publica nada como verificado: la app mostrará el distintivo.
+    // Tráfico sigue en beta (solo PPP/Ley 7/2023 se han marcado `verificado` tras cotejo BOE): la app
+    // muestra el distintivo "Borrador beta" en esta ficha.
     expect(ficha!.estadoRevision).toBe('pendiente_revision');
     expect(ficha!.actualizadoEn).toBeTruthy();
   });

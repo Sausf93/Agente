@@ -27,10 +27,35 @@ describe('SEED_EXTRANJERIA_LOCAL: integridad', () => {
     }
   });
 
-  it('todas quedan pendientes de revisión con su nota', () => {
+  it('cada ficha tiene su nota y un estado editorial válido (verificado o pendiente)', () => {
     for (const item of SEED_EXTRANJERIA_LOCAL.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       expect(item.notaRevision.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('las fichas VERIFICADAS contra el BOE (PPP/Ley 7/2023) llevan estado `verificado` y citan el BOE', () => {
+    const verificadas = SEED_EXTRANJERIA_LOCAL.infracciones.filter(
+      (i) => i.revision === 'verificado',
+    );
+    // Se cotejaron contra el BOE en esta ronda las de PPP (Ley 50/1999 art. 13) y bienestar animal
+    // (Ley 7/2023 arts. 73-76); deben ser un conjunto no vacío y con nota que cite el BOE.
+    expect(verificadas.length).toBeGreaterThanOrEqual(15);
+    for (const item of verificadas) {
+      expect(item.notaRevision.toUpperCase(), item.infraccion.id).toMatch(/BOE/);
+    }
+  });
+
+  it('lo que NO se pudo cerrar contra la fuente sigue `pendiente_revision` (ordenanza/reglamento/chapeau)', () => {
+    // Ejemplos representativos que deben seguir en beta hasta el cierre humano/jurídico.
+    const debenSeguirPendientes = [
+      'animal-maltrato-sin-lesion', // descansa en el chapeau interpretable del art. 74
+      'animal-especie-no-permitida', // listado positivo pendiente de reglamento
+      'animal-sin-curso-ni-seguro', // curso/seguro pendientes de desarrollo
+    ];
+    for (const id of debenSeguirPendientes) {
+      const item = SEED_EXTRANJERIA_LOCAL.infracciones.find((i) => i.infraccion.id === id);
+      expect(item?.revision, id).toBe('pendiente_revision');
     }
   });
 

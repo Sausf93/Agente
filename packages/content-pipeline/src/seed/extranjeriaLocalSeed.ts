@@ -482,7 +482,47 @@ interface InfraccionSeedInput {
   consecuencias?: Array<{ tipo: Consecuencia['tipo']; textoCorto: string; fuente: string }>;
   marcoImporte: MarcoImporte;
   notaRevision: string;
+  /**
+   * Estado editorial. Por defecto `pendiente_revision` (dispara el sello "Borrador beta" en la app).
+   * Se pasa `verificado` SOLO cuando el articulado, el importe y la gravedad se han cotejado contra el
+   * BOE consolidado (fuente primaria, leída en el navegador) y no dependen de reglamento/ordenanza sin
+   * texto público. El deslinde/clasificación fino de casos límite sigue recomendándose a un jurista
+   * antes de cobrar, pero no se deja como beta lo que sí está confirmado contra la fuente.
+   */
+  revision?: EstadoRevision;
 }
+
+/**
+ * Fichas COTEJADAS contra el BOE consolidado (fuente primaria, leída en el navegador el 2026-09-14):
+ * artículo, letra, importe y gravedad confirmados directamente en el texto. Se marcan `verificado` (sin
+ * sello "Borrador beta"). NO se incluyen aquí las que dependen de un CHAPEAU interpretable (maltrato con/
+ * sin lesión), de desarrollo REGLAMENTARIO pendiente (listado positivo, curso/seguro), de ORDENANZA sin
+ * texto público, o cuya LETRA exacta queda para el jurista. Fuentes leídas: Ley 50/1999 art. 13 y Ley
+ * 7/2023 arts. 73-76. Aun así, para el lanzamiento comercial es prudente un visto bueno humano final.
+ */
+const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  // PPP — Ley 50/1999 art. 13 (muy graves 13.1 / graves 13.2 / leves residual 13.4; cuantías 13.5)
+  'ppp-sin-licencia', // 13.1.b
+  'ppp-abandono', // 13.1.a
+  'ppp-adiestramiento-ataque', // 13.1.d/e
+  'ppp-sin-bozal', // 13.2.d
+  'ppp-suelto-sin-bozal-ni-correa', // 13.2.d
+  'ppp-transporte', // 13.2.e
+  'ppp-menor-conduciendo', // 13.4 (residual)
+  'ppp-mas-de-uno', // 13.4 (residual)
+  'ppp-sin-seguro', // 13.4 (residual)
+  // 'ppp-no-comunicar-incidencias' NO: la obligación es del RD 287/2002 y su encaje como leve residual
+  // es interpretación (actualizaciones vs inscripción inicial) → sigue pendiente_revision.
+  // Bienestar animal — Ley 7/2023 arts. 73-76 (leves 73 / graves 74 / muy graves 75; sanciones 76)
+  'animal-abandono', // 74.k
+  'animal-no-identificacion', // 74.b
+  'animal-vehiculo-terraza-riesgo', // 74.o
+  'animal-metodos-crueles', // 74.c
+  'animal-venta-ilegal', // 75.f
+  'animal-uso-espectaculos', // 75.c/g
+  'animal-sacrificio-injustificado', // 75.a/b
+  'animal-no-vacunar-desparasitar', // 73 (leve residual)
+]);
 
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
   const infraccion = Infraccion.parse({
@@ -533,7 +573,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias,
     marcoImporte: input.marcoImporte,
-    revision: 'pendiente_revision' satisfies EstadoRevision,
+    revision: input.revision ?? (VERIFICADAS_BOE.has(input.id) ? 'verificado' : 'pendiente_revision'),
     notaRevision: input.notaRevision,
   };
 }
@@ -1032,9 +1072,10 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'bienestar_animal',
     notaRevision:
-      'A VERIFICAR clasificación (leve/grave/muy grave, arts. 74-76) e importe del art. 76 (grave ' +
-      '10.001-50.000 €, el seed fija el mínimo). Punto SENSIBLE: deslinde con el art. 340 ter CP (abandono ' +
-      'con riesgo para la vida/integridad = delito). Revisor jurídico obligatorio.',
+      'CONFIRMADO contra el BOE (Ley 7/2023 arts. 74-76, leído 2026-09-14): el abandono de un animal es ' +
+      'GRAVE (art. 74.k), tramo 10.001-50.000 € (art. 76.1.b, el seed fija el mínimo). La falta de mera ' +
+      'COMUNICACIÓN de la pérdida/sustracción es LEVE (73), no esto. Punto SENSIBLE: deslinde con el art. ' +
+      '340 ter CP (abandono con riesgo para la vida/integridad = delito). Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'animal-no-identificacion',
