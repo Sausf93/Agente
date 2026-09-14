@@ -2334,8 +2334,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'objetos es VIOLACIÓN (art. 179): 4-12 años (179.1) o 6-12 con violencia/intimidación (179.2). Las ' +
       'agravantes del art. 180 elevan las penas. PERSEGUIBILIDAD (art. 191 CP): se requiere DENUNCIA de la ' +
       'persona agraviada, de su representante legal o querella del Ministerio Fiscal; basta la denuncia del ' +
-      'Fiscal cuando la víctima sea menor, con discapacidad necesitada de especial protección o desvalida. La ' +
-      'calificación final corresponde en exclusiva a la autoridad judicial.',
+      'Fiscal cuando la víctima sea menor, con discapacidad necesitada de especial protección o desvalida. ' +
+      'PROPORCIONALIDAD de la detención: la orientación de esta ficha responde a los subtipos más graves ' +
+      '(violación, art. 179); en el subtipo BASE del art. 178.1 (sin acceso carnal ni violencia/' +
+      'intimidación), MENOS GRAVE, la detención se valora por PROPORCIONALIDAD (art. 492 LECrim), no de ' +
+      'forma automática. La calificación final corresponde en exclusiva a la autoridad judicial.',
     terminos: [
       'agresion sexual',
       'abuso sexual',
