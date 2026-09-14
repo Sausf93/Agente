@@ -822,6 +822,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-amenazas-leves': 'pen-libertad',
   // · Patrimonio
   'del-hurto': 'pen-patrimonio',
+  'del-hurto-leve': 'pen-patrimonio',
   'del-robo-violencia': 'pen-patrimonio',
   'del-robo-fuerza-casa-habitada': 'pen-patrimonio',
   'del-danos': 'pen-patrimonio',

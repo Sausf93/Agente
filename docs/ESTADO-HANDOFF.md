@@ -266,7 +266,20 @@ Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **306 infracciones, 30 normas, 2632 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **308 infracciones, 30 normas, 2636 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (11ª parte): cierre de los 2 bugs de clasificación penal (hurto/usurpación) —
+  [PR #1](https://github.com/Sausf93/Agente/pull/1), CI verde.** Cotejado el articulado consolidado en el
+  BOE (BOE-A-1995-25444, texto vigente LO 1/2026) leyéndolo desde el navegador. (a) **Hurto DESDOBLADO**:
+  la ficha única marcada `leve` infra-orientaba la detención del hurto >400 € (que es *menos grave*).
+  `del-hurto` = art. 234.1 (>400 € o reincidencia) → prisión 6-18 meses → **menos_grave** (art. 33.3.a) →
+  detención 490/492 LECrim; **`del-hurto-leve` (NUEVA)** = art. 234.2 (≤400 € sin agravante) → multa 1-3
+  meses → **leve** (art. 33.4.g) → art. 495 LECrim. Es la única opción que orienta bien la detención en
+  AMBOS tramos. (b) **`del-usurpacion` confirmada LEVE**: el 245.2 (ocupación pacífica) = multa 3-6 meses;
+  por su extensión es leve+menos grave, y el **art. 13.4 CP** la fija, en todo caso, como LEVE (la
+  clasificación previa era correcta; solo se limpió el "a verificar"). Las 3 fichas pasan a `verificado`
+  (`VERIFICADOS_BOE`). Tests (65→66), mapeo de subtemas (`del-hurto-leve`) y paquete reconstruido
+  (Artículos 3657, sin degradación). `corepack pnpm -r test` verde (shared 202, content-pipeline 268,
+  mobile 489). Regla útil aprendida: **multa 3-6 meses ⇒ art. 13.4 CP ⇒ delito leve**.
 - **SPRINT 2026-09-14 (10ª parte): 3ª oleada de profundización (+17) gateada.** Tráfico +10
   (R. Conductores, taxi/VTC, escolar, MMA/dimensiones/ATP) y seguridad +7 (arts. 35/36/37 registros y
   documentación). Revisor **APTO CON CORRECCIONES** aplicadas: escolar-sin-acompañante → MUY GRAVE
