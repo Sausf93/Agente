@@ -32,10 +32,25 @@ describe('SEED_PENAL: integridad de los delitos', () => {
     }
   });
 
-  it('todos quedan pendientes de revisión con nota "a verificar"', () => {
+  it('estado editorial válido: los pendientes llevan nota "a verificar"; los verificados citan el BOE', () => {
     for (const item of SEED_PENAL.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
-      expect(item.notaRevision.toUpperCase()).toContain('A VERIFICAR');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
+      if (item.revision === 'pendiente_revision') {
+        expect(item.notaRevision.toUpperCase(), item.infraccion.id).toContain('A VERIFICAR');
+      } else {
+        expect(item.notaRevision.toUpperCase(), item.infraccion.id).toMatch(/BOE/);
+      }
+    }
+  });
+
+  it('los delitos VERIFICADOS contra el CP en el BOE son un conjunto no vacío', () => {
+    const verificados = SEED_PENAL.infracciones.filter((i) => i.revision === 'verificado');
+    expect(verificados.length).toBeGreaterThanOrEqual(20);
+    // Los MUY sensibles y los de clasificación dudosa siguen en beta.
+    const pendientesEsperados = ['del-hurto', 'del-usurpacion', 'del-agresion-sexual', 'del-agresion-sexual-menor'];
+    for (const id of pendientesEsperados) {
+      const item = SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
+      expect(item?.revision, id).toBe('pendiente_revision');
     }
   });
 
@@ -191,9 +206,13 @@ describe('SEED_PENAL: fichas penales nuevas (falsedad, vehículo, usurpación, a
       expect(det.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
       expect(det.textoCorto.toLowerCase(), id).not.toMatch(/\bdetén\b|\bdetenga\b/);
       expect(det.fuente, id).toMatch(/LECrim art\./);
-      // Pendiente de revisión con nota "a verificar".
-      expect(item!.revision, id).toBe('pendiente_revision');
-      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+      // Estado editorial: pendiente con nota "a verificar", o verificado citando el BOE.
+      expect(['verificado', 'pendiente_revision'], id).toContain(item!.revision);
+      if (item!.revision === 'pendiente_revision') {
+        expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+      } else {
+        expect(item!.notaRevision.toUpperCase(), id).toMatch(/BOE/);
+      }
     }
   });
 

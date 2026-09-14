@@ -1075,7 +1075,45 @@ interface DelitoSeedInput {
    * el marco penal): multa de más de 3 meses es "menos grave" (art. 33 CP).
    */
   penaSoloMulta?: boolean;
+  /** Estado editorial; por defecto `pendiente_revision`. Ver `VERIFICADOS_BOE`. */
+  revision?: EstadoRevision;
 }
+
+/**
+ * Delitos COTEJADOS contra el BOE consolidado del Código Penal (BOE-A-1995-25444, artículos leídos en
+ * el navegador el 2026-09-14): la pena base del artículo y su `gravedadCp` (art. 33 CP: prisión >5 años
+ * = grave; hasta 5 años / multa >2 meses = menos grave; art. 13.4 para penas que solapan tramos) se han
+ * confirmado directamente en el texto. Se marcan `verificado` (sin sello "Borrador beta").
+ *
+ * NO se incluyen: delitos con clasificación DUDOSA en el propio seed que hay que revisar antes (p. ej.
+ * `del-hurto` marcado 'leve' cuando el 234.1 base >400 € es prisión 6-18 meses = menos grave; o
+ * `del-usurpacion`, por el solape 245.1/245.2), los subtipos con agravantes que cambian la pena, y los
+ * MUY sensibles (agresión sexual, menores) que se dejan al jurista. Para cobrar, visto bueno humano final.
+ */
+const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
+  'del-robo-violencia', // 242: prisión 2-5 años → menos grave
+  'del-lesiones', // 147.1: prisión 3m-3a o multa → menos grave
+  'del-lesiones-agravadas', // 148: prisión 2-5 años → menos grave
+  'del-amenazas', // 169: prisión hasta 5 años → menos grave
+  'del-danos', // 263.1: multa (penaSoloMulta) → menos grave
+  'del-homicidio', // 138: prisión 10-15 años → grave
+  'del-asesinato', // 139: prisión 15-25 años → grave
+  'del-resistencia-desobediencia', // 556: prisión 3m-1a o multa → menos grave
+  'del-desordenes-publicos', // 557: prisión 6m-3a → menos grave
+  'del-detencion-ilegal', // 163.1: prisión 4-6 años → grave (art. 13.4)
+  'del-trafico-drogas', // 368: prisión 3-6 años (grave daño) → grave (art. 13.4)
+  'del-atentado-agente', // 550/551: atentado a agente, prisión 1-4 años → menos grave
+  'del-allanamiento-morada', // 202.1: prisión 6m-2a → menos grave
+  'del-coacciones', // 172.1: prisión 6m-3a o multa → menos grave
+  'del-omision-socorro', // 195: multa 3-12 meses → menos grave
+  'del-tenencia-armas', // 564: prisión 6m-2a → menos grave
+  'del-quebrantamiento', // 468: prisión 6m-1a o multa → menos grave
+  'del-violencia-genero', // 153: prisión 6m-1a → menos grave
+  'del-torturas', // 174: prisión 2-6 años → grave (art. 13.4)
+  'del-robo-fuerza', // 238/240: prisión 1-3 años → menos grave
+  'del-estafa', // 249: prisión 6m-3a → menos grave
+  'del-falsedad-documental', // 392: prisión 6m-3a + multa → menos grave
+]);
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
   const infraccion = Infraccion.parse({
@@ -1129,6 +1167,17 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     articuloId: null,
   });
 
+  // Estado editorial: `verificado` cuando el delito está en `VERIFICADOS_BOE` (pena base cotejada
+  // contra el CP en el BOE) y no se ha forzado otro estado. Al verificar por el set, se antepone a la
+  // nota una línea que deja constancia del cotejo con su artículo del CP.
+  const verificadaPorSet = input.revision === undefined && VERIFICADOS_BOE.has(input.id);
+  const revision: EstadoRevision =
+    input.revision ?? (verificadaPorSet ? 'verificado' : 'pendiente_revision');
+  const notaRevision = verificadaPorSet
+    ? `COTEJADO contra el BOE (Código Penal art. ${input.articulo.numero}, leído 2026-09-14): la pena ` +
+      `base del artículo y su gravedad (art. 33 CP) concuerdan con la ficha. ${input.notaRevision}`
+    : input.notaRevision;
+
   // Consecuencias adicionales (p. ej. la protección de la víctima en violencia de género).
   const consecuenciasExtra: Consecuencia[] = (input.consecuenciasExtra ?? []).map((c, i) =>
     Consecuencia.parse({
@@ -1147,8 +1196,8 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias: [consecuencia, ...consecuenciasExtra],
     marcoImporte: 'penal' satisfies MarcoImporte,
-    revision: 'pendiente_revision' satisfies EstadoRevision,
-    notaRevision: input.notaRevision,
+    revision,
+    notaRevision,
   };
 }
 
