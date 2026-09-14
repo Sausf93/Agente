@@ -19,6 +19,10 @@ export function GuiaExtranjeriaScreen() {
         'o judicial.'
       }
       secciones={GUIA_EXTRANJERIA}
+      guiasRelacionadas={[
+        { ruta: '/guia-menores', titulo: 'Menores (MENA e inimputabilidad)' },
+        { ruta: '/guia-identificacion', titulo: 'Identificación y cacheo' },
+      ]}
       pie={
         'Fuente: LO 4/2000 (arts. 4, 53.1.a, 55, 57, 58, 61, 62, 64 y 35), Ley 12/2009 de asilo, ' +
         'art. 16 LO 4/2015, arts. 318 bis y 177 bis CP y LO 1/1996. Actualizado: ' +

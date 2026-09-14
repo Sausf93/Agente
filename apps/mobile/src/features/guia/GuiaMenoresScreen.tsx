@@ -18,6 +18,10 @@ export function GuiaMenoresScreen() {
         'autoridad judicial.'
       }
       secciones={GUIA_MENORES}
+      guiasRelacionadas={[
+        { ruta: '/guia-extranjeria', titulo: 'Extranjería en la calle (MENA)' },
+        { ruta: '/guia-identificacion', titulo: 'Identificación y cacheo' },
+      ]}
       pie={
         'Fuente: LO 5/2000 (arts. 1.1, 3 y 17), LO 1/1996 de protección jurídica del menor y art. 35 ' +
         `LO 4/2000. Actualizado: ${ACTUALIZACION_GUIA_MENORES}. Orientativo, a verificar.`

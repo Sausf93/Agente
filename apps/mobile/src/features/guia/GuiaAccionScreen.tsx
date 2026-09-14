@@ -30,6 +30,12 @@ export interface SeccionGuiaAccion {
   puntos: readonly PuntoGuiaAccion[];
 }
 
+/** Enlace a otra guía relacionada (navegación cruzada entre guías del "manual de calle"). */
+export interface GuiaRelacionadaLink {
+  ruta: string;
+  titulo: string;
+}
+
 export interface GuiaAccionScreenProps {
   /** Título y cuerpo del banner de cabecera (aviso orientativo). */
   bannerTitulo: string;
@@ -37,9 +43,17 @@ export interface GuiaAccionScreenProps {
   secciones: readonly SeccionGuiaAccion[];
   /** Pie con fuente + fecha de actualización (regla: fuente y fecha visibles). */
   pie: string;
+  /** Otras guías relacionadas, enlazadas al final (opcional). */
+  guiasRelacionadas?: readonly GuiaRelacionadaLink[];
 }
 
-export function GuiaAccionScreen({ bannerTitulo, bannerCuerpo, secciones, pie }: GuiaAccionScreenProps) {
+export function GuiaAccionScreen({
+  bannerTitulo,
+  bannerCuerpo,
+  secciones,
+  pie,
+  guiasRelacionadas,
+}: GuiaAccionScreenProps) {
   const t = useAppTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -67,6 +81,41 @@ export function GuiaAccionScreen({ bannerTitulo, bannerCuerpo, secciones, pie }:
           }}
         />
       ))}
+
+      {guiasRelacionadas && guiasRelacionadas.length > 0 ? (
+        <View
+          style={{
+            borderRadius: t.radius.md,
+            borderWidth: 1,
+            borderColor: t.color.border,
+            backgroundColor: t.color.surface,
+            overflow: 'hidden',
+          }}
+        >
+          <Text
+            style={{
+              color: t.color.textSecondary,
+              ...t.typography.scale.caption,
+              textTransform: 'uppercase',
+              letterSpacing: 0.6,
+              paddingHorizontal: t.spacing.md,
+              paddingTop: t.spacing.md,
+              paddingBottom: t.spacing.xs,
+            }}
+          >
+            Guías relacionadas
+          </Text>
+          {guiasRelacionadas.map((g) => (
+            <ListRow
+              key={g.ruta}
+              title={g.titulo}
+              accessibilityHint="Abre la guía relacionada"
+              onPress={() => router.push(g.ruta)}
+              right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
+            />
+          ))}
+        </View>
+      ) : null}
 
       <Text
         style={{
