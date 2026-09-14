@@ -53,6 +53,7 @@ export const ACCESOS_LOCAL_EXTRA: readonly AccesoRapido[] = [
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
   { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
+  { label: 'Uso de la fuerza', destino: { tipo: 'ruta', valor: '/guia-uso-fuerza' } },
 ];
 
 /**
@@ -71,6 +72,7 @@ export const ACCESOS_SEGURIDAD_CIUDADANA: readonly AccesoRapido[] = [
   { label: 'Menores', destino: { tipo: 'ruta', valor: '/guia-menores' } },
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
   { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
+  { label: 'Uso de la fuerza', destino: { tipo: 'ruta', valor: '/guia-uso-fuerza' } },
 ];
 
 /**
@@ -108,6 +110,7 @@ export const ACCESOS_POLICIA_NACIONAL: readonly AccesoRapido[] = [
   // VG es intervención universal y prioritaria: abre la guía (proteger, VPR/VioGén, orden de protección).
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
   { label: 'Okupas', destino: { tipo: 'ruta', valor: '/guia-ocupacion' } },
+  { label: 'Uso de la fuerza', destino: { tipo: 'ruta', valor: '/guia-uso-fuerza' } },
 ];
 
 /**
@@ -128,6 +131,7 @@ export const ACCESOS_GUARDIA_CIVIL: readonly AccesoRapido[] = [
   { label: 'Identificación', destino: { tipo: 'ruta', valor: '/guia-identificacion' } },
   { label: 'Leer derechos', destino: { tipo: 'ruta', valor: '/derechos' } },
   { label: 'Violencia de género', destino: { tipo: 'ruta', valor: '/guia-violencia-genero' } },
+  { label: 'Uso de la fuerza', destino: { tipo: 'ruta', valor: '/guia-uso-fuerza' } },
 ];
 
 /**
