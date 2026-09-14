@@ -16,6 +16,7 @@ import {
   listarMunicipiosConOrdenanza,
   listarNormas,
   materiaDeNorma,
+  materiaDeInfraccion,
   subtemaDeInfraccion,
 } from './normas';
 
@@ -74,13 +75,15 @@ suite('normas contra el paquete real', () => {
   it('listarInfraccionesDeMateria: Tráfico también trae fichas y todas son de su materia', async () => {
     const fichas = await listarInfraccionesDeMateria(runner, 'trafico', CADENA_CANARIAS);
     expect(fichas.length).toBeGreaterThan(10);
-    expect(fichas.every((f) => materiaDeNorma(f.normaCodigo) === 'trafico')).toBe(true);
+    // Se usa `materiaDeInfraccion` (no `materiaDeNorma`) porque algún delito vial vive en el seed penal
+    // (norma CP) y se reasigna a tráfico por override (p. ej. la conducción con desprecio a la vida, 381).
+    expect(fichas.every((f) => materiaDeInfraccion(f.id, f.normaCodigo) === 'trafico')).toBe(true);
   });
 
   // Submenús estilo SPPLB: toda ficha ESTATAL de las materias densas está clasificada en un sub-tema
   // (guarda anti-olvido al añadir fichas nuevas) y ningún grupo visible queda por debajo de 3 (regla
   // anti-vacío de docs/paridad-spplb.md). Se usa cadena vacía → solo lo estatal (lo mapeado a mano).
-  it.each(['trafico', 'penal', 'seguridad'] as const)(
+  it.each(['trafico', 'penal', 'seguridad', 'animales'] as const)(
     'sub-temas de %s: cobertura completa y ningún grupo con <3 fichas',
     async (materia) => {
       const fichas = await listarInfraccionesDeMateria(runner, materia, []);

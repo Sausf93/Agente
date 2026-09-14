@@ -365,6 +365,9 @@ export const MATERIA_OVERRIDE_POR_INFRACCION: Record<string, Materia> = {
   'arma-fogueo-aire-replica': 'armas',
   'arma-custodia-deposito': 'armas',
   'arma-documentacion-perdida': 'armas',
+  // La conducción con desprecio a la vida (381 CP) es un DELITO VIAL: se muestra en Tráfico, junto a
+  // la temeraria del 380, que es donde la busca un agente de tráfico (validador-calle 2026-09-14).
+  'del-conduccion-temeraria-desprecio': 'trafico',
 };
 
 /**
@@ -619,6 +622,7 @@ export const MATERIA_CON_SUBTEMAS: ReadonlySet<Materia> = new Set<Materia>([
   'trafico',
   'penal',
   'seguridad',
+  'animales',
 ]);
 
 export function materiaTieneSubtemas(materia: Materia): boolean {
@@ -637,16 +641,24 @@ export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
   'traf-transporte': { materia: 'trafico', label: 'Transporte (LOTT)', icono: 'Truck', orden: 8 },
   'traf-delitos': { materia: 'trafico', label: 'Delitos contra la seguridad vial', icono: 'Gavel', orden: 9 },
   'traf-otras': { materia: 'trafico', label: 'Otras de tráfico', icono: 'BookOpen', orden: 99, esCajon: true },
-  // --- Penal ---
-  'pen-patrimonio': { materia: 'penal', label: 'Patrimonio', icono: 'Package', orden: 1 },
-  'pen-personas': { materia: 'penal', label: 'Personas, violencia y libertad', icono: 'HeartPulse', orden: 2 },
-  'pen-autoridad': { materia: 'penal', label: 'Autoridad y orden público', icono: 'Siren', orden: 3 },
-  'pen-otros': { materia: 'penal', label: 'Otros delitos', icono: 'BookOpen', orden: 4, esCajon: true },
+  // --- Penal (reestructurado 2026-09-14 con validador-calle: el antiguo "personas" reunía 23 delitos.
+  //     Grupos y ORDEN por FRECUENCIA de consulta de calle, no por el orden del Código Penal, y con
+  //     nombres de calle ("robos", no "patrimonio"). ---
+  'pen-patrimonio': { materia: 'penal', label: 'Robos, hurtos y daños', icono: 'Package', orden: 1 },
+  'pen-libertad': { materia: 'penal', label: 'Amenazas, coacciones y violencia de género', icono: 'Lock', orden: 2 },
+  'pen-autoridad': { materia: 'penal', label: 'Atentado, resistencia y orden público', icono: 'Siren', orden: 3 },
+  'pen-vida': { materia: 'penal', label: 'Homicidio, lesiones y agresiones', icono: 'HeartPulse', orden: 4 },
+  'pen-sexual': { materia: 'penal', label: 'Delitos sexuales y menores', icono: 'ShieldAlert', orden: 5 },
+  'pen-otros': { materia: 'penal', label: 'Otros delitos', icono: 'BookOpen', orden: 99, esCajon: true },
   // --- Seguridad ciudadana (sub-temas provisionales: es la materia más justa en volumen) ---
   'seg-orden-identidad': { materia: 'seguridad', label: 'Orden público e identificación', icono: 'IdCard', orden: 1 },
   'seg-drogas-armas': { materia: 'seguridad', label: 'Drogas, alcohol y armas', icono: 'Pill', orden: 2 },
   'seg-reuniones': { materia: 'seguridad', label: 'Reuniones, espectáculos y ocupación', icono: 'Megaphone', orden: 3 },
   'seg-otras': { materia: 'seguridad', label: 'Otras de seguridad ciudadana', icono: 'BookOpen', orden: 99, esCajon: true },
+  // --- Animales (2026-09-14): separa el régimen de PPP del de bienestar animal (Ley 7/2023) ---
+  'anim-ppp': { materia: 'animales', label: 'Perros y animales peligrosos (PPP)', icono: 'Dog', orden: 1 },
+  'anim-bienestar': { materia: 'animales', label: 'Maltrato, abandono y protección', icono: 'PawPrint', orden: 2 },
+  'anim-otras': { materia: 'animales', label: 'Perro suelto, excrementos y censo', icono: 'BookOpen', orden: 99, esCajon: true },
 };
 
 /** Mapa interino id de infracción → sub-tema (fuente única de la taxonomía). */
@@ -731,7 +743,33 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-animal-suelto-habitaculo': 'traf-distracciones',
   'inf-apertura-puertas-apearse': 'traf-maniobras-senales',
   'inf-desobedecer-agente': 'traf-maniobras-senales',
-  // Penal
+  // Penal (taxonomía reestructurada 2026-09-14). Los delitos VIALES (del-alcoholemia-penal, etc.)
+  // viven en la materia tráfico (traf-delitos), no aquí.
+  // · Vida e integridad
+  'del-homicidio': 'pen-vida',
+  'del-asesinato': 'pen-vida',
+  'del-lesiones': 'pen-vida',
+  'del-lesiones-agravadas': 'pen-vida',
+  'del-omision-socorro': 'pen-vida',
+  'del-torturas': 'pen-vida',
+  'del-trato-degradante': 'pen-vida',
+  // · Libertad sexual y menores
+  'del-agresion-sexual': 'pen-sexual',
+  'del-agresion-sexual-menor': 'pen-sexual',
+  'del-exhibicionismo': 'pen-sexual',
+  'del-grooming-menores': 'pen-sexual',
+  'del-pornografia-infantil': 'pen-sexual',
+  // · Libertad, amenazas y violencia doméstica
+  'del-amenazas': 'pen-libertad',
+  'del-coacciones': 'pen-libertad',
+  'del-detencion-ilegal': 'pen-libertad',
+  'del-allanamiento-morada': 'pen-libertad',
+  'del-acoso-stalking': 'pen-libertad',
+  'del-sustraccion-menores': 'pen-libertad',
+  'del-violencia-genero': 'pen-libertad',
+  'del-quebrantamiento': 'pen-libertad',
+  'del-trata-seres-humanos': 'pen-libertad',
+  // · Patrimonio
   'del-hurto': 'pen-patrimonio',
   'del-robo-violencia': 'pen-patrimonio',
   'del-robo-fuerza-casa-habitada': 'pen-patrimonio',
@@ -740,44 +778,24 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-sustraccion-vehiculo': 'pen-patrimonio',
   'del-usurpacion': 'pen-patrimonio',
   'del-receptacion': 'pen-patrimonio',
-  'del-lesiones': 'pen-personas',
-  'del-lesiones-agravadas': 'pen-personas',
-  'del-amenazas': 'pen-personas',
-  'del-coacciones': 'pen-personas',
-  'del-detencion-ilegal': 'pen-personas',
-  'del-allanamiento-morada': 'pen-personas',
-  'del-omision-socorro': 'pen-personas',
-  'del-violencia-genero': 'pen-personas',
-  'del-quebrantamiento': 'pen-personas',
+  'del-allanamiento-establecimiento': 'pen-patrimonio',
+  // · Autoridad, orden público y odio
   'del-atentado-agente': 'pen-autoridad',
   'del-resistencia-desobediencia': 'pen-autoridad',
   'del-desordenes-publicos': 'pen-autoridad',
+  'del-usurpacion-funciones': 'pen-autoridad',
+  'del-odio-discriminacion': 'pen-autoridad',
+  'del-simulacion-delito': 'pen-autoridad',
+  // · Otros (cajón)
   'del-trafico-drogas': 'pen-otros',
   'del-tenencia-armas': 'pen-otros',
-  'del-falsedad-documental': 'pen-otros',
   'del-maltrato-animal': 'pen-otros',
-  // Ola de delitos violentos y contra la libertad sexual (2026-09-10).
-  'del-homicidio': 'pen-personas',
-  'del-asesinato': 'pen-personas',
-  'del-agresion-sexual': 'pen-personas',
-  'del-agresion-sexual-menor': 'pen-personas',
-  'del-trato-degradante': 'pen-personas',
-  'del-torturas': 'pen-personas',
-  'del-acoso-stalking': 'pen-personas',
   'del-revelacion-secretos': 'pen-otros',
-  // Ola de frontera penal (odio, online a menores, falso policía, kamikaze penal) 2026-09-10.
-  'del-conduccion-temeraria-desprecio': 'pen-otros',
-  'del-odio-discriminacion': 'pen-personas',
-  'del-grooming-menores': 'pen-personas',
-  'del-pornografia-infantil': 'pen-personas',
-  'del-exhibicionismo': 'pen-personas',
-  'del-simulacion-delito': 'pen-otros',
-  'del-sustraccion-menores': 'pen-personas',
-  'del-allanamiento-establecimiento': 'pen-personas',
-  'del-usurpacion-funciones': 'pen-autoridad',
-  // Ola de extranjería — frontera penal (2026-09-11).
   'del-favorecimiento-inmigracion-ilegal': 'pen-otros',
-  'del-trata-seres-humanos': 'pen-personas',
+  'del-falsedad-documental': 'pen-otros',
+  // Delito vial (materia tráfico vía override): la conducción con desprecio a la vida (381 CP)
+  // se agrupa con los demás delitos contra la seguridad vial.
+  'del-conduccion-temeraria-desprecio': 'traf-delitos',
   // Seguridad ciudadana
   'sc-identificacion-requerimiento': 'seg-orden-identidad',
   'sc-cacheo-registro': 'seg-orden-identidad',
@@ -792,6 +810,22 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'sc-perturbacion-actos-espectaculos': 'seg-reuniones',
   'sc-reunion-no-comunicada': 'seg-reuniones',
   'sc-ocupacion-inmueble': 'seg-reuniones',
+  // Animales (2026-09-14) — estatal: PPP (Ley 50/1999) y bienestar animal (Ley 7/2023).
+  'ppp-sin-licencia': 'anim-ppp',
+  'ppp-sin-bozal': 'anim-ppp',
+  'ppp-sin-seguro': 'anim-ppp',
+  'ppp-menor-conduciendo': 'anim-ppp',
+  'ppp-mas-de-uno': 'anim-ppp',
+  'ppp-transporte': 'anim-ppp',
+  'animal-abandono': 'anim-bienestar',
+  'animal-no-identificacion': 'anim-bienestar',
+  'animal-maltrato-sin-lesion': 'anim-bienestar',
+  'animal-vehiculo-terraza-riesgo': 'anim-bienestar',
+  'animal-condiciones-inadecuadas': 'anim-bienestar',
+  // Animales — territorial (ordenanzas municipales de convivencia): van al cajón.
+  'ord-sctf-perro-sin-censar': 'anim-otras',
+  'ord-sctf-perro-suelto': 'anim-otras',
+  'ord-sctf-excrementos': 'anim-otras',
 };
 
 /** Sub-tema de una infracción por su id (mapa interino); `null` si no está clasificada. */
