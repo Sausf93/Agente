@@ -339,6 +339,32 @@ suite('MEDIA-3 · frontera penal/administrativa: "okupas" prima la penal', () =>
 });
 
 /**
+ * Desambiguación "perro suelto / perro sin correa" (QA multiagente 2026-09-14): un perro COMÚN
+ * suelto es infracción LEVE de la Ley 7/2023 (`animal-perro-suelto-sin-control`, 500 €), NO la
+ * infracción GRAVE de PPP (`ppp-sin-bozal`, 300,52 €), que exige que el perro sea potencialmente
+ * peligroso. Los términos genéricos se retiraron de la ficha de PPP para no dar un importe erróneo;
+ * la de PPP solo se alcanza con términos PPP-explícitos ("perro peligroso", "pitbull", "ppp").
+ */
+suite('desambiguación · "perro suelto/sin correa" común (leve) vs PPP (grave)', () => {
+  const runner = runnerDesdeArchivo(RUTA_DB);
+
+  for (const q of ['perro suelto', 'perro sin correa']) {
+    it(`"${q}" (perfil neutro) NO enruta a la ficha GRAVE de PPP como primer resultado`, async () => {
+      const res = await buscarInfracciones(runner, q);
+      // El primer resultado no debe ser una ficha de PPP (grave 300,52 €): sería sobre-sancionar.
+      expect(res[0]?.infraccionId.startsWith('ppp-')).toBe(false);
+      // La ficha del perro común (leve, Ley 7/2023) sí debe aparecer.
+      expect(res.map((r) => r.infraccionId)).toContain('animal-perro-suelto-sin-control');
+    });
+  }
+
+  it('los términos PPP-explícitos SÍ alcanzan la ficha de PPP', async () => {
+    const res = await buscarInfracciones(runner, 'perro peligroso suelto');
+    expect(res.some((r) => r.infraccionId.startsWith('ppp-'))).toBe(true);
+  });
+});
+
+/**
  * Presentación de las 8 DELITOS nuevos (QA): marco penal (sin tiles de importe), acción de
  * atestado + detención con su ÁRBOL de decisión (regla no vacía).
  */

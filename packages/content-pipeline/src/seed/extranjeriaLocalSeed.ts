@@ -963,16 +963,18 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'Llevar un animal potencialmente peligroso por lugares públicos sin bozal, sin correa no ' +
       'extensible y resistente, o dejarlo suelto, incumpliendo las medidas de seguridad exigidas. Es ' +
       'infracción GRAVE de la Ley 50/1999 (art. 13.2). La valoración final corresponde a la autoridad competente.',
+    // TÉRMINOS PPP-EXPLÍCITOS solo: los genéricos ('perro suelto', 'sin correa', 'perro sin correa')
+    // se retiran de aquí para no enrutar un perro COMÚN a esta ficha GRAVE de PPP (300,52 €); viven en
+    // `animal-perro-suelto-sin-control` (Ley 7/2023, leve) y en la ordenanza municipal. Esta ficha
+    // solo debe capturar el PPP explícito (corrección revisor 2026-09-14).
     terminos: [
       'perro sin bozal',
       'perro peligroso sin bozal',
       'ppp sin bozal',
-      'perro suelto',
       'perro peligroso suelto',
-      'sin correa',
-      'perro sin correa',
+      'pitbull suelto',
       'pitbull sin bozal',
-      'perro sin correa en la calle',
+      'perro peligroso sin correa',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
     consecuencias: [
@@ -2259,6 +2261,12 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'perro sin atar en la via publica',
       'perro corriendo sin correa',
       'llevar el perro suelto',
+      // Genéricos reasignados desde `ppp-sin-bozal` (PPP, grave): el perro COMÚN suelto/sin correa
+      // resuelve aquí (leve), no a la ficha de PPP (corrección revisor 2026-09-14). En municipios con
+      // ordenanza cargada, `ord-sctf-perro-suelto` convive por el filtro territorial.
+      'perro suelto',
+      'sin correa',
+      'perro sin correa en la calle',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_local', 'policia_autonomica'],
     consecuencias: [
