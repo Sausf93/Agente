@@ -34,10 +34,13 @@ describe('SEED_TRAFICO: integridad', () => {
     }
   });
 
-  it('todas quedan pendientes de revisión (nada se autopublica)', () => {
+  it('cada ficha tiene estado editorial válido y su nota (verificado contra BOE o pendiente)', () => {
     for (const item of SEED_TRAFICO.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       expect(item.notaRevision.length).toBeGreaterThan(0);
+      if (item.revision === 'verificado') {
+        expect(item.notaRevision.toUpperCase(), item.infraccion.id).toMatch(/BOE|ANEXO/);
+      }
     }
   });
 });
@@ -319,12 +322,12 @@ describe('SEED_TRAFICO: ampliación del catálogo de calle (14 conductas nuevas)
     'inf-auriculares-conduciendo',
   ];
 
-  it('las 14 existen, son administrativas y quedan pendientes de revisión con nota', () => {
+  it('las 14 existen, son administrativas y tienen estado editorial válido con nota', () => {
     for (const id of IDS_NUEVAS) {
       const item = find(id);
       expect(item, id).toBeDefined();
       expect(item!.infraccion.tipo, id).toBe('administrativa');
-      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], id).toContain(item!.revision);
       expect(item!.notaRevision.length, id).toBeGreaterThan(0);
     }
   });
