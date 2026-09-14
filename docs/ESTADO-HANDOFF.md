@@ -97,6 +97,26 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
+### CAMBIO DE MODELO (2026-09-14): `verificado` vs `pendiente_revision` — 90/307 ya verificadas
+Antes TODA ficha quedaba `pendiente_revision` (sello "Borrador beta") por defecto. Ahora el agente
+principal COTEJA contra el BOE consolidado (leído en el navegador, no WebFetch) y marca `verificado`
+lo que confirma directamente en la fuente. Mecanismo: un set `VERIFICADAS_BOE`/`VERIFICADOS_BOE` al
+principio de cada seed + un parámetro `revision?` en los constructores (por defecto `pendiente_revision`).
+La app quita el "Borrador beta" a las `verificado`.
+- **Verificadas (90):** PPP (Ley 50/1999 art. 13, 9 fichas), bienestar animal (Ley 7/2023 arts. 73-76,
+  8), seguridad ciudadana (LO 4/2015 arts. 35-37, 41) y penal (CP, art. 33 CP, 32 delitos).
+- **Siguen `pendiente_revision` (a propósito):** el régimen de ARMAS (RD 137/1993, material sin cotejar),
+  el 36.23 (inconstitucionalidad parcial), lo que descansa en un CHAPEAU interpretable (maltrato animal),
+  desarrollo REGLAMENTARIO pendiente (listado positivo, curso/seguro), las ORDENANZAS municipales y el
+  autonómico de Canarias (art. 66 sin corroborar), los delitos sensibles (sexual, menores) y los subtipos
+  con agravantes. Dos clasificaciones DUDOSAS detectadas al verificar y flagueadas: `del-hurto` ('leve'
+  cuando el 234.1 >400 € es menos grave) y `del-usurpacion` (solape 245.1/245.2) — ver tarea spawn.
+- **Falta por verificar (siguiente):** TRÁFICO (LSV art. 80 importes confirmables, pero muchos con puntos/
+  Anexo II "a verificar"), el resto de penal, y las fichas estatales de extranjería (LOEX arts. 53-55).
+- **Aviso honesto (en las notas y aquí):** `verificado` = cotejado contra el BOE por el asistente; para
+  COBRAR sigue siendo prudente un visto bueno humano/jurídico final, sobre todo en penal (detención).
+
+
 ### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
 Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
 - **BUG estructural de la ficha de EXTRANJERÍA arreglado** (commit `1c1c8ef`, CI Run 114): `ficha.ts`
