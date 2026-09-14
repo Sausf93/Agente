@@ -121,6 +121,23 @@ correctas; 0 errores. 1 no re-cotejada en este pase** (el DOM del consolidado no
 importe/gravedad mal). Único fleco: re-confirmar el articulado del **340 bis** cuando el consolidado
 exponga su ancla.
 
+## Barrido de patrón «subtipo agravado modelado como caso por defecto»
+
+Es la clase de error que motivó el desdoblamiento del hurto: si `gravedadCp` refleja un subtipo
+(agravado o atenuado) distinto del caso más frecuente, el motor **desvía la rama de detención**.
+Revisadas todas las fichas `grave` y las `leve`:
+
+- **Fichas `grave`** (138 homicidio, 139 asesinato, 163 detención ilegal, 174 torturas, 368 tráfico
+  de drogas, 177 bis trata): todas correctas (prisión > 5 años, o 4-6/3-6/2-6 años → **grave por el
+  art. 13.4**). **Única excepción: `del-favorecimiento-inmigracion-ilegal`** (grave modelando la
+  organización 318 bis.3, cuyo base 318 bis.1 es menos grave) — ver §2.
+- **Fichas `leve`**: `del-hurto-leve` y `del-usurpacion` correctas. **`del-defraudacion-fluido`
+  (art. 255)** repite el patrón del hurto — modela el caso ≤ 400 € (multa 1-3 meses, 255.2 = leve),
+  cuando > 400 € es multa de 3-12 meses (255.1 = **menos grave**). **Prioridad BAJA**: como ambos
+  tramos son de SOLO MULTA, la orientación de detención apenas cambia (art. 492: no procede salvo
+  garantías). Recomendación menor: una nota que aclare el tramo > 400 € (menos grave), o desdoblar
+  para paridad plena con el hurto.
+
 ### Método (reutilizable)
 
 Lectura del articulado sancionador desde el navegador in-app (los subagentes con WebFetch **no**
