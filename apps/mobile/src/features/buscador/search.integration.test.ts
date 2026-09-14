@@ -389,6 +389,15 @@ suite('extranjería · detalle propio de cada ficha, sin tile de sanción en los
       expect(tiles.some((t) => t.valor === 'Multa o expulsión'), id).toBe(false);
     }
   });
+
+  it('"matrimonio de conveniencia" resuelve al deslinde SIN importe, no a la sanción del 54.1.f', async () => {
+    const res = await buscarInfracciones(runner, 'matrimonio de conveniencia');
+    expect(res[0]?.infraccionId).toBe('ext-matrimonio-conveniencia-consulta');
+    const ficha = await cargarFicha(runner, 'ext-matrimonio-conveniencia-consulta');
+    expect(ficha?.importeEur).toBeNull();
+    const tiles = tilesFicha(ficha!, formatEuros);
+    expect(tiles.some((t) => t.valor === 'Multa o expulsión')).toBe(false);
+  });
 });
 
 /**

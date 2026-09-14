@@ -1561,14 +1561,17 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'favorecimiento de la inmigración clandestina (art. 318 bis CP), no por el art. 54.1.f. MENSAJE ' +
       'CLAVE: su tratamiento es administrativo, sin perjuicio de la posible vía penal. La valoración final ' +
       'corresponde a la autoridad competente.',
+    // TÉRMINOS de la SIMULACIÓN LABORAL (54.1.f). Los de "matrimonio de conveniencia" se movieron a la
+    // entrada de consulta `ext-matrimonio-conveniencia-consulta` (no_sancionador): NO deben caer en esta
+    // ficha con importe (10.001 €), porque el matrimonio de conveniencia NO se sanciona por el 54.1.f
+    // (corrección revisor 2026-09-14).
     terminos: [
-      'matrimonio de conveniencia',
-      'boda por papeles',
-      'casarse por los papeles',
-      'matrimonio fraudulento extranjeria',
       'simular relacion laboral extranjero',
       'contrato falso para papeles',
-      'matrimonio blanco',
+      'relacion laboral falsa para papeles',
+      'empleo ficticio para residencia',
+      'simular contrato de trabajo a un extranjero',
+      'contrato de trabajo simulado para regularizar',
     ],
     cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
     consecuencias: [
@@ -1588,6 +1591,47 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'fraude de ley y, en su caso, falsedad documental (arts. 390 y ss. CP) o 318 bis CP—, por eso la ficha lo ' +
       'deslinda. Tramo muy grave 10.001-100.000 € (55.1.c), el seed fija el mínimo. Segundo revisor humano para ' +
       'el cierre por lo SENSIBLE del deslinde.',
+  }),
+  construirInfraccion({
+    id: 'ext-matrimonio-conveniencia-consulta',
+    articulo: ART_LOEX_54_1_F,
+    tituloCorto: 'Matrimonio de conveniencia (consulta: no es sanción del 54.1.f)',
+    gravedad: 'leve', // valor de relleno; entrada CONSULTABLE sin importe (deslinde, no infracción autónoma)
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'ENTRADA DE CONSULTA (no sancionadora por sí sola). El "matrimonio de conveniencia" NO es la ' +
+      'infracción administrativa del art. 54.1.f LO 4/2000 (esa es SIMULAR una relación LABORAL con ánimo ' +
+      'de lucro, ver `ext-matrimonio-conveniencia`). El matrimonio simulado se combate por otras vías: la ' +
+      'NULIDAD civil / fraude de ley, y, en su caso, la FALSEDAD documental (arts. 390 y ss. CP) o el ' +
+      'favorecimiento de la inmigración clandestina (art. 318 bis CP). No procede fijar una multa del ' +
+      '54.1.f por el mero matrimonio. La calificación final corresponde a la autoridad competente.',
+    terminos: [
+      'matrimonio de conveniencia',
+      'boda por papeles',
+      'casarse por los papeles',
+      'matrimonio fraudulento extranjeria',
+      'matrimonio blanco',
+      'matrimonio simulado para residencia',
+    ],
+    cuerposCompetentes: ['guardia_civil', 'policia_nacional', 'policia_local'],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar y documentar los indicios; el matrimonio de conveniencia se combate por la ' +
+          'NULIDAD/fraude de ley y, en su caso, por la vía PENAL (falsedad documental, arts. 390 y ss. CP; ' +
+          '318 bis CP), no por una multa administrativa del 54.1.f. Dar parte y coordinar.',
+        fuente: 'LO 4/2000 art. 54.1.f (deslinde); arts. 390 y ss. y 318 bis CP',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE (deslinde) creada 2026-09-14 al desdoblar `ext-matrimonio-conveniencia`: los ' +
+      'términos de "matrimonio de conveniencia" caían en la ficha SANCIONADORA del 54.1.f (10.001 €) y la ' +
+      'UI mostraba una multa que el propio texto dice que NO aplica. Aquí, sin importe (no_sancionador), se ' +
+      'preserva el mensaje clave. A verificar con el revisor jurídico el encaje exacto (nulidad, 390 y ss. ' +
+      'CP, 318 bis CP).',
   }),
   // --- OLA DE PARIDAD SPPLB (2026-09-14): ANIMALES (Ley 50/1999 y Ley 7/2023) --------------------
   construirInfraccion({
