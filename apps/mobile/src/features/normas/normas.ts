@@ -630,16 +630,18 @@ export function materiaTieneSubtemas(materia: Materia): boolean {
 }
 
 export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
-  // --- Tráfico ---
+  // --- Tráfico (2026-09-14: el grupo "maniobras, señales y prioridad" reunía 17 fichas; se separan
+  //     señales/semáforo de maniobras/adelantamientos) ---
   'traf-alcohol-velocidad': { materia: 'trafico', label: 'Alcohol, drogas y velocidad', icono: 'Gauge', orden: 1 },
-  'traf-maniobras-senales': { materia: 'trafico', label: 'Maniobras, señales y prioridad', icono: 'Signpost', orden: 2 },
-  'traf-documentacion': { materia: 'trafico', label: 'Documentación y seguro', icono: 'FileText', orden: 3 },
-  'traf-estado-vehiculo': { materia: 'trafico', label: 'Estado, equipamiento y carga', icono: 'Wrench', orden: 4 },
-  'traf-seguridad-pasiva': { materia: 'trafico', label: 'Cinturón, casco y sillita', icono: 'LifeBuoy', orden: 5 },
-  'traf-distracciones': { materia: 'trafico', label: 'Móvil y distracciones', icono: 'Smartphone', orden: 6 },
-  'traf-estacionamiento': { materia: 'trafico', label: 'Parada, estacionamiento y VMP', icono: 'SquareParking', orden: 7 },
-  'traf-transporte': { materia: 'trafico', label: 'Transporte (LOTT)', icono: 'Truck', orden: 8 },
-  'traf-delitos': { materia: 'trafico', label: 'Delitos contra la seguridad vial', icono: 'Gavel', orden: 9 },
+  'traf-senales': { materia: 'trafico', label: 'Señales, semáforo y prioridad', icono: 'Signpost', orden: 2 },
+  'traf-maniobras-senales': { materia: 'trafico', label: 'Maniobras y adelantamientos', icono: 'Milestone', orden: 3 },
+  'traf-documentacion': { materia: 'trafico', label: 'Documentación y seguro', icono: 'FileText', orden: 4 },
+  'traf-estado-vehiculo': { materia: 'trafico', label: 'Estado, equipamiento y carga', icono: 'Wrench', orden: 5 },
+  'traf-seguridad-pasiva': { materia: 'trafico', label: 'Cinturón, casco y sillita', icono: 'LifeBuoy', orden: 6 },
+  'traf-distracciones': { materia: 'trafico', label: 'Móvil y distracciones', icono: 'Smartphone', orden: 7 },
+  'traf-estacionamiento': { materia: 'trafico', label: 'Parada, estacionamiento y VMP', icono: 'SquareParking', orden: 8 },
+  'traf-transporte': { materia: 'trafico', label: 'Transporte (LOTT)', icono: 'Truck', orden: 9 },
+  'traf-delitos': { materia: 'trafico', label: 'Delitos contra la seguridad vial', icono: 'Gavel', orden: 10 },
   'traf-otras': { materia: 'trafico', label: 'Otras de tráfico', icono: 'BookOpen', orden: 99, esCajon: true },
   // --- Penal (reestructurado 2026-09-14 con validador-calle: el antiguo "personas" reunía 23 delitos.
   //     Grupos y ORDEN por FRECUENCIA de consulta de calle, no por el orden del Código Penal, y con
@@ -667,7 +669,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-alcoholemia': 'traf-alcohol-velocidad',
   'inf-drogas-volante': 'traf-alcohol-velocidad',
   'inf-exceso-velocidad': 'traf-alcohol-velocidad',
-  'inf-semaforo-rojo': 'traf-maniobras-senales',
+  'inf-semaforo-rojo': 'traf-senales',
   'inf-adelantamiento-antirreglamentario': 'traf-maniobras-senales',
   'inf-sin-senalizar-maniobra': 'traf-maniobras-senales',
   'inf-carril-reservado': 'traf-maniobras-senales',
@@ -675,8 +677,8 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-circular-arcen': 'traf-maniobras-senales',
   'inf-marcha-atras-indebida': 'traf-maniobras-senales',
   'inf-marcha-atras-autopista': 'traf-maniobras-senales',
-  'inf-stop-ceda-el-paso': 'traf-maniobras-senales',
-  'inf-prioridad-peatones': 'traf-maniobras-senales',
+  'inf-stop-ceda-el-paso': 'traf-senales',
+  'inf-prioridad-peatones': 'traf-senales',
   'inf-sin-seguro': 'traf-documentacion',
   'inf-sin-permiso': 'traf-documentacion',
   'inf-sin-documentacion': 'traf-documentacion',
@@ -720,8 +722,8 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-conduccion-temeraria': 'traf-delitos',
   // Ola de tráfico (2026-09-10): conductas nuevas. Toda ficha debe llevar sub-tema (lo exige el test
   // de cobertura); las que no encajan en uno temático van al cajón "Otras de tráfico".
-  'inf-sentido-contrario': 'traf-maniobras-senales',
-  'inf-linea-continua': 'traf-maniobras-senales',
+  'inf-sentido-contrario': 'traf-senales',
+  'inf-linea-continua': 'traf-senales',
   'inf-no-mantener-derecha': 'traf-maniobras-senales',
   'inf-adelantar-ciclista-sin-15m': 'traf-maniobras-senales',
   'inf-no-ceder-incorporacion': 'traf-maniobras-senales',
@@ -742,7 +744,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-sin-libertad-movimientos': 'traf-distracciones',
   'inf-animal-suelto-habitaculo': 'traf-distracciones',
   'inf-apertura-puertas-apearse': 'traf-maniobras-senales',
-  'inf-desobedecer-agente': 'traf-maniobras-senales',
+  'inf-desobedecer-agente': 'traf-senales',
   // Penal (taxonomía reestructurada 2026-09-14). Los delitos VIALES (del-alcoholemia-penal, etc.)
   // viven en la materia tráfico (traf-delitos), no aquí.
   // · Vida e integridad

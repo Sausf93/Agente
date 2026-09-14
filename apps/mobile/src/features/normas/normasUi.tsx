@@ -14,6 +14,7 @@ import {
   LifeBuoy,
   Lock,
   Megaphone,
+  Milestone,
   Package,
   PawPrint,
   Pill,
@@ -53,6 +54,7 @@ import {
 const ICONO_SUBTEMA: Record<string, LucideIcon> = {
   Gauge,
   Signpost,
+  Milestone,
   FileText,
   Wrench,
   LifeBuoy,
