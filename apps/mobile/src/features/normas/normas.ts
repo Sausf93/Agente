@@ -775,6 +775,19 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'inf-vmp-nocturno-sin-luces': 'traf-estacionamiento',
   'inf-remolque-sin-documentacion': 'traf-estado-vehiculo',
   'inf-circular-itv-negativa-inmovilizado': 'traf-estado-vehiculo',
+  // 5ª ola de tráfico/transporte (2026-09-14): Reglamento de Conductores (permiso suspendido
+  // cautelar, prácticas), viajeros (taxi/VTC sin distintivo), escolar desglosado, MMA muy grave,
+  // dimensiones, señalización del transporte especial y perecederas por temperatura.
+  'inf-permiso-suspendido-cautelar': 'traf-documentacion',
+  'inf-practicas-sin-profesor': 'traf-documentacion',
+  'inf-practicas-exceso-ocupantes': 'traf-documentacion',
+  'inf-taxi-vtc-sin-distintivo': 'traf-transporte',
+  'inf-escolar-sin-acompanante': 'traf-transporte',
+  'inf-escolar-sin-senalizacion': 'traf-transporte',
+  'inf-exceso-mma-muy-grave': 'traf-transporte',
+  'inf-exceso-dimensiones': 'traf-transporte',
+  'inf-transporte-senalizacion-especial': 'traf-transporte',
+  'inf-perecederas-temperatura': 'traf-transporte',
   // Penal (taxonomía reestructurada 2026-09-14). Los delitos VIALES (del-alcoholemia-penal, etc.)
   // viven en la materia tráfico (traf-delitos), no aquí.
   // · Vida e integridad
@@ -891,6 +904,14 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'sc-servicios-sexuales-riesgo': 'seg-otras',
   'sc-exhibicion-obscena': 'seg-otras',
   'sc-animales-sueltos-abandono': 'seg-otras',
+  // Seguridad ciudadana — 5ª ola de paridad SPPLB (2026-09-14): arts. 35.1/35.2/36.20/37.9-12 LO 4/2015.
+  'sc-reunion-infraestructuras-riesgo': 'seg-reuniones',
+  'sc-armas-explosivos-muy-grave': 'seg-drogas-armas',
+  'sc-carencia-registros-seguridad': 'seg-otras',
+  'sc-irregularidad-registros-seguridad': 'seg-otras',
+  'sc-no-obtener-documentacion-personal': 'seg-orden-identidad',
+  'sc-negligencia-custodia-documentacion': 'seg-orden-identidad',
+  'sc-negativa-entregar-documentacion-retirada': 'seg-orden-identidad',
   // Animales (2026-09-14) — estatal: PPP (Ley 50/1999) y bienestar animal (Ley 7/2023).
   'ppp-sin-licencia': 'anim-ppp',
   'ppp-sin-bozal': 'anim-ppp',

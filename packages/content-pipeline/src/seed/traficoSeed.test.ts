@@ -12,8 +12,8 @@ import { SEED_TRAFICO } from './traficoSeed.js';
 const idsArticulos = new Set(SEED_TRAFICO.articulos.map((a) => a.id));
 
 describe('SEED_TRAFICO: integridad', () => {
-  it('siembra 103 infracciones de calle', () => {
-    expect(SEED_TRAFICO.infracciones).toHaveLength(103);
+  it('siembra 113 infracciones de calle', () => {
+    expect(SEED_TRAFICO.infracciones).toHaveLength(113);
   });
 
   it('cada infracción tiene al menos 3 sinónimos de calle (buscador con chicha)', () => {
@@ -567,6 +567,72 @@ describe('SEED_TRAFICO: 4ª ola (conductores, VMP, placas, bajas, ITV)', () => {
       expect(inmov!.textoCorto.toLowerCase(), id).toMatch(/procede|puede/);
       expect(inmov!.textoCorto.toLowerCase(), id).not.toMatch(/\bdeten\b|\bdetén\b/);
     }
+  });
+});
+
+describe('SEED_TRAFICO: 5ª ola (conductores, viajeros, escolar, MMA/dimensiones, perecederas)', () => {
+  const find = (id: string) => SEED_TRAFICO.infracciones.find((i) => i.infraccion.id === id);
+
+  // Las 10 fichas nuevas de sub-áreas poco cubiertas frente a SPPLB, con su marco de importe.
+  const IDS_OLA5: Array<[string, 'trafico' | 'transporte']> = [
+    ['inf-permiso-suspendido-cautelar', 'trafico'],
+    ['inf-practicas-sin-profesor', 'trafico'],
+    ['inf-practicas-exceso-ocupantes', 'trafico'],
+    ['inf-taxi-vtc-sin-distintivo', 'transporte'],
+    ['inf-escolar-sin-acompanante', 'transporte'],
+    ['inf-escolar-sin-senalizacion', 'transporte'],
+    ['inf-exceso-mma-muy-grave', 'transporte'],
+    ['inf-exceso-dimensiones', 'transporte'],
+    ['inf-transporte-senalizacion-especial', 'transporte'],
+    ['inf-perecederas-temperatura', 'transporte'],
+  ];
+
+  it('las 10 existen, son administrativas y quedan pendientes de revisión con nota "a verificar"', () => {
+    for (const [id, marco] of IDS_OLA5) {
+      const item = find(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.tipo, id).toBe('administrativa');
+      expect(item!.marcoImporte, id).toBe(marco);
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+    }
+  });
+
+  it('todas validan su importe en su marco y superan los mínimos de publicación', () => {
+    for (const [id, marco] of IDS_OLA5) {
+      const item = find(id)!;
+      expect(validarImporte(item.infraccion, marco), id).toEqual([]);
+      expect(
+        validarMinimosPublicacion(item.infraccion, item.sinonimos.length, marco),
+        id,
+      ).toEqual([]);
+    }
+  });
+
+  it('citan un artículo sembrado y tienen al menos 3 sinónimos de calle', () => {
+    for (const [id] of IDS_OLA5) {
+      const item = find(id)!;
+      expect(idsArticulos.has(item.infraccion.articuloId), id).toBe(true);
+      expect(item.sinonimos.length, id).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it.each([
+    ['carnet intervenido', 'inf-permiso-suspendido-cautelar'],
+    ['practicas sin doble mando', 'inf-practicas-sin-profesor'],
+    ['exceso de ocupantes en practicas', 'inf-practicas-exceso-ocupantes'],
+    ['vtc sin distintivo', 'inf-taxi-vtc-sin-distintivo'],
+    ['ruta escolar sin monitor', 'inf-escolar-sin-acompanante'],
+    ['bus escolar sin señalizar', 'inf-escolar-sin-senalizacion'],
+    ['sobrepeso muy grave', 'inf-exceso-mma-muy-grave'],
+    ['exceso de dimensiones', 'inf-exceso-dimensiones'],
+    ['sin señal v-20', 'inf-transporte-senalizacion-especial'],
+    ['rotura de la cadena de frio', 'inf-perecederas-temperatura'],
+  ])('«%s» resuelve SOLO a %s', (termino, id) => {
+    const duenos = SEED_TRAFICO.infracciones
+      .filter((i) => i.sinonimos.some((s) => s.termino === termino))
+      .map((i) => i.infraccion.id);
+    expect(duenos).toEqual([id]);
   });
 });
 

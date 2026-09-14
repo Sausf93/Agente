@@ -600,6 +600,91 @@ const ART_LOSC_37_16 = articuloLosc({
     'pueden concurrir. Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// --- Artículos de la 5ª ola (paridad SPPLB): huecos firmes de los arts. 35, 36 y 37 LO 4/2015 --
+// Numeración COTEJADA contra el BOE consolidado (BOE-A-2015-3442, 2026-09-14). Textos redactados por
+// nosotros (resúmenes neutros, no copiados). Todo el contenido queda `pendiente_revision`.
+const ART_LOSC_35_1 = articuloLosc({
+  numero: '35.1',
+  titulo:
+    'Reuniones o manifestaciones no comunicadas en infraestructuras de servicios básicos con riesgo (muy grave)',
+  texto:
+    'Tipifica como infracción MUY GRAVE las reuniones o manifestaciones no comunicadas o prohibidas ' +
+    'en infraestructuras o instalaciones en las que se prestan servicios básicos para la comunidad o ' +
+    'en sus inmediaciones, así como la intrusión en sus recintos, incluyendo su sobrevuelo, cuando en ' +
+    'cualquiera de estos casos se haya generado un RIESGO para la vida o la integridad física de las ' +
+    'personas. Se distingue del art. 36.9 (intrusión con interferencia grave en el funcionamiento, ' +
+    'pero sin ese riesgo para las personas, grave). Resumen orientativo; consúltese el texto ' +
+    'consolidado en el BOE.',
+});
+
+const ART_LOSC_35_2 = articuloLosc({
+  numero: '35.2',
+  titulo: 'Armas, explosivos, cartuchería o pirotecnia sin autorización con perjuicios muy graves (muy grave)',
+  texto:
+    'Tipifica como infracción MUY GRAVE la fabricación, reparación, almacenamiento, circulación, ' +
+    'comercio, transporte, distribución, adquisición, certificación, enajenación o utilización de ' +
+    'armas reglamentadas o explosivos catalogados, cartuchería o artículos pirotécnicos, incumpliendo ' +
+    'la normativa de aplicación, careciendo de la documentación o autorización requeridas o excediendo ' +
+    'los límites autorizados, cuando se hayan generado PERJUICIOS MUY GRAVES, siempre que la conducta ' +
+    'no sea constitutiva de delito. Es la versión MUY GRAVE de la misma conducta del art. 36.12 ' +
+    '(grave). La obligación material la detallan el Reglamento de Armas (RD 137/1993) y la normativa ' +
+    'de explosivos y pirotecnia. FRONTERA PENAL: depósito o tráfico de armas o explosivos (arts. 566 a ' +
+    '568 CP). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_36_20 = articuloLosc({
+  numero: '36.20',
+  titulo: 'Carencia de los registros obligatorios u omisión de comunicaciones (grave)',
+  texto:
+    'Tipifica como infracción GRAVE la carencia de los registros previstos en la LO 4/2015 para las ' +
+    'actividades con trascendencia para la seguridad ciudadana (por ejemplo, el libro-registro de ' +
+    'hospedaje, el de compraventa de objetos usados, joyería o metales preciosos, o los de armerías y ' +
+    'otras actividades reglamentadas), o la omisión de las comunicaciones obligatorias a las ' +
+    'autoridades. Se distingue del art. 37.9 (irregularidades en la cumplimentación de esos registros, ' +
+    'leve). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_9 = articuloLosc({
+  numero: '37.9',
+  titulo: 'Irregularidades en la cumplimentación de registros con trascendencia para la seguridad (leve)',
+  texto:
+    'Tipifica como infracción LEVE las irregularidades en la cumplimentación de los registros previstos ' +
+    'en la LO 4/2015 con trascendencia para la seguridad ciudadana, incluyendo la alegación de datos o ' +
+    'circunstancias falsos o la omisión de comunicaciones obligatorias dentro de los plazos ' +
+    'establecidos, siempre que no constituya infracción penal. Es la versión LEVE (defecto formal) ' +
+    'frente a la carencia total del registro del art. 36.20 (grave). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_LOSC_37_10 = articuloLosc({
+  numero: '37.10',
+  titulo: 'Incumplir la obligación de obtener la documentación personal exigida (leve)',
+  texto:
+    'Tipifica como infracción LEVE el incumplimiento de la obligación de obtener la documentación ' +
+    'personal legalmente exigida (por ejemplo, el DNI, obligatorio a partir de los 14 años, RD 1553/2005 ' +
+    'art. 1), así como la ' +
+    'omisión negligente de la denuncia de su sustracción o extravío. OJO: no sanciona el mero hecho de ' +
+    'NO LLEVAR ENCIMA el documento (eso se resuelve identificándose por otros medios, art. 16), sino no ' +
+    'obtenerlo teniendo la obligación de tenerlo. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_11 = articuloLosc({
+  numero: '37.11',
+  titulo: 'Negligencia en la custodia de la documentación personal (tercera pérdida en un año) (leve)',
+  texto:
+    'Tipifica como infracción LEVE la negligencia en la custodia y conservación de la documentación ' +
+    'personal legalmente exigida, considerándose como tal la TERCERA y posteriores pérdidas o extravíos ' +
+    'en el plazo de un año. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOSC_37_12 = articuloLosc({
+  numero: '37.12',
+  titulo: 'Negativa a entregar la documentación personal cuya retirada se ha acordado (leve)',
+  texto:
+    'Tipifica como infracción LEVE la negativa a entregar la documentación personal legalmente exigida ' +
+    'cuando se hubiese acordado su retirada o retención por la autoridad competente. Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_16,
   ART_LOSC_20,
@@ -644,6 +729,14 @@ export const ARTICULOS_SEGURIDAD_SEED: Articulo[] = [
   ART_LOSC_37_5,
   ART_LOSC_37_15,
   ART_LOSC_37_16,
+  // 5ª ola (paridad SPPLB)
+  ART_LOSC_35_1,
+  ART_LOSC_35_2,
+  ART_LOSC_36_20,
+  ART_LOSC_37_9,
+  ART_LOSC_37_10,
+  ART_LOSC_37_11,
+  ART_LOSC_37_12,
 ];
 
 // --- Constructor de una infracción de seguridad ciudadana -----------------------------------
@@ -2617,6 +2710,221 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
       ' A VERIFICAR la concurrencia con el régimen de PPP (Ley 50/1999), bienestar animal (Ley 7/2023) y ' +
       'ordenanzas municipales, y el deslinde con el delito de maltrato/abandono animal (arts. 337 y 337 ' +
       'bis CP). Confirmar con el revisor jurídico.',
+  }),
+  // --- 5ª ola (paridad SPPLB): huecos firmes de los arts. 35, 36 y 37 LO 4/2015 --------------
+  construirInfraccion({
+    id: 'sc-reunion-infraestructuras-riesgo',
+    articulo: ART_LOSC_35_1,
+    tituloCorto: 'Reunión o manifestación en infraestructura crítica con riesgo',
+    gravedad: 'muy_grave',
+    importeEur: 30_001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Celebrar reuniones o manifestaciones no comunicadas o prohibidas en infraestructuras o ' +
+      'instalaciones donde se prestan servicios básicos para la comunidad (centrales eléctricas, ' +
+      'nucleares, presas, refinerías, aeropuertos, puertos…) o en sus inmediaciones, así como la ' +
+      'intrusión en sus recintos (incluido el sobrevuelo con dron), cuando se haya generado un RIESGO ' +
+      'para la vida o la integridad física de las personas (art. 35.1 LO 4/2015). Es infracción MUY ' +
+      'GRAVE. Se distingue del art. 36.9 (intrusión con interferencia grave en el funcionamiento, pero ' +
+      'sin ese riesgo para las personas, grave).',
+    terminos: [
+      'manifestacion en central nuclear',
+      'protesta en un aeropuerto',
+      'colarse en una central electrica',
+      'reunion no autorizada en infraestructura critica',
+      'invadir una refineria',
+      'dron sobre una central',
+      'ocupar una presa protestando',
+      'intrusion en instalacion de servicios basicos con peligro',
+    ],
+    consecuencias: [
+      {
+        tipo: 'identificacion',
+        textoCorto:
+          'Procede identificar a los responsables y valorar la puesta a disposición de la autoridad ' +
+          'competente; la calificación como muy grave exige constatar el riesgo generado para las ' +
+          'personas. La valoración final corresponde al agente y a la autoridad.',
+        fuente: 'LO 4/2015 art. 16',
+      },
+    ],
+    notaRevision:
+      NOTA_MUY_GRAVE_IMPORTE +
+      ' A VERIFICAR que concurra el RIESGO para la vida o la integridad física que eleva la conducta a ' +
+      'muy grave (sin él, encaje en el art. 36.9, grave) y la frontera con posibles delitos (desórdenes ' +
+      'públicos, daños en infraestructuras críticas). Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-armas-explosivos-muy-grave',
+    articulo: ART_LOSC_35_2,
+    tituloCorto: 'Armas, explosivos o pirotecnia sin autorización con perjuicios muy graves',
+    gravedad: 'muy_grave',
+    importeEur: 30_001,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Fabricar, almacenar, transportar, comerciar o usar armas reglamentadas, explosivos catalogados, ' +
+      'cartuchería o artículos pirotécnicos incumpliendo la normativa, sin la documentación o ' +
+      'autorización requeridas o excediendo los límites autorizados, cuando se hayan generado ' +
+      'PERJUICIOS MUY GRAVES y la conducta no sea constitutiva de delito (art. 35.2 LO 4/2015). Es ' +
+      'infracción MUY GRAVE: la versión agravada de la misma conducta del art. 36.12 (grave). La ' +
+      'obligación material la detallan el Reglamento de Armas (RD 137/1993) y la normativa de ' +
+      'explosivos y pirotecnia. FRONTERA PENAL: depósito o tráfico de armas o explosivos (arts. 566 a ' +
+      '568 CP): la calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'almacen ilegal de pirotecnia',
+      'deposito de explosivos sin autorizacion',
+      'guardar mucha cartuchería sin guia',
+      'venta ilegal de petardos peligrosos',
+      'fabrica clandestina de fuegos artificiales',
+      'explosivos sin licencia con daños',
+      'transportar explosivos sin autorizacion',
+    ],
+    consecuencias: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención (aprehensión) de las armas, explosivos, cartuchería o ' +
+          'material pirotécnico y su puesta a disposición de la autoridad competente.',
+        fuente: 'LO 4/2015 art. 39.2 (comiso)',
+      },
+    ],
+    notaRevision:
+      NOTA_MUY_GRAVE_IMPORTE +
+      ' A VERIFICAR que concurran los PERJUICIOS MUY GRAVES que elevan la conducta desde el art. 36.12 ' +
+      '(grave) y, sobre todo, la frontera con el delito (depósito/tráfico de armas o explosivos, arts. ' +
+      '566 a 568 CP), que desplaza la vía administrativa. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-carencia-registros-seguridad',
+    articulo: ART_LOSC_36_20,
+    tituloCorto: 'Carencia de registros obligatorios u omisión de comunicaciones',
+    gravedad: 'grave',
+    importeEur: 601,
+    importeReducidoEur: 300.5,
+    textoBoletin:
+      'Carecer de los registros previstos en la LO 4/2015 para las actividades con trascendencia para ' +
+      'la seguridad ciudadana (libro-registro de hospedaje en hoteles y pensiones, de compraventa de ' +
+      'objetos usados, joyería o metales preciosos, de armerías u otras actividades reglamentadas), o ' +
+      'no efectuar las comunicaciones obligatorias a las autoridades (art. 36.20 LO 4/2015). Se ' +
+      'distingue del art. 37.9 (irregularidades en la cumplimentación de esos registros, leve).',
+    terminos: [
+      'hotel sin libro registro de viajeros',
+      'no comunicar los huespedes a la policia',
+      'compraventa sin libro registro',
+      'joyeria sin registro de compras',
+      'armeria sin libro registro',
+      'no llevar el registro obligatorio',
+      'falta de comunicacion obligatoria a la policia',
+    ],
+    notaRevision:
+      NOTA_GRAVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 37.9 (irregularidad formal en la cumplimentación, leve) ' +
+      'frente a la CARENCIA total del registro o la omisión de la comunicación (grave), y qué actividad ' +
+      'reglamentada concreta obliga al registro. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-irregularidad-registros-seguridad',
+    articulo: ART_LOSC_37_9,
+    tituloCorto: 'Irregularidades en los registros con trascendencia para la seguridad',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Cumplimentar con irregularidades los registros previstos en la LO 4/2015 con trascendencia para ' +
+      'la seguridad ciudadana, incluyendo la alegación de datos o circunstancias falsos o la omisión de ' +
+      'comunicaciones obligatorias dentro de los plazos establecidos, cuando la conducta no sea ' +
+      'constitutiva de infracción penal (art. 37.9 LO 4/2015). Es la versión LEVE (defecto formal) ' +
+      'frente a la carencia total del registro del art. 36.20 (grave).',
+    terminos: [
+      'libro registro mal cumplimentado',
+      'datos incompletos en el registro de viajeros',
+      'errores en el registro de compraventa',
+      'comunicar los huespedes fuera de plazo',
+      'registro de hospedaje con fallos',
+      'irregularidad en el libro registro',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el deslinde con el art. 36.20 (carencia total del registro u omisión de la ' +
+      'comunicación, grave): aquí el registro EXISTE pero se cumplimenta con defectos o fuera de plazo. ' +
+      'Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-no-obtener-documentacion-personal',
+    articulo: ART_LOSC_37_10,
+    tituloCorto: 'No obtener el DNI u otra documentación personal exigida',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Incumplir la obligación de obtener la documentación personal legalmente exigida (por ejemplo, el ' +
+      'DNI, obligatorio a partir de los 14 años, RD 1553/2005 art. 1), así como omitir de forma negligente la denuncia de su ' +
+      'sustracción o extravío (art. 37.10 LO 4/2015). IMPORTANTE: no sanciona el mero hecho de NO ' +
+      'LLEVARLO ENCIMA —eso se resuelve identificándose por otros medios (art. 16)— sino no obtenerlo ' +
+      'teniendo la obligación de tenerlo.',
+    terminos: [
+      'no tener dni con 14 años',
+      'no sacarse el dni',
+      'no renovar el dni obligatorio',
+      'no denunciar el robo del dni',
+      'sin dni obligatorio',
+      'no obtener la documentacion obligatoria',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR la DIFERENCIA clave con no llevar el documento encima (que NO es infracción: se ' +
+      'identifica por otros medios, art. 16) y con la negativa a identificarse (art. 36.6, grave). Aquí ' +
+      'se sanciona no OBTENER el documento pese a la obligación. Confirmar con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-negligencia-custodia-documentacion',
+    articulo: ART_LOSC_37_11,
+    tituloCorto: 'Negligencia al custodiar el DNI (tercera pérdida en un año)',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Ser negligente en la custodia y conservación de la documentación personal legalmente exigida, ' +
+      'entendiéndose como tal la TERCERA y posteriores pérdidas o extravíos en el plazo de un año (art. ' +
+      '37.11 LO 4/2015). No es la simple pérdida ocasional: exige la reiteración (tercera vez o más en ' +
+      'doce meses).',
+    terminos: [
+      'perder el dni varias veces',
+      'tercera perdida del dni en un año',
+      'extraviar el dni muchas veces',
+      'perder el dni por tercera vez',
+      'negligencia con la documentacion personal',
+      'perder el carnet reiteradamente',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR el requisito de REITERACIÓN (tercera o posteriores pérdidas en un año) que exige el ' +
+      'tipo: una pérdida aislada no es infracción. Confirmar el cómputo del plazo con el revisor jurídico.',
+  }),
+  construirInfraccion({
+    id: 'sc-negativa-entregar-documentacion-retirada',
+    articulo: ART_LOSC_37_12,
+    tituloCorto: 'Negarse a entregar la documentación cuya retirada se ha acordado',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    textoBoletin:
+      'Negarse a entregar la documentación personal legalmente exigida cuando se hubiese acordado su ' +
+      'retirada o retención por la autoridad competente (art. 37.12 LO 4/2015). Es distinto de la ' +
+      'negativa a IDENTIFICARSE (art. 36.6, grave): aquí existe una resolución previa de retirada o ' +
+      'retención del documento que el interesado desatiende.',
+    terminos: [
+      'no entregar el dni retirado',
+      'negarse a devolver la documentacion retenida',
+      'no dar el documento cuya retirada se acordo',
+      'no entregar el pasaporte retenido',
+      'negativa a entregar documentacion retirada',
+      'no devolver el documento requisado',
+    ],
+    notaRevision:
+      NOTA_LEVE_IMPORTE +
+      ' A VERIFICAR que exista una RESOLUCIÓN previa de retirada o retención del documento (sin ella no ' +
+      'hay tipo) y el deslinde con la negativa a identificarse del art. 36.6 (grave). Confirmar con el ' +
+      'revisor jurídico.',
   }),
 ];
 

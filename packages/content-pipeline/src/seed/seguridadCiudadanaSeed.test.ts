@@ -30,7 +30,7 @@ const porId = (id: string) =>
 
 describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
   it('siembra 49 entradas de calle (37 de las olas previas + 12 de la 4ª ola: nuevos huecos de los arts. 36/37 LOSC para paridad SPPLB)', () => {
-    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(49);
+    expect(SEED_SEGURIDAD_CIUDADANA.infracciones).toHaveLength(56);
   });
 
   it('todas son administrativas, estatales y sin puntos (no es tráfico)', () => {

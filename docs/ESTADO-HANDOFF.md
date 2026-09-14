@@ -140,7 +140,13 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
   existían—. VERIFICAR siempre contra el seed antes de crear una ficha; los informes de los agentes
   EXAGERAN los huecos. Aparcamiento desglosado se DESCARTA a propósito (sus importes son municipales;
   la ficha genérica ya prefiere "sin resultado → solicita tu ordenanza" antes que un importe falso).
-- Paquete: **289 infracciones, 30 normas, 2526 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- Paquete: **306 infracciones, 30 normas, 2632 sinónimos** (sprints 2026-09-10, 09-11 y 09-14).
+- **SPRINT 2026-09-14 (10ª parte): 3ª oleada de profundización (+17) gateada.** Tráfico +10
+  (R. Conductores, taxi/VTC, escolar, MMA/dimensiones/ATP) y seguridad +7 (arts. 35/36/37 registros y
+  documentación). Revisor **APTO CON CORRECCIONES** aplicadas: escolar-sin-acompañante → MUY GRAVE
+  (140.29 LOTT); exceso-MMA cita art. 140 (no 141); prácticas-sin-profesor → LEVE residual (75);
+  permiso-suspendido distingue suspendido admin (76.s) vs intervenido judicial (77.k) vs delito 384;
+  escolar-sin-señalización con base legal marcada "a verificar". 946 tests verdes.
 - **REGLA DE PROCESO (CI) — aprendida a las malas 2026-09-14:** el test `normas.integration.test.ts`
   valida contra el **.db COMPILADO** (`assets/content/contenido-0.1.0.db`). SIEMPRE reconstruir el
   paquete (`build:content`) y copiar el .db ANTES de correr los tests y de commitear; si no, se testea

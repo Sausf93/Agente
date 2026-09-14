@@ -574,6 +574,34 @@ const ART_LOTT_141_TACOGRAFO = articuloSeed({
     'reglamento. Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+const ART_LOTT_DIMENSIONES = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (exceso de dimensiones)',
+  titulo: 'Infracciones graves: circular excediendo las dimensiones máximas o sin autorización de transporte especial',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el circular con un vehículo o conjunto ' +
+    'que excede las dimensiones máximas autorizadas (longitud, anchura o altura) sin la preceptiva ' +
+    'autorización de circulación de transporte especial, o incumpliendo las condiciones de esa ' +
+    'autorización. Los límites de dimensiones los fija el Reglamento General de Vehículos (RD 2822/1998) ' +
+    'y el régimen de transporte especial, el RGC (art. 14 y concordantes) y su normativa de complementos. ' +
+    'La cuantía y el régimen de inmovilización los concretan el art. 143 LOTT y su reglamento (ROTT). ' +
+    'Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_LOTT_SENALIZACION = articuloSeed({
+  normaId: ID_LOTT,
+  numero: '141 (señalización del transporte especial)',
+  titulo: 'Infracciones graves: transporte especial sin la señalización de advertencia exigible',
+  texto:
+    'Tipifica como infracción de la ordenación del transporte el realizar un transporte especial ' +
+    '(vehículo largo, ancho, pesado o con carga que sobresale) sin la señalización de advertencia ' +
+    'exigible: paneles reflectantes, señal luminosa V-2 (rotativo amarillo auxiliar), señal V-20 de ' +
+    'carga que sobresale, o el vehículo o vehículos de acompañamiento (piloto) cuando la autorización ' +
+    'los exige. La señalización de los vehículos la fija el Reglamento General de Vehículos (RD 2822/1998, ' +
+    'Anexo XI de señales) y las condiciones del transporte especial. La cuantía la concretan el art. 143 ' +
+    'LOTT y su reglamento (ROTT). Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_RGC_33 = articuloSeed({
   normaId: ID_RGC,
   numero: '33',
@@ -1073,6 +1101,8 @@ export const ARTICULOS_SEED: Articulo[] = [
   ART_LOTT_142_DOCS,
   ART_LOTT_141_VISADO,
   ART_LOTT_141_TACOGRAFO,
+  ART_LOTT_DIMENSIONES,
+  ART_LOTT_SENALIZACION,
   ART_CP_379,
   ART_CP_379_1,
   ART_CP_384,
@@ -4966,6 +4996,388 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'defectos graves/muy graves o pese a la inmovilización, frente a la ITV caducada (grave, ' +
       '`inf-itv-caducada`). Contrastar el precepto y el tratamiento con el codificado DGT y el Manual ' +
       'de Procedimiento de ITV (RD 920/2017). Revisar antes de publicar.',
+  }),
+  // --- 5ª OLA DE TRÁFICO/TRANSPORTE (paridad SPPLB, 2026-09-14): sub-áreas poco cubiertas -------
+  // Reglamento de Conductores (permiso suspendido cautelarmente, prácticas sin profesor/doble mando,
+  // exceso de ocupantes en prácticas), transporte de viajeros (taxi/VTC sin distintivo), transporte
+  // escolar desglosado (sin acompañante, sin señalización), MMA muy grave por tramo, exceso de
+  // dimensiones, perecederas por temperatura y señalización del transporte especial. NO duplican las
+  // fichas previas (bundles broad de escolar/ATP/MMA): estas afinan un supuesto concreto. TODO
+  // `pendiente_revision`; la nota marca "a verificar" el precepto, la gravedad y la horquilla.
+  // --- Reglamento de Conductores (RD 818/2009) -----------------------------------------------
+  construirInfraccion({
+    id: 'inf-permiso-suspendido-cautelar',
+    articulo: ART_LSV_76,
+    tituloCorto: 'Conducir con el permiso suspendido cautelarmente (administrativo)',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Conducir un vehículo con el permiso SUSPENDIDO como medida cautelar por vía ADMINISTRATIVA (o ' +
+      'prohibido su uso): infracción GRAVE (art. 76.s LSV). TRES SUPUESTOS DISTINTOS que no hay que ' +
+      'confundir: (1) suspensión administrativa cautelar = esta ficha, GRAVE; (2) permiso INTERVENIDO por ' +
+      'la Policía Judicial en un proceso penal (art. 770.6 LECrim, p. ej. tras un accidente) = conducir ' +
+      'careciendo de permiso, MUY GRAVE (art. 77.k LSV, ~500 €); (3) pérdida de vigencia por pérdida total ' +
+      'de puntos o privación JUDICIAL del derecho a conducir = DELITO (art. 384 CP, ver `inf-sin-permiso`). ' +
+      'Esta ficha es solo el supuesto (1).',
+    terminos: [
+      'permiso suspendido cautelar',
+      'carnet intervenido',
+      'carnet retirado cautelarmente',
+      'conducir con el permiso suspendido',
+      'permiso intervenido conduciendo',
+      'medida cautelar del carnet',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo mientras no se haga cargo un conductor ' +
+          'habilitado (art. 104 LSV).',
+        fuente: 'LSV art. 104',
+      },
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR con carácter prioritario la GRAVEDAD, el importe y la FRONTERA PENAL: la suspensión/' +
+      'intervención administrativa CAUTELAR del permiso se ancla GRAVE (200 €, art. 76 LSV); la pérdida ' +
+      'de vigencia por pérdida total de puntos o la privación JUDICIAL del derecho a conducir son DELITO ' +
+      '(art. 384 CP, ver `inf-sin-permiso`), no esta infracción. Contrastar con el Reglamento General de ' +
+      'Conductores (RD 818/2009) y el codificado DGT. Confirmar puntos (previsiblemente 0). Revisar.',
+  }),
+  construirInfraccion({
+    id: 'inf-practicas-sin-profesor',
+    articulo: ART_LSV_75,
+    tituloCorto: 'Prácticas de aprendizaje sin profesor o sin doble mando',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: 50,
+    puntos: 0,
+    textoBoletin:
+      'Realizar prácticas de conducción en fase de aprendizaje incumpliendo las condiciones exigibles: ' +
+      'sin ir acompañado del profesor de formación vial autorizado, o en un vehículo que carece de los ' +
+      'dobles mandos (doble pedal) reglamentarios que permiten al profesor intervenir. Las prácticas de ' +
+      'aprendizaje solo pueden hacerse en las condiciones y con los vehículos que fija el Reglamento ' +
+      'General de Conductores (RD 818/2009). Distinto del conductor novel sin la señal "L" (ver ' +
+      '`inf-conductor-novel-sin-l`).',
+    terminos: [
+      'practicas sin profesor',
+      'aprender a conducir sin profesor',
+      'practicas sin doble mando',
+      'coche de practicas sin doble pedal',
+      'practicas de autoescuela sin profesor',
+      'sin doble mando en practicas',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR (revisor 2ª): no hay letra específica en el art. 76/77 LSV para esta conducta; ' +
+      'reclasificada a LEVE (100 €) por la cláusula RESIDUAL del art. 75 LSV. OJO: si el supuesto se ' +
+      'asimila a conducir SIN la habilitación correspondiente, sería MUY GRAVE (art. 77.k) — extremo ' +
+      'contrario. Contrastar con el RD 818/2009 (condiciones del aprendizaje) y el codificado DGT antes ' +
+      'de publicar; no dar por firme el tramo hasta entonces.',
+  }),
+  construirInfraccion({
+    id: 'inf-practicas-exceso-ocupantes',
+    articulo: ART_LSV_76,
+    tituloCorto: 'Exceso de ocupantes en el vehículo de prácticas',
+    gravedad: 'grave',
+    importeEur: 200,
+    importeReducidoEur: 100,
+    puntos: 0,
+    textoBoletin:
+      'Realizar prácticas de aprendizaje o el examen de conducir llevando en el vehículo más personas ' +
+      'de las autorizadas para esa actividad (con carácter general, solo el aprendiz, el profesor y, en ' +
+      'su caso, el examinador). El exceso de ocupantes durante el aprendizaje compromete la seguridad y ' +
+      'las condiciones en que debe desarrollarse la práctica, que fija el Reglamento General de ' +
+      'Conductores (RD 818/2009).',
+    terminos: [
+      'exceso de ocupantes en practicas',
+      'mas gente en el coche de practicas',
+      'acompañantes de mas en practicas',
+      'pasajeros en el coche de autoescuela',
+      'demasiadas personas en practicas',
+      'ocupantes no autorizados en practicas',
+    ],
+    marcoImporte: 'trafico',
+    notaRevision:
+      'A VERIFICAR la GRAVEDAD, el importe y el precepto: el exceso de ocupantes en el vehículo de ' +
+      'prácticas/examen se ancla GRAVE (200 €, art. 76 LSV, que incluye el exceso de ocupantes que ' +
+      'comprometa la seguridad). Contrastar con el Reglamento General de Conductores (RD 818/2009, ' +
+      'personas admitidas en el vehículo durante el aprendizaje y el examen) y el codificado DGT. ' +
+      'Confirmar puntos (previsiblemente 0). Revisar antes de publicar.',
+  }),
+  // --- Transporte de viajeros (taxi / VTC) ---------------------------------------------------
+  construirInfraccion({
+    id: 'inf-taxi-vtc-sin-distintivo',
+    articulo: ART_LOTT_VTC,
+    tituloCorto: 'Taxi o VTC sin el distintivo o placa identificativa',
+    gravedad: 'leve',
+    importeEur: 100,
+    importeReducidoEur: null,
+    importeMaxEur: 400,
+    puntos: null,
+    textoBoletin:
+      'Prestar servicio de taxi o de vehículo de arrendamiento con conductor (VTC) sin exhibir el ' +
+      'distintivo, la placa o el identificativo obligatorio del servicio (distintivo de VTC, placa SP, ' +
+      'número de licencia de taxi, etc.), o llevándolo deteriorado o no visible. Se distingue de carecer ' +
+      'de la propia autorización (muy grave, ver `inf-viajeros-sin-autorizacion`) y de la captación ' +
+      'indebida de viajeros por el VTC (ver `inf-vtc-captacion`): aquí el título existe pero falta la ' +
+      'señalización identificativa del vehículo.',
+    terminos: [
+      'taxi sin placa sp',
+      'vtc sin distintivo',
+      'taxi sin numero de licencia',
+      'vtc sin la pegatina',
+      'sin distintivo de vtc',
+      'taxi sin identificativo',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el precepto exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. 140-142), ' +
+      'el ROTT y, sobre todo, la NORMATIVA AUTONÓMICA/MUNICIPAL del taxi y del VTC (competencia ' +
+      'transferida, RD 1076/2017 para VTC): la falta del distintivo/placa suele ser LEVE y subsanable, ' +
+      'pero el precepto y la cuantía los concreta cada territorio. El seed ancla LEVE (100–400 €) por ' +
+      'prudencia; A VERIFICAR el importe por territorio. Sin pronto pago modelado. No detrae puntos DGT.',
+  }),
+  // --- Transporte escolar y de menores (RD 443/2001): supuestos desglosados ------------------
+  construirInfraccion({
+    id: 'inf-escolar-sin-acompanante',
+    articulo: ART_LOTT_ESCOLAR,
+    tituloCorto: 'Transporte escolar sin el acompañante obligatorio (muy grave)',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte escolar o de menores sin el acompañante o monitor a bordo cuando su presencia ' +
+      'es obligatoria (según la edad de los menores y el tipo de servicio que fija el RD 443/2001). El ' +
+      'acompañante es una condición de seguridad esencial de este transporte. Es un supuesto CONCRETO del ' +
+      'incumplimiento de las condiciones del transporte escolar (ver también `inf-transporte-escolar`, ' +
+      'ficha general): procede valorar la subsanación antes de reanudar la marcha.',
+    terminos: [
+      'escolar sin acompañante obligatorio',
+      'ruta escolar sin monitor',
+      'bus de niños sin acompañante',
+      'transporte de menores sin acompañante',
+      'falta el monitor del bus escolar',
+      'sin cuidador en el autobus escolar',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se incorpore el acompañante ' +
+          'obligatorio, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y RD 443/2001, transporte escolar y de menores)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'RECLASIFICADA a MUY GRAVE (revisor 2ª): la ausencia de persona mayor de edad idónea distinta del ' +
+      'conductor en el transporte de escolares y menores está tipificada como MUY GRAVE en el art. 140.29 ' +
+      'LOTT. Tramo muy grave del art. 143 (el seed usa 2.001-4.000 €; A VERIFICAR el sub-tramo exacto). Sin ' +
+      'pronto pago. No detrae puntos DGT. Confirmar la cifra final contra el texto consolidado.',
+  }),
+  construirInfraccion({
+    id: 'inf-escolar-sin-senalizacion',
+    articulo: ART_LOTT_ESCOLAR,
+    tituloCorto: 'Transporte escolar sin la señalización obligatoria',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 600,
+    puntos: null,
+    textoBoletin:
+      'Realizar transporte escolar o de menores sin la señalización específica exigible al vehículo ' +
+      '(señal de transporte escolar V-10 en la parte delantera y trasera, y demás distintivos que fija ' +
+      'el RD 443/2001), o llevándola deteriorada o no visible. La señalización advierte al resto de ' +
+      'usuarios de que se trata de un transporte de menores. Es un supuesto CONCRETO del incumplimiento ' +
+      'de las condiciones del transporte escolar (ver también `inf-transporte-escolar`, ficha general).',
+    terminos: [
+      'escolar sin señal v-10',
+      'bus escolar sin señalizar',
+      'transporte de menores sin señalizacion',
+      'autobus escolar sin distintivo',
+      'sin cartel de transporte escolar',
+      'ruta escolar sin señalizacion',
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR con PRIORIDAD ALTA la BASE LEGAL y el MARCO (revisor 2ª): la falta de la señal V-10 ' +
+      'podría perseguirse NO por la LOTT (marco `transporte`, como está ahora) sino por el RGC/RGV vía LSV ' +
+      '(marco `trafico`, importes fijos) — son dos regímenes de cuantía distintos e incompatibles. Mientras ' +
+      'no se confirme contra el BOE (RD 443/2001 art. 5, RGV Anexo XI, catálogo LSV/LOTT), NO dar por firme ' +
+      'ni el marco ni el importe (el seed ancla GRAVE 401–600 € solo de forma provisional). No publicar como ' +
+      'verificado hasta resolverlo. No detrae puntos DGT.',
+  }),
+  // --- MMA / sobrepeso: tramo muy grave (afina `inf-exceso-mma`, que ancla el grave) ----------
+  construirInfraccion({
+    id: 'inf-exceso-mma-muy-grave',
+    articulo: ART_LOTT_140,
+    tituloCorto: 'Exceso de masa máxima autorizada muy grave (sobrepeso elevado)',
+    gravedad: 'muy_grave',
+    importeEur: 2001,
+    importeReducidoEur: null,
+    importeMaxEur: 4000,
+    puntos: null,
+    textoBoletin:
+      'Circular con un vehículo o conjunto con un exceso ELEVADO de masa máxima autorizada (MMA) o de masa ' +
+      'por eje: el tramo MUY GRAVE del art. 140.23 LOTT se aprecia, con carácter general, a partir de un ' +
+      'exceso ≥ 25 % de la MMA total o ≥ 50 % por eje (reducidos a ≥ 20 % y ≥ 40 % si la MMA del vehículo ' +
+      'supera las 12 t). Por debajo de esos umbrales, el exceso es GRAVE (ver `inf-exceso-mma`). La ' +
+      'responsabilidad puede alcanzar al transportista, al cargador y al expedidor. Los límites de masa ' +
+      'los fija el Reglamento General de Vehículos (RD 2822/1998).',
+    terminos: [
+      'sobrepeso muy grave',
+      'exceso de mma elevado',
+      'camion muy sobrecargado',
+      'exceso de peso superior al 20 por ciento',
+      'sobrepeso grave de camion',
+      'mucho exceso de masa',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se subsane el exceso de masa ' +
+          '(descarga o transbordo de la mercancía sobrante), conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, RD 1211/1990)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el TRAMO exacto por porcentaje de exceso y el importe contra el texto consolidado de la ' +
+      'LOTT (exceso de masa MUY GRAVE del art. 140.23, baremo del art. 143) y el RD 1211/1990: los ' +
+      'umbrales de porcentaje varían según la MMA del vehículo y según sea sobre uno o dos ejes. El seed ' +
+      'ancla el tramo muy grave (2.001–4.000 €); NO duplica `inf-exceso-mma` (grave), la COMPLEMENTA con ' +
+      'el tramo alto. Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto.',
+  }),
+  // --- Exceso de dimensiones / transporte especial -------------------------------------------
+  construirInfraccion({
+    id: 'inf-exceso-dimensiones',
+    articulo: ART_LOTT_DIMENSIONES,
+    tituloCorto: 'Exceso de dimensiones sin autorización de transporte especial',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 600,
+    puntos: null,
+    textoBoletin:
+      'Circular con un vehículo o conjunto que supera las dimensiones máximas autorizadas (longitud, ' +
+      'anchura o altura) sin disponer de la autorización de circulación de transporte especial, o ' +
+      'incumpliendo las condiciones de esa autorización (itinerario, horario, señalización o vehículos ' +
+      'de acompañamiento). Los límites de dimensiones los fija el Reglamento General de Vehículos ' +
+      '(RD 2822/1998). Distinto del exceso de masa/peso (ver `inf-exceso-mma`).',
+    terminos: [
+      'exceso de dimensiones',
+      'camion demasiado largo',
+      'transporte especial sin autorizacion',
+      'vehiculo mas ancho de lo permitido',
+      'exceso de longitud del camion',
+      'sin permiso de transporte especial',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se subsane el exceso o se aporte la ' +
+          'autorización de transporte especial, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y su reglamento, ROTT)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
+      '(arts. 140-142), el ROTT, el RGV (RD 2822/1998, dimensiones máximas) y el régimen de transporte ' +
+      'especial: el exceso de dimensiones sin autorización puede ser grave o muy grave según la magnitud. ' +
+      'El seed ancla GRAVE (401–600 €) por prudencia; A VERIFICAR el importe y el precepto por supuesto. ' +
+      'Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  construirInfraccion({
+    id: 'inf-transporte-senalizacion-especial',
+    articulo: ART_LOTT_SENALIZACION,
+    tituloCorto: 'Transporte especial sin la señalización de advertencia',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 600,
+    puntos: null,
+    textoBoletin:
+      'Realizar un transporte especial (vehículo largo, ancho, pesado o con carga que sobresale) sin la ' +
+      'señalización de advertencia exigible: paneles reflectantes, señal luminosa V-2 (rotativo amarillo ' +
+      'auxiliar), señal V-20 de carga que sobresale, o los vehículos de acompañamiento (piloto) cuando la ' +
+      'autorización los exige, o llevándolos apagados o no visibles. La señalización advierte al resto de ' +
+      'usuarios del carácter especial del transporte. Distinto del exceso de dimensiones en sí (ver ' +
+      '`inf-exceso-dimensiones`): aquí el defecto es la falta de señalización.',
+    terminos: [
+      'transporte especial sin señalizar',
+      'sin rotativo el camion especial',
+      'sin señal v-20',
+      'carga que sobresale sin señalizar',
+      'sin vehiculo piloto',
+      'transporte especial sin paneles',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo hasta que se dote de la señalización de ' +
+          'advertencia exigible, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y RGV, RD 2822/1998, Anexo XI de señales)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
+      '(arts. 140-142), el ROTT, el RGV (RD 2822/1998, Anexo XI: señales V-2, V-20) y el régimen de ' +
+      'transporte especial: la falta de señalización de advertencia suele ser GRAVE. El seed ancla GRAVE ' +
+      '(401–600 €) por prudencia; A VERIFICAR el importe y el precepto por supuesto. Sin pronto pago ' +
+      'modelado. No detrae puntos DGT. Revisar antes de publicar.',
+  }),
+  // --- Mercancías perecederas: incumplimiento de temperaturas (afina `inf-perecederas-atp`) ---
+  construirInfraccion({
+    id: 'inf-perecederas-temperatura',
+    articulo: ART_LOTT_ATP,
+    tituloCorto: 'Perecederas incumpliendo las temperaturas exigidas',
+    gravedad: 'grave',
+    importeEur: 401,
+    importeReducidoEur: null,
+    importeMaxEur: 600,
+    puntos: null,
+    textoBoletin:
+      'Transportar mercancías perecederas (alimentos a temperatura controlada) incumpliendo las ' +
+      'temperaturas máximas exigidas por el Acuerdo ATP durante el transporte, rompiendo la cadena de ' +
+      'frío, aun disponiendo del certificado ATP en vigor del vehículo o contenedor. Se distingue de ' +
+      'carecer del certificado ATP o de tener el equipo de frío averiado (ver `inf-perecederas-atp`): ' +
+      'aquí el equipo puede funcionar pero no se mantienen las temperaturas reglamentarias, lo que ' +
+      'compromete la seguridad alimentaria.',
+    terminos: [
+      'temperatura de la mercancia incorrecta',
+      'perecederas fuera de temperatura',
+      'cadena de frio incumplida',
+      'camion frigorifico a mas temperatura',
+      'alimentos por encima de la temperatura',
+      'rotura de la cadena de frio',
+    ],
+    consecuencias: [
+      {
+        tipo: 'inmovilizacion',
+        textoCorto:
+          'Procede valorar la inmovilización del vehículo cuando el incumplimiento de las temperaturas ' +
+          'comprometa la seguridad alimentaria, conforme al régimen sancionador de la LOTT.',
+        fuente: 'LOTT art. 143 (y Acuerdo ATP)',
+      },
+    ],
+    marcoImporte: 'transporte',
+    notaRevision:
+      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
+      '(arts. 140-142), el ROTT y el Acuerdo ATP: el incumplimiento de las temperaturas de transporte ' +
+      'puede graduarse distinto de la falta de certificado ATP o del equipo averiado (ver ' +
+      '`inf-perecederas-atp`, que el seed ancla también en el tramo grave). El seed ancla GRAVE ' +
+      '(401–600 €) por prudencia; A VERIFICAR el importe y el precepto por supuesto. Sin pronto pago ' +
+      'modelado. No detrae puntos DGT. Revisar antes de publicar.',
   }),
 ];
 
