@@ -86,6 +86,18 @@ describe('accesosRapidosPara', () => {
   });
 });
 
+describe('acceso a la guía de uso de la fuerza (transversal a los cuerpos)', () => {
+  const tieneUsoFuerza = (accesos: { label: string; destino: { valor: string } }[]) =>
+    accesos.some((a) => a.label === 'Uso de la fuerza' && a.destino.valor === '/guia-uso-fuerza');
+
+  it('PN, Local, Guardia Civil y seguridad ciudadana tienen acceso a la guía de uso de la fuerza', () => {
+    expect(tieneUsoFuerza([...ACCESOS_POLICIA_NACIONAL]), 'PN').toBe(true);
+    expect(tieneUsoFuerza([...ACCESOS_LOCAL_EXTRA]), 'Local').toBe(true);
+    expect(tieneUsoFuerza([...ACCESOS_GUARDIA_CIVIL]), 'GC').toBe(true);
+    expect(tieneUsoFuerza([...ACCESOS_SEGURIDAD_CIUDADANA]), 'seguridad ciudadana').toBe(true);
+  });
+});
+
 describe('destinos de los accesos rápidos', () => {
   it('"Leer derechos" es una RUTA a /derechos, no una búsqueda que daría "nada exacto"', () => {
     const leer = ACCESOS_POLICIA_NACIONAL.find((a) => a.label === 'Leer derechos');

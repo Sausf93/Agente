@@ -97,6 +97,26 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
+### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
+Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
+- **Buscador — desambigua "perro suelto/sin correa"** (commit `d65f85e`, CI Run 109): el término
+  genérico enrutaba a la ficha GRAVE de PPP (300,52 €) en vez del perro común LEVE (Ley 7/2023). Los
+  términos genéricos se movieron a la ficha del perro común; la de PPP solo se alcanza con términos
+  PPP-explícitos. Con test de regresión.
+- **Calidad — mínimo de sinónimos 2 → 3** (commit `200d817`, Run 110): `validarMinimosPublicacion` y
+  §8.3 de ESPECIFICACION.md. El contenido real nunca baja de 5.
+- **Penal — caveat de proporcionalidad en agresión sexual** (commit `614f8ac`, Run 111): el subtipo base
+  del art. 178.1 (menos grave) lleva ahora aviso VISIBLE de que la detención se valora por
+  proporcionalidad (art. 492 LECrim), no automática.
+- **Guía de uso de la fuerza — revisada por revisor-juridico + validador-calle** (commit `6b84cfa`,
+  Run 112): quita imperativos de los chips de acción, precisa la fuente de la escala, suaviza citas
+  jurisprudenciales, nombra los medios coactivos por su nombre de calle, añade ejemplos y bodycam, ancla
+  el art. 104 CE y enlaza de forma cruzada con VG y ocupación. Sigue "Borrador beta".
+- **Nota**: la app NO tiene preview web fiable (expo-sqlite necesita un shim wasm no configurado; todas
+  las pantallas de contenido dependen de él). La verificación fiable es: tests de integración contra el
+  `.db` REAL (node:sqlite) + el `preview` de Expo que el compañero ve en el móvil. No perder tiempo en
+  montar el web sin necesidad real.
+
 ### YA HECHO el 2026-09-14 (tarde) — guía de uso de fuerza + QA multiagente — CI verde (Run 107)
 - **Guía orientativa de USO DE LA FUERZA** (commit de guía; `/guia-uso-fuerza`): nueva guía de calle
   con el patrón de las demás (6 secciones: los tres principios de congruencia/oportunidad/
