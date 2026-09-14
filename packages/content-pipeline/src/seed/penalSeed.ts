@@ -1131,6 +1131,13 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-trata-seres-humanos', // 177 bis: prisión 5-8 años → grave (art. 13.4)
   'del-intrusismo', // 403: multa 12-24 meses → menos grave
   'del-armas-prohibidas', // 563: prisión 1-3 años → menos grave
+  'del-falsificacion-moneda', // 386: prisión 8-12 años → grave
+  'del-falsificacion-tarjetas', // 399 bis: prisión 4-8 años → grave (art. 13.4)
+  'del-deposito-armas-guerra', // 566.1.1º: armas de guerra, prisión 5-10 años → grave
+  'del-omision-impedir-delitos', // 450: prisión 6m-2a → menos grave
+  'del-abandono-familia', // 227: impago de pensiones, prisión 3m-1a o multa → menos grave
+  'del-usurpacion-estado-civil', // 401: prisión 6m-3a → menos grave
+  'del-danos-leves', // 263.2: daño ≤400 €, multa 1-3 meses → leve
   // NO se verifican (posible clasificación a revisar, siguen pendiente): del-atentado-agravado (551
   // "superior en grado" probablemente GRAVE, no menos grave) y del-favorecimiento-inmigracion-ilegal
   // (318 bis base es menos grave, no grave); del-administracion-desleal/del-apropiacion-indebida
