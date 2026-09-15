@@ -70,11 +70,42 @@ describe('SEED_ORDENANZAS: calidad de contenido (§8.3)', () => {
     }
   });
 
-  it('NADA se autopublica: todo queda pendiente_revision con su nota "a verificar"', () => {
+  it('estado editorial: las cotejadas contra el texto consolidado quedan verificado; el resto, pendiente con nota "a verificar"', () => {
     for (const item of SEED_ORDENANZAS.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       expect(item.notaRevision.length, item.infraccion.id).toBeGreaterThan(20);
-      expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
+      if (item.revision === 'verificado') {
+        // Una ordenanza verificada deja constancia del cotejo contra su texto consolidado.
+        expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('cotejado');
+      } else {
+        expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
+      }
+    }
+  });
+
+  it('las CONSULTABLES sin cuantía (no_sancionador) nunca se marcan verificado', () => {
+    // No hay importe que verificar: aunque se haya leído su artículo, permanecen pendiente_revision.
+    for (const item of SEED_ORDENANZAS.infracciones) {
+      if (item.marcoImporte === 'no_sancionador') {
+        expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      }
+    }
+  });
+
+  it('las 7 fichas de la ordenanza de limpieza (OMGRL) están cotejadas y verificadas', () => {
+    const idsLimpieza = [
+      'ord-sctf-orinar-defecar-escupir',
+      'ord-sctf-pintadas-grafitis',
+      'ord-sctf-abandono-enseres',
+      'ord-sctf-contenedores-fuera-horario',
+      'ord-sctf-vertidos-via-publica',
+      'ord-sctf-playa-fumar',
+      'ord-sctf-playa-residuos-arena',
+    ];
+    for (const id of idsLimpieza) {
+      const item = porId(id);
+      expect(item, id).toBeDefined();
+      expect(item!.revision, id).toBe('verificado');
     }
   });
 });

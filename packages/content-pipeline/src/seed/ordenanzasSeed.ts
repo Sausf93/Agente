@@ -33,15 +33,39 @@ import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
  *  - Textos de artículo y de boletín REDACTADOS POR NOSOTROS (resúmenes neutros, no copiados).
  *  - Toda infracción lleva su artículo/ordenanza fuente; la fecha visible la aporta el `ContentVersion`.
  *  - Lenguaje ORIENTATIVO ("procede/puede", nunca imperativo).
- *  - NADA se publica "verificado": TODO queda `pendiente_revision` para el panel (revisor
- *    jurídico + segundo revisor, §8.3). `notaRevision` detalla el dato concreto "a verificar".
+ *  - ESTADO EDITORIAL (mismo modelo que los seeds estatales, VERIFICADAS_*): una ficha pasa a
+ *    `verificado` SOLO cuando su artículo, su clasificación (leve/grave) y el tramo de sanción se han
+ *    COTEJADO uno a uno contra el TEXTO CONSOLIDADO de la ordenanza (sede electrónica / BOP) — la
+ *    ordenanza es la fuente, igual que el BOE lo es para lo estatal. El resto queda
+ *    `pendiente_revision` con su `notaRevision` "a verificar". Las entradas CONSULTABLES sin cuantía
+ *    (marco `no_sancionador`) permanecen `pendiente_revision` aunque se haya leído su artículo,
+ *    porque no hay importe que verificar. `VERIFICADAS_ORDENANZA` fija qué ids están cotejados.
  *  - Los importes son ORIENTATIVOS: la cuantía exacta la fija cada ordenanza (y su ordenanza
  *    fiscal); el marco de validación es `municipal` (solo coherencia, sin rango legal único).
  */
 
 /** Fecha de curación de este seed (la que verá el agente como "Actualizado el…"). */
-const FECHA_ACTUALIZACION = '2026-09-07';
+const FECHA_ACTUALIZACION = '2026-09-15';
 const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
+
+/**
+ * Fichas COTEJADAS una a una contra el TEXTO CONSOLIDADO de su ordenanza (sede electrónica de
+ * Santa Cruz de Tenerife), leído en el navegador el 2026-09-15: artículo, clasificación y tramo de
+ * sanción confirmados. Estas pasan a `verificado`; el resto queda `pendiente_revision`. Cotejadas
+ * hasta ahora: las 7 de la Ordenanza de gestión de residuos y limpieza (OMGRL) — arts. 27, 38, 42,
+ * 43, 50, 51 y el cuadro de sanciones del art. 52 (leves ≤750 €, graves ≤1.500 €, muy graves
+ * ≤3.000 €). Las CONSULTABLES sin cuantía (`no_sancionador`) NO entran aquí aunque se haya leído su
+ * artículo, porque no hay importe que verificar.
+ */
+const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
+  'ord-sctf-orinar-defecar-escupir',
+  'ord-sctf-pintadas-grafitis',
+  'ord-sctf-abandono-enseres',
+  'ord-sctf-contenedores-fuera-horario',
+  'ord-sctf-vertidos-via-publica',
+  'ord-sctf-playa-fumar',
+  'ord-sctf-playa-residuos-arena',
+]);
 
 /**
  * Municipio del piloto. Se deriva con `slugMunicipio` (la MISMA función que usa el onboarding
@@ -454,7 +478,11 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     // ordenanza, solo se valida coherencia: importe presente y reducido ≤ base) salvo las entradas
     // CONSULTABLES sin cuantía confirmada, que van como `no_sancionador`. §8.3.
     marcoImporte: marco,
-    revision: 'pendiente_revision' satisfies EstadoRevision,
+    // `verificado` solo si la ficha está en `VERIFICADAS_ORDENANZA` (artículo + tramo cotejados
+    // contra el texto consolidado de la ordenanza). El resto, `pendiente_revision`.
+    revision: (VERIFICADAS_ORDENANZA.has(input.id)
+      ? 'verificado'
+      : 'pendiente_revision') satisfies EstadoRevision,
     notaRevision: input.notaRevision,
   };
 }
@@ -754,9 +782,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'cagar en la calle',
     ],
     notaRevision:
-      'Art. 38.6 y clasificación LEVE CONFIRMADOS (texto consolidado de la ordenanza de residuos y ' +
-      'limpieza de SCTF). El importe (750 €) es el MÁXIMO del tramo leve (art. 52.2.c), NO cuantía fija: ' +
-      'lo gradúa el órgano competente. A verificar posible pronto pago (ordenanza fiscal). Revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 38.6 y 52, leídos 2026-09-15 en la ' +
+      'sede electrónica): "Se prohíbe defecar, miccionar o escupir en los espacios públicos" (38.6) es ' +
+      'infracción LEVE; el importe (750 €) es el MÁXIMO del tramo leve (art. 52), NO cuantía fija: lo ' +
+      'gradúa el órgano competente. Queda por confirmar el pronto pago en la ordenanza fiscal.',
   }),
   construirInfraccion({
     id: 'ord-sctf-pintadas-grafitis',
@@ -782,9 +811,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'graffiti sin permiso',
     ],
     notaRevision:
-      'Art. 42 CONFIRMADO. Importe = techo de tramo (leve ≤750 €; grave ≤1.500 €; muy grave ≤3.000 €, ' +
-      'art. 52.2). A verificar con el revisor el criterio de gravedad (deterioro/patrimonio) y la ' +
-      'frontera con el delito de daños del CP (art. 42 remite a la autoridad judicial).',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 42 y 52, leídos 2026-09-15): el ' +
+      'art. 42 prohíbe pintadas, grafitis o inscripciones sobre cualquier elemento del espacio público ' +
+      'salvo murales autorizados. Tramos del art. 52: leve ≤750 €, grave ≤1.500 €, muy grave ≤3.000 € ' +
+      '(techo, no cuantía fija). El criterio de gravedad (deterioro/patrimonio) y la frontera con el ' +
+      'delito de daños del CP quedan a criterio del órgano y, en su caso, de la autoridad judicial.',
   }),
   construirInfraccion({
     id: 'ord-sctf-abandono-enseres',
@@ -809,9 +840,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'sacar la basura grande',
     ],
     notaRevision:
-      'Arts. 27 y 50.1.b CONFIRMADOS (abandono fuera de contenedor = grave). Importe = techo del tramo ' +
-      'grave (art. 52.2.b: hasta 1.500 €), no cuantía fija. A verificar si el simple depósito junto al ' +
-      'contenedor se degrada a leve por escasa entidad (art. 51). Revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 27, 50 y 52, leídos 2026-09-15): el ' +
+      'art. 27 prohíbe el abandono de residuos voluminosos en el espacio público o fuera de los ' +
+      'contenedores; el art. 50 lo clasifica como GRAVE. Importe = techo del tramo grave (art. 52: hasta ' +
+      '1.500 €), no cuantía fija. Queda por matizar si el simple depósito junto al contenedor por escasa ' +
+      'entidad se degrada a leve (art. 51).',
   }),
   construirInfraccion({
     id: 'ord-sctf-contenedores-fuera-horario',
@@ -834,8 +867,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'depositar residuos fuera de hora',
     ],
     notaRevision:
-      'Arts. 51.1.b/c y clasificación leve CONFIRMADOS. Importe = techo tramo leve (≤750 €). A VERIFICAR ' +
-      'la franja horaria vigente (la nota municipal citaba 19:00–21:00) para mostrarla en la ficha. Revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 51 y 52, leídos 2026-09-15): sacar ' +
+      'los contenedores o depositar la basura fuera de las horas, lugares o condiciones establecidos es ' +
+      'infracción LEVE (art. 51); techo del tramo leve ≤750 € (art. 52). Queda por reflejar la franja ' +
+      'horaria vigente (la nota municipal citaba 19:00–21:00) para mostrarla en la ficha.',
   }),
   construirInfraccion({
     id: 'ord-sctf-vertidos-via-publica',
@@ -858,8 +893,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'achique a la via publica',
     ],
     notaRevision:
-      'Art. 38 (aptdos. 5/7/8/9) CONFIRMADO. Importe = techo tramo leve; posible elevación a grave (art. ' +
-      '50.2.b). A VERIFICAR la delimitación frente a vertidos industriales/saneamiento con el revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 38 y 52, leídos 2026-09-15): el art. ' +
+      '38 prohíbe verter aguas/desperdicios en la vía pública y arrojar residuos desde vehículos, balcones o ' +
+      'terrazas (aptdos. 5, 7, 8, 9); infracción LEVE, techo ≤750 € (art. 52), agravable por su entidad ' +
+      '(art. 50). Queda por delimitar frente a los vertidos industriales/de saneamiento.',
   }),
   construirInfraccion({
     id: 'ord-sctf-playa-fumar',
@@ -881,8 +918,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'tabaco playa',
     ],
     notaRevision:
-      'Art. 43.2 CONFIRMADO. Importe = techo tramo leve (≤750 €). A verificar qué playas tienen zona ' +
-      'habilitada para fumar (bando/señalización). Revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 43.2 y 52, leídos 2026-09-15): ' +
+      '"queda prohibido fumar en las playas y zonas de baño del municipio, salvo en las zonas especialmente ' +
+      'habilitadas" (43.2); infracción LEVE, techo ≤750 € (art. 52). Queda por reflejar qué playas tienen ' +
+      'zona habilitada (bando/señalización).',
   }),
   construirInfraccion({
     id: 'ord-sctf-playa-residuos-arena',
@@ -904,8 +943,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'restos en la playa',
     ],
     notaRevision:
-      'Art. 43.1 CONFIRMADO. Importe = techo tramo leve (≤750 €). A VERIFICAR el importe efectivo dentro ' +
-      'del tramo con el revisor.',
+      'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 43.1 y 52, leídos 2026-09-15): el ' +
+      'art. 43.1 prohíbe depositar residuos directamente en la arena o rocas de las playas y zonas de baño; ' +
+      'infracción LEVE, techo ≤750 € (art. 52). El importe efectivo dentro del tramo lo gradúa el órgano ' +
+      'competente.',
   }),
   construirInfraccion({
     id: 'ord-sctf-alcohol-via-publica',
@@ -931,10 +972,13 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'botellona',
     ],
     notaRevision:
-      'Art. 109 CONFIRMADO (prohibición). NO se fija importe: la ordenanza remite a "legislación vigente" ' +
-      '(art. 135) → entrada CONSULTABLE. A VERIFICAR con el revisor si hay ordenanza específica o cuantía ' +
-      'por ordenanza fiscal; delimitar frente a la LO 4/2015 (estatal) y a la ley del menor si hay menores. ' +
-      'Redactado en clave neutra, retirando el lenguaje arcaico del art. 109.',
+      'COTEJADO contra el texto consolidado de la OM de policía y buen gobierno de SCTF (art. 109 y art. ' +
+      '135, leídos 2026-09-15 en la sede electrónica): la prohibición de consumir bebidas alcohólicas en la ' +
+      'vía pública fuera de hostelería y kioscos autorizados es literal del art. 109. La ordenanza NO fija ' +
+      'cuantía: el art. 135 remite a "los límites señalados por la legislación vigente" → entrada CONSULTABLE ' +
+      '(sin importe). A VERIFICAR con el revisor si existe ordenanza fiscal específica; delimitar frente a la ' +
+      'LO 4/2015 (estatal) y a la protección del menor si hay menores. Se retira el lenguaje arcaico del art. ' +
+      '109 (la "conducción a establecimiento municipal" por embriaguez está superada por la normativa vigente).',
   }),
   construirInfraccion({
     id: 'ord-sctf-acampada-parques',
@@ -960,9 +1004,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'barbacoa en el monte',
     ],
     notaRevision:
-      'Arts. 130-131 CONFIRMADOS. Sin importe (art. 135) → CONSULTABLE. A verificar concurrencia con la ' +
-      'normativa forestal/incendios de Canarias (sanciones propias más graves); el revisor decide si la ' +
-      'ficha remite a esa normativa.',
+      'COTEJADO contra el texto consolidado de la OM de policía y buen gobierno de SCTF (arts. 130-131 y ' +
+      'art. 135, leídos 2026-09-15 en la sede electrónica): solo se permite acampar o encender fuego en los ' +
+      'lugares habilitados de los parques de montaña. Sin cuantía propia (el art. 135 remite a la legislación ' +
+      'vigente) → CONSULTABLE. A verificar concurrencia con la normativa forestal/incendios de Canarias ' +
+      '(sanciones propias más graves); el revisor decide si la ficha remite a esa normativa.',
   }),
   construirInfraccion({
     id: 'ord-sctf-venta-ambulante',
