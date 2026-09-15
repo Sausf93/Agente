@@ -1165,12 +1165,13 @@ interface InfraccionSeedInput {
  * ≤100, grave 200, muy grave 500— y Anexo II de puntos, leídos en el navegador 2026-09-14): gravedad,
  * importe y PUNTOS confirmados directamente. Se marcan `verificado`.
  *
- * NO se incluyen: el cuadro de VELOCIDAD (Anexo IV, por tramos), el ALCOHOL (importe/puntos por tasas,
- * art. 80.2), el TRANSPORTE (LOTT, horquillas propias), lo que depende de reglamento/ITV, ni las fichas
- * cuyos puntos no casan con el Anexo II (p. ej. `inf-marcha-atras-indebida`: la marcha atrás general no
- * figura en el Anexo II, luego sus 4 puntos están a revisar). Para cobrar, visto bueno humano final.
+ * NO se incluyen: el TRANSPORTE (LOTT, horquillas propias), lo que depende de reglamento/ITV, ni las
+ * fichas cuyos puntos no casan con el Anexo II (p. ej. `inf-marcha-atras-indebida`: la marcha atrás
+ * general no figura en el Anexo II, luego sus 4 puntos están a revisar). Para cobrar, visto bueno final.
  */
 const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  'inf-exceso-velocidad', // cuadro del Anexo IV (100/0 · 300/2 · 400/4 · 500/6 · 600/6 muy grave)
+  'inf-alcoholemia', // muy grave 77.c; 500/4 y 1.000/6 (art. 80 + Anexo II.1); penal 379.2 CP
   'inf-movil-conduciendo', // grave, 6 puntos (Anexo II.8)
   'inf-semaforo-rojo', // grave, 4 puntos (Anexo II.10)
   'inf-stop-ceda-el-paso', // grave, 4 puntos (Anexo II.10)
@@ -1576,15 +1577,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'velocidad',
     notaRevision:
-      'NOTA sobre la gravedad: `gravedad: "grave"` es solo la etiqueta REPRESENTATIVA del cuadro, que ' +
-      'en realidad abarca de LEVE (el suelo de 100 € sin puntos) a GRAVE/MUY GRAVE según el exceso; por ' +
-      'eso la ficha usa marco `velocidad` y modela un RANGO (importeEur 100 = suelo, importeMaxEur 600), ' +
-      'no una cifra fija. A VERIFICAR el cuadro completo de tramos (importe y puntos por km/h de exceso, ' +
-      'distinto según el límite de la vía) contra el cuadro de la LSV y el codificado DGT: la ficha lo ' +
-      'pinta como rango "según exceso, desde 100 €" (100–600 €), SIN cifra fija enfatizada, y los puntos ' +
-      '(0–6) se detallan en el boletín porque varían por tramo. Confirmar también la frontera penal ' +
-      'del art. 379.1 CP (60 km/h urbana / 80 km/h interurbana sobre el límite). No publicar sin ' +
-      'desglose por tramos.',
+      'COTEJADO contra el BOE (LSV Anexo IV, cuadro de sanciones y puntos por exceso de velocidad, leído ' +
+      '2026-09-15): la ficha reproduce EXACTAMENTE la columna multa/puntos del cuadro —100 € (0 puntos), ' +
+      '300 € (2), 400 € (4), 500 € (6) y 600 € (6, muy grave)—, por tramos de km/h según el límite de la ' +
+      'vía. `gravedad: "grave"` es la etiqueta REPRESENTATIVA del cuadro (abarca de leve a muy grave); por ' +
+      'eso el marco es `velocidad` y modela un RANGO (importeEur 100 = suelo, importeMaxEur 600). Frontera ' +
+      'PENAL del art. 379.1 CP (superar en 60 km/h urbana / 80 km/h interurbana el límite). Segundo revisor ' +
+      'humano para el cierre.',
   }),
   construirInfraccion({
     id: 'inf-alcoholemia',
@@ -1638,10 +1637,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'alcohol_drogas',
     notaRevision:
-      'A VERIFICAR los dos tramos (500 €/4 puntos y 1.000 €/6 puntos), sus umbrales exactos y el ' +
-      'límite reducido de 0,15 mg/l para noveles y profesionales, contra el cuadro DGT. Confirmar ' +
-      'la frontera penal del art. 379.2 CP (0,60 mg/l aire / 1,2 g/l sangre). La ficha muestra el ' +
-      'tramo bajo como referencia. No publicar sin el desglose por tramos.',
+      'COTEJADO contra el BOE (LSV art. 80.1/80.2.a y Anexo II item 1, leído 2026-09-15): muy grave ' +
+      '(art. 77.c); dos tramos confirmados — 500 €/4 puntos (0,25-0,50 mg/l) y 1.000 €/6 puntos (>0,50, ' +
+      'reincidencia o profesional/novel, límite reducido 0,15 mg/l). La ficha modela el tramo bajo como ' +
+      'ancla y el 1.000 € como techo (rango, sin cifra fija). Frontera PENAL del art. 379.2 CP (0,60 mg/l ' +
+      'aire / 1,2 g/l sangre). Segundo revisor humano para el cierre.',
   }),
   construirInfraccion({
     id: 'inf-drogas-volante',
