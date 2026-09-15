@@ -1208,6 +1208,12 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'inf-estacionar-pmr-sin-tarjeta', // 76.d (plaza reservada a personas con discapacidad)
   'inf-estacionar-carril-bus-bici', // 76.d (carril bus / vía ciclista)
   'inf-estacionar-paso-peatones', // 76.d (lugar peligroso para peatones)
+  // Transporte (LOTT): clasificación cotejada contra arts. 140/141; el importe es horquilla orientativa
+  // del art. 143 (depende del apartado y del precio), por eso el marco es `transporte` (rango).
+  'inf-transporte-sin-titulo', // LOTT 140.1 (sin título habilitante) — muy grave
+  'inf-tacografo', // LOTT 140.10 (manipulación del tacógrafo) — muy grave
+  'inf-adr-mercancias-peligrosas', // LOTT 140.15 (mercancías peligrosas con peligro) — muy grave
+  'inf-exceso-mma', // LOTT 141.2 (exceso de masa ≥15% <25%) — grave
 ]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
@@ -2325,12 +2331,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el importe y la clasificación exactos: la LOTT (art. 140/143, reformada por la ' +
-      'Ley 13/2021) sanciona la manipulación del tacógrafo como MUY GRAVE; el seed fija la horquilla ' +
-      '1.001–6.000 € del tramo muy grave, pendiente de confirmar contra el texto consolidado y su ' +
-      'reglamento (RD 1211/1990). A VERIFICAR además la frontera penal: la manipulación puede ser ' +
-      'delito de falsedad (arts. 390/395 CP), lo que abriría la vía penal. No detrae puntos DGT. ' +
-      'Consúltese el artículo para el importe efectivo. Revisar con el revisor jurídico.',
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 140.10, leído 2026-09-15): la manipulación del ' +
+      'tacógrafo, del limitador de velocidad o de sus elementos es MUY GRAVE. El IMPORTE es una horquilla ' +
+      'orientativa (art. 143: los tramos muy graves llegan a varios miles de €; el efectivo depende del ' +
+      'apartado y las circunstancias). Frontera PENAL: la manipulación puede ser falsedad (arts. 390/395 ' +
+      'CP). No detrae puntos DGT. Segundo revisor humano para el importe efectivo.',
   }),
   // --- Transporte pesado: sobrecarga / exceso de MMA (LOTT, marco `transporte`) --------------
   construirInfraccion({
@@ -2371,14 +2376,13 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'Cotejado con el revisor jurídico: el exceso de masa GRAVE se tipifica en el art. 141 LOTT ' +
-      '(apartado 141.2) y el MUY GRAVE en el art. 140 (apartado 140.23); el art. 143 no tipifica, solo ' +
-      'FIJA la cuantía (el exceso de masa tiene escala sancionadora propia: leve 301–400 / grave ' +
-      '401–2.000 / muy grave 2.001–4.000 €). El seed ancla el tramo GRAVE (401–2.000 €). A VERIFICAR el ' +
-      'TRAMO exacto por porcentaje de exceso contra el texto consolidado de la LOTT (reformada por la ' +
-      'Ley 13/2021) y su reglamento (RD 1211/1990): los umbrales de porcentaje varían según la MMA del ' +
-      'vehículo y según sea sobre uno o dos ejes. La inmovilización hasta subsanar (descarga/transbordo) ' +
-      'es la medida operativa habitual. No detrae puntos. Revisar por supuesto antes de publicar.',
+      'COTEJADO contra el BOE (LOTT arts. 141.2 y 143, leído 2026-09-15): el exceso de masa GRAVE se ' +
+      'tipifica en el art. 141.2 (≥15 % y <25 % sobre la MMA) y el MUY GRAVE en el art. 140.23; el art. ' +
+      '143 FIJA la cuantía (escala propia: leve 301–400 / grave 401–2.000 / muy grave 2.001–4.000 €). El ' +
+      'seed ancla el tramo GRAVE (401–2.000 €). El TRAMO exacto por porcentaje de exceso y MMA del ' +
+      'vehículo (y según sea sobre uno o dos ejes) lo cierra el segundo revisor humano contra el texto ' +
+      'consolidado. La inmovilización hasta subsanar (descarga/transbordo) es la medida operativa ' +
+      'habitual. No detrae puntos DGT.',
   }),
   // --- Transporte pesado: carga mal estibada / sin sujeción (RGC art. 14, marco `transporte`) --
   construirInfraccion({
@@ -2470,13 +2474,12 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el importe, la clasificación y el PRECEPTO exactos contra el texto consolidado de la ' +
-      'LOTT (arts. 140-143, reformada por la Ley 13/2021), su reglamento (RD 1211/1990), el RD 97/2014 ' +
-      '(que desarrolla en España el transporte de mercancías peligrosas por carretera) y el propio ADR ' +
-      'vigente. El artículo citado ("140 mercancías peligrosas") es una REFERENCIA al bloque de ' +
-      'infracciones muy graves del art. 140.15 LOTT y sus subapartados (p. ej. 140.15.5 paneles/' +
-      'etiquetas, 140.15.8 carta de porte, 140.15.3 certificado de aprobación): A VERIFICAR el ' +
-      'subapartado/letra concreto por supuesto. El seed ancla el tramo ALTO del muy grave ' +
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 140.15, leído 2026-09-15): el transporte/carga/ ' +
+      'descarga de mercancías peligrosas con circunstancias que generan peligro es MUY GRAVE. El detalle ' +
+      'material lo desarrollan el reglamento (RD 1211/1990), el RD 97/2014 y el propio ADR vigente. El ' +
+      'art. 140.15 tiene subapartados (p. ej. 140.15.5 paneles/etiquetas, 140.15.8 carta de porte, ' +
+      '140.15.3 certificado de aprobación): el subapartado/letra concreto por supuesto lo cierra el ' +
+      'segundo revisor. El seed ancla el tramo ALTO del muy grave ' +
       '(4.001–6.000 €), donde el revisor sitúa el ADR general; con REINCIDENCIA en 12 meses la cuantía ' +
       'sube a 6.001–18.000 € (fuera del rango del validador `transporte`, por eso solo se anota, no se ' +
       'modela como importe). Distinguir los distintos incumplimientos (paneles, carta de porte, ' +
@@ -2527,11 +2530,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado/letra exacto del art. 140 LOTT (carecer de título habilitante para el ' +
-      'transporte público; reformado por la Ley 13/2021) y la GRAVEDAD por supuesto contra el texto ' +
-      'consolidado y el ROTT (RD 1211/1990). El seed ancla el tramo ALTO del muy grave (4.001–6.000 €) ' +
-      'como horquilla; A VERIFICAR el importe efectivo por supuesto. Sin pronto pago modelado (a ' +
-      'verificar la reducción del 30 %). No detrae puntos DGT. Revisar por supuesto antes de publicar.',
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 140.1, leído 2026-09-15): realizar transporte ' +
+      'público careciendo del título habilitante preceptivo es MUY GRAVE. El IMPORTE es una horquilla ' +
+      'orientativa (el efectivo lo gradúa el art. 143 por supuesto y precio del transporte, con su ROTT ' +
+      'RD 1211/1990). Sin pronto pago modelado. No detrae puntos DGT. Segundo revisor humano para el ' +
+      'importe efectivo.',
   }),
   construirInfraccion({
     id: 'inf-transporte-privado-excede',

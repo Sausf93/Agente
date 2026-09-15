@@ -408,16 +408,17 @@ describe('SEED_TRAFICO: OLA 2 del submenú Transporte (LOTT, marco transporte)',
     'inf-tacografo-sin-registros',
   ];
 
-  it('las 12 existen, son administrativas del marco transporte y quedan pendientes de revisión', () => {
+  it('las 12 existen, son administrativas del marco transporte con estado editorial válido', () => {
     for (const id of IDS_OLA2) {
       const item = find(id);
       expect(item, id).toBeDefined();
       expect(item!.infraccion.tipo, id).toBe('administrativa');
       expect(item!.marcoImporte, id).toBe('transporte');
-      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], id).toContain(item!.revision);
       expect(item!.notaRevision.length, id).toBeGreaterThan(0);
-      // La nota debe marcar explícitamente qué queda "a verificar" (apartado/gravedad/horquilla).
-      expect(item!.notaRevision.toUpperCase(), id).toContain('A VERIFICAR');
+      // La nota marca lo que queda "a verificar" (pendiente) o cita el BOE/LOTT (verificado).
+      const nota = item!.notaRevision.toUpperCase();
+      expect(item!.revision === 'verificado' ? /BOE|LOTT/.test(nota) : nota.includes('A VERIFICAR'), id).toBe(true);
     }
   });
 
