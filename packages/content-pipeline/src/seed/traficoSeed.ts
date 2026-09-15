@@ -1185,6 +1185,18 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'inf-sentido-contrario', // muy grave (art. 77.f), 6 puntos (Anexo II.4)
   'inf-drogas-volante', // muy grave (art. 77.c), 6 puntos (Anexo II.2)
   'inf-marcha-atras-autopista', // grave, 4 puntos (Anexo II.18) — corregido de muy grave/6
+  // Graves sin puntos (art. 76: no figuran en el Anexo II → 0 puntos; grave = 200 € por el art. 80)
+  'inf-itv-caducada', // 76.o (condiciones técnicas / ITV)
+  'inf-neumaticos-mal-estado', // 76.o (condiciones técnicas)
+  'inf-escape-ruido', // 76.o (condiciones técnicas)
+  'inf-luces-no-homologadas', // 76.o (condiciones técnicas)
+  'inf-lunas-tintadas', // 76.o (condiciones técnicas)
+  'inf-matricula-oculta', // 76.p (placa ilegible)
+  'inf-estacionamiento-indebido', // 76.d (parada/estacionamiento peligroso o que obstaculiza)
+  'inf-parada-lugar-peligroso', // 76.d
+  'inf-carril-reservado', // 76.d (carril bus/ciclista)
+  'inf-circular-arcen', // 76.c (utilización de carriles y arcenes)
+  'inf-sin-senalizar-maniobra', // 76.c (cambios de dirección/sentido)
 ]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
