@@ -832,6 +832,10 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'sc-remocion-precinto-perimetro', // 37.15
   'sc-animales-sueltos-abandono', // 37.16
   'sc-consumo-alcohol-via-publica', // 37.17
+  // Armas: solo las 2 cuya CLASIFICACIÓN se cierra con la LO 4/2015 (el RD 137/1993 fija solo el
+  // detalle material, no la gravedad); el resto del régimen de armas sigue pendiente por el RD.
+  'arma-portar-fuera-supuestos', // 36.10 (arma con licencia fuera de lugar habilitado) — grave
+  'arma-documentacion-perdida', // 37.8 (documentación de armas: conservación/denuncia de pérdida) — leve
 ]);
 
 /**
