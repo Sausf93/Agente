@@ -97,7 +97,16 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
-### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 161/307 ya verificadas (52 %)
+### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 173/307 ya verificadas (56 %)
+(Al día 2026-09-15, TODAS las áreas con fuente en el BOE cotejadas por el agente principal: penal, 
+seguridad ciudadana + armas [LO 4/2015 + lo cerrable del 36.12/37.8], tráfico + transporte [LSV + LOTT
+arts. 140/141], extranjería [LOEX], PPP [Ley 50/1999], bienestar animal [Ley 7/2023] y Canarias [Ley
+7/2011, art. 66 confirmado]. Las ~134 restantes son, por diseño, NO cotejables por mí: ordenanzas
+MUNICIPALES SCTF —no están en el BOE, sino en el BOP—; CONSULTAS no sancionadoras; niche de transporte
+con reglamento propio [RD escolar 443/2001, ATP, VTC RD 1076/2017]; VMP [RGC + ordenanza]; animal
+listado positivo/curso-seguro [reglamento pendiente]; armas de frontera penal [564 CP] o categoría
+dudosa [fogueo/réplica]; y penal SENSIBLE [sexual/menores] + bundles. La información está TODA; lo que
+falta es verificación que depende de textos fuera del BOE o del jurista.)
 (Añadidas al día 2026-09-15: transporte LOTT 140/141 —sin título, tacógrafo, ADR, exceso de masa— y
 armas LO 4/2015 —portar fuera de lugar 36.10, documentación 37.8—. Las 146 pendientes son, por diseño:
 CONSULTAS no sancionadoras (~15, no son sanciones que "verificar"); ordenanzas MUNICIPALES SCTF y
