@@ -8,6 +8,7 @@ import {
 } from '@agente/shared';
 import type { SqlRunner } from '@/db/sqlRunner';
 import { filtroTerritorialSql } from '@/db/territorio';
+import { conceptoDeConsulta } from '@/features/miOrdenanza/conceptosAparcamiento';
 import { pistaConsecuencia, type PistaConsecuencia } from './resaltar';
 
 /**
@@ -97,12 +98,28 @@ interface FilaArticuloHidratado {
  * encuentra "movil"). Los tokens van en AND implícito (todos deben aparecer). Devuelve `''`
  * si no queda ningún token válido (evita un MATCH inválido).
  */
-export function construirConsultaFts(consultaNormalizada: string): string {
+export function construirConsultaFts(
+  consultaNormalizada: string,
+  modo: 'and' | 'or' = 'and',
+  columnasOr?: readonly string[],
+): string {
   const tokens = consultaNormalizada
     .split(/[^a-z0-9]+/)
     .filter((tok) => tok.length > 0);
   if (tokens.length === 0) return '';
-  return tokens.map((tok) => `${tok}*`).join(' ');
+  const prefijos = tokens.map((tok) => `${tok}*`);
+  if (modo !== 'or') return prefijos.join(' '); // AND implícito (todos los tokens): máxima PRECISIÓN.
+  // Fallback OR para RECALL cuando el AND no encuentra nada (el agente teclea frases naturales:
+  // "conductor bebido", y "conductor" no está en esa ficha → el AND da cero, el OR la rescata por
+  // "bebido"). Con `columnasOr` se RESTRINGE a esas columnas curadas de alta señal (título +
+  // sinónimos) para no arrastrar ruido del texto del boletín.
+  const or = prefijos.join(' OR ');
+  return columnasOr && columnasOr.length > 0 ? `{${columnasOr.join(' ')}} : (${or})` : or;
+}
+
+/** Nº de tokens buscables de una consulta ya normalizada (para decidir si el OR aporta algo). */
+function contarTokens(consultaNormalizada: string): number {
+  return consultaNormalizada.split(/[^a-z0-9]+/).filter((tok) => tok.length > 0).length;
 }
 
 /**
@@ -186,9 +203,8 @@ export async function buscarInfracciones(
   // Paso 2: FTS5 ponderado (bm25 con los pesos del contrato), unido a `infraccion` para el filtro
   // territorial (el FTS externo no guarda el territorio; lo aporta la fila de infracción).
   const pesos = FTS_PESOS_BM25_ORDENADOS.join(', ');
-  const match = construirConsultaFts(consultaNorm);
-  let idsFts: string[] = [];
-  if (match.length > 0) {
+  const ftsInfracciones = async (match: string): Promise<string[]> => {
+    if (match.length === 0) return [];
     try {
       const filas = await runner.getAll<{ infraccion_id: string; score: number }>(
         `SELECT b.infraccion_id AS infraccion_id, bm25(busqueda, ${pesos}) AS score
@@ -200,11 +216,22 @@ export async function buscarInfracciones(
           LIMIT ?`,
         [match, ...filtroExacto.params, LIMITE_RESULTADOS],
       );
-      idsFts = filas.map((f) => f.infraccion_id);
+      return filas.map((f) => f.infraccion_id);
     } catch {
       // MATCH inválido (entrada rara): nos quedamos con los exactos, sin romper la búsqueda.
-      idsFts = [];
+      return [];
     }
+  };
+  let idsFts = await ftsInfracciones(construirConsultaFts(consultaNorm));
+  // Fallback OR: si el AND (todos los tokens) no encontró nada y la consulta tiene varias palabras,
+  // se reintenta con OR (sobre título+sinónimos) para no dejar al agente en "Nada exacto" por una
+  // palabra suelta. EXCEPCIÓN: los conceptos de aparcamiento regulado (zona azul, sin ticket, vado,
+  // PMR) NO se amplían — tienen su propia respuesta ("Mi ordenanza") y ampliarlos sacaría una ficha
+  // estatal que sería un dato falso (regla deliberada).
+  if (idsFts.length === 0 && contarTokens(consultaNorm) > 1 && conceptoDeConsulta(consulta) === null) {
+    idsFts = await ftsInfracciones(
+      construirConsultaFts(consultaNorm, 'or', ['titulo_corto', 'sinonimos']),
+    );
   }
 
   const orden = combinarRanking(idsExactos, idsFts).slice(0, LIMITE_RESULTADOS);
@@ -271,31 +298,38 @@ export async function buscarArticulos(
   cadena: readonly string[] = [],
 ): Promise<ResultadoArticulo[]> {
   const consultaNorm = normalizarBusqueda(consulta);
-  const match = construirConsultaFts(consultaNorm);
-  if (match.length === 0) return [];
+  if (construirConsultaFts(consultaNorm).length === 0) return [];
 
   // Filtro territorial (ADR-006/008): el articulado municipal (p. ej. la ordenanza de un municipio)
   // solo se ve si su territorio está en la cadena. El artículo no lleva territorio propio; lo hereda
   // de su norma, así que se filtra sobre `n.territorio_id` uniendo articulo→norma.
   const filtro = filtroTerritorialSql(cadena, 'n.territorio_id');
   const pesos = FTS_PESOS_BM25_ARTICULO_ORDENADOS.join(', ');
-  let filasFts: FilaArticuloFts[] = [];
-  try {
-    filasFts = await runner.getAll<FilaArticuloFts>(
-      `SELECT b.articulo_id AS articulo_id, b.norma_codigo AS norma_codigo,
-              bm25(busqueda_articulo, ${pesos}) AS score
-         FROM busqueda_articulo b
-         JOIN articulo a ON a.id = b.articulo_id
-         JOIN norma    n ON n.id = a.norma_id
-        WHERE busqueda_articulo MATCH ?
-          AND ${filtro.sql}
-        ORDER BY score
-        LIMIT ?`,
-      // Pedimos margen (excluidos + límite) para poder descartar y aun así llenar la sección.
-      [match, ...filtro.params, LIMITE_ARTICULOS + excluir.size],
-    );
-  } catch {
-    return []; // MATCH inválido: la búsqueda de infracciones sigue funcionando aparte.
+  const ftsArticulos = async (match: string): Promise<FilaArticuloFts[]> => {
+    if (match.length === 0) return [];
+    try {
+      return await runner.getAll<FilaArticuloFts>(
+        `SELECT b.articulo_id AS articulo_id, b.norma_codigo AS norma_codigo,
+                bm25(busqueda_articulo, ${pesos}) AS score
+           FROM busqueda_articulo b
+           JOIN articulo a ON a.id = b.articulo_id
+           JOIN norma    n ON n.id = a.norma_id
+          WHERE busqueda_articulo MATCH ?
+            AND ${filtro.sql}
+          ORDER BY score
+          LIMIT ?`,
+        // Pedimos margen (excluidos + límite) para poder descartar y aun así llenar la sección.
+        [match, ...filtro.params, LIMITE_ARTICULOS + excluir.size],
+      );
+    } catch {
+      return []; // MATCH inválido: la búsqueda de infracciones sigue funcionando aparte.
+    }
+  };
+  let filasFts = await ftsArticulos(construirConsultaFts(consultaNorm));
+  // Mismo fallback a OR (restringido al TÍTULO del artículo), con la misma excepción de los conceptos
+  // de aparcamiento (que tienen su propia respuesta "Mi ordenanza").
+  if (filasFts.length === 0 && contarTokens(consultaNorm) > 1 && conceptoDeConsulta(consulta) === null) {
+    filasFts = await ftsArticulos(construirConsultaFts(consultaNorm, 'or', ['titulo']));
   }
 
   const orden = filasFts

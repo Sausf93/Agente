@@ -93,7 +93,7 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
   });
 
   it('consulta sin coincidencias → lista vacía', async () => {
-    const res = await buscarInfracciones(runner, 'zzzzzz palabra inexistente');
+    const res = await buscarInfracciones(runner, 'zzzzzz qwerty asdfgh');
     expect(res).toEqual([]);
   });
 
@@ -132,6 +132,23 @@ suite('buscador contra el paquete real (FTS5 + ranking)', () => {
     // La ficha de estacionamiento indebido SIGUE existiendo para el supuesto real (doble fila).
     const dobleFila = await buscarInfracciones(runner, 'doble fila');
     expect(dobleFila.some((r) => r.infraccionId === 'inf-estacionamiento-indebido')).toBe(true);
+  });
+
+  // FALLBACK OR (recall de frases naturales): si el AND de todos los tokens no encuentra nada, se
+  // reintenta con OR sobre título+sinónimos, para que una palabra suelta que sobra no deje al agente
+  // en "Nada exacto".
+  it('el fallback OR rescata una frase natural cuando un token sobra', async () => {
+    // "conductor" está en los sinónimos de alcoholemia ("conductor bebido/borracho"); "xyzzy" no
+    // existe → el AND ("conductor" Y "xyzzy") da cero y el OR rescata la ficha por "conductor".
+    const res = await buscarInfracciones(runner, 'conductor xyzzy');
+    expect(res.map((r) => r.infraccionId)).toContain('inf-alcoholemia');
+  });
+
+  it('el fallback OR NO se aplica a los conceptos de aparcamiento (regla de no dar datos falsos)', async () => {
+    // "zona azul xyzzy" sigue siendo un concepto de aparcamiento → no se amplía con OR y NO saca la
+    // ficha estatal de estacionamiento (la responde "Mi ordenanza").
+    const res = await buscarInfracciones(runner, 'zona azul xyzzy');
+    expect(res.every((r) => r.infraccionId !== 'inf-estacionamiento-indebido')).toBe(true);
   });
 });
 
@@ -182,7 +199,7 @@ suite('buscador en dos niveles: infracciones + artículos de la ley', () => {
   });
 
   it('término sin sentido → sin infracciones y sin artículos (único caso de "nada exacto")', async () => {
-    const { infracciones, articulos } = await buscarTodo(runner, 'zzzzzz palabra inexistente');
+    const { infracciones, articulos } = await buscarTodo(runner, 'zzzzzz qwerty asdfgh');
     expect(infracciones).toEqual([]);
     expect(articulos).toEqual([]);
   });
