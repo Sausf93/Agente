@@ -866,7 +866,8 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
     importeReducidoEur: null,
     textoBoletin:
       'Regresar a España habiendo sido expulsado y estando vigente la prohibición de entrada, o entrar ' +
-      'contraviniéndola. MENSAJE CLAVE: por sí solo NO es delito (no encaja en el art. 197 ni 197 bis CP). ' +
+      'contraviniéndola. MENSAJE CLAVE: por sí solo NO es delito de quebrantamiento (la prohibición de ' +
+      'entrada es una medida ADMINISTRATIVA, no una pena o medida judicial del art. 468 CP). ' +
       'La respuesta es ADMINISTRATIVA: procede la DEVOLUCIÓN sin necesidad de nuevo expediente de expulsión ' +
       '(art. 58.3.a LO 4/2000), reiniciándose el cómputo del plazo de prohibición de entrada (art. 58.7). La ' +
       'detención cautelar o el internamiento, si proceden, los acuerda la autoridad con los requisitos de ' +
@@ -896,8 +897,9 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       'COTEJADO contra el BOE (LO 4/2000 art. 58, leído 2026-09-15): el regreso tras expulsión ' +
       'contraviniendo la prohibición de entrada es el art. 58.3.a (devolución SIN nuevo expediente de ' +
       'expulsión), distinto del 58.3.b (el que pretende entrar ilegalmente); la devolución del 58.3.a ' +
-      'reinicia el cómputo del plazo de prohibición de entrada quebrantada (art. 58.7). NO es delito ' +
-      'autónomo (no es 197 ni 197 bis CP). Modelada como no_sancionador (deslinde, sin cuantía).',
+      'reinicia el cómputo del plazo de prohibición de entrada quebrantada (art. 58.7). NO es delito de ' +
+      'quebrantamiento del art. 468 CP: la prohibición de entrada es una medida ADMINISTRATIVA, no una pena ' +
+      'ni una medida judicial. Modelada como no_sancionador (deslinde, sin cuantía).',
   }),
   construirInfraccion({
     id: 'ext-salida-puesto-no-habilitado',
