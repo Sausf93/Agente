@@ -13,6 +13,7 @@ import {
   agruparPorSubtema,
   filtrarInfracciones,
   listarInfraccionesDeMateria,
+  MIN_ITEMS_BUSCADOR,
   SUBTEMA_INFO,
   type InfraccionResumen,
   type Materia,
@@ -89,6 +90,24 @@ export function SubTemaFichasScreen({ materia, subtema }: { materia: Materia; su
   return (
     <View style={{ flex: 1, backgroundColor: t.color.bg }}>
       <Stack.Screen options={{ title: titulo }} />
+      {/* Buscador DENTRO del submenú (estilo SPPLB), FIJO fuera del scroll: sigue accesible al bajar
+          por una lista larga (clave para el uso a una mano en la calle). */}
+      {fichas.length >= MIN_ITEMS_BUSCADOR ? (
+        <View
+          style={{
+            paddingHorizontal: t.spacing.base,
+            paddingTop: t.spacing.sm,
+            paddingBottom: t.spacing.xs,
+            backgroundColor: t.color.bg,
+          }}
+        >
+          <SearchBar
+            value={consulta}
+            onChangeText={setConsulta}
+            placeholder={`Buscar en ${titulo.toLowerCase()}…`}
+          />
+        </View>
+      ) : null}
       <FlatList
         data={fichasFiltradas}
         keyExtractor={(f) => f.id}
@@ -98,19 +117,6 @@ export function SubTemaFichasScreen({ materia, subtema }: { materia: Materia; su
           <FilaInfraccion item={item} onPress={(id) => router.push(`/ficha/${id}`)} />
         )}
         contentContainerStyle={{ paddingBottom: t.spacing.xxl, paddingTop: t.spacing.sm }}
-        ListHeaderComponent={
-          // Buscador DENTRO del submenú (estilo SPPLB): filtra las fichas de este sub-tema al vuelo.
-          // Solo se pinta cuando hay bastantes fichas como para que ayude.
-          fichas.length > 5 ? (
-            <View style={{ paddingHorizontal: t.spacing.base, paddingBottom: t.spacing.sm }}>
-              <SearchBar
-                value={consulta}
-                onChangeText={setConsulta}
-                placeholder={`Buscar en ${titulo.toLowerCase()}…`}
-              />
-            </View>
-          ) : null
-        }
         ListEmptyComponent={
           <View style={{ paddingTop: t.spacing.xxl }}>
             <EmptyState

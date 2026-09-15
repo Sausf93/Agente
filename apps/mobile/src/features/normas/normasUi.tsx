@@ -182,7 +182,31 @@ export function FilaSubtema({
       accessibilityLabel={`${item.label}. ${fichasSubtemaLabel(item.fichas.length)}.`}
       accessibilityHint="Abre las fichas de este sub-tema"
       onPress={() => onPress(item.key)}
-      right={<ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />}
+      right={
+        // "Carpeta": recuento en pastilla + chevron, para distinguir de un vistazo un sub-tema (lleva
+        // a otra lista) de una ficha (abre la consecuencia). El número escanea mejor que el subtítulo.
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
+          <View
+            style={{
+              minWidth: 26,
+              paddingHorizontal: t.spacing.xs,
+              paddingVertical: 2,
+              borderRadius: t.radius.pill,
+              backgroundColor: t.color.surfaceAlt,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text
+              style={{ color: t.color.textSecondary, ...t.typography.scale.label }}
+              maxFontSizeMultiplier={1.4}
+            >
+              {item.fichas.length}
+            </Text>
+          </View>
+          <ChevronRight size={20} color={t.color.textTertiary} strokeWidth={2} />
+        </View>
+      }
     />
   );
 }

@@ -974,6 +974,13 @@ export interface GrupoSubtema {
 }
 
 /**
+ * Umbral mínimo de elementos buscables para pintar el buscador local dentro de un menú de Normas:
+ * por debajo, la lista se ve entera de un vistazo y el campo solo estorbaría. Compartido por la
+ * pantalla de materia y la de sub-tema para que el criterio sea único.
+ */
+export const MIN_ITEMS_BUSCADOR = 6;
+
+/**
  * Normaliza texto para el FILTRO dentro de los menús de Normas (buscador local por lista, estilo
  * SPPLB): minúsculas y SIN tildes, para casar con lo que teclea el agente al vuelo ("estacion",
  * "alcohol"). No sustituye al buscador global (que además usa sinónimos); esto solo filtra la lista

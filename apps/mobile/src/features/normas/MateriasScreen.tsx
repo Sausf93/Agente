@@ -10,6 +10,7 @@ import {
   HeartHandshake,
   Music,
   PawPrint,
+  Search,
   Siren,
   Target,
   Users,
@@ -181,6 +182,15 @@ export function MateriasScreen() {
         contentContainerStyle={{ gap: t.spacing.md, paddingBottom: t.spacing.xxl }}
         ListHeaderComponent={
           <View style={{ paddingBottom: t.spacing.sm }}>
+            {/* Atajo al buscador GLOBAL (con sinónimos): "buscar primero, navegar después" es lo que
+                espera el agente con prisa cuando no sabe en qué materia cae lo que busca. */}
+            <ListRow
+              title="Buscar en todas las normas"
+              meta="Busca por palabra o lenguaje de calle en todo el contenido"
+              accessibilityHint="Abre el buscador general"
+              onPress={() => router.navigate('/')}
+              right={<Search size={20} color={t.color.textTertiary} strokeWidth={2} />}
+            />
             <ListRow
               title="Mis marcadores"
               meta="Artículos que has guardado"
@@ -368,7 +378,7 @@ function VerTodas({
         paddingHorizontal: t.spacing.base,
       }}
     >
-      <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption, textAlign: 'center' }}>
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption, textAlign: 'center' }}>
         {normasOcultasLabel(ocultas)} —{' '}
         <Text style={{ color: t.color.accent, fontWeight: '600' }}>Ver todas</Text>
       </Text>

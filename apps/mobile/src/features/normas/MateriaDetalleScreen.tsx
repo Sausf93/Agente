@@ -23,6 +23,7 @@ import {
   normaRelevantePara,
   normalizarTexto,
   MATERIA_INFO,
+  MIN_ITEMS_BUSCADOR,
   type InfraccionResumen,
   type Materia,
   type NormaResumen,
@@ -159,9 +160,29 @@ export function MateriaDetalleScreen({
     );
   }
 
+  const mostrarBuscador = infracciones.length + deLaMateria.length >= MIN_ITEMS_BUSCADOR;
+
   return (
     <View style={{ flex: 1, backgroundColor: t.color.bg }}>
       <Stack.Screen options={{ title: titulo }} />
+      {/* Buscador DENTRO de la materia (estilo SPPLB), FIJO fuera del scroll: filtra fichas y normas
+          al vuelo y sigue accesible al bajar por la lista. */}
+      {mostrarBuscador ? (
+        <View
+          style={{
+            paddingHorizontal: t.spacing.base,
+            paddingTop: t.spacing.sm,
+            paddingBottom: t.spacing.xs,
+            backgroundColor: t.color.bg,
+          }}
+        >
+          <SearchBar
+            value={consulta}
+            onChangeText={setConsulta}
+            placeholder={`Buscar en ${titulo.toLowerCase()}…`}
+          />
+        </View>
+      ) : null}
       <SectionList
         sections={secciones}
         keyExtractor={(n) => n.id}
@@ -170,17 +191,14 @@ export function MateriaDetalleScreen({
         keyboardDismissMode="on-drag"
         ListHeaderComponent={
           <View>
-            {/* Buscador DENTRO de la materia (estilo SPPLB): filtra fichas y normas al vuelo. */}
-            {infracciones.length + deLaMateria.length > 5 ? (
-              <View style={{ paddingHorizontal: t.spacing.base, paddingBottom: t.spacing.xs }}>
-                <SearchBar
-                  value={consulta}
-                  onChangeText={setConsulta}
-                  placeholder={`Buscar en ${titulo.toLowerCase()}…`}
-                />
-              </View>
+            {filtrando ? (
+              <SeccionLabel
+                t={t}
+                texto={`${fichasFiltradas.length + normasVisibles.length} ${
+                  fichasFiltradas.length + normasVisibles.length === 1 ? 'resultado' : 'resultados'
+                }`}
+              />
             ) : null}
-
             {filtrando ? (
               // Con el buscador activo: lista PLANA de fichas que coinciden (sin cajones de subtema).
               fichasFiltradas.length > 0 ? (
