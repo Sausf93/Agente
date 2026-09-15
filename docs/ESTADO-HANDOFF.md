@@ -169,6 +169,34 @@ el "Borrador beta" a las `verificado`.
   COBRAR sigue siendo prudente un visto bueno humano/jurídico final, sobre todo en penal (detención).
 
 
+### YA HECHO el 2026-09-15 (run autónomo) — `main`, CI verde, Expo `preview` publicado
+Tres rondas encadenadas (cada una: build:content → copiar .db/.manifest → 962 tests → tsc → commit →
+push → CI verde vía API de GitHub). Paquete final: **3664 artículos, 313 infracciones, 124 pendientes**
+(≈189 verificadas). Expo update group `5dd2f74e` (commit `0609b25`).
+- **SEPRONA/contrabando — 2 revisiones aplicadas** (commit `07b3b3b`): revisor jurídico + validador de
+  calle sobre las 6 fichas nuevas. Bugs reales corregidos: `construirDelito` atribuía al "Código Penal"
+  artículos de otras leyes (el prefijo de cotejo ahora usa `fuenteNorma`; arreglado "CP art. 2" del
+  contrabando → LO 12/1995); doble "COTEJADO contra el BOE" con dos fechas → guard `yaCotejada`;
+  `FECHA_ACTUALIZACION` del seed penal 09-07 → 09-15; art. 335 coletilla corregida (2.ª consecuencia =
+  privación de armas, no duplicar cazar/pescar); art. 336 inhabilitación 1-3 años + "mitad superior si
+  daño notorio"; incendio cita el 358; contrabando gravedad de la escalada por organización. Calle:
+  consecuencia de decomiso en las 5 fichas SEPRONA, aviso de seguridad ante cebo envenenado, deslinde
+  visible de la quema de rastrojos (358), y sinónimos (furtivo, jabalí, lobo/lince/buitre, parany, liga,
+  reclamo eléctrico, pesca eléctrica, vertido a barranco/arroyo, purines, vertedero clandestino, matute,
+  fardos, cuartones). Las 6 recotejadas por mí contra el CP consolidado (arts. 325/334/335/336/352/358).
+- **Municipal SCTF — cotejo directo de ordenanzas** (commits `fdb8729`, `0609b25`): NUEVO modelo
+  `VERIFICADAS_ORDENANZA` en `ordenanzasSeed.ts` (mismo patrón que los seeds estatales). Descarga del PDF
+  consolidado por `python urllib`+`pypdf` (el navegador bloquea la descarga) y cotejo artículo a artículo.
+  - **Limpieza (OMGRL)**: 7 fichas verificadas (arts. 27/38/42/43/50/51; sanciones art. 52: leve ≤750/
+    grave ≤1.500/muy grave ≤3.000 €).
+  - **Animales (2017)**: 3 fichas verificadas (arts. 12 correa, 14 excrementos, art. 76 → art. 141 LRBRL,
+    mismos tramos). **CORRECCIÓN real**: "no recoger inmediatamente los excrementos" es **GRAVE** (≤1.500 €),
+    estaba como leve/90 €. Perro suelto leve (con agravación a grave 2.d); censo leve 1.b. Se retiran los
+    importes 90/100 € inventados → techo del tramo, graduable.
+  - **Policía y buen gobierno**: art. 135 NO fija cuantía (remite a la legislación vigente) → alcohol
+    (art. 109) y acampada (arts. 130-131) siguen CONSULTABLES (`no_sancionador`), pero con el cotejo anotado.
+- **Total municipal verificado: 10 fichas** (ya no muestran "Borrador beta").
+
 ### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
 Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
 - **BUG estructural de la ficha de EXTRANJERÍA arreglado** (commit `1c1c8ef`, CI Run 114): `ficha.ts`
