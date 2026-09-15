@@ -41,7 +41,36 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 // --- Norma: Código Penal (misma identidad BOE que declara el seed de tráfico) ---------------
 const ID_CP = 'BOE-A-1995-25444'; // LO 10/1995, Código Penal
+const ID_CONTRABANDO = 'BOE-A-1995-26836'; // LO 12/1995, de Represión del Contrabando (GC fiscal)
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
+
+/** Artículo de la LO 12/1995 de contrabando (norma propia, distinta del CP). */
+function articuloContrabando({ numero, titulo, texto }: ArticuloSeedInput): Articulo {
+  return Articulo.parse({
+    id: `${ID_CONTRABANDO}:seed-a${numero.replace(/\s+/g, '')}`,
+    normaId: ID_CONTRABANDO,
+    numero,
+    titulo,
+    texto,
+    idioma: 'es',
+    orden: 0,
+    hash: hashTexto(texto),
+    validFrom: VALID_FROM,
+    validTo: null,
+  });
+}
+
+const ART_LOC_2 = articuloContrabando({
+  numero: '2',
+  titulo: 'Delito de contrabando (LO 12/1995)',
+  texto:
+    'Comete delito de contrabando quien, cuando el valor de los bienes sea igual o superior a 150.000 € ' +
+    '(o 15.000 € si se trata de LABORES DE TABACO), importe/exporte mercancías sin presentarlas en aduana, ' +
+    'las oculte a la acción aduanera, comercie o circule mercancías no comunitarias sin cumplir los ' +
+    'requisitos, o trafique con géneros estancados o prohibidos, entre otros supuestos (art. 2). La pena es ' +
+    'prisión de 1 a 5 años y multa del tanto al séxtuplo del valor (art. 3), superior en grado si hay ' +
+    'organización. Por debajo del umbral, es infracción administrativa (arts. 11-12). Resumen orientativo; BOE.',
+});
 
 /**
  * Se declara el CP también aquí para que el seed penal sea autosuficiente y testeable por sí
@@ -56,6 +85,15 @@ export const NORMAS_PENAL_SEED: Norma[] = [
     tipo: 'ley',
     ambito: 'estatal',
     urlBoe: urlBoe(ID_CP),
+    fechaConsolidacion: null,
+  }),
+  Norma.parse({
+    id: ID_CONTRABANDO,
+    codigo: 'LOC',
+    titulo: 'Ley Orgánica 12/1995, de Represión del Contrabando',
+    tipo: 'ley',
+    ambito: 'estatal',
+    urlBoe: urlBoe(ID_CONTRABANDO),
     fechaConsolidacion: null,
   }),
 ];
@@ -1014,6 +1052,7 @@ const ART_CP_229 = articuloCp({
 });
 
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_LOC_2,
   ART_CP_325,
   ART_CP_334,
   ART_CP_335,
@@ -1128,6 +1167,8 @@ interface DelitoSeedInput {
   penaSoloMulta?: boolean;
   /** Estado editorial; por defecto `pendiente_revision`. Ver `VERIFICADOS_BOE`. */
   revision?: EstadoRevision;
+  /** Código de la norma para el `fuente` de la detención (por defecto 'CP'). P. ej. 'LO 12/1995'. */
+  fuenteNorma?: string;
 }
 
 /**
@@ -1208,6 +1249,7 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-veneno-caza-pesca', // 336 → menos grave
   'del-incendio-forestal', // 352 → menos grave (tipo base; 351/353 escalan en la nota)
   'del-contaminacion-ambiental', // 325 → menos grave
+  'del-contrabando', // LO 12/1995 arts. 2-3 → menos grave (umbral 150.000 € / 15.000 € tabaco)
   // NO se verifican (remisión de pena según cuantía): del-administracion-desleal/del-apropiacion-indebida
   // (248/250, grave si concurre el 250). Al jurista.
 ]);
@@ -1259,7 +1301,7 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
     // `regla` guarda el escenario base y la orientación: el árbol interactivo lo rehidrata.
     regla: reglaDetencion(input.gravedadCp, opcionesDetencion),
     textoCorto: textoConsecuenciaDetencion(resultado),
-    fuente: [`CP art. ${input.articulo.numero}`, ...resultado.fuentes].join('; '),
+    fuente: [`${input.fuenteNorma ?? 'CP'} art. ${input.articulo.numero}`, ...resultado.fuentes].join('; '),
     infraccionId: input.id,
     articuloId: null,
   });
@@ -4105,6 +4147,48 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'perjudicar gravemente los sistemas naturales → prisión 6m-2a + multa 10-14m + inhabilitación; ' +
       'mitad superior si hay peligro grave para la salud. Concurre la Ley 7/2022 de residuos y la ' +
       'normativa sectorial. Segundo revisor humano para el cierre.',
+  }),
+  // --- CONTRABANDO (GC fiscal / resguardo) — LO 12/1995 ---------------------------------------
+  construirDelito({
+    id: 'del-contrabando',
+    articulo: ART_LOC_2,
+    fuenteNorma: 'LO 12/1995',
+    tituloCorto: 'Contrabando (delito)',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 5 años y multa del tanto al séxtuplo del valor (arts. 2 y 3 LO 12/1995); pena ' +
+      'superior en grado si se comete por una organización',
+    textoBoletin:
+      'Importar/exportar mercancías sin presentarlas en aduana, ocultarlas a la acción aduanera, ' +
+      'comerciar o circular géneros no comunitarios sin cumplir los requisitos, o traficar con géneros ' +
+      'estancados o prohibidos (LO 12/1995). ES DELITO cuando el valor es ≥ 150.000 € o, si se trata de ' +
+      'LABORES DE TABACO, ≥ 15.000 €; por debajo de esos umbrales es INFRACCIÓN ADMINISTRATIVA de ' +
+      'contrabando (arts. 11-12, multa proporcional al valor). Procede la intervención (comiso) del ' +
+      'género y del medio de transporte. La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'contrabando',
+      'tabaco de contrabando',
+      'tabaco sin precintas',
+      'cigarrillos de contrabando',
+      'genero estancado',
+      'mercancia sin pasar aduana',
+      'alijo',
+      'contrabando de tabaco',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede la intervención (comiso) de los géneros de contrabando y de los medios empleados para ' +
+          'su comisión, poniéndolos a disposición de la autoridad competente (art. 5 LO 12/1995).',
+        fuente: 'LO 12/1995 art. 5 (comiso)',
+      },
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (LO 12/1995 arts. 2, 3, 5, 11 y 12, leído 2026-09-15): delito de ' +
+      'contrabando cuando el valor ≥ 150.000 € (≥ 15.000 € para labores de tabaco) → prisión 1-5 años + ' +
+      'multa (menos grave). Por debajo, infracción ADMINISTRATIVA (arts. 11-12, multa proporcional 100-350 % ' +
+      'del valor, mínimo 500 €). Área de la GUARDIA CIVIL fiscal/resguardo. Segundo revisor humano para el cierre.',
   }),
 ];
 

@@ -301,6 +301,7 @@ const MATERIA_POR_CODIGO: Record<string, Materia> = {
   CP: 'penal',
   LECrim: 'penal',
   LORPM: 'penal',
+  LOC: 'penal', // LO 12/1995 de represión del contrabando (GC fiscal)
   LOEX: 'extranjeria',
   RA: 'armas',
   LPPP: 'animales',
@@ -854,6 +855,7 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-veneno-caza-pesca': 'pen-medioambiente',
   'del-incendio-forestal': 'pen-medioambiente',
   'del-contaminacion-ambiental': 'pen-medioambiente',
+  'del-contrabando': 'pen-otros',
   'del-trafico-drogas': 'pen-otros',
   'del-tenencia-armas': 'pen-otros',
   'del-maltrato-animal': 'pen-otros',

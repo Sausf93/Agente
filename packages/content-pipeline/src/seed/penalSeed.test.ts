@@ -16,7 +16,7 @@ const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.i
 
 describe('SEED_PENAL: integridad de los delitos', () => {
   it('siembra 65 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(70);
+    expect(SEED_PENAL.infracciones).toHaveLength(71);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -72,8 +72,8 @@ describe('SEED_PENAL: consecuencia de detención (motor LECrim, §4.6)', () => {
       // Lenguaje orientativo, NUNCA imperativo.
       expect(c.textoCorto.toLowerCase()).toMatch(/procede|puede/);
       expect(c.textoCorto.toLowerCase()).not.toMatch(/\bdetén\b|\bdetenga\b/);
-      // Fuente con el artículo del CP y con la LECrim; pie de responsabilidad fijo.
-      expect(c.fuente).toMatch(/CP art\./);
+      // Fuente con el artículo de su norma (CP o LO 12/1995 contrabando) y con la LECrim; pie fijo.
+      expect(c.fuente, item.infraccion.id).toMatch(/(CP|LO 12\/1995) art\./);
       expect(c.fuente).toMatch(/LECrim art\./);
       expect(c.textoCorto).toContain(PIE_DETENCION);
     }
