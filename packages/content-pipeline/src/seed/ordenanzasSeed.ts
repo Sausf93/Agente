@@ -529,6 +529,7 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'patinete electrico',
       'patinete en la acera',
       'patinete por la acera',
+      'vmp',
       'vmp acera',
       'patinete zona peatonal',
       'patin electrico acera',
@@ -536,6 +537,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'patinete a dos',
       'patinete sin luz',
       'patinete tuneado',
+      'patin',
+      'monopatin electrico',
+      'patinete a toda velocidad',
+      'patinete acera peatonal',
+      'cebra patinete',
     ],
     consecuencias: [
       {
@@ -550,11 +556,13 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: circular con VMP por acera/zona peatonal está prohibido ' +
-      'por la Ordenanza municipal de circulación (campaña municipal "las 7 reglas del patinete" cita ' +
-      'hasta 200 €). Confirmar el artículo exacto, la cuantía y si hay pronto pago (reducido) con el ' +
-      'texto consolidado en la sede electrónica y con el revisor jurídico antes de publicar. La ' +
-      'INMOVILIZACIÓN/retención cautelar del VMP es ORIENTATIVA (a confirmar en la ordenanza).',
+      'A VERIFICAR importe y clasificación. IMPORTANTE (cotejado 2026-09-15): la Ordenanza municipal de ' +
+      'circulación de SCTF publicada en la sede es la de 1985 (importes en PESETAS y SIN mención de VMP/' +
+      'patinetes), así que NO hay artículo municipal consolidado que cotejar: el VMP se apoya hoy en el ' +
+      'RGC/LSV estatal y en la campaña municipal "las 7 reglas del patinete" (cita hasta 200 €). Por eso ' +
+      'esta ficha queda pendiente hasta que el Ayuntamiento apruebe una ordenanza de movilidad con VMP; ' +
+      'confirmar entonces artículo, cuantía y pronto pago. La INMOVILIZACIÓN/retención cautelar del VMP es ' +
+      'ORIENTATIVA (a confirmar en la ordenanza).',
   }),
   construirInfraccion({
     id: 'ord-sctf-vmp-sin-casco-menor',
@@ -575,9 +583,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'sin casco patinete',
     ],
     notaRevision:
-      'A VERIFICAR importe, edad y clasificación: la ordenanza (y la campaña municipal) exige casco a ' +
-      'los MENORES de 16 en VMP (cita ~100 €). Confirmar el artículo exacto, el umbral de edad y la ' +
-      'cuantía con el texto consolidado en la sede electrónica y con el revisor jurídico.',
+      'A VERIFICAR importe, edad y clasificación: la campaña municipal exige casco a los MENORES de 16 en ' +
+      'VMP (cita ~100 €). Ojo (cotejado 2026-09-15): la ordenanza de circulación de SCTF en la sede es de ' +
+      '1985 (sin VMP), así que no hay artículo municipal consolidado; el casco del menor se apoya en el ' +
+      'RGC/LSV estatal y la campaña. Confirmar artículo, umbral de edad y cuantía cuando exista ordenanza ' +
+      'de movilidad municipal, con el revisor jurídico.',
   }),
   // `ord-sctf-zona-azul` ELIMINADA (revisor jurídico, 2026-09): la zona azul aún no está operativa
   // en Santa Cruz (proyecto 2026-2028) y sus 60/30 € eran una cifra sin fuente sobre una norma
@@ -590,12 +600,13 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
     importeEur: 750,
     importeReducidoEur: null,
     textoBoletin:
-      'Llevar un perro suelto o sin correa por la vía o espacios públicos, sin el control exigido por el ' +
-      'art. 12 de la ordenanza de protección y tenencia de animales. Es infracción LEVE (hasta 750 €, ' +
-      'techo del tramo, graduable). SE AGRAVA a GRAVE (hasta 1.500 €) si el animal está suelto donde ' +
-      'esté expresamente prohibido Y causa molestias a personas u otros animales o daña el entorno. Si ' +
-      'el perro es potencialmente peligroso (PPP) aplica la Ley 50/1999 (ficha propia, sanciones mayores). ' +
-      'La valoración final corresponde al agente y al órgano municipal.',
+      'PRIMERO comprueba: si el perro es potencialmente peligroso (PPP), NO es esta ficha → aplica la Ley ' +
+      '50/1999 (ficha propia, sanciones mayores). Para el resto: llevar un perro suelto o sin correa por la ' +
+      'vía o espacios públicos, sin el control exigido por el art. 12 de la ordenanza de protección y ' +
+      'tenencia de animales, es infracción LEVE (hasta 750 €, techo del tramo, graduable). SE AGRAVA a ' +
+      'GRAVE (hasta 1.500 €) si el animal está suelto donde esté expresamente prohibido Y causa molestias a ' +
+      'personas u otros animales o daña el entorno. La valoración final corresponde al agente y al órgano ' +
+      'municipal.',
     terminos: [
       'perro suelto',
       'perro sin correa',
@@ -603,6 +614,9 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'perro suelto en la calle',
       'can suelto',
       'perro sin correa en la calle',
+      'perro sin cadena',
+      'can sin correa',
+      'perro sin bozal',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF (arts. ' +
@@ -619,11 +633,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
     importeEur: 1500,
     importeReducidoEur: null,
     textoBoletin:
-      'No recoger de forma inmediata los excrementos depositados por un animal de compañía en la vía o ' +
-      'espacios públicos y privados de uso común (art. 14). La ordenanza lo tipifica como infracción ' +
-      'GRAVE (hasta 1.500 €, techo del tramo, graduable). Las faltas menores del art. 14 (no depositar los ' +
-      'excrementos higiénicamente en los contenedores, no limpiar lo afectado) son LEVES (hasta 750 €). La ' +
-      'valoración final corresponde al agente y al órgano municipal.',
+      'GRAVE (hasta 1.500 €, techo del tramo, graduable): no recoger de forma inmediata los excrementos ' +
+      'depositados por un animal de compañía en la vía o espacios públicos y privados de uso común (art. ' +
+      '14). OJO al deslinde: las faltas MENORES del art. 14 (no depositar los excrementos higiénicamente en ' +
+      'los contenedores, no limpiar lo afectado) son LEVES (hasta 750 €), no esta. La valoración final ' +
+      'corresponde al agente y al órgano municipal.',
     terminos: [
       'excrementos',
       'caca de perro',
@@ -632,6 +646,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'cacas de perro',
       'no recoge la caca',
       'heces perro',
+      'no recoge la mierda',
+      'cagada de perro',
+      'excremento en la acera',
+      'no recoge excremento',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF (arts. ' +
@@ -648,10 +666,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
     importeEur: 750,
     importeReducidoEur: null,
     textoBoletin:
-      'No inscribir al perro en el CENSO MUNICIPAL de animales, incumpliendo la ordenanza municipal de ' +
-      'protección y tenencia de animales (infracción LEVE, hasta 750 €, techo del tramo, graduable). El ' +
-      'deber de IDENTIFICACIÓN por microchip es también ESTATAL (Ley 7/2023, ficha propia, infracción ' +
-      'grave): esta ficha es el censo/identificación local.',
+      'DESLINDE primero: ¿censo municipal o microchip? El microchip NO identificado es deber ESTATAL de la ' +
+      'Ley 7/2023 (ficha propia, GRAVE, importes mucho mayores). ESTA ficha es solo el CENSO/identificación ' +
+      'municipal: no inscribir al perro en el censo municipal de animales incumple la ordenanza y es ' +
+      'infracción LEVE (hasta 750 €, techo del tramo, graduable). La valoración final corresponde al agente ' +
+      'y al órgano municipal.',
     terminos: [
       'perro sin censar',
       'sin censo animal',
@@ -659,6 +678,9 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'no inscrito en el censo',
       'censo municipal de animales',
       'dar de alta el perro en el ayuntamiento',
+      'perro sin chip',
+      'sin microchip municipal',
+      'perro no registrado',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF ' +
@@ -694,6 +716,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'botellon ruido',
       'ruido nocturno',
       'fiesta ruidosa',
+      'botellon molesto',
+      'vecino ruidoso',
+      'obras fuera de hora',
+      'local ruidoso',
     ],
     notaRevision:
       'A VERIFICAR importe y clasificación: los ruidos molestos se sancionan por la ORDENANZA municipal de ' +
@@ -779,6 +805,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'sin etiqueta ambiental',
       'distintivo ambiental',
       'sin etiqueta',
+      'camara zbe',
+      'multa etiqueta',
+      'coche sin distintivo',
+      'acceso restringido centro',
     ],
     // Sin consecuencia estructurada: el régimen sancionador aún no es aplicable, por lo que no hay
     // medida (denuncia/decomiso/cese) que proceda hoy. La orientación va en el texto del boletín.
@@ -817,6 +847,12 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'escupir en la calle',
       'necesidades en la via publica',
       'cagar en la calle',
+      'meando',
+      'se mea',
+      'orina calle',
+      'escupitajo',
+      'salivazo',
+      'pichar en la calle',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 38.6 y 52, leídos 2026-09-15 en la ' +
@@ -875,6 +911,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'muebles junto al contenedor',
       'voluminosos',
       'sacar la basura grande',
+      'sofa en la calle',
+      'trastos vertedero',
+      'escombros',
+      'chatarra en la acera',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OMGRL de SCTF (arts. 27, 50 y 52, leídos 2026-09-15): el ' +
@@ -995,10 +1035,11 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
     importeReducidoEur: null,
     textoBoletin:
       'Consumir bebidas alcohólicas en la vía pública fuera de los establecimientos de hostelería y ' +
-      'kioscos autorizados (art. 109 de la ordenanza de policía y buen gobierno). La ordenanza prohíbe la ' +
-      'conducta pero NO fija su cuantía (remite a la legislación vigente, art. 135): el importe debe ' +
-      'consultarse. Puede concurrir con la normativa de limpieza si se ensucia la vía. La valoración final ' +
-      'corresponde al agente y al órgano municipal.',
+      'kioscos autorizados (art. 109 de la ordenanza de policía y buen gobierno). DESLINDE clave: la ' +
+      'ordenanza prohíbe la conducta pero NO fija su cuantía (art. 135 remite a la legislación vigente); si ' +
+      'hay ALTERACIÓN del orden o menores puede entrar la LO 4/2015 (estatal), y si hay MENORES bebiendo, la ' +
+      'normativa de protección del menor. Puede concurrir con la normativa de limpieza si se ensucia la vía. ' +
+      'El importe municipal debe consultarse. La valoración final corresponde al agente y al órgano municipal.',
     terminos: [
       'botellon',
       'beber en la calle',
@@ -1007,6 +1048,10 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'litrona en la calle',
       'beber en la plaza',
       'botellona',
+      'botellodromo',
+      'beber en la via',
+      'menores bebiendo',
+      'beber en el parque',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OM de policía y buen gobierno de SCTF (art. 109 y art. ' +
@@ -1066,11 +1111,18 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'venta ambulante',
       'top manta',
       'mantero',
+      'manteros',
+      'manta',
       'vender sin licencia',
       'venta ilegal calle',
       'puesto sin permiso',
+      'puesto ilegal',
       'vender en la via publica',
       'venta sin autorizacion',
+      'vendedor ilegal',
+      'cd piratas',
+      'gafas falsas',
+      'vender en el rastro',
     ],
     notaRevision:
       'ENTRADA CONSULTABLE: la ordenanza EXISTE (sede SCTF, trámite t491) pero NO se ha confirmado el ' +

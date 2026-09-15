@@ -536,6 +536,22 @@ Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
   LO 5/2000), extranjeros (irregular ≠ delito), uso de fuerza proporcional (art. 5 LO 2/1986), grabar/ser
   grabado — requieren su propio pase de revisor-juridico.
 
+### BACKLOG municipal SCTF (validador-calle, 2026-09-15) — fichas nuevas de alto uso local
+Ola municipal siguiente (crear con `nueva-infraccion`; confirmar artículo/cuantía contra el texto
+consolidado antes de `verificado`; el navegador bloquea la descarga → `python urllib`+`pypdf`):
+- **`ord-sctf-vado`** (obstaculizar vado señalizado; consecuencia estrella = grúa). Muy consultada.
+- **`ord-sctf-carga-descarga`** (fuera de horario / zona C+D).
+- **`ord-sctf-gorrillas`** (aparcacoches no autorizado; típico Heliodoro/puerto/mercadillos).
+- **Ruido con VEHÍCULO** (escape libre / música de coche): variante o ficha aparte de `ord-sctf-ruido-convivencia`.
+- **`ord-sctf-contenedor-obra`** (saco/contenedor de obra en vía sin autorización). Menos urgentes: mendicidad, publicidad/carteles.
+- **Consecuencias operativas estructuradas** (pendiente, requiere confirmar base en cada ordenanza):
+  venta-ambulante → `decomiso` de género (si la ordenanza lo prevé); abandono-enseres → retirada +
+  aviso del servicio de voluminosos; alcohol/acampada → identificación + retirada de bebidas + cese /
+  apagar fuego. Hoy van en el `textoBoletin` (prosa), no como chip de acción.
+- **Dato de calle que falta mostrar** (la nota ya lo pide): franja horaria de contenedores (¿19:00–21:00?),
+  y qué playas tienen zona habilitada para fumar (Las Teresitas…). NOTA VMP: la OM de circulación de SCTF
+  en la sede es de 1985 (pesetas, sin VMP) → el VMP no tiene artículo municipal cotejable; queda pendiente.
+
 ### BACKLOG priorizado de la evaluación de calle (4 agentes) — SIGUIENTE
 Para el CONTENIDO nuevo: `nueva-infraccion` + `revisor-juridico` (NO publicar sin revisor).
 - **Contenido (mayor retorno):**
