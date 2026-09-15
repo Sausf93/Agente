@@ -22,8 +22,17 @@ Windows o de máquina) continúe el trabajo sin perder contexto. Complementa a
     181.2), ya aplicada.
   - **LOSC 36.23** (uso no autorizado de imágenes de agentes) verificado con la interpretación conforme de la
     **STC 172/2020** en la nota (la mera grabación no es infracción; se exige peligro concreto).
-  - **LOEX 58.3.a** (regreso tras expulsión → devolución, no detención penal) verificado.
-  - Pendientes de revisión: 131 → **120**.
+  - **LOEX**: 58.3.a (regreso tras expulsión → devolución, no detención penal; el revisor corrigió la cita
+    penal: no es 197/197 bis sino el deslinde del 468 CP, y no lo hay por ser medida administrativa) y art. 4.1
+    ("no llevar los papeles encima ≠ estancia irregular") verificados.
+  - **Penal con base clara**: defraudación de fluido (255), amenazas leves (171.7; deslinde 171.4 VG y 169) y
+    calumnias/injurias (206/209/215, querella del ofendido) verificados. Solo quedan al jurista los 2 penales
+    de remisión por cuantía (apropiación indebida 253 / administración desleal 252).
+  - **Caza de Canarias (Ley 7/1998)**: las 6 fichas de caza (GC rural) verificadas — clasificación (arts.
+    47/49/50) e importes del art. 51 (sigue en pesetas en el consolidado → conversión a euros exacta: leve
+    30,05-150,25; grave 601,02-3.005,06; muy grave 3.005,07-9.015,18) cotejados en el BOE.
+  - Pendientes de revisión: 131 → **110**. Todo el lote pasó por `revisor-juridico` (APTO con 2 correcciones,
+    ambas aplicadas: ordinal 181.4 y cita 468 CP).
 - Todo revisado con multiagentes (`revisor-juridico` + `validador-calle`), commits en verde (CI) y el paquete
   de contenido republicado en Expo `preview`. Commits: `0798040`, `fca182b`, `74bb455`, `3ae8ac0`, `a733f25`,
   `735ec43`.
