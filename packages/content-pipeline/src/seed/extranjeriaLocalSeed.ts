@@ -516,6 +516,7 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'ext-favorecer-inmigracion-clandestina', // 54.1.b
   'ext-matrimonio-conveniencia', // 54.1.f
   'ext-quebrantar-prohibicion-entrada', // 58.3.a (devolución) — deslinde no_sancionador cotejado en el BOE
+  'ext-no-portar-documentacion', // art. 4.1 (deber de conservar la documentación) — deslinde no_sancionador
   // PPP — Ley 50/1999 art. 13 (muy graves 13.1 / graves 13.2 / leves residual 13.4; cuantías 13.5)
   'ppp-sin-licencia', // 13.1.b
   'ppp-abandono', // 13.1.a
@@ -849,10 +850,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'ENTRADA CONSULTABLE (deslinde): la obligación de portar la documentación es del art. 4.1 LO 4/2000, ' +
-      'pero NO llevarla encima no es sin más infracción grave (no equivale a la estancia irregular del 53.1.a). ' +
-      'Modelada como no_sancionador (sin importe) por ser deslinde, no tipo sancionador autónomo. MENSAJE CLAVE ' +
-      'a preservar. Segundo revisor humano para el cierre.',
+      'ENTRADA CONSULTABLE (deslinde) COTEJADA contra el BOE (LO 4/2000 art. 4, leído 2026-09-15): el art. 4.1 ' +
+      'fija el "derecho y el deber de CONSERVAR la documentación que acredite su identidad y su situación en ' +
+      'España", pero NO llevarla encima no es sin más infracción grave (no equivale a la estancia irregular ' +
+      'del 53.1.a): cabe acreditarla por otros medios y aportarla después. Modelada como no_sancionador (sin ' +
+      'importe) por ser deslinde, no tipo sancionador autónomo. MENSAJE CLAVE a preservar.',
   }),
   construirInfraccion({
     id: 'ext-quebrantar-prohibicion-entrada',
