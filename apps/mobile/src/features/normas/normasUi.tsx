@@ -35,6 +35,7 @@ import { Banner } from '@/ui/components/Banner';
 import { Button } from '@/ui/components/Button';
 import { ListRow } from '@/ui/components/ListRow';
 import { MonogramPill } from '@/ui/components/LeadingPill';
+import { PressableScale } from '@/ui/components/PressableScale';
 import { hapticSelection } from '@/ui/haptics';
 import { useSettingsStore } from '@/store/settings';
 import { useFeedbackStore } from '@/features/feedback/store';
@@ -208,6 +209,84 @@ export function FilaSubtema({
         </View>
       }
     />
+  );
+}
+
+/**
+ * TARJETA de un SUB-TEMA para el grid de dos columnas (estilo SPPLB, más bonito que la lista). Mismo
+ * lenguaje visual que las tarjetas de materia del nivel 1: icono en pastilla, recuento de fichas y
+ * etiqueta. Se usa en `MateriaDetalleScreen` cuando la materia se explora por sub-temas.
+ */
+export function TarjetaSubtema({
+  item,
+  onPress,
+}: {
+  item: GrupoSubtema;
+  onPress: (key: string) => void;
+}) {
+  const t = useAppTheme();
+  const Icono = ICONO_SUBTEMA[item.icono] ?? BookOpen;
+  return (
+    <PressableScale
+      accessibilityRole="button"
+      accessibilityLabel={`${item.label}. ${fichasSubtemaLabel(item.fichas.length)}.`}
+      accessibilityHint="Abre las fichas de este sub-tema"
+      onPress={() => onPress(item.key)}
+      style={{
+        flex: 1,
+        minHeight: 104,
+        justifyContent: 'space-between',
+        gap: t.spacing.sm,
+        borderRadius: t.radius.md,
+        borderWidth: 1,
+        borderColor: t.color.border,
+        backgroundColor: t.color.surface,
+        padding: t.spacing.base,
+        ...(t.mode === 'light' ? t.elevation.e1 : null),
+      }}
+    >
+      <View
+        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}
+      >
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: t.radius.sm,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: t.color.surfaceAlt,
+          }}
+        >
+          <Icono size={22} color={t.color.accent} strokeWidth={2} />
+        </View>
+        <View
+          style={{
+            minWidth: 24,
+            paddingHorizontal: t.spacing.xs,
+            paddingVertical: 2,
+            borderRadius: t.radius.pill,
+            backgroundColor: t.color.surfaceAlt,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text
+            style={{ color: t.color.textSecondary, ...t.typography.scale.label }}
+            maxFontSizeMultiplier={1.4}
+          >
+            {item.fichas.length}
+          </Text>
+        </View>
+      </View>
+      <Text
+        numberOfLines={2}
+        maxFontSizeMultiplier={1.6}
+        style={{ color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}
+      >
+        {item.label}
+      </Text>
+    </PressableScale>
   );
 }
 

@@ -9,7 +9,7 @@ import { SearchBar } from '@/ui/components/SearchBar';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
-import { FilaInfraccion, FilaNorma, FilaSubtema, FranjaTerritorial } from './normasUi';
+import { FilaInfraccion, FilaNorma, FranjaTerritorial, TarjetaSubtema } from './normasUi';
 import {
   agruparPorAmbito,
   agruparPorSubtema,
@@ -214,20 +214,29 @@ export function MateriaDetalleScreen({
                 </View>
               ) : null
             ) : usaSubtemas ? (
+              // Sub-temas en GRID de dos columnas (estilo SPPLB, más bonito que la lista vertical).
               <View>
                 <SeccionLabel t={t} texto="Explorar por temas" />
-                {subtemas!.map((g) => (
-                  <FilaSubtema
-                    key={g.key}
-                    item={g}
-                    onPress={(key) =>
-                      router.push({
-                        pathname: '/normas/subtema/[materia]/[subtema]',
-                        params: { materia, subtema: key },
-                      })
-                    }
-                  />
-                ))}
+                <View style={{ paddingHorizontal: t.spacing.base, gap: t.spacing.md }}>
+                  {enFilasDe(subtemas!, 2).map((fila, i) => (
+                    <View key={i} style={{ flexDirection: 'row', gap: t.spacing.md }}>
+                      {fila.map((g) => (
+                        <TarjetaSubtema
+                          key={g.key}
+                          item={g}
+                          onPress={(key) =>
+                            router.push({
+                              pathname: '/normas/subtema/[materia]/[subtema]',
+                              params: { materia, subtema: key },
+                            })
+                          }
+                        />
+                      ))}
+                      {/* Relleno para que una fila impar no estire la última tarjeta a lo ancho. */}
+                      {fila.length === 1 ? <View style={{ flex: 1 }} /> : null}
+                    </View>
+                  ))}
+                </View>
               </View>
             ) : infracciones.length > 0 ? (
               <View>
@@ -296,6 +305,13 @@ export function MateriaDetalleScreen({
       />
     </View>
   );
+}
+
+/** Parte una lista en filas de `n` (para pintar un grid dentro de un SectionList sin numColumns). */
+function enFilasDe<T>(items: readonly T[], n: number): T[][] {
+  const filas: T[][] = [];
+  for (let i = 0; i < items.length; i += n) filas.push(items.slice(i, i + n));
+  return filas;
 }
 
 /** Etiqueta de sección (mayúsculas, tenue) reutilizada en las cabeceras de Normas. */
