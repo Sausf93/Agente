@@ -178,6 +178,16 @@ el "Borrador beta" a las `verificado`.
 
 
 ### YA HECHO el 2026-09-15 (run autónomo largo) — `main`, CI verde, Expo `preview` publicado
+- **FEATURE "MI ORDENANZA"** (commit `4c7a72b`): la búsqueda nº1 del Local (zona azul/ORA, carga y
+  descarga, vado, PMR) ya no muere en "Nada exacto". El agente pone UNA vez el importe+artículo de SU
+  ordenanza (tabla local `ordenanza_propia`, `user.db` v10, offline) y se reutiliza en el boletín;
+  tarjeta "TU ORDENANZA" en el buscador. Módulo puro `conceptosAparcamiento` (testeado), store,
+  pantalla `/mi-ordenanza/[concepto]`. Es el diferencial "solo ya vale 2,99 €" (perspectiva Local).
+- **Auditoría de calle (validador-calle) — pendiente de decisión del cofundador**: el buscador usa
+  AND entre tokens; frases naturales ("conductor bebido", "me llevó la grúa") pueden caer a cero. Un
+  fallback a OR mejora el recall PERO rompe la regla deliberada de que "zona azul"/"sin ticket" no
+  devuelvan la ficha estatal (falso dato). Se dejó SIN aplicar (decisión de precisión/recall). Sí se
+  aplicó la parte segura: enriquecer sinónimos (alcoholemia, móvil).
 Paquete final del día: **33 normas, 3679 artículos, 332 infracciones (131 pendientes), 3036 sinónimos.**
 Cada ronda: build:content → copiar .db/.manifest → tests (hoy 974) → tsc → commit → CI verde (API GitHub)
 → Expo. TODO el contenido nuevo/tocado se revisó con MULTIAGENTES (revisor-jurídico + validador-calle) y

@@ -2046,6 +2046,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'en la parada del bus',
       'mal estacionado',
       'en zona prohibida',
+      // Búsqueda por la CONSECUENCIA (así piensa el agente, no por la infracción): "me llevo el coche".
+      'me llevo el coche',
+      'se lo lleva la grua',
+      'llamar a la grua',
+      'no puede seguir aparcado',
     ],
     consecuencias: [
       {
