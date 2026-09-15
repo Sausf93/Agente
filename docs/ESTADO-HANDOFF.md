@@ -97,7 +97,15 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
-### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 155/307 ya verificadas (>50 %)
+### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 161/307 ya verificadas (52 %)
+(Añadidas al día 2026-09-15: transporte LOTT 140/141 —sin título, tacógrafo, ADR, exceso de masa— y
+armas LO 4/2015 —portar fuera de lugar 36.10, documentación 37.8—. Las 146 pendientes son, por diseño:
+CONSULTAS no sancionadoras (~15, no son sanciones que "verificar"); ordenanzas MUNICIPALES SCTF y
+autonómico CANARIAS (~30, sin texto sancionador público que cotejar); régimen de ARMAS restante (RD
+137/1993), TRANSPORTE niche (ROTT, RD escolar 443/2001, ATP) y permisos (RGCond) —requieren leer esos
+reglamentos enteros—; animal chapeau/listado positivo/curso-seguro (reglamento pendiente); y penal
+SENSIBLE (sexual/menores) + bundles (calumnias/injurias, defraudación de fluido, amenazas leves) —del
+jurista—. La INFORMACIÓN está toda (307 fichas, > SPPLB); lo pendiente es verificación especializada.)
 (Al día 2026-09-15: penal 51, seguridad ciudadana 41, tráfico 34, extranjería 12, PPP 9, bienestar
 animal 8. Tráfico cotejado contra LSV arts. 75/76/77/80 + Anexos II [puntos] y IV [velocidad]:
 velocidad, alcohol, drogas, móvil, cinturón/casco/SRI, semáforo/stop/preferencia, distancia,
