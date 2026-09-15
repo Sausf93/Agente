@@ -200,6 +200,25 @@ export const USER_DB_MIGRATIONS: readonly UserDbMigration[] = [
       ALTER TABLE feedback ADD COLUMN respuesta TEXT;
     `,
   },
+  {
+    // "MI ORDENANZA" (§4.5, la que el propio userDb anticipaba): el importe y el artículo de la
+    // ORDENANZA de SU municipio para conceptos de aparcamiento regulado (zona azul/ORA, carga y
+    // descarga, vado, reservado PMR) que NO están en el paquete (varían por municipio). El agente
+    // los teclea UNA vez y se reutilizan en el boletín. Local-first (ADR-001): viven SOLO en el
+    // dispositivo, NUNCA viajan a un servidor. NO son datos de terceros (es la tarifa de su
+    // ordenanza, un dato público que el agente conoce), así que sí se pueden persistir aquí.
+    version: 10,
+    sql: `
+      CREATE TABLE IF NOT EXISTS ordenanza_propia (
+        concepto TEXT PRIMARY KEY NOT NULL,
+        importe_eur REAL NOT NULL,
+        importe_reducido_eur REAL,
+        articulo TEXT,
+        municipio TEXT,
+        updated_at TEXT NOT NULL
+      );
+    `,
+  },
 ];
 
 /** Versión de esquema objetivo de la base local (la mayor de las migraciones). */

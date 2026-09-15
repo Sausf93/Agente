@@ -1,9 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { AlertTriangle, BookOpen, ChevronRight, SearchX, Sparkles } from 'lucide-react-native';
+import {
+  AlertTriangle,
+  BookOpen,
+  ChevronRight,
+  SearchX,
+  Sparkles,
+  SquareParking,
+} from 'lucide-react-native';
 import type { Cuerpo } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import type { Theme } from '@/ui/theme';
@@ -14,11 +21,18 @@ import { SeverityChip } from '@/ui/components/SeverityChip';
 import { Badge } from '@/ui/components/Badge';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { Button } from '@/ui/components/Button';
+import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
 import { useReduceMotion } from '@/ui/motion';
 import { CONSECUENCIA_LABEL, formatEuros } from '@/features/ficha/format';
 import { HomeInicio } from '@/features/inicio/HomeInicio';
 import { accesosRapidosPara } from '@/features/inicio/accesosRapidos';
 import { useSettingsStore } from '@/store/settings';
+import {
+  conceptoDeConsulta,
+  type ConceptoAparcamiento,
+} from '@/features/miOrdenanza/conceptosAparcamiento';
+import { useOrdenanzaPropiaStore } from '@/features/miOrdenanza/ordenanzaPropiaStore';
+import type { OrdenanzaPropia } from '@/db/userDb';
 import { useBuscadorStore } from './store';
 import { useRecientesStore } from './recientesStore';
 import { resaltarCoincidencia } from './resaltar';
@@ -57,6 +71,23 @@ export function BuscadorScreen() {
   // ámbito de un resultado municipal (ordenanza del propio municipio del agente).
   const cuerpo = useSettingsStore((s) => s.cuerpo);
   const municipioNombre = useSettingsStore((s) => s.municipioNombre);
+
+  // "MI ORDENANZA": si la consulta es un concepto de aparcamiento regulado (zona azul, carga y
+  // descarga, vado, PMR), que depende de la ordenanza del municipio y no viaja en el paquete, se
+  // ofrece al agente poner/editar SU importe (guardado local) y, si ya lo tiene, se muestra arriba.
+  const cargarOrdenanzas = useOrdenanzaPropiaStore((s) => s.cargar);
+  const ordenanzasLoaded = useOrdenanzaPropiaStore((s) => s.loaded);
+  useEffect(() => {
+    if (!ordenanzasLoaded) void cargarOrdenanzas();
+  }, [ordenanzasLoaded, cargarOrdenanzas]);
+  const conceptoAparc = useMemo<ConceptoAparcamiento | null>(
+    () => (consulta.trim().length > 0 ? conceptoDeConsulta(consulta) : null),
+    [consulta],
+  );
+  const ordenanzaGuardada = useOrdenanzaPropiaStore((s) =>
+    conceptoAparc ? (s.registros[conceptoAparc.id] ?? null) : null,
+  );
+  const abrirMiOrdenanza = (conceptoId: string) => router.push(`/mi-ordenanza/${conceptoId}`);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -115,6 +146,19 @@ export function BuscadorScreen() {
           keyboardDismissMode="on-drag"
           style={{ marginTop: t.spacing.md }}
           contentContainerStyle={{ paddingBottom: insets.bottom + t.spacing.xxl }}
+          ListHeaderComponent={
+            // Tarjeta "TU ORDENANZA" arriba de los resultados cuando el agente ya guardó su importe
+            // para el concepto de aparcamiento que está buscando (zona azul, etc.).
+            conceptoAparc && ordenanzaGuardada ? (
+              <TuOrdenanzaCard
+                t={t}
+                concepto={conceptoAparc}
+                registro={ordenanzaGuardada}
+                municipioNombre={municipioNombre}
+                onEditar={() => abrirMiOrdenanza(conceptoAparc.id)}
+              />
+            ) : null
+          }
           renderItem={({ item, index }) => (
             <FilaResultado
               t={t}
@@ -147,6 +191,9 @@ export function BuscadorScreen() {
               consulta={consulta}
               cuerpo={cuerpo}
               hayArticulos={articulos.length > 0}
+              conceptoAparc={conceptoAparc}
+              tieneOrdenanza={!!ordenanzaGuardada}
+              onCrearOrdenanza={() => conceptoAparc && abrirMiOrdenanza(conceptoAparc.id)}
               onReportar={() => router.push('/feedback')}
               onExplorar={() => router.push('/normas')}
             />
@@ -405,6 +452,83 @@ function FilaResultado({
 }
 
 /**
+ * Tarjeta "TU ORDENANZA" (§4.5): cuando el agente busca un concepto de aparcamiento regulado (zona
+ * azul, carga y descarga, vado, PMR) para el que YA guardó el importe de su ordenanza, se muestra
+ * arriba de los resultados como si fuera su propia ficha, con el importe y el boletín listo para
+ * copiar. Un toque la abre para editarla.
+ */
+function TuOrdenanzaCard({
+  t,
+  concepto,
+  registro,
+  municipioNombre,
+  onEditar,
+}: {
+  t: Theme;
+  concepto: ConceptoAparcamiento;
+  registro: OrdenanzaPropia;
+  municipioNombre: string | null;
+  onEditar: () => void;
+}) {
+  const boletin = concepto.boletin({
+    importeEur: registro.importeEur,
+    articulo: registro.articulo,
+    municipio: registro.municipio ?? municipioNombre,
+  });
+  return (
+    <View style={{ paddingHorizontal: t.spacing.base, paddingBottom: t.spacing.sm }}>
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`Tu ordenanza: ${concepto.label}. Importe ${formatEuros(registro.importeEur)}. Toca para editar.`}
+        accessibilityHint="Edita el importe o el artículo de tu ordenanza"
+        onPress={onEditar}
+        style={{
+          borderRadius: t.radius.md,
+          borderWidth: 1.5,
+          borderColor: t.color.accent,
+          backgroundColor: t.color.accentWeak,
+          padding: t.spacing.md,
+          gap: t.spacing.sm,
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm }}>
+          <SquareParking size={18} color={t.color.accent} strokeWidth={2.2} />
+          <Text
+            style={{
+              color: t.color.accent,
+              ...t.typography.scale.caption,
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+            }}
+          >
+            Tu ordenanza{municipioNombre ? ` · ${municipioNombre}` : ''}
+          </Text>
+          <View style={{ flex: 1 }} />
+          <Text style={{ color: t.color.accent, ...t.typography.scale.caption, fontWeight: '600' }}>
+            Editar
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: t.spacing.sm }}>
+          <Text style={{ flex: 1, color: t.color.textPrimary, ...t.typography.scale.bodyStrong }}>
+            {concepto.label}
+          </Text>
+          <Text
+            style={{ color: t.color.textPrimary, ...t.typography.scale.titleM, fontVariant: ['tabular-nums'] }}
+          >
+            {formatEuros(registro.importeEur)}
+            {registro.importeReducidoEur !== null ? ` · ${formatEuros(registro.importeReducidoEur)}` : ''}
+          </Text>
+        </View>
+      </PressableScale>
+      <View style={{ marginTop: t.spacing.sm }}>
+        <CopyBulletinButton texto={boletin} label="Copiar boletín" />
+      </View>
+    </View>
+  );
+}
+
+/**
  * Ejemplos de búsqueda ADAPTADOS AL CUERPO (§4.3): las sugerencias no deben oler a tráfico para
  * quien no lo trabaja. Se toman de los accesos rápidos del cuerpo (fuente única), en formato de
  * frase entrecomillada. Un token extra ("RGC 18"/"LOSC 16") recuerda que también se busca por artículo.
@@ -426,6 +550,9 @@ function EstadoVacio({
   consulta,
   cuerpo,
   hayArticulos,
+  conceptoAparc,
+  tieneOrdenanza,
+  onCrearOrdenanza,
   onReportar,
   onExplorar,
 }: {
@@ -436,6 +563,9 @@ function EstadoVacio({
   consulta: string;
   cuerpo: Cuerpo | null;
   hayArticulos: boolean;
+  conceptoAparc: ConceptoAparcamiento | null;
+  tieneOrdenanza: boolean;
+  onCrearOrdenanza: () => void;
   onReportar: () => void;
   onExplorar: () => void;
 }) {
@@ -445,6 +575,31 @@ function EstadoVacio({
   // Mientras busca con texto: SKELETON de filas en vez de un spinner que salta (P1-10).
   if (buscando && consulta.trim().length > 0) {
     return <SkeletonRows count={6} />;
+  }
+
+  // APARCAMIENTO REGULADO (§4.5): la consulta ("zona azul", "sin ticket"…) apunta a un concepto cuya
+  // sanción fija la ORDENANZA del municipio y no viaja en el paquete. En vez del genérico "Nada
+  // exacto", se invita a poner el importe propio (si ya lo tiene, la tarjeta de arriba lo muestra y
+  // aquí no se pinta nada más).
+  if (conceptoAparc && !sinContenido) {
+    if (tieneOrdenanza) return null;
+    return (
+      <View style={{ paddingTop: t.spacing.xl, paddingHorizontal: t.spacing.xl, gap: t.spacing.md, alignItems: 'center' }}>
+        <SquareParking size={44} color={t.color.accent} strokeWidth={1.75} />
+        <Text style={{ color: t.color.textPrimary, ...t.typography.scale.titleM, textAlign: 'center' }}>
+          Esto depende de tu ordenanza
+        </Text>
+        <Text style={{ color: t.color.textSecondary, ...t.typography.scale.body, textAlign: 'center' }}>
+          La sanción de «{conceptoAparc.label.toLowerCase()}» la fija el ayuntamiento y varía por
+          municipio, por eso no viaja en la app. Pon el importe y el artículo de TU ordenanza (se
+          guarda solo en tu móvil) y lo tendrás listo para el boletín.
+        </Text>
+        <View style={{ alignSelf: 'stretch', marginTop: t.spacing.sm, gap: t.spacing.sm }}>
+          <Button title="Poner el importe de mi ordenanza" onPress={onCrearOrdenanza} />
+          <Button title="Explorar las normas por temas" variant="secondary" onPress={onExplorar} />
+        </View>
+      </View>
+    );
   }
 
   let titulo: string;

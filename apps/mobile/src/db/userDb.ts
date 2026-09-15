@@ -588,6 +588,66 @@ export async function listUsos(): Promise<UsoInfraccion[]> {
 }
 
 // ---------------------------------------------------------------------------
+// "Mi ordenanza" (§4.5) — importe/artículo de la ordenanza del agente, solo en el dispositivo
+// ---------------------------------------------------------------------------
+
+/** Registro de "mi ordenanza": la tarifa que el agente fija para un concepto de aparcamiento. */
+export interface OrdenanzaPropia {
+  concepto: string;
+  importeEur: number;
+  importeReducidoEur: number | null;
+  articulo: string | null;
+  municipio: string | null;
+  updatedAt: string;
+}
+
+interface OrdenanzaPropiaRow {
+  concepto: string;
+  importe_eur: number;
+  importe_reducido_eur: number | null;
+  articulo: string | null;
+  municipio: string | null;
+  updated_at: string;
+}
+
+/** Lista todas las tarifas de "mi ordenanza" guardadas en el dispositivo. */
+export async function listOrdenanzasPropias(): Promise<OrdenanzaPropia[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<OrdenanzaPropiaRow>('SELECT * FROM ordenanza_propia');
+  return rows.map((r) => ({
+    concepto: r.concepto,
+    importeEur: r.importe_eur,
+    importeReducidoEur: r.importe_reducido_eur,
+    articulo: r.articulo,
+    municipio: r.municipio,
+    updatedAt: r.updated_at,
+  }));
+}
+
+/** Guarda (upsert) la tarifa de un concepto. `updatedAt` lo inyecta el llamante para poder testear. */
+export async function upsertOrdenanzaPropia(o: OrdenanzaPropia): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO ordenanza_propia
+       (concepto, importe_eur, importe_reducido_eur, articulo, municipio, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?)
+     ON CONFLICT(concepto) DO UPDATE SET
+       importe_eur = excluded.importe_eur,
+       importe_reducido_eur = excluded.importe_reducido_eur,
+       articulo = excluded.articulo,
+       municipio = excluded.municipio,
+       updated_at = excluded.updated_at`,
+    [o.concepto, o.importeEur, o.importeReducidoEur, o.articulo, o.municipio, o.updatedAt],
+  );
+}
+
+/** Borra la tarifa de un concepto del dispositivo. */
+export async function deleteOrdenanzaPropia(concepto: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM ordenanza_propia WHERE concepto = ?', [concepto]);
+}
+
+// ---------------------------------------------------------------------------
 // Banderas locales de la app (clave/valor) — p. ej. "novedades vistas hasta"
 // ---------------------------------------------------------------------------
 
