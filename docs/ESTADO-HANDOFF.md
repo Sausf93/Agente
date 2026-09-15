@@ -178,7 +178,11 @@ el "Borrador beta" a las `verificado`.
 
 
 ### YA HECHO el 2026-09-15 (run autónomo largo) — `main`, CI verde, Expo `preview` publicado
-- **FEATURE "MI ORDENANZA"** (commit `4c7a72b`): la búsqueda nº1 del Local (zona azul/ORA, carga y
+- **FEATURE "PUNTO KILOMÉTRICO"** (commit `fc54bf9`): primera versión del lever nº1 de la GC de Tráfico.
+  Ayudante MANUAL (sin mapa/datos de carreteras aún): el agente teclea vía + p.k. + sentido/margen y
+  copia la LOCALIZACIÓN normalizada para el atestado. Módulo puro testeado + pantalla `/punto-kilometrico`
+  + entrada en "Más". Siguiente: mapa de carreteras con p.k. automático (necesita datos de carreteras).
+- **FEATURE "MI ORDENANZA"** (commit `4c7a72b`, gestión en `6b00163`): la búsqueda nº1 del Local (zona azul/ORA, carga y
   descarga, vado, PMR) ya no muere en "Nada exacto". El agente pone UNA vez el importe+artículo de SU
   ordenanza (tabla local `ordenanza_propia`, `user.db` v10, offline) y se reutiliza en el boletín;
   tarjeta "TU ORDENANZA" en el buscador. Módulo puro `conceptosAparcamiento` (testeado), store,
