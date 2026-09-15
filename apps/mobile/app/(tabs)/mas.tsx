@@ -13,6 +13,7 @@ import {
   Languages,
   MessageSquarePlus,
   MessageSquareText,
+  MapPin,
   Settings,
   ShieldAlert,
   Signpost,
@@ -142,6 +143,14 @@ export default function MasScreen() {
             descripcion="Guarda el importe de tu ordenanza de aparcamiento y reúsalo en el boletín."
           />
         </Link>
+        <Link href="/punto-kilometrico" asChild>
+          <FilaMas
+            t={t}
+            icon={MapPin}
+            titulo="Punto kilométrico"
+            descripcion="Compón la localización exacta en carretera para el atestado y cópiala."
+          />
+        </Link>
         <Link href="/sustancias" asChild>
           <FilaMas
             t={t}
@@ -176,7 +185,7 @@ export default function MasScreen() {
           ...t.typography.scale.caption,
         }}
       >
-        Próximamente: mapa/PK y suscripción.
+        Próximamente: mapa de carreteras con p.k. automático y suscripción.
       </Text>
     </ScrollView>
   );
