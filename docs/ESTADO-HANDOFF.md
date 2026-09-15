@@ -4,7 +4,29 @@ Este documento permite que una sesión de Claude **nueva** (p. ej. tras cambiar 
 Windows o de máquina) continúe el trabajo sin perder contexto. Complementa a
 [`docs/paridad-spplb.md`](./paridad-spplb.md) (hoja de ruta) y a `docs/ESPECIFICACION.md` (verdad del producto).
 
-Última actualización: 2026-09-14. Repo: https://github.com/Sausf93/Agente (rama `main`).
+Última actualización: 2026-09-15. Repo: https://github.com/Sausf93/Agente (rama `main`).
+
+### Run 2026-09-15 (continuación autónoma) — qué se hizo
+- **Punto kilométrico (item Mapa/PK, v1):** ayudante manual para el atestado ya publicado; ampliado con
+  **carreteras recientes** (chips de un toque) y, tras la validación de calle, **término municipal**
+  (con sus recientes), **ubicación en la vía** (calzada/arcén/mediana/vía de servicio), **chips borrables**
+  (pulsación larga, tope 6) y capitalización de la línea. Migraciones `user.db` v11 (`pk_reciente`) y v12
+  (`tm_reciente`). GPS de un toque queda **pendiente**: `expo-location` no está instalado y necesitaría build
+  nativo (no llega por OTA). El mapa con carreteras sigue pendiente (datos no están en el paquete).
+- **Contenido "cierre humano" (verificación BOE por el agente principal, no subagente):**
+  - **Penal sensible (libertad sexual y menores)** — 9 fichas cotejadas una a una contra el CP consolidado
+    (BOE-A-1995-25444, tras LO 10/2022 y LO 4/2023) y pasadas a `verificado`: agresión sexual (178/179),
+    agresión sexual a menor (181/182), grooming (183), pornografía infantil (189), exhibicionismo (185/186),
+    acoso sexual (184), prostitución coactiva (187), abandono de menores (229), sustracción de menores (225 bis).
+    El `revisor-juridico` dio APTO con una corrección (ordinal 12-15 años → art. 181.4 sobre el apartado 2, no
+    181.2), ya aplicada.
+  - **LOSC 36.23** (uso no autorizado de imágenes de agentes) verificado con la interpretación conforme de la
+    **STC 172/2020** en la nota (la mera grabación no es infracción; se exige peligro concreto).
+  - **LOEX 58.3.a** (regreso tras expulsión → devolución, no detención penal) verificado.
+  - Pendientes de revisión: 131 → **120**.
+- Todo revisado con multiagentes (`revisor-juridico` + `validador-calle`), commits en verde (CI) y el paquete
+  de contenido republicado en Expo `preview`. Commits: `0798040`, `fca182b`, `74bb455`, `3ae8ac0`, `a733f25`,
+  `735ec43`.
 
 ## Cómo retomar en una máquina/usuario nuevos
 1. `git clone https://github.com/Sausf93/Agente.git` (idealmente en `…/Documents/Saulo/repos/Agente`).
