@@ -125,10 +125,13 @@ describe('SEED_ORDENANZAS: cobertura de lo más usado por un Local', () => {
     expect(terminos).not.toContain('zona azul tenerife');
   });
 
-  it('el ruido/convivencia es LEVE (300 € queda por debajo del mínimo del tramo grave del ruido)', () => {
+  it('el ruido/convivencia es LEVE con la multa municipal cotejada (OM ruidos art. 31: hasta 60,10 €)', () => {
     const ruido = porId('ord-sctf-ruido-convivencia')!;
     expect(ruido.infraccion.gravedad).toBe('leve');
-    expect(ruido.infraccion.importeEur).toBe(300);
+    // Cotejado contra la OM de ruidos y vibraciones (art. 31): leve hasta 60,10 €. Se corrige el 300 €
+    // orientativo anterior, que no tenía fuente.
+    expect(ruido.infraccion.importeEur).toBe(60.1);
+    expect(ruido.revision).toBe('verificado');
   });
 
   it('siembra terrazas y ZBE como CONSULTABLES sin cuantía inventada (norma real, importe a verificar)', () => {

@@ -58,6 +58,8 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
  *  - Ordenanza de protección y tenencia de animales (2017): arts. 12 (correa), 14 (excrementos, GRAVE),
  *    la lista de infracciones (censo = leve 1.b) y el art. 76 (sanciones → art. 141 LRBRL: leves ≤750 €,
  *    graves ≤1.500 €, muy graves ≤3.000 €).
+ *  - Ordenanza de ruidos y vibraciones: arts. 30 (calificación por exceso en dB(A)) y 31 (multa
+ *    municipal: leves ≤60,10 €, graves/muy graves 90,15 €; con escalada a la legislación superior).
  * Las CONSULTABLES sin cuantía (`no_sancionador`) NO entran aquí aunque se haya leído su artículo,
  * porque no hay importe que verificar.
  */
@@ -72,6 +74,7 @@ const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
   'ord-sctf-perro-suelto',
   'ord-sctf-excrementos',
   'ord-sctf-perro-sin-censar',
+  'ord-sctf-ruido-convivencia',
 ]);
 
 /**
@@ -271,14 +274,17 @@ const ART_ANIM_CENSO = articuloSeed({
 
 const ART_RUIDO_CONV = articuloSeed({
   normaId: ID_OM_RUIDO,
-  numero: 'CONV',
-  titulo: 'Ruidos molestos y convivencia: emisión de ruido en la vía pública y viviendas',
+  numero: '30 y 31',
+  titulo: 'Ruidos molestos: calificación por exceso en dB(A) y sanción (arts. 30-31)',
   texto:
-    'Regula los niveles de ruido admisibles y prohíbe producir ruidos que excedan de los límites ' +
-    'exigibles para la convivencia, tanto en la vía pública (música, aparatos, concentraciones ' +
-    'ruidosas) como en el interior de las viviendas cuando se perciben desde el exterior o molestan ' +
-    'al vecindario, en especial en horario nocturno. Resumen orientativo; consúltese el texto ' +
-    'consolidado en la sede electrónica del Ayuntamiento.',
+    'La OM de ruidos y vibraciones prohíbe producir ruidos que excedan de los límites exigibles para la ' +
+    'convivencia, tanto en la vía pública (música, aparatos, concentraciones ruidosas) como en el ' +
+    'interior de las viviendas cuando se perciben desde el exterior o molestan al vecindario, en especial ' +
+    'de noche. El art. 30 califica las faltas por el exceso en dB(A): leves desde 3 dB(A) de exceso o ' +
+    'negligencia; graves por reincidencia o mayor exceso; muy graves las de mayor entidad. El art. 31 fija ' +
+    'la multa municipal: hasta 60,10 € las leves y 90,15 € las graves y muy graves, pudiendo aplicarse ' +
+    'mayor sanción en virtud de legislación de rango superior (Ley 37/2003 / normativa autonómica). ' +
+    'Resumen orientativo; consúltese el texto consolidado en la sede electrónica del Ayuntamiento.',
 });
 
 const ART_TERRAZAS = articuloSeed({
@@ -693,19 +699,23 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
   construirInfraccion({
     id: 'ord-sctf-ruido-convivencia',
     articulo: ART_RUIDO_CONV,
-    // Modelada como LEVE de CONVIVENCIA: el ruido vecinal ordinario (música/escándalo) es el escalón
-    // más bajo de la Ordenanza municipal de ruidos y vibraciones (tramos propios leve/grave/muy grave)
-    // o, en su defecto, del régimen residual de la LRBRL (art. 141). El importe es ORIENTATIVO y queda
-    // "a verificar" contra el texto consolidado (revisor jurídico 2026-09; ajustado 2026-09-14 para no
-    // apoyarse en una cifra de la Ley 37/2003, que regula focos/actividades con otros tramos).
+    // COTEJADA (2026-09-15) contra el texto consolidado de la OM de ruidos y vibraciones de SCTF: la
+    // ordenanza califica por EXCESO en dB(A) (art. 30) y fija su propia multa (art. 31): leve hasta
+    // 60,10 €, grave/muy grave 90,15 €, "pudiendo aplicarse mayor sanción en virtud de legislación de
+    // rango superior" (Ley 37/2003 / autonómica para focos y actividades). Se corrige el 300 € anterior,
+    // que era orientativo y sin fuente.
     tituloCorto: 'Ruido y molestias vecinales (música, escándalo)',
     gravedad: 'leve',
-    importeEur: 300,
-    importeReducidoEur: 150,
+    importeEur: 60.1,
+    importeReducidoEur: null,
     textoBoletin:
       'Producir ruidos que exceden de los límites exigibles para la convivencia (música o aparatos a ' +
       'alto volumen, concentraciones ruidosas, molestias al vecindario), especialmente en horario ' +
-      'nocturno, incumpliendo la ordenanza municipal de protección frente al ruido.',
+      'nocturno, incumpliendo la ordenanza municipal de ruidos y vibraciones. Se califica por el EXCESO ' +
+      'en dB(A) y normalmente requiere MEDICIÓN sonométrica: LEVE desde 3 dB(A) de exceso o negligencia ' +
+      '(multa municipal hasta 60,10 €); GRAVE por reincidencia o mayor exceso (90,15 €). Puede aplicarse ' +
+      'MAYOR sanción en virtud de legislación de rango superior (Ley 37/2003 del Ruido / normativa ' +
+      'autonómica) para focos y actividades. La valoración final corresponde al agente y al órgano municipal.',
     terminos: [
       'ruido',
       'ruidos',
@@ -722,12 +732,13 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'local ruidoso',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: los ruidos molestos se sancionan por la ORDENANZA municipal de ' +
-      'ruidos y vibraciones (tramos propios leve/grave/muy grave) o, en su defecto, por el régimen residual ' +
-      'de la LRBRL (art. 141). Se modela como LEVE de convivencia con importe ORIENTATIVO (300/150 €); NO se ' +
-      'apoya en cifras de la Ley 37/2003 del Ruido (que regula focos/actividades, con tramos distintos). ' +
-      'Confirmar artículo, tramo y cuantía con el texto consolidado de la ordenanza y el revisor jurídico. ' +
-      'Puede requerir medición sonométrica para acreditar el exceso.',
+      'COTEJADO contra el texto consolidado de la OM de ruidos y vibraciones de SCTF (arts. 30 y 31, ' +
+      'leídos 2026-09-15): la ordenanza califica por exceso en dB(A) —leve desde 3 dB(A) o negligencia, ' +
+      'grave por reincidencia/mayor exceso— y fija multa municipal de hasta 60,10 € (leves) y 90,15 € ' +
+      '(graves y muy graves), "pudiendo aplicarse mayor sanción en virtud de legislación de rango ' +
+      'superior". Se corrige el importe orientativo anterior (300 €), sin fuente. Para focos/actividades ' +
+      'con exceso relevante suele aplicarse la Ley 37/2003 / normativa autonómica (importes mayores). ' +
+      'Requiere medición sonométrica para acreditar el exceso.',
   }),
   // TERRAZAS: la ordenanza de ocupación de vía pública con mesas/sillas/parasoles EXISTE y está en
   // vigor, pero NO hemos podido confirmar el artículo del régimen sancionador ni la cuantía. Siguiendo
