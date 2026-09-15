@@ -1197,6 +1197,11 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'inf-carril-reservado', // 76.d (carril bus/ciclista)
   'inf-circular-arcen', // 76.c (utilización de carriles y arcenes)
   'inf-sin-senalizar-maniobra', // 76.c (cambios de dirección/sentido)
+  // Leves por el RESIDUAL del art. 75.c (conductas no calificadas grave/muy grave); leve = ≤100 € (art. 80)
+  'inf-claxon-indebido', // 75.c (uso indebido de señales acústicas)
+  'inf-no-mantener-derecha', // 75.c
+  'inf-sin-documentacion', // 75.c (no llevar la documentación encima)
+  'inf-alumbrado-deficiente', // 75.c (deficiencia; circular SIN alumbrado sería 76.e grave)
 ]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
