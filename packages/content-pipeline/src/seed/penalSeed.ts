@@ -163,6 +163,24 @@ const ART_CP_148 = articuloCp({
     'ser una persona especialmente vulnerable que conviva con el autor. Resumen orientativo.',
 });
 
+const ART_CP_149 = articuloCp({
+  numero: '149',
+  titulo: 'Lesiones graves (pérdida de órgano o miembro principal, mutilación)',
+  texto:
+    'Castiga con prisión de seis a doce años causar a otro la pérdida o la inutilidad de un órgano o ' +
+    'miembro PRINCIPAL o de un sentido, la impotencia, la esterilidad, una grave deformidad o una grave ' +
+    'enfermedad somática o psíquica; con la misma pena la mutilación genital en cualquiera de sus ' +
+    'manifestaciones. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CP_150 = articuloCp({
+  numero: '150',
+  titulo: 'Lesiones: pérdida de órgano o miembro no principal o deformidad',
+  texto:
+    'Castiga con prisión de tres a seis años causar a otro la pérdida o la inutilidad de un órgano o ' +
+    'miembro NO principal, o una deformidad. Resumen orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_172 = articuloCp({
   numero: '172',
   titulo: 'Coacciones',
@@ -384,16 +402,34 @@ const ART_CP_556 = articuloCp({
     'administrativa (art. 36.6 LO 4/2015). Resumen orientativo; consúltese el texto consolidado.',
 });
 
+const ART_CP_248 = articuloCp({
+  numero: '248',
+  titulo: 'Estafa (tipo general)',
+  texto:
+    'Cometen estafa quienes, con ánimo de lucro, utilizan engaño bastante para producir error en otra ' +
+    'persona, induciéndola a realizar un acto de disposición en perjuicio propio o ajeno: prisión de seis ' +
+    'meses a tres años. Para fijar la pena se atiende al importe defraudado, al quebranto causado, a las ' +
+    'relaciones entre las partes y demás circunstancias. Si la cuantía no excede de 400 euros se impone ' +
+    'multa de uno a tres meses (delito leve), salvo que concurra alguna circunstancia del art. 250 o la ' +
+    'multirreincidencia que el propio artículo prevé. La reestructuración que sitúa aquí el tipo general ' +
+    'la hizo la LO 14/2022 (en vigor 12/01/2023); la LO 1/2026, de 8 de abril, añadió la cláusula de ' +
+    'multirreincidencia (≤ 400 € puede ir a prisión con tres condenas previas del capítulo). Resumen ' +
+    'orientativo; consúltese el texto consolidado en el BOE.',
+});
+
 const ART_CP_249 = articuloCp({
   numero: '249',
-  titulo: 'Estafa',
+  titulo: 'Estafa informática y uso fraudulento de tarjetas u otros medios de pago',
   texto:
-    'Castiga como estafa a quien, con ánimo de lucro, utiliza engaño bastante para producir error en ' +
-    'otra persona, induciéndola a realizar un acto de disposición en perjuicio propio o ajeno (art. ' +
-    '248). El art. 249 fija la pena atendiendo a la cuantía de lo defraudado, el perjuicio, las ' +
-    'relaciones entre las partes y demás circunstancias. Cuando la cuantía no excede de 400 euros, el ' +
-    'hecho es delito leve. La calificación final corresponde a la autoridad judicial. Resumen ' +
-    'orientativo; consúltese el texto consolidado en el BOE.',
+    'Tras la reestructuración de la LO 14/2022 (en vigor 12/01/2023), el art. 249 castiga con prisión de ' +
+    'seis meses a tres años: (a) la ESTAFA ' +
+    'INFORMÁTICA —conseguir con ánimo de lucro una transferencia no consentida de un activo patrimonial ' +
+    'manipulando un sistema de información o sus datos (phishing, manipulación de cajeros o de la banca ' +
+    'online, etc.)—; y (b) el USO FRAUDULENTO de tarjetas de crédito o débito, cheques de viaje u otros ' +
+    'instrumentos de pago (o de los datos que constan en ellos), distintos del efectivo, realizando ' +
+    'operaciones en perjuicio del titular o de un tercero. Con la misma pena se castiga fabricar, poseer, ' +
+    'importar o facilitar a terceros dispositivos, datos o programas diseñados para cometer estos hechos. ' +
+    'La calificación final corresponde a la autoridad judicial. Resumen orientativo.',
 });
 
 const ART_CP_392 = articuloCp({
@@ -1102,6 +1138,8 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_242,
   ART_CP_147,
   ART_CP_148,
+  ART_CP_149,
+  ART_CP_150,
   ART_CP_163,
   ART_CP_172,
   ART_CP_298,
@@ -1116,6 +1154,7 @@ export const ARTICULOS_PENAL_SEED: Articulo[] = [
   ART_CP_173,
   ART_CP_557,
   ART_CP_556,
+  ART_CP_248,
   ART_CP_249,
   ART_CP_392,
   ART_CP_244,
@@ -1199,6 +1238,7 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-robo-violencia', // 242: prisión 2-5 años → menos grave
   'del-lesiones', // 147.1: prisión 3m-3a o multa → menos grave
   'del-lesiones-agravadas', // 148: prisión 2-5 años → menos grave
+  'del-lesiones-graves', // 149: prisión 6-12 años → grave (150: 3-6 años, en la nota)
   'del-amenazas', // 169: prisión hasta 5 años → menos grave
   'del-danos', // 263.1: multa (penaSoloMulta) → menos grave
   'del-homicidio', // 138: prisión 10-15 años → grave
@@ -1216,7 +1256,8 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-violencia-genero', // 153: prisión 6m-1a → menos grave
   'del-torturas', // 174: prisión 2-6 años → grave (art. 13.4)
   'del-robo-fuerza', // 238/240: prisión 1-3 años → menos grave
-  'del-estafa', // 249: prisión 6m-3a → menos grave
+  'del-estafa', // 248 (tipo general tras LO 14/2022): prisión 6m-3a → menos grave
+  'del-estafa-tarjeta', // 249 (informática/tarjetas tras LO 14/2022): prisión 6m-3a → menos grave
   'del-falsedad-documental', // 392: prisión 6m-3a + multa → menos grave
   'del-robo-fuerza-casa-habitada', // 241: prisión 2-5 años → menos grave
   'del-sustraccion-vehiculo', // 244: trabajos comunidad/multa → menos grave
@@ -1503,6 +1544,83 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       '(violencia de género/doméstica sin lesión que requiera tratamiento). "navajazo"/"cuchillada" figuran ' +
       'en AMBAS fichas (147.1 y 148): el arma blanca es medio peligroso del 148.1º, pero el 148 es ' +
       'potestativo y la calificación final es judicial. Confirmar penas y encaje contra el texto consolidado del CP.',
+  }),
+  // --- Lesiones GRAVES (arts. 149-150): pérdida/inutilidad de órgano, mutilación, deformidad ------
+  construirDelito({
+    id: 'del-lesiones-graves',
+    articulo: ART_CP_149,
+    tituloCorto: 'Lesiones graves (pérdida de órgano, mutilación, deformidad)',
+    // Art. 149: prisión de 6 a 12 años → GRAVE. (Art. 150: 3 a 6 años para órgano no principal/deformidad.)
+    gravedadCp: 'grave',
+    penaTexto:
+      'Prisión de 6 a 12 años (pérdida o inutilidad de órgano o miembro principal, sentido, impotencia, ' +
+      'esterilidad, grave deformidad o enfermedad, o mutilación genital; art. 149 CP). Si es órgano o ' +
+      'miembro NO principal o deformidad (no grave), prisión de 3 a 6 años (art. 150 CP)',
+    textoBoletin:
+      'Causar a otra persona una lesión de especial gravedad: la pérdida o inutilidad de un órgano o ' +
+      'miembro PRINCIPAL o de un sentido, la impotencia, la esterilidad, una grave deformidad o una grave ' +
+      'enfermedad somática o psíquica, o una mutilación genital (art. 149 CP): prisión de 6 a 12 años ' +
+      '(delito GRAVE). Si la pérdida o inutilidad es de un órgano o miembro NO principal, o la deformidad ' +
+      'no es grave, la pena es de 3 a 6 años (art. 150 CP). DESLINDE con las lesiones que solo requieren ' +
+      'tratamiento (art. 147, del-lesiones) y con las agravadas por arma o medio peligroso (art. 148, ' +
+      'del-lesiones-agravadas): aquí lo determinante es el RESULTADO (secuela permanente grave). La ' +
+      'calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'perdida de un ojo',
+      'perdida de vision',
+      'le dejo ciego',
+      'le sacaron un ojo',
+      'le revento el ojo',
+      'perdida de un dedo',
+      'amputacion',
+      'le corto un dedo',
+      'le dejo manco',
+      'perdida de un brazo',
+      'perdida de una pierna',
+      'le arranco la oreja',
+      'perdida de una oreja',
+      'mutilacion',
+      'mutilacion genital',
+      'ablacion',
+      'castracion',
+      'perdida de un testiculo',
+      'le dejo esteril',
+      'impotencia',
+      'perdio el bazo',
+      'perdida de un riñon',
+      'quedo cojo',
+      'quedo paralitico',
+      'paraplejico',
+      'tetraplejico',
+      'no puede andar',
+      'le desfiguro la cara',
+      'desfiguracion',
+      'perdida del habla',
+      'no puede hablar',
+      'daño cerebral',
+      'lesiones muy graves',
+      'secuelas permanentes',
+      'grave deformidad',
+      'cicatriz que desfigura',
+      'perdida de audicion',
+      'lesiones irreversibles',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención del arma o instrumento empleado, como pieza de convicción y ' +
+          'efecto del delito, a disposición de la autoridad judicial (arts. 334 y 338 LECrim; comiso, ' +
+          'art. 127 CP). La valoración final corresponde a la autoridad judicial.',
+        fuente: 'LECrim arts. 334 y 338; CP art. 127',
+      },
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP arts. 149 y 150, leídos 2026-09-15): el art. 149 castiga con prisión de ' +
+      '6 a 12 años la pérdida/inutilidad de órgano o miembro PRINCIPAL o sentido, impotencia, esterilidad, ' +
+      'grave deformidad o enfermedad, y la mutilación genital → DELITO GRAVE (art. 33.2). El art. 150 (órgano ' +
+      'o miembro NO principal, o deformidad) es prisión de 3 a 6 años. El seed modela el tipo del art. 149. ' +
+      'Deslinde con 147 (tratamiento) y 148 (arma/medio peligroso). Segundo revisor humano para el cierre.',
   }),
   construirDelito({
     id: 'del-quebrantamiento',
@@ -1892,46 +2010,140 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
   // --- Estafa (patrimonial frecuente: timos, fraudes) ----------------------------------------
   construirDelito({
     id: 'del-estafa',
-    articulo: ART_CP_249,
+    articulo: ART_CP_248,
     tituloCorto: 'Estafa',
-    // Art. 249 (cuantía > 400 €): prisión de 6 meses a 3 años → MENOS GRAVE. ≤ 400 € es delito leve.
+    // Art. 248 (tipo general, tras la LO 1/2026): prisión 6m-3a → MENOS GRAVE. ≤ 400 € es delito leve
+    // salvo agravantes del art. 250. (La estafa informática y con tarjetas se traslada al art. 249,
+    // ficha del-estafa-tarjeta.)
     gravedadCp: 'menos_grave',
     penaTexto:
-      'Prisión de 6 meses a 3 años (estafa cuya cuantía excede de 400 €, art. 249 CP); ≤ 400 € es ' +
-      'delito leve (multa). A verificar',
+      'Prisión de 6 meses a 3 años (estafa, tipo general, art. 248 CP); si la cuantía no excede de 400 € ' +
+      'es delito leve (multa de 1 a 3 meses), salvo agravantes del art. 250 o multirreincidencia del art. 248',
     textoBoletin:
       'Utilizar, con ánimo de lucro, un engaño bastante para producir error en otra persona e ' +
-      'inducirla a realizar un acto de disposición patrimonial en perjuicio propio o ajeno (arts. 248 ' +
-      'y 249 CP). Cuando la cuantía de lo defraudado no excede de 400 euros, el hecho es delito leve. ' +
-      'La calificación final corresponde a la autoridad judicial.',
+      'inducirla a realizar un acto de disposición patrimonial en perjuicio propio o ajeno (art. 248 CP; la ' +
+      'LO 14/2022 situó aquí el tipo general). Cuando la cuantía de lo defraudado no excede de 400 euros, el ' +
+      'hecho es delito leve, salvo que concurra alguna agravante del art. 250 o la multirreincidencia del ' +
+      'art. 248 (tres condenas previas del capítulo). Si el fraude es con TARJETA u otro medio de pago, o ' +
+      'INFORMÁTICO, aplica el art. 249 (ver del-estafa-tarjeta). La calificación final corresponde a la ' +
+      'autoridad judicial.',
     terminos: [
       'estafa',
       'timo',
       'me han estafado',
+      'me an estafado',
+      'estaffa',
       'tocomocho',
       'fraude',
       'engaño con animo de lucro',
       'estafador',
       'timador',
       'me han timado',
-      // Fraude con tarjeta: uso fraudulento de tarjeta ajena/sustraída ≈ estafa (art. 249; la tarjeta
-      // FALSIFICADA es falsedad, art. 399 bis → ver del-falsedad-documental). Vocabulario de calle.
+      'estafa piramidal',
+      'estafa amorosa',
+      'romance scam',
+      'me enamoro y me pidio dinero',
+      'estafa del hijo en apuros',
+      'mama soy tu hijo',
+      'hijo por whatsapp',
+      'numero nuevo',
+      'carta nigeriana',
+      'falso premio',
+      'me toco la loteria',
+      'herencia falsa',
+      'alquiler falso',
+      'piso que no existe',
+      'me estafaron con un piso',
+      'falso soporte tecnico',
+      'me llamaron del ordenador',
+      'estafa de wallapop',
+      'pague y no me enviaron',
+      'producto que no llego',
+      'estafa por internet',
+      'estafa con bizum',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 248, leído 2026-09-15): el TIPO GENERAL de estafa (engaño bastante) ' +
+      'es el art. 248 → prisión 6m-3a → MENOS GRAVE; ≤ 400 € es DELITO LEVE (multa 1-3 meses, detención por ' +
+      'el art. 495 LECrim) SALVO agravantes del art. 250 o multirreincidencia del propio art. 248. La ' +
+      'reestructuración que separó el tipo general (248) de la estafa informática/tarjetas (249) la hizo la ' +
+      'LO 14/2022 (en vigor 12/01/2023); la LO 1/2026 (BOE-A-2026-7966) añadió la cláusula de ' +
+      'multirreincidencia del art. 248 y retocó el 250. Subtipos AGRAVADOS del art. 250 (vivienda, especial ' +
+      'gravedad, >50.000 €, abuso de relaciones): prisión 1-6 años. Deslinde con apropiación indebida (253) ' +
+      'y administración desleal (252). Segundo revisor humano para el cierre.',
+  }),
+  // --- Estafa informática y uso fraudulento de tarjetas (art. 249, tras la LO 1/2026) ----------
+  construirDelito({
+    id: 'del-estafa-tarjeta',
+    articulo: ART_CP_249,
+    tituloCorto: 'Estafa informática o uso fraudulento de tarjeta',
+    // Art. 249 (tras la LO 1/2026): estafa informática (249.1.a) y uso fraudulento de tarjetas/medios de
+    // pago (249.1.b) → prisión 6m-3a → MENOS GRAVE.
+    gravedadCp: 'menos_grave',
+    penaTexto: 'Prisión de 6 meses a 3 años (estafa informática o uso fraudulento de tarjeta, art. 249 CP)',
+    textoBoletin:
+      'AQUÍ SÍ: usar una tarjeta AJENA auténtica (robada/hallada) o sus datos, o manipular un sistema/banca ' +
+      'online para mover dinero sin consentimiento. AQUÍ NO: si la tarjeta está FALSIFICADA o clonada como ' +
+      'objeto → falsedad (art. 399 bis, del-falsedad-documental); si es un engaño sin tarjeta ni sistema → ' +
+      'estafa general (art. 248, del-estafa). Conseguir, con ánimo de lucro, una transferencia patrimonial ' +
+      'NO consentida manipulando un sistema informático o sus datos (phishing, manipulación de cajeros o de ' +
+      'la banca online), o usar de forma FRAUDULENTA una tarjeta de crédito o débito, cheque de viaje u otro ' +
+      'instrumento de pago —o los datos que constan en él— en perjuicio del titular o de un tercero (art. ' +
+      '249 CP; la LO 14/2022 trasladó aquí esta modalidad). La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
       'uso fraudulento de tarjeta',
       'uso de tarjeta ajena',
       'compras con mi tarjeta',
       'pago con tarjeta robada',
+      'compras con tarjeta robada',
       'fraude con tarjeta',
       'me clonaron la tarjeta',
+      'duplicado de tarjeta',
+      'skimming',
+      'carding',
+      'me han hecho cargos',
+      'cargos que no reconozco',
+      'cargo desconocido',
+      'compra que yo no hice',
+      'pago no autorizado',
+      'movimientos que no reconozco',
       'estafa por internet',
       'estafa informatica',
+      'phishing',
+      'phising',
+      'smishing',
+      'vishing',
+      'estafa del sms del banco',
+      'mensaje del banco falso',
+      'falso empleado del banco',
+      'me suplantaron el banco',
+      'me vaciaron la cuenta',
+      'me sacaron dinero del cajero',
+      'transferencia fraudulenta',
+      'fraude bancario online',
+      'bizum que no autorice',
+      'estafa con bizum',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede valorar la intervención, como piezas de convicción y efectos del delito, de la tarjeta o ' +
+          'medio de pago empleado, el datáfono/TPV o dispositivo de skimming manipulado, el terminal, móvil o ' +
+          'SIM usados y el dinero obtenido, a disposición de la autoridad judicial (arts. 334 y 338 LECrim; ' +
+          'comiso, art. 127 CP). La valoración final corresponde a la autoridad judicial.',
+        fuente: 'LECrim arts. 334 y 338; CP art. 127',
+      },
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y la frontera leve/menos grave: estafa del art. 249 CP → prisión ' +
-      'de 6 meses a 3 años cuando la cuantía EXCEDE de 400 € → MENOS GRAVE; con cuantía de 400 € o ' +
-      'menos es DELITO LEVE (multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. Comprobar ' +
-      'los subtipos AGRAVADOS del art. 250 (vivienda, especial gravedad, abuso de relaciones ' +
-      'personales, etc.), que elevan la pena. Distinguir de la apropiación indebida (art. 253) y de la ' +
-      'administración desleal (art. 252). Confirmar penas y encaje contra el texto consolidado del CP.',
+      'COTEJADO contra el BOE (CP art. 249, leído 2026-09-15): el art. 249 castiga con prisión 6m-3a ' +
+      '(MENOS GRAVE) la estafa INFORMÁTICA (249.1.a) y el USO FRAUDULENTO de tarjetas u otros medios de ' +
+      'pago (249.1.b), y con la misma pena fabricar/poseer/facilitar dispositivos o programas para ello ' +
+      '(249.2). Esta modalidad se trasladó al art. 249 por la LO 14/2022 (en vigor 12/01/2023), no por la ' +
+      'LO 1/2026. Deslinde: la tarjeta FALSIFICADA/clonada como objeto es falsedad (art. 399 bis, 4-8 años); ' +
+      'usar una tarjeta ajena auténtica o sus datos es este art. 249; un Bizum enviado voluntariamente por ' +
+      'engaño (sin manipular el sistema) puede ser estafa general del art. 248. Segundo revisor humano.',
   }),
   // --- Falsedad documental (muy buscada en control de extranjería / identificaciones) ---------
   construirDelito({
@@ -1962,6 +2174,9 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'pasaporte trucado',
       'falsedad documental',
       'permiso de residencia falso',
+      'tarjeta falsa',
+      'tarjeta falsificada',
+      'tarjeta clonada',
     ],
     // Intervención (comiso) del documento como efecto/instrumento del delito (art. 127 CP).
     consecuenciasExtra: [
