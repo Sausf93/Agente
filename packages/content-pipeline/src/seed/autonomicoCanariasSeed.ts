@@ -883,10 +883,12 @@ const COMPETENCIA_CAZA: CuerpoCompetente[] = ['guardia_civil', 'policia_autonomi
  * su conversión a euros (ORIENTATIVO) y queda a verificar una posible actualización autonómica.
  */
 const CAVEAT_CAZA =
-  ' NOTA: clasificación (arts. 47-50) COTEJADA contra el BOE (Ley 7/1998 de Caza de Canarias, ' +
-  'BOE-A-1998-18466, leído por el agente principal en el navegador el 2026-09-15). El IMPORTE es la ' +
-  'CONVERSIÓN a euros de las pesetas del art. 51 (orientativo); A VERIFICAR por el revisor una posible ' +
-  'actualización autonómica de las cuantías y la graduación dentro del tramo.';
+  ' NOTA: clasificación (arts. 47-50) e IMPORTE (art. 51) COTEJADOS contra el BOE (Ley 7/1998 de Caza de ' +
+  'Canarias, BOE-A-1998-18466, texto consolidado leído por el agente principal en el navegador el ' +
+  '2026-09-15). El art. 51 sigue expresando las multas EN PESETAS en el consolidado (sin actualización ' +
+  'monetaria posterior), por lo que el importe mostrado es su conversión a euros vigente: leve 30,05-150,25 €; ' +
+  'grave 601,02-3.005,06 €; muy grave 3.005,07-9.015,18 €. La cuantía EFECTIVA dentro del tramo la gradúa la ' +
+  'autoridad; posibles inhabilitaciones para cazar según el art. 51.2.';
 
 interface CazaSeedInput {
   id: string;
@@ -954,9 +956,9 @@ function construirInfraccionCaza(input: CazaSeedInput): InfraccionSeed {
     sinonimos,
     consecuencias,
     marcoImporte: 'autonomico' satisfies MarcoImporte,
-    // Se dejan `pendiente_revision`: la cuantía del art. 51 va en pesetas (conversión orientativa) y
-    // puede haber actualización autonómica; el cierre lo da el revisor jurídico (§8.3).
-    revision: 'pendiente_revision' satisfies EstadoRevision,
+    // `verificado`: clasificación (arts. 47-50) e importes (art. 51, en pesetas en el consolidado →
+    // conversión a euros exacta) COTEJADOS contra el BOE por el agente principal (2026-09-15). Ver CAVEAT_CAZA.
+    revision: 'verificado' satisfies EstadoRevision,
     notaRevision: input.notaRevision + CAVEAT_CAZA,
   };
 }

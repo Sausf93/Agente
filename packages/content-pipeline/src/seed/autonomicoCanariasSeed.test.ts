@@ -86,11 +86,15 @@ describe('SEED_AUTONOMICO_CANARIAS: calidad de contenido (§8.3)', () => {
     }
   });
 
-  it('estado editorial válido y nota que deja "a verificar" al menos la graduación (art. 67)', () => {
+  it('estado editorial válido y nota que recuerda la graduación de la cuantía por la autoridad', () => {
     for (const item of SEED_AUTONOMICO_CANARIAS.infracciones) {
       expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       expect(item.notaRevision.length, item.infraccion.id).toBeGreaterThan(20);
-      expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
+      // Espectáculos (Ley 7/2011): la nota deja "a verificar" al menos la graduación del art. 67.
+      // Caza (Ley 7/1998): importe cotejado (art. 51); la nota recuerda que la autoridad gradúa la cuantía.
+      const nota = item.notaRevision.toLowerCase();
+      const esCaza = item.infraccion.id.startsWith('caza-');
+      expect(esCaza ? /grad[úu]a|graduaci/.test(nota) : nota.includes('verificar'), item.infraccion.id).toBe(true);
     }
   });
 
@@ -127,9 +131,9 @@ describe('SEED_AUTONOMICO_CANARIAS: cobertura de lo más útil en Canarias', () 
       // Cuantía convertida de pesetas (art. 51): no coincide con los tramos de espectáculos.
       expect(item!.infraccion.importeEur, id).not.toBe(3001);
       expect(item!.infraccion.importeEur, id).not.toBe(15001);
-      // Quedan pendientes (peseta→euro + posible actualización autonómica), con cotejo de clasificación.
-      expect(item!.revision, id).toBe('pendiente_revision');
-      expect(item!.notaRevision.toLowerCase(), id).toContain('cotejada');
+      // Verificadas: clasificación (arts. 47-50) e importe (art. 51, pesetas → euros) cotejados contra el BOE.
+      expect(item!.revision, id).toBe('verificado');
+      expect(item!.notaRevision.toLowerCase(), id).toContain('cotejad');
     }
   });
 
