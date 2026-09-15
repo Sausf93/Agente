@@ -651,6 +651,7 @@ export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
   'pen-autoridad': { materia: 'penal', label: 'Atentado, resistencia y orden público', icono: 'Siren', orden: 3 },
   'pen-vida': { materia: 'penal', label: 'Homicidio, lesiones y agresiones', icono: 'HeartPulse', orden: 4 },
   'pen-sexual': { materia: 'penal', label: 'Delitos sexuales y menores', icono: 'ShieldAlert', orden: 5 },
+  'pen-medioambiente': { materia: 'penal', label: 'Medio ambiente, caza y montes (SEPRONA)', icono: 'Trees', orden: 6 },
   'pen-otros': { materia: 'penal', label: 'Otros delitos', icono: 'BookOpen', orden: 99, esCajon: true },
   // --- Seguridad ciudadana (sub-temas provisionales: es la materia más justa en volumen) ---
   'seg-orden-identidad': { materia: 'seguridad', label: 'Orden público e identificación', icono: 'IdCard', orden: 1 },
@@ -847,6 +848,12 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'del-simulacion-delito': 'pen-autoridad',
   'del-atentado-agravado': 'pen-autoridad',
   // · Otros (cajón)
+  // SEPRONA / medio ambiente (delitos de los arts. 325 y 334-352 CP)
+  'del-caza-pesca-especies-protegidas': 'pen-medioambiente',
+  'del-caza-pesca-prohibida': 'pen-medioambiente',
+  'del-veneno-caza-pesca': 'pen-medioambiente',
+  'del-incendio-forestal': 'pen-medioambiente',
+  'del-contaminacion-ambiental': 'pen-medioambiente',
   'del-trafico-drogas': 'pen-otros',
   'del-tenencia-armas': 'pen-otros',
   'del-maltrato-animal': 'pen-otros',

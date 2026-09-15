@@ -164,6 +164,52 @@ const ART_CP_340_BIS = articuloCp({
     'el art. 340 ter. Resumen orientativo; consúltese el texto consolidado en el BOE.',
 });
 
+// --- SEPRONA / medio ambiente (delitos de los arts. 325 y 334-354 CP) -----------------------
+const ART_CP_325 = articuloCp({
+  numero: '325',
+  titulo: 'Delitos contra los recursos naturales y el medio ambiente',
+  texto:
+    'Castiga a quien, contraviniendo las leyes protectoras del medio ambiente, provoque directa o ' +
+    'indirectamente emisiones, vertidos, radiaciones, extracciones, ruidos, depósitos o residuos que ' +
+    'puedan perjudicar gravemente el equilibrio de los sistemas naturales: prisión de 6 meses a 2 años, ' +
+    'multa e inhabilitación; si se pone en peligro grave la salud de las personas, la pena se impone en ' +
+    'su mitad superior. Resumen orientativo; texto consolidado en el BOE.',
+});
+const ART_CP_334 = articuloCp({
+  numero: '334',
+  titulo: 'Caza o pesca de especies amenazadas o protegidas',
+  texto:
+    'Castiga a quien, contraviniendo las leyes de protección de la fauna, cace, pesque, adquiera, posea ' +
+    'o comercie con especies protegidas o amenazadas de flora o fauna silvestres, o con sus partes: ' +
+    'prisión de 6 meses a 2 años o multa de 8 a 24 meses e inhabilitación especial y para cazar o pescar ' +
+    '(2 a 4 años). Resumen orientativo; texto consolidado en el BOE.',
+});
+const ART_CP_335 = articuloCp({
+  numero: '335',
+  titulo: 'Caza o pesca no autorizada de otras especies',
+  texto:
+    'Castiga a quien cace o pesque especies distintas de las del art. 334 cuando esté expresamente ' +
+    'prohibido por las normas específicas, o sin la autorización del titular del terreno cinegético: ' +
+    'multa de 8 a 12 meses e inhabilitación para cazar o pescar (2 a 5 años). Resumen orientativo; BOE.',
+});
+const ART_CP_336 = articuloCp({
+  numero: '336',
+  titulo: 'Uso de veneno o medios no selectivos en la caza o pesca',
+  texto:
+    'Castiga a quien, sin autorización legal, emplee para la caza o la pesca veneno, medios explosivos u ' +
+    'otros instrumentos o artes de similar eficacia destructiva o no selectiva para la fauna: prisión de ' +
+    '4 meses a 2 años o multa de 8 a 24 meses e inhabilitación. Resumen orientativo; BOE.',
+});
+const ART_CP_352 = articuloCp({
+  numero: '352',
+  titulo: 'Incendios forestales',
+  texto:
+    'Castiga a quien incendie montes o masas forestales: prisión de 1 a 5 años y multa de 12 a 18 meses. ' +
+    'Si hubo peligro para la vida o integridad de las personas, se aplica el art. 351 (más grave). El ' +
+    'incendio de especial gravedad (gran superficie, deterioro grave, etc.) es el art. 353 (prisión 3 a 6 ' +
+    'años). Prender fuego sin que se propague es el art. 354. Resumen orientativo; texto consolidado BOE.',
+});
+
 const ART_CP_163 = articuloCp({
   numero: '163',
   titulo: 'Detención ilegal',
@@ -968,6 +1014,11 @@ const ART_CP_229 = articuloCp({
 });
 
 export const ARTICULOS_PENAL_SEED: Articulo[] = [
+  ART_CP_325,
+  ART_CP_334,
+  ART_CP_335,
+  ART_CP_336,
+  ART_CP_352,
   ART_CP_566,
   ART_CP_551,
   ART_CP_450,
@@ -1151,10 +1202,14 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-abandono-familia', // 227: impago de pensiones, prisión 3m-1a o multa → menos grave
   'del-usurpacion-estado-civil', // 401: prisión 6m-3a → menos grave
   'del-danos-leves', // 263.2: daño ≤400 €, multa 1-3 meses → leve
-  // NO se verifican (posible clasificación a revisar, siguen pendiente): del-atentado-agravado (551
-  // "superior en grado" probablemente GRAVE, no menos grave) y del-favorecimiento-inmigracion-ilegal
-  // (318 bis base es menos grave, no grave); del-administracion-desleal/del-apropiacion-indebida
-  // remiten al 248/250 (grave si concurre el 250). Al jurista.
+  // SEPRONA / medio ambiente (sembrados 2026-09-15; cotejados contra el CP en el BOE)
+  'del-caza-pesca-especies-protegidas', // 334 → menos grave
+  'del-caza-pesca-prohibida', // 335 → menos grave
+  'del-veneno-caza-pesca', // 336 → menos grave
+  'del-incendio-forestal', // 352 → menos grave (tipo base; 351/353 escalan en la nota)
+  'del-contaminacion-ambiental', // 325 → menos grave
+  // NO se verifican (remisión de pena según cuantía): del-administracion-desleal/del-apropiacion-indebida
+  // (248/250, grave si concurre el 250). Al jurista.
 ]);
 
 function construirDelito(input: DelitoSeedInput): InfraccionSeed {
@@ -3897,6 +3952,159 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'de pensiones (art. 227, del-abandono-familia) y con la omisión del deber de socorro (art. 195, ' +
       'del-omision-socorro). Confirmar penas, subtipos y la condición del autor contra el texto ' +
       'consolidado del CP con el revisor jurídico.',
+  }),
+  // --- SEPRONA / MEDIO AMBIENTE (delitos del CP; hueco detectado para la Guardia Civil rural) -----
+  construirDelito({
+    id: 'del-caza-pesca-especies-protegidas',
+    articulo: ART_CP_334,
+    tituloCorto: 'Caza o pesca de especies protegidas o amenazadas',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 2 años o multa de 8 a 24 meses e inhabilitación especial y para cazar o ' +
+      'pescar de 2 a 4 años (art. 334 CP)',
+    textoBoletin:
+      'Cazar, pescar, adquirir, poseer o comerciar con especies protegidas o amenazadas de flora o fauna ' +
+      'silvestres, o con sus partes o derivados, contraviniendo las leyes de protección (art. 334 CP). ' +
+      'DESLINDE: si la especie NO es protegida pero su caza/pesca está prohibida o no autorizada, es el ' +
+      'art. 335 (del-caza-pesca-prohibida); con veneno o métodos no selectivos, el art. 336 ' +
+      '(del-veneno-caza-pesca). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'caza furtiva',
+      'furtivismo',
+      'cazar especie protegida',
+      'pescar especie protegida',
+      'matar un animal protegido',
+      'trafico de especies protegidas',
+      'especie amenazada',
+      'caza ilegal de especie protegida',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 334, leído 2026-09-15): caza/pesca/comercio de especies protegidas ' +
+      'o amenazadas → prisión 6m-2a o multa 8-24m + inhabilitación (incluida la de cazar/pescar). Concurre ' +
+      'la Ley 42/2007 (patrimonio natural) y el catálogo de especies amenazadas. Deslinde con 335 y 336. ' +
+      'Segundo revisor humano para el cierre.',
+  }),
+  construirDelito({
+    id: 'del-caza-pesca-prohibida',
+    articulo: ART_CP_335,
+    tituloCorto: 'Caza o pesca no autorizada o en época/lugar prohibidos',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Multa de 8 a 12 meses e inhabilitación para cazar o pescar de 2 a 5 años (art. 335 CP); privación ' +
+      'del derecho a cazar o pescar',
+    textoBoletin:
+      'Cazar o pescar especies (distintas de las protegidas del art. 334) cuando esté expresamente ' +
+      'prohibido por las normas específicas —vedas, especies no autorizadas—, o hacerlo en terreno ' +
+      'cinegético ajeno sin el consentimiento de su titular (art. 335 CP). MENSAJE CLAVE: es delito ' +
+      'MENOS GRAVE de multa e inhabilitación, distinto de la infracción ADMINISTRATIVA de la Ley de Caza ' +
+      'autonómica (cazar sin licencia sin más). La calificación final corresponde a la autoridad judicial.',
+    terminos: [
+      'cazar sin licencia',
+      'pescar sin licencia',
+      'caza en veda',
+      'pesca en veda',
+      'cazar en coto ajeno',
+      'furtivo en finca ajena',
+      'sin permiso de caza',
+      'pesca sin autorizacion',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 335, leído 2026-09-15): caza/pesca de especies cuando está ' +
+      'prohibido o sin autorización del titular del terreno → multa 8-12m + inhabilitación 2-5 años. ' +
+      'DESLINDE importante con la infracción ADMINISTRATIVA de la Ley de Caza autonómica (competencia ' +
+      'de cada CCAA); el delito exige la prohibición específica o el terreno ajeno. Segundo revisor humano.',
+  }),
+  construirDelito({
+    id: 'del-veneno-caza-pesca',
+    articulo: ART_CP_336,
+    tituloCorto: 'Veneno, explosivos o métodos no selectivos en caza o pesca',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 4 meses a 2 años o multa de 8 a 24 meses e inhabilitación especial y para cazar o ' +
+      'pescar (art. 336 CP)',
+    textoBoletin:
+      'Emplear para la caza o la pesca, sin autorización legal, VENENO, medios explosivos u otros ' +
+      'instrumentos o artes de similar eficacia destructiva o NO SELECTIVA para la fauna (cebos ' +
+      'envenenados, lazos, cepos, dinamita, electropesca): art. 336 CP. Especial gravedad si el daño ' +
+      'afecta a especies protegidas o a espacios naturales. La calificación final corresponde a la ' +
+      'autoridad judicial.',
+    terminos: [
+      'cebo envenenado',
+      'veneno para animales',
+      'lazos y cepos',
+      'pesca con dinamita',
+      'electropesca',
+      'metodos no selectivos de caza',
+      'trampas prohibidas',
+      'envenenar fauna',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 336, leído 2026-09-15): uso de veneno, explosivos o artes no ' +
+      'selectivas para caza/pesca → prisión 4m-2a o multa 8-24m + inhabilitación. Concurre la vía ' +
+      'administrativa autonómica y el protocolo antiveneno. Segundo revisor humano para el cierre.',
+  }),
+  construirDelito({
+    id: 'del-incendio-forestal',
+    articulo: ART_CP_352,
+    tituloCorto: 'Incendio forestal',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 1 a 5 años y multa de 12 a 18 meses (art. 352 CP); con peligro para las personas, ' +
+      'art. 351; de especial gravedad, art. 353 (prisión 3 a 6 años, grave)',
+    textoBoletin:
+      'Incendiar montes o masas forestales (art. 352 CP): prisión de 1 a 5 años y multa. ESCALADA: si el ' +
+      'incendio genera PELIGRO para la vida o integridad de las personas, se aplica el art. 351 (más ' +
+      'grave); si es de ESPECIAL GRAVEDAD (gran superficie, deterioro grave, zona protegida…), el art. ' +
+      '353 (prisión 3 a 6 años). Prender fuego sin que llegue a propagarse es el art. 354. DESLINDE con ' +
+      'la quema agrícola/negligente y la infracción administrativa forestal. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'incendio forestal',
+      'quemar el monte',
+      'provocar un incendio',
+      'incendiario',
+      'fuego en el monte',
+      'quema ilegal',
+      'pirómano',
+      'incendio en zona forestal',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 352, leído 2026-09-15): incendio de montes/masas forestales → ' +
+      'prisión 1-5 años + multa (menos grave; el seed modela el tipo base). ESCALADA: peligro para las ' +
+      'personas → art. 351; especial gravedad → art. 353 (3-6 años, grave); tentativa/no propagación → ' +
+      'art. 354. Deslinde con la quema negligente (art. 358) y la infracción administrativa forestal. ' +
+      'Segundo revisor humano para el cierre.',
+  }),
+  construirDelito({
+    id: 'del-contaminacion-ambiental',
+    articulo: ART_CP_325,
+    tituloCorto: 'Delito contra el medio ambiente (vertidos y emisiones)',
+    gravedadCp: 'menos_grave',
+    penaTexto:
+      'Prisión de 6 meses a 2 años, multa de 10 a 14 meses e inhabilitación de 1 a 2 años (art. 325 CP); ' +
+      'mitad superior si se pone en peligro grave la salud de las personas',
+    textoBoletin:
+      'Provocar, contraviniendo las leyes protectoras del medio ambiente, emisiones, vertidos, ' +
+      'radiaciones, extracciones, ruidos, depósitos o residuos que puedan perjudicar gravemente el ' +
+      'equilibrio de los sistemas naturales (art. 325 CP): prisión de 6 meses a 2 años, multa e ' +
+      'inhabilitación. Si se pone en peligro grave la salud de las personas, la pena se impone en su ' +
+      'mitad superior. DESLINDE con la infracción administrativa ambiental. La calificación final ' +
+      'corresponde a la autoridad judicial.',
+    terminos: [
+      'vertido contaminante',
+      'contaminacion',
+      'verter residuos toxicos',
+      'emisiones ilegales',
+      'vertido al rio',
+      'contaminar el medio ambiente',
+      'vertido industrial',
+      'residuos peligrosos abandonados',
+    ],
+    notaRevision:
+      'COTEJADO contra el BOE (CP art. 325, leído 2026-09-15): emisiones/vertidos/residuos que puedan ' +
+      'perjudicar gravemente los sistemas naturales → prisión 6m-2a + multa 10-14m + inhabilitación; ' +
+      'mitad superior si hay peligro grave para la salud. Concurre la Ley 7/2022 de residuos y la ' +
+      'normativa sectorial. Segundo revisor humano para el cierre.',
   }),
 ];
 

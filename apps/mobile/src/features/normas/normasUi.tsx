@@ -24,6 +24,7 @@ import {
   Siren,
   Smartphone,
   SquareParking,
+  Trees,
   Truck,
   Wrench,
   type LucideIcon,
@@ -72,6 +73,7 @@ const ICONO_SUBTEMA: Record<string, LucideIcon> = {
   Lock,
   Dog,
   PawPrint,
+  Trees,
   BookOpen,
 };
 

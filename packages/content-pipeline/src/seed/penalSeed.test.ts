@@ -16,7 +16,7 @@ const porId = (id: string) => SEED_PENAL.infracciones.find((i) => i.infraccion.i
 
 describe('SEED_PENAL: integridad de los delitos', () => {
   it('siembra 65 delitos, todos por vía penal y sin importe administrativo', () => {
-    expect(SEED_PENAL.infracciones).toHaveLength(65);
+    expect(SEED_PENAL.infracciones).toHaveLength(70);
     for (const { infraccion } of SEED_PENAL.infracciones) {
       expect(infraccion.tipo, infraccion.id).toBe('penal');
       expect(infraccion.gravedad, infraccion.id).toBe('delito');
@@ -341,7 +341,12 @@ describe('combinarSeeds: tráfico + penal sin duplicar la norma CP', () => {
       '266',
       '298',
       '318 bis',
+      '325',
+      '334',
+      '335',
+      '336',
       '340 bis',
+      '352',
       '368',
       '379.1',
       '379.2',
