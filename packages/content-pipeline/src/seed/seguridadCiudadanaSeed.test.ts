@@ -83,9 +83,8 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
     }
   });
 
-  it('el régimen de ARMAS (RD 137/1993), el 36.23 y las consultables siguen `pendiente_revision`', () => {
+  it('las entradas consultables (facultades, sin sanción) siguen `pendiente_revision`', () => {
     const debenSeguirPendientes = [
-      'sc-uso-imagenes-agentes', // 36.23: inconstitucionalidad parcial (SSTC 172/2020, 13/2021)
       'sc-identificacion-requerimiento', // consultable (facultad art. 16)
       'sc-cacheo-registro', // consultable (art. 20)
     ];
@@ -93,6 +92,14 @@ describe('SEED_SEGURIDAD_CIUDADANA: integridad', () => {
       const item = porId(id);
       expect(item?.revision, id).toBe('pendiente_revision');
     }
+  });
+
+  it('el 36.23 (uso no autorizado de imágenes) está verificado con la interpretación de la STC 172/2020', () => {
+    const item = porId('sc-uso-imagenes-agentes');
+    expect(item?.revision).toBe('verificado');
+    // La nota debe conservar el límite constitucional: la mera grabación no es infracción.
+    expect(item!.notaRevision).toMatch(/STC 172\/2020/);
+    expect(item!.notaRevision.toLowerCase()).toMatch(/peligro concreto/);
   });
 
   it('el requerimiento de identificación (art. 16) es una entrada consultable SIN sanción', () => {

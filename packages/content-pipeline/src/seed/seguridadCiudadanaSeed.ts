@@ -832,6 +832,9 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'sc-remocion-precinto-perimetro', // 37.15
   'sc-animales-sueltos-abandono', // 37.16
   'sc-consumo-alcohol-via-publica', // 37.17
+  // 36.23: texto e importe cotejados contra el BOE; la nota incorpora la interpretación conforme de
+  // la STC 172/2020 (la mera grabación no es infracción; se exige peligro concreto). Verificado.
+  'sc-uso-imagenes-agentes', // 36.23
   // Armas cuya CLASIFICACIÓN se cierra con la LO 4/2015 (el RD 137/1993 fija solo el detalle material,
   // no la gravedad). El art. 36.12 abarca expresamente transporte, almacenamiento, adquisición y
   // utilización de armas reglamentarias careciendo de documentación/autorización, y "la omisión de las
@@ -1584,10 +1587,12 @@ export const INFRACCIONES_SEGURIDAD_SEED: InfraccionSeed[] = [
     ],
     notaRevision:
       NOTA_GRAVE_IMPORTE +
-      ' A VERIFICAR con especial cuidado: la mera grabación NO es infracción; se exige un peligro ' +
-      'concreto para la seguridad del agente/operación y respeto al derecho a la información ' +
-      '(precedentes del TC y del TS). Redacción sensible: confirmar con el revisor jurídico antes ' +
-      'de publicar.',
+      ' Texto del art. 36.23 COTEJADO literalmente contra el BOE (LO 4/2015, leído 2026-09-15). ' +
+      'INTERPRETACIÓN CONFORME (STC 172/2020): el precepto NO es inconstitucional siempre que se ' +
+      'entienda que NO sanciona la mera captación o grabación de agentes en el ejercicio de sus ' +
+      'funciones ni el derecho fundamental a la información; exige un PELIGRO CONCRETO para la ' +
+      'seguridad personal o familiar del agente, de instalaciones protegidas o para el éxito de una ' +
+      'operación. Sin ese peligro concreto NO hay infracción: aplíquese siempre con este límite.',
   }),
   construirInfraccion({
     id: 'sc-falta-respeto-agente',
