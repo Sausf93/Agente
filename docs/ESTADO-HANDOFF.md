@@ -97,10 +97,17 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
-### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 134/307 ya verificadas
-(Al día 2026-09-15: penal 51, seguridad ciudadana 41, extranjería 12, tráfico 13, PPP 9, bienestar
-animal 8. Se corrigieron al verificar: marcha-atrás-autopista (grave/4, no muy grave/6) y
+### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 155/307 ya verificadas (>50 %)
+(Al día 2026-09-15: penal 51, seguridad ciudadana 41, tráfico 34, extranjería 12, PPP 9, bienestar
+animal 8. Tráfico cotejado contra LSV arts. 75/76/77/80 + Anexos II [puntos] y IV [velocidad]:
+velocidad, alcohol, drogas, móvil, cinturón/casco/SRI, semáforo/stop/preferencia, distancia,
+adelantamiento, sentido contrario, marcha atrás autopista [corregida a grave/4], ITV/neumáticos/escape/
+luces/lunas/matrícula, estacionamiento desglosado [76.d], arcén, maniobra, y leves por el residual 75.c.
+Correcciones al verificar: marcha-atrás-autopista (grave/4, no muy grave/6/500 €) y
 favorecimiento-inmigración (menos grave 318 bis.1, no grave); del-hurto/del-usurpacion confirmados leves.)
+Falta por verificar (requiere leer reglamentos enteros o es municipal/sensible): TRANSPORTE (LOTT/ROTT),
+ARMAS admin (RD 137/1993), VMP/vado/carga-descarga y ordenanzas (municipal), Canarias (art. 66),
+permisos (RGCond), animal chapeau/listado positivo, y penal sensible (sexual/menores) + bundles.
 
 Antes TODA ficha quedaba `pendiente_revision` (sello "Borrador beta") por defecto. Ahora el agente
 principal COTEJA contra el BOE consolidado (leído en el navegador, no WebFetch) y marca `verificado`
