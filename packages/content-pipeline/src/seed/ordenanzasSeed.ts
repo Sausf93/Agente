@@ -772,6 +772,9 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'vecino ruidoso',
       'obras fuera de hora',
       'local ruidoso',
+      'musica del coche alta',
+      'coche con musica alta',
+      'altavoces en la calle',
     ],
     notaRevision:
       'COTEJADO contra el texto consolidado de la OM de ruidos y vibraciones de SCTF (arts. 30 y 31, ' +

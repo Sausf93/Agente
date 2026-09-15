@@ -3295,12 +3295,17 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     terminos: [
       'escape libre',
       'tubo de escape ruidoso',
+      'tubo de escape',
       'escape no homologado',
       'mucho ruido la moto',
       'escape modificado',
+      'escape trucado',
       'tubarro',
       'ruido excesivo',
       'petardeo del escape',
+      'ruido de coche',
+      'coche ruidoso',
+      'moto ruidosa',
     ],
     consecuencias: [
       {

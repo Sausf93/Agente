@@ -545,11 +545,12 @@ Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
 ### BACKLOG municipal SCTF (validador-calle, 2026-09-15) — fichas nuevas de alto uso local
 Ola municipal siguiente (crear con `nueva-infraccion`; confirmar artículo/cuantía contra el texto
 consolidado antes de `verificado`; el navegador bloquea la descarga → `python urllib`+`pypdf`):
-- **`ord-sctf-vado`** (obstaculizar vado señalizado; consecuencia estrella = grúa). Muy consultada.
-- **`ord-sctf-carga-descarga`** (fuera de horario / zona C+D).
-- **`ord-sctf-gorrillas`** (aparcacoches no autorizado; típico Heliodoro/puerto/mercadillos).
-- **Ruido con VEHÍCULO** (escape libre / música de coche): variante o ficha aparte de `ord-sctf-ruido-convivencia`.
-- **`ord-sctf-contenedor-obra`** (saco/contenedor de obra en vía sin autorización). Menos urgentes: mendicidad, publicidad/carteles.
+- ~~`ord-sctf-vado`~~ **HECHA** (consecuencia grúa; consultable, OM circulación 1985 en pesetas → importe a verificar).
+- ~~`ord-sctf-carga-descarga`~~ **HECHA** (consultable; retirada por grúa si obstaculiza).
+- ~~`ord-sctf-gorrillas`~~ **HECHA** (cese; deslinde LO 4/2015/coacciones si amenaza).
+- ~~Ruido con VEHÍCULO~~ **HECHO** vía sinónimos: escape → ficha estatal `inf-escape-ruido` (verificada);
+  música de coche → `ord-sctf-ruido-convivencia`.
+- **`ord-sctf-contenedor-obra`** (saco/contenedor de obra en vía sin autorización) PENDIENTE. Menos urgentes: mendicidad, publicidad/carteles.
 - **Consecuencias operativas estructuradas** (pendiente, requiere confirmar base en cada ordenanza):
   venta-ambulante → `decomiso` de género (si la ordenanza lo prevé); abandono-enseres → retirada +
   aviso del servicio de voluminosos; alcohol/acampada → identificación + retirada de bebidas + cese /
