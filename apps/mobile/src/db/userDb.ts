@@ -664,13 +664,47 @@ export async function recordCarreteraReciente(carretera: string, updatedAt: stri
 }
 
 /** Lista las carreteras recientes, la más reciente primero (tope `limite`). */
-export async function listCarreterasRecientes(limite = 8): Promise<string[]> {
+export async function listCarreterasRecientes(limite = 6): Promise<string[]> {
   const db = await openUserDb();
   const rows = await db.getAllAsync<{ carretera: string }>(
     'SELECT carretera FROM pk_reciente ORDER BY updated_at DESC LIMIT ?',
     [limite],
   );
   return rows.map((r) => r.carretera);
+}
+
+/** Borra una carretera reciente (p. ej. una errata que el agente no quiere volver a ver). */
+export async function deleteCarreteraReciente(carretera: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM pk_reciente WHERE carretera = ?', [carretera.trim()]);
+}
+
+/** Registra (o refresca) un término municipal usado, para ofrecerlo como acceso rápido. */
+export async function recordTerminoMunicipalReciente(termino: string, updatedAt: string): Promise<void> {
+  const tm = termino.trim();
+  if (tm.length === 0) return;
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO tm_reciente (termino_municipal, updated_at) VALUES (?, ?)
+     ON CONFLICT(termino_municipal) DO UPDATE SET updated_at = excluded.updated_at`,
+    [tm, updatedAt],
+  );
+}
+
+/** Lista los términos municipales recientes, el más reciente primero (tope `limite`). */
+export async function listTerminosMunicipalesRecientes(limite = 6): Promise<string[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{ termino_municipal: string }>(
+    'SELECT termino_municipal FROM tm_reciente ORDER BY updated_at DESC LIMIT ?',
+    [limite],
+  );
+  return rows.map((r) => r.termino_municipal);
+}
+
+/** Borra un término municipal reciente (errata o municipio que ya no procede). */
+export async function deleteTerminoMunicipalReciente(termino: string): Promise<void> {
+  const db = await openUserDb();
+  await db.runAsync('DELETE FROM tm_reciente WHERE termino_municipal = ?', [termino.trim()]);
 }
 
 // ---------------------------------------------------------------------------

@@ -6,11 +6,19 @@ import type { Theme } from '@/ui/theme';
 import { Card } from '@/ui/components/Card';
 import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
 import { hapticSelection } from '@/ui/haptics';
-import { listCarreterasRecientes, recordCarreteraReciente } from '@/db/userDb';
+import {
+  deleteCarreteraReciente,
+  deleteTerminoMunicipalReciente,
+  listCarreterasRecientes,
+  listTerminosMunicipalesRecientes,
+  recordCarreteraReciente,
+  recordTerminoMunicipalReciente,
+} from '@/db/userDb';
 import {
   componerLocalizacion,
   localizacionValida,
   type Margen,
+  type Plataforma,
   type Sentido,
 } from './puntoKilometrico';
 
@@ -27,13 +35,19 @@ export function PuntoKilometricoScreen() {
   const [sentido, setSentido] = useState<Sentido | null>(null);
   const [sentidoHacia, setSentidoHacia] = useState('');
   const [margen, setMargen] = useState<Margen | null>(null);
+  const [plataforma, setPlataforma] = useState<Plataforma | null>(null);
+  const [terminoMunicipal, setTerminoMunicipal] = useState('');
   const [referencia, setReferencia] = useState('');
   const [recientes, setRecientes] = useState<string[]>([]);
+  const [tmRecientes, setTmRecientes] = useState<string[]>([]);
 
   useEffect(() => {
     let vivo = true;
     void listCarreterasRecientes().then((r) => {
       if (vivo) setRecientes(r);
+    });
+    void listTerminosMunicipalesRecientes().then((r) => {
+      if (vivo) setTmRecientes(r);
     });
     return () => {
       vivo = false;
@@ -46,9 +60,16 @@ export function PuntoKilometricoScreen() {
     sentido,
     sentidoHacia: sentidoHacia.trim() || null,
     margen,
+    plataforma,
+    terminoMunicipal: terminoMunicipal.trim() || null,
     referencia: referencia.trim() || null,
   };
-  const texto = useMemo(() => componerLocalizacion(datos), [datos]);
+  // Memoiza sobre los campos primitivos (no sobre `datos`, que se recrea en cada render).
+  const texto = useMemo(
+    () => componerLocalizacion(datos),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [carretera, pk, sentido, sentidoHacia, margen, plataforma, terminoMunicipal, referencia],
+  );
   const valido = localizacionValida(datos);
 
   return (
@@ -76,7 +97,15 @@ export function PuntoKilometricoScreen() {
         {recientes.length > 0 ? (
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, marginTop: t.spacing.xxs }}>
             {recientes.map((via) => (
-              <Chip key={via} t={t} label={via} onPress={() => setCarretera(via)} />
+              <Chip
+                key={via}
+                t={t}
+                label={via}
+                onPress={() => setCarretera(via)}
+                onLongPress={() => {
+                  void deleteCarreteraReciente(via).then(() => listCarreterasRecientes().then(setRecientes));
+                }}
+              />
             ))}
           </View>
         ) : null}
@@ -125,6 +154,48 @@ export function PuntoKilometricoScreen() {
         />
       </Campo>
 
+      <Campo t={t} etiqueta="Ubicación en la vía (opcional)">
+        <Segmento
+          t={t}
+          value={plataforma}
+          opciones={[
+            { key: 'calzada', label: 'Calzada' },
+            { key: 'arcen', label: 'Arcén' },
+            { key: 'mediana', label: 'Mediana' },
+            { key: 'via_servicio', label: 'Vía servicio' },
+          ]}
+          onChange={(v) => setPlataforma(v)}
+        />
+      </Campo>
+
+      <Campo t={t} etiqueta="Término municipal">
+        <Entrada
+          t={t}
+          value={terminoMunicipal}
+          onChangeText={setTerminoMunicipal}
+          placeholder="p. ej. Adeje"
+          autoCapitalize="words"
+          accessibilityLabel="Término municipal"
+        />
+        {tmRecientes.length > 0 ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, marginTop: t.spacing.xxs }}>
+            {tmRecientes.map((tm) => (
+              <Chip
+                key={tm}
+                t={t}
+                label={tm}
+                onPress={() => setTerminoMunicipal(tm)}
+                onLongPress={() => {
+                  void deleteTerminoMunicipalReciente(tm).then(() =>
+                    listTerminosMunicipalesRecientes().then(setTmRecientes),
+                  );
+                }}
+              />
+            ))}
+          </View>
+        ) : null}
+      </Campo>
+
       <Campo t={t} etiqueta="Referencia (opcional)">
         <Entrada
           t={t}
@@ -149,9 +220,14 @@ export function PuntoKilometricoScreen() {
             texto={texto}
             label="Copiar localización"
             onCopied={() => {
-              // Al copiar, se recuerda la carretera para ofrecerla como acceso rápido la próxima vez.
-              void recordCarreteraReciente(carretera, new Date().toISOString()).then(() =>
+              // Al copiar, se recuerdan la carretera y el término municipal para ofrecerlos como
+              // acceso rápido la próxima vez (uso a una mano en la misma demarcación).
+              const ahora = new Date().toISOString();
+              void recordCarreteraReciente(carretera, ahora).then(() =>
                 listCarreterasRecientes().then(setRecientes),
+              );
+              void recordTerminoMunicipalReciente(terminoMunicipal, ahora).then(() =>
+                listTerminosMunicipalesRecientes().then(setTmRecientes),
               );
             }}
           />
@@ -165,16 +241,34 @@ export function PuntoKilometricoScreen() {
   );
 }
 
-/** Chip de acceso rápido a una carretera reciente: un toque la rellena. */
-function Chip({ t, label, onPress }: { t: Theme; label: string; onPress: () => void }) {
+/** Chip de acceso rápido reciente: un toque lo rellena; pulsación larga lo borra. */
+function Chip({
+  t,
+  label,
+  onPress,
+  onLongPress,
+}: {
+  t: Theme;
+  label: string;
+  onPress: () => void;
+  onLongPress?: () => void;
+}) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Usar carretera ${label}`}
+      accessibilityLabel={`Usar ${label}. Mantén pulsado para borrarlo.`}
       onPress={() => {
         hapticSelection();
         onPress();
       }}
+      onLongPress={
+        onLongPress
+          ? () => {
+              hapticSelection();
+              onLongPress();
+            }
+          : undefined
+      }
       style={{
         minHeight: t.touch.chipHeight,
         justifyContent: 'center',

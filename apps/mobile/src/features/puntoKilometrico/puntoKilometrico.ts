@@ -9,6 +9,8 @@
 
 export type Sentido = 'creciente' | 'decreciente';
 export type Margen = 'derecho' | 'izquierdo' | 'ambos';
+/** Ubicación FÍSICA fina en la plataforma de la vía (dato operativo que el margen no aporta). */
+export type Plataforma = 'calzada' | 'arcen' | 'mediana' | 'via_servicio';
 
 /** Datos que el agente introduce para localizar el punto de la intervención. */
 export interface DatosPuntoKilometrico {
@@ -20,6 +22,10 @@ export interface DatosPuntoKilometrico {
   /** Destino del sentido, p. ej. "Santa Cruz" → "sentido decreciente (hacia Santa Cruz)". */
   sentidoHacia: string | null;
   margen: Margen | null;
+  /** Dónde exactamente en la plataforma (calzada, arcén, mediana, vía de servicio). */
+  plataforma: Plataforma | null;
+  /** Término municipal donde ocurre el hecho: todo atestado/boletín lo localiza (p. ej. "Adeje"). */
+  terminoMunicipal: string | null;
   /** Referencia complementaria, p. ej. "a la altura de la salida 12" o "junto a la gasolinera". */
   referencia: string | null;
 }
@@ -33,6 +39,13 @@ const MARGEN_LABEL: Record<Margen, string> = {
   derecho: 'margen derecho',
   izquierdo: 'margen izquierdo',
   ambos: 'ambos márgenes',
+};
+
+const PLATAFORMA_LABEL: Record<Plataforma, string> = {
+  calzada: 'calzada',
+  arcen: 'arcén',
+  mediana: 'mediana',
+  via_servicio: 'vía de servicio',
 };
 
 /** Normaliza el p.k. tecleado a la forma "p.k. 12,300" (admite "12.3", "12+300", "12,3"). */
@@ -61,10 +74,15 @@ export function componerLocalizacion(d: DatosPuntoKilometrico): string {
     partes.push(hacia ? `${SENTIDO_LABEL[d.sentido]} (hacia ${hacia})` : SENTIDO_LABEL[d.sentido]);
   }
   if (d.margen) partes.push(MARGEN_LABEL[d.margen]);
+  if (d.plataforma) partes.push(PLATAFORMA_LABEL[d.plataforma]);
+  const tm = d.terminoMunicipal?.trim();
+  if (tm) partes.push(`término municipal de ${tm}`);
 
   let texto = partes.join(', ');
   const ref = d.referencia?.trim();
   if (ref) texto += `, ${ref}`;
+  // Capitaliza la inicial (si solo hay p.k. sin carretera, la línea empezaría en minúscula).
+  texto = texto.charAt(0).toUpperCase() + texto.slice(1);
   return `${texto}.`;
 }
 

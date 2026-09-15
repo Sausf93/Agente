@@ -231,6 +231,19 @@ export const USER_DB_MIGRATIONS: readonly UserDbMigration[] = [
       );
     `,
   },
+  {
+    // PUNTO KILOMÉTRICO — TÉRMINOS MUNICIPALES recientes: un atestado/boletín SIEMPRE localiza el
+    // hecho en su término municipal, y el agente patrulla casi siempre la misma demarcación, así que
+    // se ofrecen como acceso rápido igual que las carreteras. Local-first (ADR-001): solo en el
+    // dispositivo. Es el nombre de un municipio (dato público), NO un dato de tercero.
+    version: 12,
+    sql: `
+      CREATE TABLE IF NOT EXISTS tm_reciente (
+        termino_municipal TEXT PRIMARY KEY NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `,
+  },
 ];
 
 /** Versión de esquema objetivo de la base local (la mayor de las migraciones). */

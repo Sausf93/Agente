@@ -12,6 +12,8 @@ const base: DatosPuntoKilometrico = {
   sentido: null,
   sentidoHacia: null,
   margen: null,
+  plataforma: null,
+  terminoMunicipal: null,
   referencia: null,
 };
 
@@ -38,10 +40,13 @@ describe('componerLocalizacion', () => {
       sentido: 'decreciente',
       sentidoHacia: 'Santa Cruz',
       margen: 'derecho',
+      plataforma: 'arcen',
+      terminoMunicipal: 'Adeje',
       referencia: 'a la altura de la salida 12',
     });
     expect(texto).toBe(
-      'Carretera TF-1, p.k. 12,300, sentido decreciente (hacia Santa Cruz), margen derecho, a la altura de la salida 12.',
+      'Carretera TF-1, p.k. 12,300, sentido decreciente (hacia Santa Cruz), margen derecho, arcén, ' +
+        'término municipal de Adeje, a la altura de la salida 12.',
     );
   });
 
@@ -52,6 +57,16 @@ describe('componerLocalizacion', () => {
     expect(componerLocalizacion({ ...base, carretera: 'N-340', pk: '', sentido: 'creciente' })).toBe(
       'Carretera N-340, sentido creciente.',
     );
+  });
+
+  it('incluye plataforma y término municipal cuando se indican', () => {
+    expect(
+      componerLocalizacion({ ...base, carretera: 'N-340', plataforma: 'calzada', terminoMunicipal: 'Vélez-Málaga' }),
+    ).toBe('Carretera N-340, calzada, término municipal de Vélez-Málaga.');
+  });
+
+  it('capitaliza la inicial aunque solo haya p.k.', () => {
+    expect(componerLocalizacion({ ...base, pk: '12,300' })).toBe('P.k. 12,300.');
   });
 
   it('sin carretera ni p.k. → vacío', () => {
