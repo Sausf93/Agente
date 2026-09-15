@@ -16,6 +16,7 @@ import {
   Settings,
   ShieldAlert,
   Signpost,
+  SquareParking,
   Wine,
   type LucideProps,
 } from 'lucide-react-native';
@@ -131,6 +132,14 @@ export default function MasScreen() {
             icon={Car}
             titulo="Vehículos"
             descripcion="Documentación, vehículos extranjeros, comprobaciones y falsedad documental."
+          />
+        </Link>
+        <Link href="/mis-ordenanzas" asChild>
+          <FilaMas
+            t={t}
+            icon={SquareParking}
+            titulo="Mi ordenanza (zona azul, vado…)"
+            descripcion="Guarda el importe de tu ordenanza de aparcamiento y reúsalo en el boletín."
           />
         </Link>
         <Link href="/sustancias" asChild>
