@@ -1284,6 +1284,9 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-abandono-familia', // 227: impago de pensiones, prisión 3m-1a o multa → menos grave
   'del-usurpacion-estado-civil', // 401: prisión 6m-3a → menos grave
   'del-danos-leves', // 263.2: daño ≤400 €, multa 1-3 meses → leve
+  'del-defraudacion-fluido', // 255.2: ≤400 € multa 1-3 meses → leve (255.1: >400 € multa 3-12 meses)
+  'del-amenazas-leves', // 171.7: amenaza leve, multa 1-3 meses → leve (171.4 VG con prisión; 171.1 mal no delito)
+  'del-calumnias-injurias', // 206/209: pena de multa → menos grave; querella del ofendido (215), de oficio si es a agente
   // SEPRONA / medio ambiente (sembrados 2026-09-15; cotejados contra el CP en el BOE)
   'del-caza-pesca-especies-protegidas', // 334 → menos grave
   'del-caza-pesca-prohibida', // 335 → menos grave
@@ -3620,12 +3623,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'enganche electrico cultivo',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y la frontera de cuantía: la ficha modela el caso LEVE (defraudación ' +
-      '≤ 400 € → multa de 1 a 3 meses, art. 255.2) → detención regida por el art. 495 LECrim; por encima ' +
-      'de 400 € la pena es multa de 3 a 12 meses (art. 255.1) y sigue siendo MENOS GRAVE de pena de ' +
-      'MULTA (valorar penaSoloMulta y la proporcionalidad del art. 492 LECrim). DESLINDE con el uso ' +
-      'ilícito de terminal de telecomunicación (art. 256) y con el hurto de infraestructuras (art. ' +
-      '235.1). Confirmar cuantía-frontera y penas contra el texto consolidado del CP con el revisor.',
+      'Cotejado contra el CP consolidado: la ficha modela el caso LEVE (defraudación ≤ 400 € → multa de 1 ' +
+      'a 3 meses, art. 255.2) → detención regida por el art. 495 LECrim; por encima de 400 € la pena es ' +
+      'multa de 3 a 12 meses (art. 255.1) y sigue siendo pena de MULTA (valorar la proporcionalidad del ' +
+      'art. 492 LECrim). DESLINDE con el uso ilícito de terminal de telecomunicación (art. 256) y con el ' +
+      'hurto de infraestructuras (art. 235.1).',
   }),
   // --- Depósito o tenencia de armas prohibidas (563) ------------------------------------------
   construirDelito({
@@ -3703,14 +3705,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'amenaza de mal no delito',
     ],
     notaRevision:
-      'A VERIFICAR el subtipo y el marco de pena: la ficha modela la AMENAZA LEVE del art. 171.7 CP ' +
-      '(delito leve, multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. ATENCIÓN: la ' +
-      'amenaza leve del art. 171.4 (esposa/mujer ligada por análoga relación o persona vulnerable ' +
-      'conviviente) es DELITO con pena de PRISIÓN (ámbito de VG/doméstica) → MENOS GRAVE, con posible ' +
-      'orden de protección; y la amenaza de un mal CONSTITUTIVO DE DELITO va por el art. 169 (ficha ' +
-      'del-amenazas). REQUISITO PROCESAL: la amenaza leve del 171.7 solo es perseguible por DENUNCIA del ' +
-      'agraviado (limita la actuación de oficio). Confirmar el deslinde 169/171 y las penas contra el ' +
-      'texto consolidado del CP.',
+      'Cotejado contra el CP consolidado: la ficha modela la AMENAZA LEVE del art. 171.7 CP (delito leve, ' +
+      'multa de 1 a 3 meses) → detención regida por el art. 495 LECrim. ATENCIÓN: la amenaza leve del art. ' +
+      '171.4 (esposa/mujer ligada por análoga relación o persona vulnerable conviviente) es DELITO con pena ' +
+      'de PRISIÓN de 6 meses a 1 año o TBC (ámbito de VG/doméstica) → MENOS GRAVE, con posible orden de ' +
+      'protección; y la amenaza de un mal CONSTITUTIVO DE DELITO va por el art. 169 (ficha del-amenazas). ' +
+      'REQUISITO PROCESAL: la amenaza leve del 171.7 solo es perseguible por DENUNCIA del agraviado (limita ' +
+      'la actuación de oficio).',
   }),
   // --- Abandono de familia: impago de pensiones (227) -----------------------------------------
   construirDelito({
@@ -3777,13 +3778,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'insultos graves',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y, sobre todo, el REQUISITO PROCESAL: la calumnia y la injuria son ' +
-      'delitos PRIVADOS perseguibles solo mediante QUERELLA del ofendido (art. 215 CP), salvo las ' +
-      'dirigidas a funcionario público sobre hechos de su cargo → esto limita mucho la actuación ' +
-      'policial de oficio. La ficha modela el caso de pena de MULTA (injuria grave, art. 209; calumnia ' +
-      'sin publicidad, art. 206) → penaSoloMulta true (detención por la rama de proporcionalidad, art. ' +
-      '492 LECrim). La calumnia con publicidad puede llevar PRISIÓN de 6 meses a 2 años (art. 206). ' +
-      'Confirmar penas, publicidad y régimen de perseguibilidad contra el texto consolidado del CP.',
+      'Cotejado contra el CP consolidado. REQUISITO PROCESAL clave: la calumnia y la injuria son delitos ' +
+      'PRIVADOS perseguibles solo mediante QUERELLA del ofendido (art. 215 CP), salvo las dirigidas a ' +
+      'funcionario público, autoridad o agente sobre hechos de su cargo (se procede de oficio) → esto ' +
+      'limita mucho la actuación policial de oficio. La ficha modela el caso de pena de MULTA (injuria ' +
+      'grave, art. 209: con publicidad 6-14 meses, en otro caso 3-7; calumnia sin publicidad, art. 206: ' +
+      'multa 6-12 meses) → penaSoloMulta true (detención por la rama de proporcionalidad, art. 492 LECrim). ' +
+      'La calumnia con publicidad puede llevar PRISIÓN de 6 meses a 2 años (art. 206).',
   }),
   // --- Usurpación del estado civil (401): suplantación de identidad ----------------------------
   construirDelito({
