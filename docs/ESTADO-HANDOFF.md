@@ -177,9 +177,26 @@ el "Borrador beta" a las `verificado`.
   COBRAR sigue siendo prudente un visto bueno humano/jurídico final, sobre todo en penal (detención).
 
 
-### YA HECHO el 2026-09-15 (run autónomo) — `main`, CI verde, Expo `preview` publicado
-Tres rondas encadenadas (cada una: build:content → copiar .db/.manifest → 962 tests → tsc → commit →
-push → CI verde vía API de GitHub). Paquete final: **3664 artículos, 313 infracciones, 124 pendientes**
+### YA HECHO el 2026-09-15 (run autónomo largo) — `main`, CI verde, Expo `preview` publicado
+Paquete final del día: **33 normas, 3679 artículos, 332 infracciones (131 pendientes), 3036 sinónimos.**
+Cada ronda: build:content → copiar .db/.manifest → tests (hoy 974) → tsc → commit → CI verde (API GitHub)
+→ Expo. TODO el contenido nuevo/tocado se revisó con MULTIAGENTES (revisor-jurídico + validador-calle) y
+se aplicaron sus hallazgos antes de publicar (regla del cofundador). Bloques del día:
+- **PENAL (estafa/tarjeta/lesiones)** (commit `4305c06`): la LO 14/2022 reestructuró la estafa → `del-estafa`
+  al art. 248 (tipo general), NUEVA `del-estafa-tarjeta` (art. 249 informática/tarjetas), NUEVA
+  `del-lesiones-graves` (149/150). La LO 1/2026 solo añadió la multirreincidencia del 248 (corregido por el
+  revisor). Verificadas contra el BOE.
+- **UX Normas** (commits `66f23b4`, `3c09ed7`, `6963a21`): BUSCADOR dentro de cada menú/submenú (filtra al
+  vuelo, fijo fuera del scroll), sub-temas como GRID de TARJETAS 2 por fila (como SPPLB), atajo al buscador
+  global, recuento en pastilla. Revisado por diseño-producto. (Feedback del cofundador sobre los submenús.)
+- **CAZA de Canarias (Ley 7/1998)** (commit `13ea855`): 6 fichas para GC rural (ver arriba).
+- **SEGURIDAD PRIVADA (Ley 5/2014)** (commit `dc791af`): nuevo seed estatal (norma LSP), materia `seguridad`
+  → subtema `seg-privada`. 7 fichas VERIFICADAS (arts. 57/58/61/62, euros) para GC y PN: sin habilitación,
+  empresa sin autorización, negativa a auxilio/identificación a FCS, exceso de funciones (con deslinde
+  penal 163/165/172/402 CP), sin uniforme/TIP, arma fuera de servicio. Nuevo marco `seguridad_privada`.
+
+--- (rondas municipales/SEPRONA anteriores del mismo día, más abajo) ---
+Paquete tras las primeras rondas: **3664 artículos, 313 infracciones, 124 pendientes**
 (≈189 verificadas). Expo update group `5dd2f74e` (commit `0609b25`).
 - **SEPRONA/contrabando — 2 revisiones aplicadas** (commit `07b3b3b`): revisor jurídico + validador de
   calle sobre las 6 fichas nuevas. Bugs reales corregidos: `construirDelito` atribuía al "Código Penal"
