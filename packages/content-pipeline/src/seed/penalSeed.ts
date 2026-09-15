@@ -36,7 +36,7 @@ import type { InfraccionSeed, SeedContenido } from './traficoSeed.js';
  */
 
 /** Fecha de curación de este seed (la que verá el agente como "Actualizado el…"). */
-const FECHA_ACTUALIZACION = '2026-09-07';
+const FECHA_ACTUALIZACION = '2026-09-15';
 const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
 
 // --- Norma: Código Penal (misma identidad BOE que declara el seed de tráfico) ---------------
@@ -1312,10 +1312,17 @@ function construirDelito(input: DelitoSeedInput): InfraccionSeed {
   const verificadaPorSet = input.revision === undefined && VERIFICADOS_BOE.has(input.id);
   const revision: EstadoRevision =
     input.revision ?? (verificadaPorSet ? 'verificado' : 'pendiente_revision');
-  const notaRevision = verificadaPorSet
-    ? `COTEJADO contra el BOE (Código Penal art. ${input.articulo.numero}, leído 2026-09-14): la pena ` +
-      `base del artículo y su gravedad (art. 33 CP) concuerdan con la ficha. ${input.notaRevision}`
-    : input.notaRevision;
+  // Si la propia nota ya trae su línea de cotejo (fichas que se cotejaron una a una contra su
+  // articulado), no anteponemos el prefijo genérico para no duplicar la frase ni la fecha. El
+  // prefijo usa `fuenteNorma` para no atribuir al Código Penal artículos de otras leyes (p. ej.
+  // el art. 2 de la LO 12/1995 de contrabando).
+  const yaCotejada = /COTEJAD[OA]S?\s+contra el BOE/i.test(input.notaRevision);
+  const fuenteCotejo = input.fuenteNorma ?? 'Código Penal';
+  const notaRevision =
+    verificadaPorSet && !yaCotejada
+      ? `COTEJADO contra el BOE (${fuenteCotejo} art. ${input.articulo.numero}, leído ${FECHA_ACTUALIZACION}): ` +
+        `la pena base del artículo y su gravedad (art. 33 CP) concuerdan con la ficha. ${input.notaRevision}`
+      : input.notaRevision;
 
   // Consecuencias adicionales (p. ej. la protección de la víctima en violencia de género).
   const consecuenciasExtra: Consecuencia[] = (input.consecuenciasExtra ?? []).map((c, i) =>
@@ -4013,18 +4020,37 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     terminos: [
       'caza furtiva',
       'furtivismo',
+      'furtivo',
       'cazar especie protegida',
       'pescar especie protegida',
       'matar un animal protegido',
       'trafico de especies protegidas',
       'especie amenazada',
+      'especie en peligro de extincion',
       'caza ilegal de especie protegida',
+      'matar un lobo',
+      'matar un lince',
+      'matar un buitre',
+      'matar un aguila',
+      'especie cites',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede intervenir las piezas o ejemplares (vivos o muertos), sus partes o derivados, y los ' +
+          'instrumentos de la infracción (armas, artes, redes), así como la muestra para su análisis en ' +
+          'laboratorio, con cadena de custodia y a disposición de la autoridad competente (art. 127 CP; ' +
+          'comiso administrativo por la Ley de Caza/Pesca autonómica).',
+        fuente: 'Art. 127 CP (comiso) y Ley de Caza/Pesca autonómica',
+      },
     ],
     notaRevision:
       'COTEJADO contra el BOE (CP art. 334, leído 2026-09-15): caza/pesca/comercio de especies protegidas ' +
-      'o amenazadas → prisión 6m-2a o multa 8-24m + inhabilitación (incluida la de cazar/pescar). Concurre ' +
-      'la Ley 42/2007 (patrimonio natural) y el catálogo de especies amenazadas. Deslinde con 335 y 336. ' +
-      'Segundo revisor humano para el cierre.',
+      'o amenazadas → prisión 6m-2a o multa 8-24m + inhabilitación especial y para cazar/pescar 2-4 años; ' +
+      'mitad superior si la especie está catalogada en peligro de extinción; por imprudencia grave, prisión ' +
+      '3m-1a. Concurre la Ley 42/2007 (patrimonio natural) y el catálogo de especies amenazadas. Deslinde ' +
+      'con 335 y 336. Delito ambiental no sensible: pena base cotejada por el equipo; conviene un 2º par humano.',
   }),
   construirDelito({
     id: 'del-caza-pesca-prohibida',
@@ -4032,14 +4058,15 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Caza o pesca no autorizada o en época/lugar prohibidos',
     gravedadCp: 'menos_grave',
     penaTexto:
-      'Multa de 8 a 12 meses e inhabilitación para cazar o pescar de 2 a 5 años (art. 335 CP); privación ' +
-      'del derecho a cazar o pescar',
+      'Multa de 8 a 12 meses, inhabilitación para cazar o pescar de 2 a 5 años y privación del derecho a ' +
+      'la tenencia y porte de armas por el mismo periodo (art. 335.1 CP)',
     textoBoletin:
       'Cazar o pescar especies (distintas de las protegidas del art. 334) cuando esté expresamente ' +
       'prohibido por las normas específicas —vedas, especies no autorizadas—, o hacerlo en terreno ' +
       'cinegético ajeno sin el consentimiento de su titular (art. 335 CP). MENSAJE CLAVE: es delito ' +
-      'MENOS GRAVE de multa e inhabilitación, distinto de la infracción ADMINISTRATIVA de la Ley de Caza ' +
-      'autonómica (cazar sin licencia sin más). La calificación final corresponde a la autoridad judicial.',
+      'MENOS GRAVE de multa, inhabilitación y privación de armas, distinto de la infracción ADMINISTRATIVA ' +
+      'de la Ley de Caza autonómica (cazar sin licencia sin más). La calificación final corresponde a la ' +
+      'autoridad judicial.',
     terminos: [
       'cazar sin licencia',
       'pescar sin licencia',
@@ -4047,14 +4074,29 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'pesca en veda',
       'cazar en coto ajeno',
       'furtivo en finca ajena',
+      'furtivo',
       'sin permiso de caza',
       'pesca sin autorizacion',
+      'cazar jabali sin permiso',
+      'batida sin autorizacion',
+      'caza de jabali ilegal',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede intervenir las piezas cobradas, las armas y las artes de caza o pesca empleadas, a ' +
+          'disposición de la autoridad competente (art. 335.1 CP prevé la privación de armas; comiso de ' +
+          'efectos e instrumentos, art. 127 CP, y comiso administrativo por la Ley de Caza/Pesca autonómica).',
+        fuente: 'Arts. 335.1 y 127 CP y Ley de Caza/Pesca autonómica',
+      },
     ],
     notaRevision:
       'COTEJADO contra el BOE (CP art. 335, leído 2026-09-15): caza/pesca de especies cuando está ' +
-      'prohibido o sin autorización del titular del terreno → multa 8-12m + inhabilitación 2-5 años. ' +
-      'DESLINDE importante con la infracción ADMINISTRATIVA de la Ley de Caza autonómica (competencia ' +
-      'de cada CCAA); el delito exige la prohibición específica o el terreno ajeno. Segundo revisor humano.',
+      'prohibido (335.1) o en terreno cinegético ajeno sin permiso (335.2) → multa 8-12m + inhabilitación ' +
+      '2-5 años + privación de armas por igual periodo. DESLINDE importante con la infracción ADMINISTRATIVA ' +
+      'de la Ley de Caza autonómica (competencia de cada CCAA); el delito exige la prohibición específica o ' +
+      'el terreno ajeno. Delito ambiental no sensible: pena base cotejada por el equipo; conviene un 2º par humano.',
   }),
   construirDelito({
     id: 'del-veneno-caza-pesca',
@@ -4062,28 +4104,50 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Veneno, explosivos o métodos no selectivos en caza o pesca',
     gravedadCp: 'menos_grave',
     penaTexto:
-      'Prisión de 4 meses a 2 años o multa de 8 a 24 meses e inhabilitación especial y para cazar o ' +
-      'pescar (art. 336 CP)',
+      'Prisión de 4 meses a 2 años o multa de 8 a 24 meses, inhabilitación especial y para cazar o pescar ' +
+      'de 1 a 3 años y privación de la tenencia y porte de armas por el mismo periodo (art. 336 CP); mitad ' +
+      'superior si el daño causado es de notoria importancia',
     textoBoletin:
       'Emplear para la caza o la pesca, sin autorización legal, VENENO, medios explosivos u otros ' +
       'instrumentos o artes de similar eficacia destructiva o NO SELECTIVA para la fauna (cebos ' +
-      'envenenados, lazos, cepos, dinamita, electropesca): art. 336 CP. Especial gravedad si el daño ' +
-      'afecta a especies protegidas o a espacios naturales. La calificación final corresponde a la ' +
-      'autoridad judicial.',
+      'envenenados, lazos, cepos, dinamita, electropesca): art. 336 CP. Si el daño causado es de NOTORIA ' +
+      'IMPORTANCIA, la pena se impone en su mitad superior. SEGURIDAD EN EL CAMPO ante un cebo/animal ' +
+      'envenenado: no manipular sin guantes, acotar la zona (riesgo para personas, ganado, mascotas y ' +
+      'fauna necrófaga), recoger muestra con cadena de custodia para toxicología y avisar al servicio de ' +
+      'medio ambiente. La calificación final corresponde a la autoridad judicial.',
     terminos: [
       'cebo envenenado',
       'veneno para animales',
       'lazos y cepos',
       'pesca con dinamita',
       'electropesca',
+      'pesca electrica',
+      'pesca con corriente',
       'metodos no selectivos de caza',
       'trampas prohibidas',
       'envenenar fauna',
+      'parany',
+      'liga para pajaros',
+      'reclamo electrico',
+      'caza nocturna con foco',
+      'redes para pajaros',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede intervenir el veneno, cebos, artes o explosivos, las piezas afectadas y las armas, y ' +
+          'recoger muestra con cadena de custodia para análisis toxicológico, a disposición de la ' +
+          'autoridad competente (art. 336 CP prevé la privación de armas; comiso, art. 127 CP).',
+        fuente: 'Arts. 336 y 127 CP',
+      },
     ],
     notaRevision:
       'COTEJADO contra el BOE (CP art. 336, leído 2026-09-15): uso de veneno, explosivos o artes no ' +
-      'selectivas para caza/pesca → prisión 4m-2a o multa 8-24m + inhabilitación. Concurre la vía ' +
-      'administrativa autonómica y el protocolo antiveneno. Segundo revisor humano para el cierre.',
+      'selectivas para caza/pesca → prisión 4m-2a o multa 8-24m + inhabilitación especial y para cazar/pescar ' +
+      '1-3 años + privación de armas por igual periodo; mitad superior si el daño es de notoria importancia. ' +
+      'Concurre la vía administrativa autonómica y el protocolo antiveneno (recogida de muestra con cadena de ' +
+      'custodia). Delito ambiental no sensible: pena base cotejada por el equipo; conviene un 2º par humano.',
   }),
   construirDelito({
     id: 'del-incendio-forestal',
@@ -4097,9 +4161,12 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'Incendiar montes o masas forestales (art. 352 CP): prisión de 1 a 5 años y multa. ESCALADA: si el ' +
       'incendio genera PELIGRO para la vida o integridad de las personas, se aplica el art. 351 (más ' +
       'grave); si es de ESPECIAL GRAVEDAD (gran superficie, deterioro grave, zona protegida…), el art. ' +
-      '353 (prisión 3 a 6 años). Prender fuego sin que llegue a propagarse es el art. 354. DESLINDE con ' +
-      'la quema agrícola/negligente y la infracción administrativa forestal. La calificación final ' +
-      'corresponde a la autoridad judicial.',
+      '353 (prisión 3 a 6 años). Prender fuego sin que llegue a propagarse es el art. 354. DESLINDE CLAVE: ' +
+      'la quema de rastrojos o agrícola que se descontrola por IMPRUDENCIA grave es el art. 358 (incendio ' +
+      'imprudente, pena inferior en grado), no el 352 doloso; y queda la infracción administrativa ' +
+      'forestal. EN EL LUGAR, la labor inmediata de la GC no es la extinción (Bomberos/agentes forestales), ' +
+      'sino asegurar la zona, identificar a posibles causantes y preservar los indicios del punto de inicio. ' +
+      'La calificación final corresponde a la autoridad judicial.',
     terminos: [
       'incendio forestal',
       'quemar el monte',
@@ -4109,13 +4176,19 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'quema ilegal',
       'pirómano',
       'incendio en zona forestal',
+      'quema de rastrojos',
+      'quema agricola',
+      'quema de matorral',
+      'quema descontrolada',
+      'roza con fuego',
     ],
     notaRevision:
       'COTEJADO contra el BOE (CP art. 352, leído 2026-09-15): incendio de montes/masas forestales → ' +
       'prisión 1-5 años + multa (menos grave; el seed modela el tipo base). ESCALADA: peligro para las ' +
       'personas → art. 351; especial gravedad → art. 353 (3-6 años, grave); tentativa/no propagación → ' +
-      'art. 354. Deslinde con la quema negligente (art. 358) y la infracción administrativa forestal. ' +
-      'Segundo revisor humano para el cierre.',
+      'art. 354. Deslinde con la quema negligente de rastrojos (art. 358, imprudencia grave, pena inferior ' +
+      'en grado) y la infracción administrativa forestal. Delito ambiental no sensible: pena base cotejada ' +
+      'por el equipo; conviene un 2º par humano.',
   }),
   construirDelito({
     id: 'del-contaminacion-ambiental',
@@ -4138,15 +4211,31 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'verter residuos toxicos',
       'emisiones ilegales',
       'vertido al rio',
+      'vertido a un barranco',
+      'vertido a un arroyo',
+      'purines',
+      'vertedero clandestino',
+      'vertedero ilegal',
+      'quema de residuos',
       'contaminar el medio ambiente',
       'vertido industrial',
       'residuos peligrosos abandonados',
+    ],
+    consecuenciasExtra: [
+      {
+        tipo: 'decomiso',
+        textoCorto:
+          'Procede recoger muestra del vertido/residuo con cadena de custodia para su análisis y, en su ' +
+          'caso, intervenir los instrumentos empleados, a disposición de la autoridad competente (comiso, ' +
+          'art. 127 CP; medidas cautelares de la normativa de residuos).',
+        fuente: 'Art. 127 CP y Ley 7/2022 de residuos',
+      },
     ],
     notaRevision:
       'COTEJADO contra el BOE (CP art. 325, leído 2026-09-15): emisiones/vertidos/residuos que puedan ' +
       'perjudicar gravemente los sistemas naturales → prisión 6m-2a + multa 10-14m + inhabilitación; ' +
       'mitad superior si hay peligro grave para la salud. Concurre la Ley 7/2022 de residuos y la ' +
-      'normativa sectorial. Segundo revisor humano para el cierre.',
+      'normativa sectorial. Delito ambiental no sensible: pena base cotejada por el equipo; conviene un 2º par humano.',
   }),
   // --- CONTRABANDO (GC fiscal / resguardo) — LO 12/1995 ---------------------------------------
   construirDelito({
@@ -4157,7 +4246,7 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     gravedadCp: 'menos_grave',
     penaTexto:
       'Prisión de 1 a 5 años y multa del tanto al séxtuplo del valor (arts. 2 y 3 LO 12/1995); pena ' +
-      'superior en grado si se comete por una organización',
+      'superior en grado (prisión que puede superar los 5 años, grave) si se comete por una organización',
     textoBoletin:
       'Importar/exportar mercancías sin presentarlas en aduana, ocultarlas a la acción aduanera, ' +
       'comerciar o circular géneros no comunitarios sin cumplir los requisitos, o traficar con géneros ' +
@@ -4174,21 +4263,29 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'mercancia sin pasar aduana',
       'alijo',
       'contrabando de tabaco',
+      'matute',
+      'tabaco de matute',
+      'fardos',
+      'cuarton',
+      'cuartones',
     ],
     consecuenciasExtra: [
       {
         tipo: 'decomiso',
         textoCorto:
           'Procede la intervención (comiso) de los géneros de contrabando y de los medios empleados para ' +
-          'su comisión, poniéndolos a disposición de la autoridad competente (art. 5 LO 12/1995).',
+          'su comisión, poniéndolos a disposición de la autoridad competente (art. 5 LO 12/1995). El ' +
+          'vehículo o embarcación empleado se inmoviliza en el acto y se traslada a depósito aduanero.',
         fuente: 'LO 12/1995 art. 5 (comiso)',
       },
     ],
     notaRevision:
       'COTEJADO contra el BOE (LO 12/1995 arts. 2, 3, 5, 11 y 12, leído 2026-09-15): delito de ' +
       'contrabando cuando el valor ≥ 150.000 € (≥ 15.000 € para labores de tabaco) → prisión 1-5 años + ' +
-      'multa (menos grave). Por debajo, infracción ADMINISTRATIVA (arts. 11-12, multa proporcional 100-350 % ' +
-      'del valor, mínimo 500 €). Área de la GUARDIA CIVIL fiscal/resguardo. Segundo revisor humano para el cierre.',
+      'multa (menos grave); pena superior en grado (grave) si actúa una organización. Por debajo de los ' +
+      'umbrales, infracción ADMINISTRATIVA (arts. 11-12, multa proporcional 100-350 % del valor, mínimo ' +
+      '500 €). Área de la GUARDIA CIVIL fiscal/resguardo. Materia fiscal no sensible: importes y umbrales ' +
+      'cotejados por el equipo; conviene un 2º par humano.',
   }),
 ];
 
