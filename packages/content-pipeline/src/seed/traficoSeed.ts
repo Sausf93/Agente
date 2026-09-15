@@ -1214,6 +1214,10 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'inf-tacografo', // LOTT 140.10 (manipulación del tacógrafo) — muy grave
   'inf-adr-mercancias-peligrosas', // LOTT 140.15 (mercancías peligrosas con peligro) — muy grave
   'inf-exceso-mma', // LOTT 141.2 (exceso de masa ≥15% <25%) — grave
+  'inf-viajeros-sin-autorizacion', // LOTT 140.5/140.1 (viajeros en autobús sin título) — muy grave
+  'inf-transporte-privado-excede', // LOTT 141.14 (transporte privado sin autorización) — grave
+  'inf-tacografo-sin-registros', // LOTT 141.13 (carencia de hojas de registro) — grave
+  'inf-adr-documentacion', // LOTT 141.5 (deficiencias documentales ADR) — grave
 ]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
@@ -2569,11 +2573,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
-      '140-142, reformada por la Ley 13/2021) y el ROTT: exceder los límites del transporte privado ' +
-      'complementario puede ser grave o, según el caso (ánimo de lucro, reiteración), reconducirse a la ' +
-      'falta de título habilitante (muy grave). Horquilla ajustada al subtramo grave 601–800 € (art. 141.14, ' +
-      'baremo art. 143) en revisión jurídica; A VERIFICAR el apartado exacto. Sin pronto pago modelado. No ' +
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 141.14, leído 2026-09-15): realizar transportes ' +
+      'privados careciendo de la autorización/certificación exigible es GRAVE. Según el caso (ánimo de ' +
+      'lucro, reiteración) puede reconducirse a la falta de título habilitante (muy grave, art. 140). ' +
+      'Horquilla orientativa del subtramo grave (601–800 €, baremo art. 143). Sin pronto pago modelado. No ' +
       'detrae puntos DGT. Revisar por supuesto.',
   }),
   // --- Viajeros (autobús / VTC / taxi) -------------------------------------------------------
@@ -2610,11 +2613,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado/letra del art. 140 LOTT (transporte público de viajeros sin título) y su ' +
-      'gravedad contra el texto consolidado (Ley 13/2021) y el ROTT. Distinguir el régimen del TAXI y ' +
-      'del VTC (competencias autonómicas/locales y RD 1076/2017 para VTC) del transporte en autobús. El ' +
-      'seed ancla el tramo alto del muy grave (4.001–6.000 €); A VERIFICAR importe y horquilla por ' +
-      'supuesto. Sin pronto pago modelado. No detrae puntos DGT. Revisar antes de publicar.',
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 140.5/140.1, leído 2026-09-15): el transporte ' +
+      'público de viajeros (autobús) sin la autorización/título habilitante es MUY GRAVE. DISTINGUIR el ' +
+      'régimen del TAXI y del VTC (competencias autonómicas/locales y RD 1076/2017), que va aparte. El ' +
+      'IMPORTE es horquilla orientativa del art. 143 (depende del apartado/precio). Sin pronto pago ' +
+      'modelado. No detrae puntos DGT. Segundo revisor humano para el importe efectivo.',
   }),
   construirInfraccion({
     id: 'inf-viajeros-exceso-plazas',
@@ -2759,11 +2762,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado/letra exacto y la GRAVEDAD contra el texto consolidado de la LOTT ' +
-      '(arts. 140-142, Ley 13/2021), el ROTT, el RD 97/2014 y el ADR vigente: distinguir la deficiencia ' +
-      'documental (grave o leve) de la ausencia total de documentación esencial (muy grave, ver ' +
-      '`inf-adr-mercancias-peligrosas`). Horquilla ajustada al subtramo alto del grave 801–1.000 € (art. ' +
-      '141.5, baremo art. 143) en revisión; A VERIFICAR el apartado. Sin pronto pago modelado. No detrae ' +
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 141.5, leído 2026-09-15): las deficiencias de la ' +
+      'documentación del transporte de mercancías peligrosas (p. ej. carta de porte) son GRAVES, distintas ' +
+      'de la ausencia total de documentación esencial (muy grave, ver `inf-adr-mercancias-peligrosas`). El ' +
+      'detalle material lo completan el RD 97/2014 y el ADR vigente. Horquilla orientativa del subtramo alto ' +
+      'del grave (801–1.000 €, baremo art. 143). Sin pronto pago modelado. No detrae ' +
       'puntos DGT. Revisar por supuesto.',
   }),
   construirInfraccion({
@@ -2931,11 +2934,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
     ],
     marcoImporte: 'transporte',
     notaRevision:
-      'A VERIFICAR el apartado exacto y la GRAVEDAD contra el texto consolidado de la LOTT (arts. ' +
-      '140-142, Ley 13/2021), el ROTT, el Reglamento (UE) 165/2014 (tacógrafo) y el Rgto (CE) 561/2006: ' +
-      'no llevar/no conservar registros suele ser grave, distinto de la manipulación o el exceso de ' +
-      'tiempos (muy grave, `inf-tacografo`). Horquilla ajustada al subtramo grave 601–800 € (art. 141.13, ' +
-      'baremo art. 143) en revisión; A VERIFICAR el apartado y si la carencia significativa sube a muy grave. ' +
+      'CLASIFICACIÓN COTEJADA contra el BOE (LOTT art. 141.13, leído 2026-09-15): la carencia no ' +
+      'significativa de hojas de registro/documentos de impresión o datos del tacógrafo es GRAVE, distinta ' +
+      'de la manipulación o el exceso de tiempos (muy grave, `inf-tacografo`). El detalle lo completan el ' +
+      'Rgto (UE) 165/2014 y el (CE) 561/2006. Horquilla orientativa del subtramo grave (601–800 €, baremo ' +
+      'art. 143); si la carencia es SIGNIFICATIVA sube de tramo. ' +
       'Sin pronto pago modelado. No detrae puntos DGT. Revisar por supuesto antes de publicar.',
   }),
   construirInfraccion({
