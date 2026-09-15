@@ -411,8 +411,50 @@ const ART_VENTA_AMBULANTE = articuloSeed({
     'Resumen orientativo; consúltese el texto de la ordenanza.',
 });
 
+// --- OLA de fichas municipales de alto uso del Local (validador-calle 2026-09-15) --------------
+// La OM de circulación de SCTF publicada en la sede es de 1985 (importes en PESETAS): sí regula la
+// conducta y la RETIRADA por grúa, pero su cuantía está obsoleta → estas van como CONSULTABLES
+// (`no_sancionador`, sin importe) con la consecuencia operativa (grúa/cese) que es lo que resuelve
+// la intervención. El importe vigente se consulta en la ordenanza fiscal.
+const ART_CIRC_VADO = articuloSeed({
+  normaId: ID_OM_CIRC,
+  numero: 'vado',
+  titulo: 'Estacionar en un vado o tapando el acceso/salida de vehículos',
+  texto:
+    'La ordenanza de circulación prohíbe parar o estacionar delante de los accesos de edificios y en los ' +
+    'vados señalizados de entrada y salida de vehículos, y faculta a la autoridad municipal a ordenar la ' +
+    'RETIRADA del vehículo por grúa y su traslado al depósito cuando impida la circulación o constituya un ' +
+    'peligro. La cuantía vigente debe consultarse (el texto en la sede es de 1985, con importes en pesetas). ' +
+    'Resumen orientativo; consúltese el texto y la ordenanza fiscal.',
+});
+
+const ART_CIRC_CARGA = articuloSeed({
+  normaId: ID_OM_CIRC,
+  numero: 'carga y descarga',
+  titulo: 'Estacionar en zona reservada a carga y descarga fuera de sus condiciones',
+  texto:
+    'La ordenanza de circulación reserva determinados espacios y horas para la carga y descarga de ' +
+    'mercancías y prohíbe estacionar en ellos fuera de esas condiciones. Si el vehículo obstaculiza, ' +
+    'procede la retirada por grúa. La cuantía vigente debe consultarse (el texto en la sede es de 1985, ' +
+    'importes en pesetas). Resumen orientativo; consúltese el texto y la ordenanza fiscal.',
+});
+
+const ART_POLICIA_GORRILLAS = articuloSeed({
+  normaId: ID_OM_POLICIA,
+  numero: 'actividad no autorizada',
+  titulo: 'Aparcacoches no autorizado ("gorrillas") en la vía pública',
+  texto:
+    'Indicar u ofrecer aparcamiento a cambio de dinero en la vía pública sin autorización municipal es una ' +
+    'actividad no autorizada. La ordenanza de policía y buen gobierno no fija cuantía (art. 135 remite a la ' +
+    'legislación vigente). DESLINDE: si hay coacción, intimidación o amenaza para cobrar, puede constituir ' +
+    'infracción de la LO 4/2015 (estatal) o incluso delito de coacciones/amenazas (CP). Resumen orientativo.',
+});
+
 export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
+  ART_CIRC_VADO,
+  ART_CIRC_CARGA,
+  ART_POLICIA_GORRILLAS,
   ART_ANIM_CORREA,
   ART_ANIM_EXCREMENTOS,
   ART_ANIM_CENSO,
@@ -1140,6 +1182,132 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'artículo sancionador ni la cuantía. A VERIFICAR con el texto consolidado. Añadir decomiso/' +
       'intervención cautelar de género solo si la ordenanza lo prevé. Delimitar frente al delito contra la ' +
       'propiedad industrial del CP para el "top manta" de marcas.',
+  }),
+  // --- OLA de alto uso del Local (2026-09-15): vado, carga/descarga y gorrillas -----------------
+  construirInfraccion({
+    id: 'ord-sctf-vado',
+    articulo: ART_CIRC_VADO,
+    tituloCorto: 'Estacionar en un vado o tapando la salida de vehículos',
+    gravedad: 'leve', // valor de relleno; lo determinante es la consecuencia (grúa), no la cuantía
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'CONSECUENCIA CLAVE: procede la RETIRADA por grúa y traslado al depósito cuando un vehículo ' +
+      'estacionado ante un vado señalizado o tapando el acceso/salida de vehículos impida la circulación o ' +
+      'constituya un peligro (no procede si el conductor está presente y lo retira). Estacionar así ' +
+      'incumple la ordenanza de circulación. El IMPORTE vigente debe consultarse (el texto en la sede es de ' +
+      '1985, con importes en pesetas). La valoración final corresponde al agente y al órgano municipal.',
+    terminos: [
+      'vado',
+      'coche en el vado',
+      'tapar el vado',
+      'estacionar en vado',
+      'aparcar en vado',
+      'vado permanente',
+      'me tapan la salida',
+      'coche delante del garaje',
+      'grua vado',
+      'aparcado en mi garaje',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Procede valorar la RETIRADA por grúa y el traslado al depósito municipal cuando el vehículo ' +
+          'impida la circulación o constituya un peligro; no procede si el conductor está presente y retira ' +
+          'el vehículo. La medida y su coste los concreta la ordenanza (base: retirada de la ordenanza de ' +
+          'circulación y art. 105 LSV).',
+        fuente: 'Ordenanza municipal de circulación (retirada) y art. 105 LSV',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE sin cuantía confirmada: la ordenanza de circulación de SCTF (texto en la sede de ' +
+      '1985, importes en PESETAS) prohíbe estacionar ante accesos/vados y faculta la RETIRADA por grúa ' +
+      '(traslado al depósito cuando impida la circulación o constituya un peligro). A VERIFICAR el importe ' +
+      'vigente en la ordenanza y su ordenanza fiscal actuales, con el revisor jurídico. La retirada por ' +
+      'grúa es la consecuencia estrella (base: art. 105 LSV + ordenanza).',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-carga-descarga',
+    articulo: ART_CIRC_CARGA,
+    tituloCorto: 'Estacionar en zona de carga y descarga fuera de sus condiciones',
+    gravedad: 'leve',
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Estacionar en un espacio reservado a carga y descarga de mercancías fuera de las horas o condiciones ' +
+      'autorizadas (turismo particular, exceder el tiempo, sin actividad de carga) incumple la ordenanza de ' +
+      'circulación. Si el vehículo obstaculiza, procede la retirada por grúa. El IMPORTE vigente debe ' +
+      'consultarse (el texto en la sede es de 1985, con importes en pesetas). La valoración final ' +
+      'corresponde al agente y al órgano municipal.',
+    terminos: [
+      'carga y descarga',
+      'zona de carga y descarga',
+      'aparcar en carga y descarga',
+      'estacionar en carga y descarga',
+      'zona c y d',
+      'coche en carga y descarga',
+      'reparto',
+      'aparcado en reparto',
+    ],
+    consecuencias: [
+      {
+        tipo: 'deposito',
+        textoCorto:
+          'Procede valorar la RETIRADA por grúa y el traslado al depósito municipal cuando el vehículo ' +
+          'obstaculice; la medida y su coste los concreta la ordenanza (base: retirada de la ordenanza de ' +
+          'circulación y art. 105 LSV).',
+        fuente: 'Ordenanza municipal de circulación (retirada) y art. 105 LSV',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE sin cuantía confirmada: la ordenanza de circulación de SCTF (texto en la sede de ' +
+      '1985, importes en PESETAS) reserva espacios/horas para carga y descarga y prohíbe estacionar fuera ' +
+      'de esas condiciones. El importe vigente hay que confirmarlo en la ordenanza y su ordenanza fiscal ' +
+      'actuales. A verificar la franja horaria vigente de carga y descarga para mostrarla en la ficha.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-gorrillas',
+    articulo: ART_POLICIA_GORRILLAS,
+    tituloCorto: 'Aparcacoches no autorizado ("gorrillas")',
+    gravedad: 'leve',
+    marcoImporte: 'no_sancionador',
+    importeEur: null,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Indicar u ofrecer aparcamiento en la vía pública a cambio de dinero (u "ofrecimiento" de vigilancia) ' +
+      'sin autorización municipal es una actividad no autorizada. DESLINDE clave: si hay COACCIÓN, ' +
+      'intimidación o amenaza para cobrar, puede entrar la LO 4/2015 (estatal) o el delito de coacciones/' +
+      'amenazas (CP). La ordenanza municipal no fija cuantía (art. 135 remite a la legislación vigente): el ' +
+      'importe debe consultarse. La valoración final corresponde al agente y al órgano competente.',
+    terminos: [
+      'gorrilla',
+      'gorrillas',
+      'aparcacoches',
+      'aparcacoches no autorizado',
+      'cuidacoches',
+      'me cobran por aparcar',
+      'guardacoches ilegal',
+      'aparcamiento ilegal cobro',
+    ],
+    consecuencias: [
+      {
+        tipo: 'cese_actividad',
+        textoCorto:
+          'Procede identificar al responsable y requerir el CESE de la actividad no autorizada; si hay ' +
+          'coacción o amenaza para cobrar, valorar la vía de la LO 4/2015 o el traslado del tanto de culpa ' +
+          'a la autoridad judicial (coacciones/amenazas).',
+        fuente: 'Ordenanza municipal de policía y buen gobierno; LO 4/2015 / CP si hay coacción',
+      },
+    ],
+    notaRevision:
+      'ENTRADA CONSULTABLE: el aparcacoches no autorizado ("gorrillas") es actividad no autorizada en vía ' +
+      'pública; la ordenanza de policía y buen gobierno no fija cuantía (art. 135 remite a la legislación ' +
+      'vigente). A VERIFICAR con el revisor si hay ordenanza/tasa específica. DESLINDE importante: con ' +
+      'coacción/amenaza para cobrar, la vía es la LO 4/2015 (estatal) o el delito de coacciones (CP), no ' +
+      'la mera ordenanza.',
   }),
 ];
 

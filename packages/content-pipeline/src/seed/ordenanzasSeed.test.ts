@@ -117,6 +117,25 @@ describe('SEED_ORDENANZAS: cobertura de lo más usado por un Local', () => {
     expect(porId('ord-sctf-ruido-convivencia')).toBeDefined();
   });
 
+  it('siembra las fichas de alto uso del Local: vado, carga/descarga y gorrillas con su consecuencia', () => {
+    const vado = porId('ord-sctf-vado');
+    const carga = porId('ord-sctf-carga-descarga');
+    const gorrillas = porId('ord-sctf-gorrillas');
+    expect(vado).toBeDefined();
+    expect(carga).toBeDefined();
+    expect(gorrillas).toBeDefined();
+    // Vado y carga/descarga: la consecuencia estrella es la retirada por grúa (depósito).
+    expect(vado!.consecuencias.some((c) => c.tipo === 'deposito')).toBe(true);
+    expect(carga!.consecuencias.some((c) => c.tipo === 'deposito')).toBe(true);
+    // Gorrillas: cese de la actividad no autorizada.
+    expect(gorrillas!.consecuencias.some((c) => c.tipo === 'cese_actividad')).toBe(true);
+    // Sin cuantía inventada: van como consultables.
+    for (const item of [vado!, carga!, gorrillas!]) {
+      expect(item.marcoImporte, item.infraccion.id).toBe('no_sancionador');
+      expect(item.infraccion.importeEur, item.infraccion.id).toBeNull();
+    }
+  });
+
   it('la ZONA AZUL se ha retirado del piloto (no operativa en 2026; importe sin fuente)', () => {
     // El revisor jurídico retiró `ord-sctf-zona-azul`: la zona azul aún no está operativa en Santa
     // Cruz y sus 60/30 € eran una cifra sin fuente sobre una norma inexistente.
