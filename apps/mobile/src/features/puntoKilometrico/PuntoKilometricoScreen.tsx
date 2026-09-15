@@ -132,6 +132,9 @@ export function PuntoKilometricoScreen() {
           ]}
           onChange={(v) => setSentido(v)}
         />
+        <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+          Creciente = sube el p.k. (ascendente); decreciente = baja (descendente).
+        </Text>
         <Entrada
           t={t}
           value={sentidoHacia}
