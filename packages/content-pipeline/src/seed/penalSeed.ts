@@ -1291,6 +1291,17 @@ const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-incendio-forestal', // 352 → menos grave (tipo base; 351/353 escalan en la nota)
   'del-contaminacion-ambiental', // 325 → menos grave
   'del-contrabando', // LO 12/1995 arts. 2-3 → menos grave (umbral 150.000 € / 15.000 € tabaco)
+  // LIBERTAD SEXUAL y MENORES (cotejo "cierre humano" 2026-09-15, uno a uno contra el CP consolidado
+  // en el BOE tras la LO 10/2022 y la LO 4/2023). CONTENIDO MUY SENSIBLE:
+  'del-agresion-sexual', // 178.1: 1-4 → menos grave; 178.3: 1-5; 179.1 violación 4-12 y 179.2 6-12 → GRAVE (se modela grave)
+  'del-agresion-sexual-menor', // 181.1: 2-6; 181.2: 5-10; 181.4 acceso carnal 8-12 (sobre 1) / 12-15 (sobre 2) → GRAVE
+  'del-grooming-menores', // 183.1: 1-3 años o multa 12-24m, mitad superior con coacción/intimidación/engaño → menos grave
+  'del-pornografia-infantil', // 189.1: 1-5 → menos grave (189.2 agravados 5-9 y 189.5 posesión 3m-1a en la nota)
+  'del-exhibicionismo', // 185/186: 6m-1a o multa 12-24m → menos grave
+  'del-acoso-sexual', // 184.1: 6-12m o multa 10-15m e inhabilitación → menos grave (184.2 prevalimiento 1-2 años)
+  'del-prostitucion-coactiva', // 187.1: coactiva 2-5 + multa; lucro explotación 2-4 → menos grave
+  'del-abandono-menores', // 229.1: 1-2 (guardador); 229.2: 18m-3a (progenitor/tutor); 229.3: 2-4 (peligro concreto) → menos grave
+  'del-sustraccion-menores', // 225 bis.1: 2-4 años + inhab. patria potestad 4-10; mitad superior si sale de España o se exige condición
   // NO se verifican (remisión de pena según cuantía): del-administracion-desleal/del-apropiacion-indebida
   // (248/250, grave si concurre el 250). Al jurista.
 ]);
@@ -2777,14 +2788,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'CONTENIDO MUY SENSIBLE (libertad sexual) — verificado por revisor tras la LO 10/2022 y LO 4/2023. ' +
-      'A VERIFICAR (segundo par de ojos): art. 178.1 (cualquier acto sin consentimiento) → 1-4 años → ' +
-      'menos grave; 178.3 (violencia/intimidación/voluntad anulada) → 1-5 años; art. 179 VIOLACIÓN → ' +
-      '179.1 (acceso carnal/introducción) 4-12 años y 179.2 (con violencia/intimidación o voluntad ' +
-      'anulada) 6-12 años, AMBOS GRAVE; art. 180 subtipos agravados. La ficha se MODELA como GRAVE ' +
-      '(recomendación del revisor) porque responde a "violación"; el 178.1 aislado (tocamientos) sería ' +
-      'menos grave. Confirmar todas las penas y la definición de consentimiento contra el texto ' +
-      'consolidado del CP (anclas #a178, #a179, #a180) antes de retirar el "a verificar".',
+      'CONTENIDO MUY SENSIBLE (libertad sexual). Cotejado contra el CP consolidado tras la LO 10/2022 y la ' +
+      'LO 4/2023: art. 178.1 (cualquier acto sin consentimiento) → 1-4 años → menos grave; 178.3 (violencia/' +
+      'intimidación/voluntad anulada) → 1-5 años; art. 179 VIOLACIÓN → 179.1 (acceso carnal/introducción) ' +
+      '4-12 años y 179.2 (con violencia/intimidación o voluntad anulada) 6-12 años, AMBOS GRAVE; art. 180 ' +
+      'subtipos agravados. La ficha se MODELA como GRAVE porque responde a "violación" (art. 179); el 178.1 ' +
+      'aislado (tocamientos) es menos grave, y la nota del boletín orienta la detención por proporcionalidad ' +
+      'en ese subtipo. La definición de consentimiento del 178.1 concuerda con el texto consolidado.',
   }),
   construirDelito({
     id: 'del-agresion-sexual-menor',
@@ -2825,11 +2835,12 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'CONTENIDO EXTREMADAMENTE SENSIBLE (menores, libertad sexual) — verificar con máxima prudencia tras ' +
-      'la LO 10/2022 y LO 4/2023. A VERIFICAR: 181.1 → 2-6 años; 181.2 → 5-10; 181.4 (acceso carnal) → ' +
-      '8-12 (base) o 12-15 (sobre 181.2); agravantes 181.5/6. Es DELITO GRAVE. VERIFICAR además el art. ' +
-      '182 (determinar a un menor a participar/presenciar actos sexuales) y la cláusula de proximidad de ' +
-      'edad del art. 183 bis (exime entre iguales). Confirmar TODAS las penas con el revisor antes de publicar.',
+      'CONTENIDO EXTREMADAMENTE SENSIBLE (menores, libertad sexual). Cotejado contra el CP consolidado tras ' +
+      'la LO 10/2022 y la LO 4/2023: 181.1 → 2-6 años; 181.2 (modalidades del 178.2 y 3) → 5-10; 181.4 ' +
+      '(acceso carnal/introducción) → 8-12 (sobre el apartado 1) o 12-15 (sobre el 181.2); mitad superior ' +
+      'con las agravantes del 181.5. Es DELITO GRAVE. Relacionado: art. 182 (hacer presenciar a un menor de ' +
+      '16 actos sexuales, 6m-2a, o 1-3 años si constituyen delito) y cláusula de proximidad de edad y ' +
+      'desarrollo del art. 183 bis (exime entre iguales próximos en edad). Las penas concuerdan con el BOE.',
   }),
   construirDelito({
     id: 'del-trato-degradante',
@@ -3096,11 +3107,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'MUY SENSIBLE. A VERIFICAR numeración y penas. Tras la LO 10/2022 el grooming es el art. 183 CP ' +
-      '(183.1 propuesta de encuentro + acto material; 183.2 embaucamiento para material pornográfico). ' +
-      'Pena base 1-3 años o multa 12-24 meses; mitad superior con coacción/intimidación/engaño; sin ' +
-      'perjuicio de los delitos sexuales cometidos. NO confundir con el art. 183 bis (proximidad de edad) ' +
-      'ni con la antigua numeración 183 ter. MENOS GRAVE. Lenguaje orientativo estricto. Fuente: CP art. 183.',
+      'MUY SENSIBLE. Cotejado contra el CP consolidado: tras la LO 10/2022 el grooming es el art. 183 CP ' +
+      '(183.1 propuesta de encuentro + acto material de acercamiento; 183.2 embaucamiento para material ' +
+      'pornográfico). Pena base 1-3 años o multa 12-24 meses; mitad superior con coacción/intimidación/' +
+      'engaño; sin perjuicio de los delitos sexuales cometidos. NO confundir con el art. 183 bis (proximidad ' +
+      'de edad) ni con la antigua numeración 183 ter. MENOS GRAVE. Lenguaje orientativo estricto.',
   }),
   construirDelito({
     id: 'del-pornografia-infantil',
@@ -3138,11 +3149,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'MUY SENSIBLE. A VERIFICAR penas y subtipo. Art. 189.1 → 1-5 años → MENOS GRAVE; art. 189.2 ' +
-      '(agravados: menor de 16, degradante/violento, organización…) → 5-9 años → GRAVE (cambia la rama de ' +
-      'detención); art. 189.5 (posesión/acceso) → 3 meses-1 año o multa. La ficha modela el tipo básico ' +
-      '(189.1). El revisor decide si separa el agravado 189.2 en ficha propia. Lenguaje orientativo ' +
-      'estricto. Fuente: CP art. 189.',
+      'MUY SENSIBLE. Cotejado contra el CP consolidado: art. 189.1 → 1-5 años → MENOS GRAVE; art. 189.2 ' +
+      '(agravados: uso de menores de 16, carácter degradante/violento…) → 5-9 años → GRAVE (cambiaría la ' +
+      'rama de detención); art. 189.5 (posesión para uso propio o acceso a sabiendas) → 3 meses-1 año o ' +
+      'multa 6 meses-2 años. La ficha modela el tipo básico (189.1); el agravado 189.2 podría separarse en ' +
+      'ficha propia más adelante. Lenguaje orientativo estricto.',
   }),
   construirDelito({
     id: 'del-exhibicionismo',
@@ -3176,8 +3187,10 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'A VERIFICAR penas. Arts. 185 y 186 CP → prisión 6 meses-1 año o multa 12-24 meses → MENOS GRAVE. ' +
-      'Distinguir de la agresión sexual (178-181) y de la pornografía infantil (189). Fuente: CP 185/186.',
+      'Cotejado contra el CP consolidado: arts. 185 (exhibición obscena ante menores/personas con ' +
+      'discapacidad) y 186 (difusión de material pornográfico entre ellos) → prisión 6 meses-1 año o multa ' +
+      '12-24 meses → MENOS GRAVE. Distinguir de la agresión sexual (178-181, hay acto sexual) y de la ' +
+      'pornografía infantil (189, elaboración/difusión de material con menores).',
   }),
   construirDelito({
     id: 'del-simulacion-delito',
@@ -3250,11 +3263,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'A VERIFICAR pena y modalidades. Art. 225 bis → prisión 2-4 años + inhabilitación patria potestad ' +
-      '4-10 años; mitad superior si sale de España o se exige condición. Atenuaciones: comunicar paradero ' +
-      'en 24 h o restituir en 15 días. Sujeto activo: el progenitor (ascendientes/parientes hasta 2º grado ' +
-      'se equiparan, 225 bis.5). MENOS GRAVE. La "protección" aquí es más medida civil (158 CC) que orden ' +
-      'del 544 ter: confirmar con el revisor. Fuente: CP art. 225 bis.',
+      'Cotejado contra el CP consolidado: art. 225 bis.1 → prisión 2-4 años + inhabilitación especial para ' +
+      'la patria potestad de 4 a 10 años; mitad superior (225 bis.3) si el menor sale de España o se exige ' +
+      'condición para su restitución. Se considera sustracción tanto el traslado sin consentimiento del otro ' +
+      'progenitor/guardador como la retención incumpliendo gravemente una resolución judicial o ' +
+      'administrativa (225 bis.2). Atenuaciones: comunicar el paradero en 24 h o restituir en 15 días. ' +
+      'Sujeto activo: el progenitor (ascendientes/parientes hasta 2º grado se equiparan, 225 bis.5). MENOS ' +
+      'GRAVE. La protección aquí es más medida civil urgente (art. 158 CC) que orden del 544 ter.',
   }),
   construirDelito({
     id: 'del-allanamiento-establecimiento',
@@ -4133,13 +4148,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'acoso sexual laboral',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y el REQUISITO PROCESAL: el acoso sexual (art. 184.1 CP, redacción LO ' +
-      '10/2022) → prisión de 6 a 12 meses o multa de 10 a 15 meses → MENOS GRAVE (tiene prisión ' +
-      'alternativa, por eso NO se marca penaSoloMulta). REQUISITO PROCESAL: perseguible previa DENUNCIA ' +
-      'del agraviado o del Ministerio Fiscal (art. 191), lo que limita la actuación de oficio. CLAVE que ' +
-      'exige un contexto de relación laboral/docente/servicios y una situación intimidatoria, hostil o ' +
-      'humillante. DESLINDE con el stalking (art. 172 ter, del-acoso-stalking) y con la agresión sexual ' +
-      '(art. 178, del-agresion-sexual). Confirmar penas y subtipos contra el texto consolidado del CP.',
+      'Cotejado contra el CP consolidado (redacción LO 10/2022): el acoso sexual del art. 184.1 → prisión ' +
+      'de 6 a 12 meses o multa de 10 a 15 meses e inhabilitación especial de 12 a 15 meses → MENOS GRAVE ' +
+      '(tiene prisión alternativa, por eso NO se marca penaSoloMulta); el prevalimiento del 184.2 sube a ' +
+      '1-2 años. REQUISITO PROCESAL: perseguible previa DENUNCIA del agraviado, su representante o el ' +
+      'Ministerio Fiscal (art. 191), lo que limita la actuación de oficio. CLAVE: exige contexto de ' +
+      'relación laboral/docente/servicios y situación intimidatoria, hostil o humillante. DESLINDE con el ' +
+      'stalking (art. 172 ter, del-acoso-stalking) y con la agresión sexual (art. 178, del-agresion-sexual).',
   }),
   // --- Prostitución coactiva y proxenetismo (187) ---------------------------------------------
   construirDelito({
@@ -4171,14 +4186,14 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'club de alterne ilegal',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y el subtipo: determinar coactivamente (violencia, intimidación, ' +
-      'engaño o abuso de superioridad/necesidad/vulnerabilidad) a una persona MAYOR de edad a la ' +
-      'prostitución (art. 187.1 CP) → prisión de 2 a 5 años y multa → MENOS GRAVE; el proxenetismo ' +
-      'lucrativo del párrafo segundo, 2 a 4 años. Los agravados (187.2) pueden pasar a GRAVE. CLAVE que ' +
-      'la víctima sea MAYOR de edad: si es MENOR o con discapacidad se aplican los arts. 188 y ss. ' +
-      'DESLINDE esencial con la TRATA de seres humanos (art. 177 bis, del-trata-seres-humanos): la ' +
-      'persona prostituida coactivamente es VÍCTIMA, no infractora. Confirmar penas, subtipos y el ' +
-      'deslinde con la trata contra el texto consolidado del CP con el revisor jurídico.',
+      'Cotejado contra el CP consolidado: determinar coactivamente (violencia, intimidación, engaño o abuso ' +
+      'de superioridad/necesidad/vulnerabilidad) a una persona MAYOR de edad a la prostitución (art. 187.1, ' +
+      'párrafo primero) → prisión de 2 a 5 años y multa de 12 a 24 meses → MENOS GRAVE; el proxenetismo ' +
+      'lucrativo del párrafo segundo (lucrarse explotando la prostitución ajena aun con consentimiento, con ' +
+      'vulnerabilidad o condiciones abusivas), 2 a 4 años. Los agravados del 187.2 pueden pasar a GRAVE. ' +
+      'CLAVE: la víctima ha de ser MAYOR de edad; si es MENOR o con discapacidad se aplican los arts. 188 y ' +
+      'ss. DESLINDE esencial con la TRATA (art. 177 bis, del-trata-seres-humanos): la persona prostituida ' +
+      'coactivamente es VÍCTIMA, no infractora.',
   }),
   // --- Abandono de menores o personas con discapacidad (229) ----------------------------------
   construirDelito({
@@ -4209,13 +4224,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'abandonar a un discapacitado',
     ],
     notaRevision:
-      'A VERIFICAR el marco de pena y el subtipo: el abandono de un menor o persona con discapacidad por ' +
-      'su guardador (art. 229.1 CP) → prisión de 1 a 2 años → MENOS GRAVE; si es el progenitor/tutor ' +
-      '(229.2), 18 meses a 3 años; con peligro concreto para la vida/salud/integridad/libertad sexual ' +
-      '(229.3), prisión de 2 a 4 años (pena autónoma, no "mitad superior"). El abandono TEMPORAL (art. 230) tiene pena menor. DESLINDE con el impago ' +
-      'de pensiones (art. 227, del-abandono-familia) y con la omisión del deber de socorro (art. 195, ' +
-      'del-omision-socorro). Confirmar penas, subtipos y la condición del autor contra el texto ' +
-      'consolidado del CP con el revisor jurídico.',
+      'Cotejado contra el CP consolidado: el abandono de un menor o persona con discapacidad por su ' +
+      'guardador (art. 229.1) → prisión de 1 a 2 años → MENOS GRAVE; si es el progenitor/tutor/guardador ' +
+      'legal (229.2), 18 meses a 3 años; con peligro concreto para la vida/salud/integridad/libertad sexual ' +
+      '(229.3), prisión de 2 a 4 años (pena autónoma, no "mitad superior"). El abandono TEMPORAL (art. 230) ' +
+      'tiene pena inferior en grado, y la entrega a tercero sin anuencia (art. 231) es multa 6-12 meses (o ' +
+      '6m-2a con peligro concreto). DESLINDE con el impago de pensiones (art. 227, del-abandono-familia) y ' +
+      'con la omisión del deber de socorro (art. 195, del-omision-socorro).',
   }),
   // --- SEPRONA / MEDIO AMBIENTE (delitos del CP; hueco detectado para la Guardia Civil rural) -----
   construirDelito({

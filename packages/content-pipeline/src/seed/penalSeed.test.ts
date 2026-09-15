@@ -46,11 +46,23 @@ describe('SEED_PENAL: integridad de los delitos', () => {
   it('los delitos VERIFICADOS contra el CP en el BOE son un conjunto no vacío', () => {
     const verificados = SEED_PENAL.infracciones.filter((i) => i.revision === 'verificado');
     expect(verificados.length).toBeGreaterThanOrEqual(20);
-    // Los MUY sensibles (agresión sexual, menores) siguen en beta para el jurista.
-    const pendientesEsperados = ['del-agresion-sexual', 'del-agresion-sexual-menor'];
-    for (const id of pendientesEsperados) {
+    // Los MUY sensibles (libertad sexual, menores) se cotejaron uno a uno contra el CP consolidado
+    // en el BOE (cierre humano 2026-09-15): son `verificado` y su nota deja constancia del cotejo.
+    const sensiblesVerificados = [
+      'del-agresion-sexual',
+      'del-agresion-sexual-menor',
+      'del-grooming-menores',
+      'del-pornografia-infantil',
+      'del-exhibicionismo',
+      'del-acoso-sexual',
+      'del-prostitucion-coactiva',
+      'del-abandono-menores',
+      'del-sustraccion-menores',
+    ];
+    for (const id of sensiblesVerificados) {
       const item = SEED_PENAL.infracciones.find((i) => i.infraccion.id === id);
-      expect(item?.revision, id).toBe('pendiente_revision');
+      expect(item?.revision, id).toBe('verificado');
+      expect(item!.notaRevision, id).toMatch(/BOE|cotejad/i);
     }
   });
 
