@@ -60,6 +60,8 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
  *    graves ≤1.500 €, muy graves ≤3.000 €).
  *  - Ordenanza de ruidos y vibraciones: arts. 30 (calificación por exceso en dB(A)) y 31 (multa
  *    municipal: leves ≤60,10 €, graves/muy graves 90,15 €; con escalada a la legislación superior).
+ *  - Ordenanza de Paisaje Urbano (BOP 145/2014): instalación en dominio público sin licencia = GRAVE;
+ *    escala art. 96 (leves 60-600 €, graves 750-1.500 €, muy graves 1.501-3.000 €) → ficha de terrazas.
  * Las CONSULTABLES sin cuantía (`no_sancionador`) NO entran aquí aunque se haya leído su artículo,
  * porque no hay importe que verificar.
  */
@@ -75,6 +77,7 @@ const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
   'ord-sctf-excrementos',
   'ord-sctf-perro-sin-censar',
   'ord-sctf-ruido-convivencia',
+  'ord-sctf-terrazas',
 ]);
 
 /**
@@ -114,7 +117,7 @@ const URL_OM_ANIM = 'https://sede.santacruzdetenerife.es/sede/normativa/n513';
 const URL_OM_RUIDO =
   'https://sede.santacruzdetenerife.es/fileadmin/user_upload/Sede/normativas/Ordenanzas_municipales/OMRuidosyVibraciones.pdf';
 const URL_OM_TERRAZAS =
-  'https://sede.santacruzdetenerife.es/sede/tramites/ocupacion-de-la-via-publica-con-mesas-sillas-y-parasoles';
+  'https://sede.santacruzdetenerife.es/fileadmin/user_upload/Sede/normativas/Urbanismo/Bop145-14-OMPUM.pdf';
 const URL_OM_ZBE =
   'https://www.santacruzdetenerife.es/web/servicios-municipales/movilidad-y-accesibilidad-universal/zonas-de-bajas-emisiones';
 const URL_OM_RESIDUOS =
@@ -163,7 +166,7 @@ export const NORMAS_ORDENANZAS_SEED: Norma[] = [
     id: ID_OM_TERRAZAS,
     codigo: 'OM-TERRAZAS-SCTF',
     titulo:
-      'Ordenanza reguladora de la ocupación del dominio público con mesas, sillas y parasoles (Santa Cruz de Tenerife)',
+      'Ordenanza de Paisaje Urbano (regula la instalación de terrazas y la ocupación del dominio público) — Santa Cruz de Tenerife',
     url: URL_OM_TERRAZAS,
   }),
   normaMunicipal({
@@ -289,16 +292,17 @@ const ART_RUIDO_CONV = articuloSeed({
 
 const ART_TERRAZAS = articuloSeed({
   normaId: ID_OM_TERRAZAS,
-  numero: 'OCUP',
-  titulo: 'Ocupación de la vía pública con terraza (mesas, sillas y parasoles) sin licencia o excediéndola',
+  numero: 'terrazas (Paisaje Urbano)',
+  titulo: 'Instalación de terraza en la vía pública sin licencia o excediéndola (Ordenanza de Paisaje Urbano)',
   texto:
-    'Exige licencia o autorización municipal para ocupar la vía pública con mesas, sillas, veladores y ' +
-    'parasoles al servicio de un establecimiento de hostelería, y ceñir la ocupación a la superficie, ' +
-    'los elementos y el horario autorizados. Instalar la terraza SIN licencia, o EXCEDER lo autorizado ' +
-    '(más mesas o superficie, invadir la acera o el paso de peatones), incumple la ordenanza. Como ' +
-    'medida orientativa procede requerir la retirada de mesas y sillas y el cese de la ocupación no ' +
-    'amparada. Resumen orientativo; consúltese el texto consolidado en la sede electrónica del ' +
-    'Ayuntamiento.',
+    'La Ordenanza de Paisaje Urbano (BOP nº 145, de 5-11-2014) exige licencia o autorización municipal para ' +
+    'instalar terrazas (mesas, sillas, veladores y parasoles) al servicio de la hostelería en el dominio ' +
+    'público, y ceñir la ocupación a la superficie, elementos y horario autorizados. La realización de ' +
+    'instalaciones en dominio público SIN la correspondiente licencia está tipificada como infracción ' +
+    'GRAVE; el mero incumplimiento de las condiciones sin trascendencia relevante puede ser LEVE. Escala de ' +
+    'sanción: leves de 60 a 600 €, graves de 750 a 1.500 €, muy graves de 1.501 a 3.000 €. Como medida ' +
+    'procede requerir la licencia y, en su defecto, el cese de la ocupación y la retirada de las mesas y ' +
+    'sillas no amparadas. Resumen orientativo; consúltese el texto en la sede electrónica.',
 });
 
 const ART_ZBE = articuloSeed({
@@ -785,27 +789,24 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'con exceso relevante suele aplicarse la Ley 37/2003 / normativa autonómica (importes mayores). ' +
       'Requiere medición sonométrica para acreditar el exceso.',
   }),
-  // TERRAZAS: la ordenanza de ocupación de vía pública con mesas/sillas/parasoles EXISTE y está en
-  // vigor, pero NO hemos podido confirmar el artículo del régimen sancionador ni la cuantía. Siguiendo
-  // la regla de la zona azul (mejor honesto que un dato falso), NO se inventa importe: se modela como
-  // entrada CONSULTABLE (`no_sancionador`, sin importe) con la orientación útil (requerir licencia,
-  // retirada/cese) y el importe/artículo marcados fuertemente "a verificar".
+  // TERRAZAS: cotejada (2026-09-15) contra la Ordenanza de Paisaje Urbano de SCTF (BOP nº 145, de
+  // 5-11-2014), que regula la instalación de terrazas y su régimen sancionador: instalar en dominio
+  // público SIN licencia = GRAVE; escala (art. 96): leves 60-600 €, graves 750-1.500 €, muy graves
+  // 1.501-3.000 €. Pasa de consultable a verificada (grave, techo del tramo graduable).
   construirInfraccion({
     id: 'ord-sctf-terrazas',
     articulo: ART_TERRAZAS,
     tituloCorto: 'Terraza/veladores sin licencia o excediendo lo autorizado',
-    gravedad: 'leve', // valor de relleno del modelo; lo determinante es que NO se afirma cuantía
-    marcoImporte: 'no_sancionador',
-    importeEur: null,
+    gravedad: 'grave',
+    importeEur: 1500,
     importeReducidoEur: null,
     textoBoletin:
-      'Ocupar la vía pública con una terraza (mesas, sillas, veladores, parasoles) SIN licencia ' +
-      'municipal, o EXCEDIENDO lo autorizado (más superficie o mesas, invadir la acera o el paso de ' +
-      'peatones), incumpliendo la ordenanza de ocupación del dominio público de Santa Cruz de Tenerife. ' +
-      'ORIENTACIÓN: procede requerir la licencia o autorización y, en su defecto, el cese de la ocupación ' +
-      'y la retirada de las mesas y sillas no amparadas. El importe y el artículo del régimen sancionador ' +
-      'NO están confirmados (a verificar en la ordenanza y su ordenanza fiscal). La valoración final ' +
-      'corresponde al agente y al órgano municipal competente.',
+      'Instalar una terraza (mesas, sillas, veladores, parasoles) en el dominio público SIN licencia ' +
+      'municipal es infracción GRAVE de la Ordenanza de Paisaje Urbano (hasta 1.500 €, techo del tramo, ' +
+      'graduable). EXCEDER lo autorizado sin trascendencia relevante (algo más de superficie o mesas) ' +
+      'puede degradarse a LEVE (60-600 €); invadir la acera o el paso de peatones agrava. ORIENTACIÓN: ' +
+      'procede requerir la licencia y, en su defecto, el cese de la ocupación y la retirada de las mesas y ' +
+      'sillas no amparadas. La valoración final corresponde al agente y al órgano municipal.',
     terminos: [
       'terraza sin licencia',
       'veladores',
@@ -813,6 +814,8 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'terraza',
       'sombrillas en la acera',
       'la terraza ocupa la acera',
+      'terraza ocupa mas de lo permitido',
+      'veladores sin permiso',
     ],
     consecuencias: [
       {
@@ -821,17 +824,16 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
           'Procede requerir la licencia/autorización y, en su defecto, el cese de la ocupación y la ' +
           'retirada de las mesas y sillas no amparadas por la licencia; la medida concreta la fija la ' +
           'ordenanza y el órgano municipal.',
-        fuente: 'Ordenanza municipal de ocupación de vía pública (terrazas)',
+        fuente: 'Ordenanza de Paisaje Urbano de SCTF (terrazas)',
       },
     ],
     notaRevision:
-      'ENTRADA CONSULTABLE sin cuantía confirmada: la ordenanza de ocupación de vía pública con mesas, ' +
-      'sillas y parasoles de Santa Cruz de Tenerife EXISTE y está en vigor, pero NO se ha podido ' +
-      'confirmar el ARTÍCULO del régimen sancionador ni el IMPORTE, por lo que —igual que con la zona ' +
-      'azul— NO se inventa cuantía (marco `no_sancionador`, sin importe). A VERIFICAR fuertemente con el ' +
-      'texto consolidado de la ordenanza y su ordenanza fiscal, y con el revisor jurídico: artículo, ' +
-      'clasificación (leve/grave), cuantía, y el régimen de retirada/cese como medida cautelar o sanción ' +
-      'accesoria. No publicar hasta confirmar la fuente.',
+      'COTEJADO contra la Ordenanza de Paisaje Urbano de SCTF (BOP nº 145, de 5-11-2014, leído 2026-09-15): ' +
+      'la instalación en dominio público SIN la correspondiente licencia está tipificada como infracción ' +
+      'GRAVE; la escala de sanción es leves 60-600 €, graves 750-1.500 €, muy graves 1.501-3.000 €. Se ' +
+      'modela la terraza sin licencia como GRAVE con importe = techo del tramo (1.500 €), graduable; el mero ' +
+      'exceso de condiciones sin trascendencia puede ser leve (60-600 €). Pronto pago a confirmar en la ' +
+      'ordenanza fiscal.',
   }),
   // ZBE: la ordenanza reguladora de la Zona de Bajas Emisiones de Santa Cruz de Tenerife está APROBADA
   // (aprobación definitiva BOP nº 101/2026, 24-ago-2026), pero su RÉGIMEN SANCIONADOR NO es aplicable

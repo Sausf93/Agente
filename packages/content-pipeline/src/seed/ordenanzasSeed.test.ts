@@ -153,21 +153,26 @@ describe('SEED_ORDENANZAS: cobertura de lo más usado por un Local', () => {
     expect(ruido.revision).toBe('verificado');
   });
 
-  it('siembra terrazas y ZBE como CONSULTABLES sin cuantía inventada (norma real, importe a verificar)', () => {
-    const terrazas = porId('ord-sctf-terrazas');
+  it('ZBE sigue CONSULTABLE sin cuantía inventada (régimen aún no aplicable)', () => {
     const zbe = porId('ord-sctf-zbe');
-    expect(terrazas).toBeDefined();
     expect(zbe).toBeDefined();
     // Sin importe fabricado: marco `no_sancionador` (misma regla honesta que la zona azul).
-    for (const item of [terrazas!, zbe!]) {
-      expect(item.marcoImporte, item.infraccion.id).toBe('no_sancionador');
-      expect(item.infraccion.importeEur, item.infraccion.id).toBeNull();
-      expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
-    }
-    // Terrazas: orientación de retirada/cese de la ocupación.
-    expect(terrazas!.consecuencias.some((c) => c.tipo === 'cese_actividad')).toBe(true);
+    expect(zbe!.marcoImporte).toBe('no_sancionador');
+    expect(zbe!.infraccion.importeEur).toBeNull();
+    expect(zbe!.notaRevision.toLowerCase()).toContain('verificar');
     // ZBE: se advierte que el régimen sancionador aún NO es aplicable.
     expect(zbe!.infraccion.textoBoletin.toLowerCase()).toMatch(/no es aplicable|no procede sanci/);
+  });
+
+  it('terrazas: cotejada contra la Ordenanza de Paisaje Urbano → GRAVE y verificada', () => {
+    const terrazas = porId('ord-sctf-terrazas');
+    expect(terrazas).toBeDefined();
+    // Instalar en dominio público sin licencia = grave (750-1.500 €); se modela con el techo del tramo.
+    expect(terrazas!.infraccion.gravedad).toBe('grave');
+    expect(terrazas!.infraccion.importeEur).toBe(1500);
+    expect(terrazas!.revision).toBe('verificado');
+    // Sigue con la orientación de retirada/cese de la ocupación.
+    expect(terrazas!.consecuencias.some((c) => c.tipo === 'cese_actividad')).toBe(true);
   });
 
   it('los sinónimos clave de terrazas y ZBE enganchan a su ficha', () => {

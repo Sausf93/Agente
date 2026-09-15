@@ -201,7 +201,11 @@ push → CI verde vía API de GitHub). Paquete final: **3664 artículos, 313 inf
 - **Ronda de calle (validador-calle)**: +45 sinónimos y deslindes subidos a la 1.ª línea (PPP, censo vs chip
   estatal, excrementos GRAVE, botellón/LO 4/2015). VMP: la OM de circulación de SCTF es de 1985 (pesetas, sin
   VMP) → sin artículo municipal cotejable; las 2 fichas VMP quedan pendientes.
-- **Total municipal verificado: 11 fichas** (limpieza 7 + animales 3 + ruido 1; ya no muestran "Borrador beta").
+  - **Paisaje Urbano (BOP 145/2014)**: instalar terraza en dominio público sin licencia = GRAVE; escala
+    art. 96 (leves 60-600 €, graves 750-1.500 €, muy graves 1.501-3.000 €). `ord-sctf-terrazas` pasa de
+    consultable a verificada (grave, 1.500 € techo graduable). Es también la vía para `contenedor-obra` (pendiente).
+- **Total municipal verificado: 12 fichas** (limpieza 7 + animales 3 + ruido 1 + terrazas 1; ya no "Borrador beta").
+- **Fichas nuevas de calle**: `ord-sctf-vado` (grúa), `ord-sctf-carga-descarga`, `ord-sctf-gorrillas` (consultables).
 
 ### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
 Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
