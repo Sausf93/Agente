@@ -1420,6 +1420,10 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'el guasap',
       'mandando mensajes conduciendo',
       'sin manos libres',
+      'escribiendo whatsapp',
+      'mirando el gps',
+      'con el telefono en la mano',
+      'mirando el movil conduciendo',
     ],
     marcoImporte: 'trafico',
     notaRevision:
@@ -1658,6 +1662,11 @@ export const INFRACCIONES_SEED: InfraccionSeed[] = [
       'iba pedo',
       'olia a alcohol',
       'control de alcoholemia',
+      'conductor borracho',
+      'conductor bebido',
+      'iba bebido',
+      'huele a alcohol',
+      'puesto de alcoholemia',
     ],
     consecuencias: [
       {
