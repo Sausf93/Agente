@@ -6,6 +6,10 @@ import {
   estadoCambio,
   filtroTerritorialSql,
   filtrarArticulos,
+  filtrarInfracciones,
+  filtrarNormas,
+  coincideConsulta,
+  normalizarTexto,
   materiaAdmiteTerritorio,
   materiaDeNorma,
   materiaDeInfraccion,
@@ -349,5 +353,42 @@ describe('filtroTerritorialSql: capa por territorio (ADR-006/008)', () => {
     const f = filtroTerritorialSql(['', 'mun-x', ''], 'n.territorio_id');
     expect(f.sql).toBe('(n.territorio_id IS NULL OR n.territorio_id IN (?))');
     expect(f.params).toEqual(['mun-x']);
+  });
+});
+
+describe('buscador dentro de los menús de Normas (filtro local por lista)', () => {
+  const fichas = [
+    { id: 'a', tituloCorto: 'Estacionar en vado señalizado', gravedad: 'grave', tipo: 'administrativa', normaCodigo: 'OM-CIRC-SCTF' },
+    { id: 'b', tituloCorto: 'Móvil mientras se conduce', gravedad: 'grave', tipo: 'administrativa', normaCodigo: 'LSV' },
+    { id: 'c', tituloCorto: 'Alcohol al volante', gravedad: 'muy_grave', tipo: 'administrativa', normaCodigo: 'LSV' },
+  ];
+  const normas = [
+    { id: 'n1', codigo: 'LSV', titulo: 'Ley sobre Tráfico y Seguridad Vial', tipo: 'ley', ambito: 'estatal', territorioId: null, urlBoe: null, numArticulos: 100, cuerpos: [] },
+    { id: 'n2', codigo: 'RGC', titulo: 'Reglamento General de Circulación', tipo: 'reglamento', ambito: 'estatal', territorioId: null, urlBoe: null, numArticulos: 200, cuerpos: [] },
+  ] as const;
+
+  it('normalizarTexto quita tildes y pasa a minúsculas', () => {
+    expect(normalizarTexto('  Señalización ')).toBe('senalizacion');
+    expect(normalizarTexto('ALCOHÓL')).toBe('alcohol');
+  });
+
+  it('coincideConsulta es tolerante a tildes y al orden de palabras; vacío no filtra', () => {
+    expect(coincideConsulta('Estacionar en vado', 'vado')).toBe(true);
+    expect(coincideConsulta('Estacionar en vado', 'VÁDO estacionar')).toBe(true);
+    expect(coincideConsulta('Estacionar en vado', 'móvil')).toBe(false);
+    expect(coincideConsulta('lo que sea', '   ')).toBe(true);
+  });
+
+  it('filtrarInfracciones filtra por título y por código de norma; consulta vacía devuelve todo', () => {
+    expect(filtrarInfracciones(fichas, '').map((f) => f.id)).toEqual(['a', 'b', 'c']);
+    expect(filtrarInfracciones(fichas, 'vado').map((f) => f.id)).toEqual(['a']);
+    expect(filtrarInfracciones(fichas, 'lsv').map((f) => f.id)).toEqual(['b', 'c']);
+    expect(filtrarInfracciones(fichas, 'alcool')).toEqual([]); // sin sinónimos: filtro por texto literal
+  });
+
+  it('filtrarNormas filtra por título y código', () => {
+    expect(filtrarNormas(normas, 'circulacion').map((n) => n.id)).toEqual(['n2']);
+    expect(filtrarNormas(normas, 'rgc').map((n) => n.id)).toEqual(['n2']);
+    expect(filtrarNormas(normas, '').map((n) => n.id)).toEqual(['n1', 'n2']);
   });
 });

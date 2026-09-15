@@ -4,12 +4,14 @@ import { useRouter, Stack } from 'expo-router';
 import { BookOpen } from 'lucide-react-native';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { EmptyState } from '@/ui/components/EmptyState';
+import { SearchBar } from '@/ui/components/SearchBar';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
 import { FilaInfraccion } from './normasUi';
 import {
   agruparPorSubtema,
+  filtrarInfracciones,
   listarInfraccionesDeMateria,
   SUBTEMA_INFO,
   type InfraccionResumen,
@@ -29,6 +31,7 @@ export function SubTemaFichasScreen({ materia, subtema }: { materia: Materia; su
 
   const [estado, setEstado] = useState<Estado>('cargando');
   const [fichas, setFichas] = useState<InfraccionResumen[]>([]);
+  const [consulta, setConsulta] = useState('');
 
   const ccaaId = useSettingsStore((s) => s.ccaaId);
   const provinciaId = useSettingsStore((s) => s.provinciaId);
@@ -39,6 +42,7 @@ export function SubTemaFichasScreen({ materia, subtema }: { materia: Materia; su
   );
 
   const titulo = SUBTEMA_INFO[subtema]?.label ?? 'Sub-tema';
+  const fichasFiltradas = useMemo(() => filtrarInfracciones(fichas, consulta), [fichas, consulta]);
 
   useEffect(() => {
     let vivo = true;
@@ -86,18 +90,37 @@ export function SubTemaFichasScreen({ materia, subtema }: { materia: Materia; su
     <View style={{ flex: 1, backgroundColor: t.color.bg }}>
       <Stack.Screen options={{ title: titulo }} />
       <FlatList
-        data={fichas}
+        data={fichasFiltradas}
         keyExtractor={(f) => f.id}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         renderItem={({ item }) => (
           <FilaInfraccion item={item} onPress={(id) => router.push(`/ficha/${id}`)} />
         )}
         contentContainerStyle={{ paddingBottom: t.spacing.xxl, paddingTop: t.spacing.sm }}
+        ListHeaderComponent={
+          // Buscador DENTRO del submenú (estilo SPPLB): filtra las fichas de este sub-tema al vuelo.
+          // Solo se pinta cuando hay bastantes fichas como para que ayude.
+          fichas.length > 5 ? (
+            <View style={{ paddingHorizontal: t.spacing.base, paddingBottom: t.spacing.sm }}>
+              <SearchBar
+                value={consulta}
+                onChangeText={setConsulta}
+                placeholder={`Buscar en ${titulo.toLowerCase()}…`}
+              />
+            </View>
+          ) : null
+        }
         ListEmptyComponent={
           <View style={{ paddingTop: t.spacing.xxl }}>
             <EmptyState
               icon={BookOpen}
-              title="Sin fichas"
-              message="Este sub-tema no tiene fichas para tu territorio."
+              title={consulta ? 'Sin coincidencias' : 'Sin fichas'}
+              message={
+                consulta
+                  ? `Ninguna ficha de este sub-tema coincide con “${consulta}”.`
+                  : 'Este sub-tema no tiene fichas para tu territorio.'
+              }
             />
           </View>
         }

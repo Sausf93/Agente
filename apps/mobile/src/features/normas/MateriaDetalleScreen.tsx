@@ -5,6 +5,7 @@ import { BookOpen } from 'lucide-react-native';
 import { ccaaPorId } from '@agente/shared';
 import { useAppTheme } from '@/ui/useAppTheme';
 import { EmptyState } from '@/ui/components/EmptyState';
+import { SearchBar } from '@/ui/components/SearchBar';
 import { SkeletonRows } from '@/ui/components/Skeleton';
 import { getContentRunner } from '@/db/contentDb';
 import { useSettingsStore } from '@/store/settings';
@@ -12,12 +13,15 @@ import { FilaInfraccion, FilaNorma, FilaSubtema, FranjaTerritorial } from './nor
 import {
   agruparPorAmbito,
   agruparPorSubtema,
+  filtrarInfracciones,
+  filtrarNormas,
   listarInfraccionesDeMateria,
   listarNormas,
   materiaAdmiteTerritorio,
   materiaDeNorma,
   materiaTieneSubtemas,
   normaRelevantePara,
+  normalizarTexto,
   MATERIA_INFO,
   type InfraccionResumen,
   type Materia,
@@ -45,6 +49,8 @@ export function MateriaDetalleScreen({
   const [estado, setEstado] = useState<Estado>('cargando');
   const [normas, setNormas] = useState<NormaResumen[]>([]);
   const [infracciones, setInfracciones] = useState<InfraccionResumen[]>([]);
+  const [consulta, setConsulta] = useState('');
+  const filtrando = normalizarTexto(consulta).length > 0;
 
   const cuerpo = useSettingsStore((s) => s.cuerpo);
   const ccaaId = useSettingsStore((s) => s.ccaaId);
@@ -94,14 +100,26 @@ export function MateriaDetalleScreen({
     );
   }, [normas, materia, filtro, cuerpo]);
 
+  // Con el buscador local activo, las normas también se filtran por título/código.
+  const normasVisibles = useMemo(
+    () => (filtrando ? filtrarNormas(deLaMateria, consulta) : deLaMateria),
+    [deLaMateria, consulta, filtrando],
+  );
+
   const secciones = useMemo(() => {
-    return agruparPorAmbito(deLaMateria).map((s) => {
+    return agruparPorAmbito(normasVisibles).map((s) => {
       let label = s.titulo;
       if (s.ambito === 'autonomico') label = `En ${ccaaNombre?.trim() || 'tu comunidad'}`;
       else if (s.ambito === 'municipal') label = `En ${municipioNombre?.trim() || 'tu municipio'}`;
       return { ...s, titulo: label };
     });
-  }, [deLaMateria, ccaaNombre, municipioNombre]);
+  }, [normasVisibles, ccaaNombre, municipioNombre]);
+
+  // Fichas de calle que coinciden con el buscador local (plano, ignorando el agrupado por subtema).
+  const fichasFiltradas = useMemo(
+    () => filtrarInfracciones(infracciones, consulta),
+    [infracciones, consulta],
+  );
 
   // Submenú estilo SPPLB: en las materias densas, las fichas se agrupan por SUB-TEMA (con anti-vacío);
   // en el resto, se listan planas. `agruparPorSubtema` es pura y respeta el territorio (fichas presentes).
@@ -148,35 +166,74 @@ export function MateriaDetalleScreen({
         sections={secciones}
         keyExtractor={(n) => n.id}
         stickySectionHeadersEnabled={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         ListHeaderComponent={
-          usaSubtemas ? (
-            <View>
-              <SeccionLabel t={t} texto="Explorar por temas" />
-              {subtemas!.map((g) => (
-                <FilaSubtema
-                  key={g.key}
-                  item={g}
-                  onPress={(key) =>
-                    router.push({
-                      pathname: '/normas/subtema/[materia]/[subtema]',
-                      params: { materia, subtema: key },
-                    })
-                  }
+          <View>
+            {/* Buscador DENTRO de la materia (estilo SPPLB): filtra fichas y normas al vuelo. */}
+            {infracciones.length + deLaMateria.length > 5 ? (
+              <View style={{ paddingHorizontal: t.spacing.base, paddingBottom: t.spacing.xs }}>
+                <SearchBar
+                  value={consulta}
+                  onChangeText={setConsulta}
+                  placeholder={`Buscar en ${titulo.toLowerCase()}…`}
                 />
-              ))}
-            </View>
-          ) : infracciones.length > 0 ? (
-            <View>
-              <SeccionLabel t={t} texto={`Fichas de calle · ${infracciones.length}`} />
-              {infracciones.map((inf) => (
-                <FilaInfraccion
-                  key={inf.id}
-                  item={inf}
-                  onPress={(id) => router.push(`/ficha/${id}`)}
+              </View>
+            ) : null}
+
+            {filtrando ? (
+              // Con el buscador activo: lista PLANA de fichas que coinciden (sin cajones de subtema).
+              fichasFiltradas.length > 0 ? (
+                <View>
+                  <SeccionLabel t={t} texto={`Fichas · ${fichasFiltradas.length}`} />
+                  {fichasFiltradas.map((inf) => (
+                    <FilaInfraccion
+                      key={inf.id}
+                      item={inf}
+                      onPress={(id) => router.push(`/ficha/${id}`)}
+                    />
+                  ))}
+                </View>
+              ) : null
+            ) : usaSubtemas ? (
+              <View>
+                <SeccionLabel t={t} texto="Explorar por temas" />
+                {subtemas!.map((g) => (
+                  <FilaSubtema
+                    key={g.key}
+                    item={g}
+                    onPress={(key) =>
+                      router.push({
+                        pathname: '/normas/subtema/[materia]/[subtema]',
+                        params: { materia, subtema: key },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            ) : infracciones.length > 0 ? (
+              <View>
+                <SeccionLabel t={t} texto={`Fichas de calle · ${infracciones.length}`} />
+                {infracciones.map((inf) => (
+                  <FilaInfraccion
+                    key={inf.id}
+                    item={inf}
+                    onPress={(id) => router.push(`/ficha/${id}`)}
+                  />
+                ))}
+              </View>
+            ) : null}
+
+            {filtrando && fichasFiltradas.length === 0 && normasVisibles.length === 0 ? (
+              <View style={{ paddingTop: t.spacing.xl }}>
+                <EmptyState
+                  icon={BookOpen}
+                  title="Sin coincidencias"
+                  message={`Nada en “${titulo}” coincide con “${consulta}”. Prueba el buscador general.`}
                 />
-              ))}
-            </View>
-          ) : null
+              </View>
+            ) : null}
+          </View>
         }
         renderSectionHeader={({ section }) => (
           <View
@@ -203,7 +260,7 @@ export function MateriaDetalleScreen({
           <FilaNorma item={item} onPress={(id) => router.push(`/normas/norma/${id}`)} />
         )}
         ListFooterComponent={
-          territorial ? (
+          territorial && !filtrando ? (
             <FranjaTerritorial hayAutonomica={hayAutonomica} hayMunicipal={hayMunicipal} />
           ) : null
         }

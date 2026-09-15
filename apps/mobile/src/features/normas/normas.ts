@@ -973,6 +973,49 @@ export interface GrupoSubtema {
   fichas: InfraccionResumen[];
 }
 
+/**
+ * Normaliza texto para el FILTRO dentro de los menús de Normas (buscador local por lista, estilo
+ * SPPLB): minúsculas y SIN tildes, para casar con lo que teclea el agente al vuelo ("estacion",
+ * "alcohol"). No sustituye al buscador global (que además usa sinónimos); esto solo filtra la lista
+ * visible por su texto.
+ */
+export function normalizarTexto(s: string): string {
+  return s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+/**
+ * ¿`texto` contiene TODOS los tokens de la `consulta`? (búsqueda dentro del menú, tolerante a
+ * tildes y a orden de palabras). Consulta vacía = coincide (no filtra).
+ */
+export function coincideConsulta(texto: string, consulta: string): boolean {
+  const q = normalizarTexto(consulta);
+  if (!q) return true;
+  const objetivo = normalizarTexto(texto);
+  return q.split(/\s+/).every((tok) => objetivo.includes(tok));
+}
+
+/** Filtra una lista de fichas por su título y el código de su norma (buscador local del submenú). */
+export function filtrarInfracciones(
+  fichas: readonly InfraccionResumen[],
+  consulta: string,
+): InfraccionResumen[] {
+  if (!normalizarTexto(consulta)) return [...fichas];
+  return fichas.filter((f) => coincideConsulta(`${f.tituloCorto} ${f.normaCodigo}`, consulta));
+}
+
+/** Filtra una lista de normas por su título y su código (buscador local de la materia). */
+export function filtrarNormas(
+  normas: readonly NormaResumen[],
+  consulta: string,
+): NormaResumen[] {
+  if (!normalizarTexto(consulta)) return [...normas];
+  return normas.filter((n) => coincideConsulta(`${n.titulo} ${n.codigo}`, consulta));
+}
+
 const MIN_FICHAS_SUBTEMA = 3;
 
 /**
