@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { useAppTheme } from '@/ui/useAppTheme';
@@ -6,6 +6,7 @@ import type { Theme } from '@/ui/theme';
 import { Card } from '@/ui/components/Card';
 import { CopyBulletinButton } from '@/ui/components/CopyBulletinButton';
 import { hapticSelection } from '@/ui/haptics';
+import { listCarreterasRecientes, recordCarreteraReciente } from '@/db/userDb';
 import {
   componerLocalizacion,
   localizacionValida,
@@ -27,6 +28,17 @@ export function PuntoKilometricoScreen() {
   const [sentidoHacia, setSentidoHacia] = useState('');
   const [margen, setMargen] = useState<Margen | null>(null);
   const [referencia, setReferencia] = useState('');
+  const [recientes, setRecientes] = useState<string[]>([]);
+
+  useEffect(() => {
+    let vivo = true;
+    void listCarreterasRecientes().then((r) => {
+      if (vivo) setRecientes(r);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, []);
 
   const datos = {
     carretera,
@@ -61,6 +73,13 @@ export function PuntoKilometricoScreen() {
           autoCapitalize="characters"
           accessibilityLabel="Denominación de la carretera"
         />
+        {recientes.length > 0 ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs, marginTop: t.spacing.xxs }}>
+            {recientes.map((via) => (
+              <Chip key={via} t={t} label={via} onPress={() => setCarretera(via)} />
+            ))}
+          </View>
+        ) : null}
       </Campo>
 
       <Campo t={t} etiqueta="Punto kilométrico">
@@ -125,13 +144,49 @@ export function PuntoKilometricoScreen() {
             {valido ? texto : 'Introduce al menos la carretera o el punto kilométrico.'}
           </Text>
         </Card>
-        {valido ? <CopyBulletinButton texto={texto} label="Copiar localización" /> : null}
+        {valido ? (
+          <CopyBulletinButton
+            texto={texto}
+            label="Copiar localización"
+            onCopied={() => {
+              // Al copiar, se recuerda la carretera para ofrecerla como acceso rápido la próxima vez.
+              void recordCarreteraReciente(carretera, new Date().toISOString()).then(() =>
+                listCarreterasRecientes().then(setRecientes),
+              );
+            }}
+          />
+        ) : null}
       </View>
 
       <Text style={{ color: t.color.textTertiary, ...t.typography.scale.caption, textAlign: 'center' }}>
         Ayudante manual. El mapa con las carreteras y el p.k. automático llegarán más adelante.
       </Text>
     </ScrollView>
+  );
+}
+
+/** Chip de acceso rápido a una carretera reciente: un toque la rellena. */
+function Chip({ t, label, onPress }: { t: Theme; label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Usar carretera ${label}`}
+      onPress={() => {
+        hapticSelection();
+        onPress();
+      }}
+      style={{
+        minHeight: t.touch.chipHeight,
+        justifyContent: 'center',
+        borderRadius: t.radius.pill,
+        borderWidth: 1,
+        borderColor: t.color.border,
+        backgroundColor: t.color.surfaceAlt,
+        paddingHorizontal: t.spacing.md,
+      }}
+    >
+      <Text style={{ color: t.color.textSecondary, ...t.typography.scale.label }}>{label}</Text>
+    </Pressable>
   );
 }
 

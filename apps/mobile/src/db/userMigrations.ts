@@ -219,6 +219,18 @@ export const USER_DB_MIGRATIONS: readonly UserDbMigration[] = [
       );
     `,
   },
+  {
+    // PUNTO KILOMÉTRICO (§4.11): carreteras RECIENTES del agente, para no reteclear su vía habitual
+    // en cada intervención (uso a una mano). Local-first (ADR-001): solo en el dispositivo. Es la
+    // denominación de una vía (dato público), NO un dato de tercero.
+    version: 11,
+    sql: `
+      CREATE TABLE IF NOT EXISTS pk_reciente (
+        carretera TEXT PRIMARY KEY NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `,
+  },
 ];
 
 /** Versión de esquema objetivo de la base local (la mayor de las migraciones). */

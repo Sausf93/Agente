@@ -648,6 +648,32 @@ export async function deleteOrdenanzaPropia(concepto: string): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Punto kilométrico (§4.11) — carreteras recientes del agente, solo en el dispositivo
+// ---------------------------------------------------------------------------
+
+/** Registra (o refresca) una carretera usada, para ofrecerla como acceso rápido la próxima vez. */
+export async function recordCarreteraReciente(carretera: string, updatedAt: string): Promise<void> {
+  const via = carretera.trim();
+  if (via.length === 0) return;
+  const db = await openUserDb();
+  await db.runAsync(
+    `INSERT INTO pk_reciente (carretera, updated_at) VALUES (?, ?)
+     ON CONFLICT(carretera) DO UPDATE SET updated_at = excluded.updated_at`,
+    [via, updatedAt],
+  );
+}
+
+/** Lista las carreteras recientes, la más reciente primero (tope `limite`). */
+export async function listCarreterasRecientes(limite = 8): Promise<string[]> {
+  const db = await openUserDb();
+  const rows = await db.getAllAsync<{ carretera: string }>(
+    'SELECT carretera FROM pk_reciente ORDER BY updated_at DESC LIMIT ?',
+    [limite],
+  );
+  return rows.map((r) => r.carretera);
+}
+
+// ---------------------------------------------------------------------------
 // Banderas locales de la app (clave/valor) — p. ej. "novedades vistas hasta"
 // ---------------------------------------------------------------------------
 
