@@ -78,12 +78,22 @@ describe('SEED_AUTONOMICO_CANARIAS: calidad de contenido (§8.3)', () => {
     }
   });
 
-  it('NADA se autopublica: todo queda pendiente_revision con su nota "a verificar"', () => {
+  it('estado editorial válido y nota que deja "a verificar" al menos la graduación (art. 67)', () => {
     for (const item of SEED_AUTONOMICO_CANARIAS.infracciones) {
-      expect(item.revision, item.infraccion.id).toBe('pendiente_revision');
+      expect(['verificado', 'pendiente_revision'], item.infraccion.id).toContain(item.revision);
       expect(item.notaRevision.length, item.infraccion.id).toBeGreaterThan(20);
       expect(item.notaRevision.toLowerCase(), item.infraccion.id).toContain('verificar');
     }
+  });
+
+  it('las fichas cotejadas contra el BOE (arts. 62-66) van `verificado`; las de ordinal incierto, no', () => {
+    const porId2 = (id: string) =>
+      SEED_AUTONOMICO_CANARIAS.infracciones.find((i) => i.infraccion.id === id);
+    for (const id of ['can-esp-sin-licencia', 'can-esp-horario-cierre', 'can-esp-exceso-aforo']) {
+      expect(porId2(id)?.revision, id).toBe('verificado');
+    }
+    // Alcohol/tabaco a menores no está en 62/63/64: sigue pendiente.
+    expect(porId2('can-esp-alcohol-menores')?.revision).toBe('pendiente_revision');
   });
 });
 

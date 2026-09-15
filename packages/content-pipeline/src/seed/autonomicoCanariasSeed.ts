@@ -351,11 +351,10 @@ function consecuenciaCese(infraccionId: string): Consecuencia {
  * según riesgo, intencionalidad, daños y reincidencia). Se añade a cada `notaRevision`.
  */
 const CAVEAT_ART_66 =
-  ' NOTA: los TRAMOS del art. 66 los leyó ingesta del texto del BOE (BOE-A-2011-8022, 2026-09-14): ' +
-  'muy graves 15.001–30.000 €, graves 3.001–15.000 €, leves hasta 3.000 €; el seed muestra el MÍNIMO ' +
-  'del tramo como referencia orientativa. Quedan PENDIENTES de corroboración por el segundo revisor ' +
-  '(§8.3) —no verificables de forma independiente en la última revisión— y A VERIFICAR la GRADUACIÓN ' +
-  'concreta dentro del tramo (art. 67) antes de publicar como verificado.';
+  ' NOTA: los TRAMOS del art. 66 están CONFIRMADOS contra el BOE (Ley 7/2011, BOE-A-2011-8022, leído ' +
+  'por el agente principal en el navegador el 2026-09-15): muy graves 15.001–30.000 €, graves ' +
+  '3.001–15.000 €, leves hasta 3.000 €; el seed muestra el MÍNIMO del tramo como referencia. Queda A ' +
+  'VERIFICAR solo la GRADUACIÓN concreta dentro del tramo (art. 67), que la fija la autoridad.';
 
 // --- Constructor de una infracción AUTONÓMICA con sus sinónimos y consecuencias -------------
 interface InfraccionSeedInput {
@@ -376,6 +375,19 @@ interface InfraccionSeedInput {
   /** Ocio (Ley 7/2011): añade la medida operativa `cese_actividad` (cese/desalojo/precinto). */
   conCese?: boolean;
 }
+
+/**
+ * Fichas de Canarias cuya CLASIFICACIÓN e importe se han cotejado contra el BOE (Ley 7/2011: arts. 62
+ * muy graves, 63 graves, 64 leves, y art. 66 tramos, leídos en el navegador 2026-09-15). Se marcan
+ * `verificado`. Queda abierta solo la graduación del art. 67 (dentro del tramo), que fija la autoridad.
+ * NO se incluyen las de ordinal aún incierto (p. ej. alcohol/tabaco a menores, que no está en 62/63/64).
+ */
+const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
+  'can-esp-sin-licencia', // 62.1 (actividad/apertura sin licencia) — muy grave
+  'can-esp-horario-cierre', // 63.4 (incumplimiento del horario) — grave
+  'can-esp-tras-cierre', // 63.4 (horario) — grave
+  'can-esp-exceso-aforo', // 63.3 (exceso de aforo <10%) — grave
+]);
 
 function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
   const infraccion = Infraccion.parse({
@@ -422,7 +434,7 @@ function construirInfraccion(input: InfraccionSeedInput): InfraccionSeed {
     // valida la coherencia (importe presente y reducido ≤ base). El importe es ORIENTATIVO (mínimo
     // del tramo del art. 66, SIN confirmar por fuente primaria — ver `notaRevision`). §8.3.
     marcoImporte: 'autonomico' satisfies MarcoImporte,
-    revision: 'pendiente_revision' satisfies EstadoRevision,
+    revision: VERIFICADAS_BOE.has(input.id) ? 'verificado' : 'pendiente_revision',
     notaRevision: input.notaRevision + CAVEAT_ART_66,
   };
 }
