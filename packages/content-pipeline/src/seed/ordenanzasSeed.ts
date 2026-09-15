@@ -52,10 +52,14 @@ const VALID_FROM = `${FECHA_ACTUALIZACION}T00:00:00.000Z`;
  * Fichas COTEJADAS una a una contra el TEXTO CONSOLIDADO de su ordenanza (sede electrónica de
  * Santa Cruz de Tenerife), leído en el navegador el 2026-09-15: artículo, clasificación y tramo de
  * sanción confirmados. Estas pasan a `verificado`; el resto queda `pendiente_revision`. Cotejadas
- * hasta ahora: las 7 de la Ordenanza de gestión de residuos y limpieza (OMGRL) — arts. 27, 38, 42,
- * 43, 50, 51 y el cuadro de sanciones del art. 52 (leves ≤750 €, graves ≤1.500 €, muy graves
- * ≤3.000 €). Las CONSULTABLES sin cuantía (`no_sancionador`) NO entran aquí aunque se haya leído su
- * artículo, porque no hay importe que verificar.
+ * hasta ahora:
+ *  - Ordenanza de gestión de residuos y limpieza (OMGRL): arts. 27, 38, 42, 43, 50, 51 y el cuadro de
+ *    sanciones del art. 52 (leves ≤750 €, graves ≤1.500 €, muy graves ≤3.000 €).
+ *  - Ordenanza de protección y tenencia de animales (2017): arts. 12 (correa), 14 (excrementos, GRAVE),
+ *    la lista de infracciones (censo = leve 1.b) y el art. 76 (sanciones → art. 141 LRBRL: leves ≤750 €,
+ *    graves ≤1.500 €, muy graves ≤3.000 €).
+ * Las CONSULTABLES sin cuantía (`no_sancionador`) NO entran aquí aunque se haya leído su artículo,
+ * porque no hay importe que verificar.
  */
 const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
   'ord-sctf-orinar-defecar-escupir',
@@ -65,6 +69,9 @@ const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
   'ord-sctf-vertidos-via-publica',
   'ord-sctf-playa-fumar',
   'ord-sctf-playa-residuos-arena',
+  'ord-sctf-perro-suelto',
+  'ord-sctf-excrementos',
+  'ord-sctf-perro-sin-censar',
 ]);
 
 /**
@@ -225,14 +232,29 @@ const ART_CIRC_VMP = articuloSeed({
 // piloto: sus importes (60/30 €) eran una cifra sin fuente sobre una norma inexistente. Volverán
 // cuando el Ayuntamiento apruebe y ponga en vigor la ordenanza reguladora y su ordenanza fiscal.
 
-const ART_ANIM_VIA = articuloSeed({
+const ART_ANIM_CORREA = articuloSeed({
   normaId: ID_OM_ANIM,
-  numero: 'VP',
-  titulo: 'Tenencia de animales en la vía pública: correa, control y excrementos',
+  numero: '12',
+  titulo: 'Uso de correa y control del animal en la vía pública (art. 12)',
   texto:
-    'Obliga a llevar a los perros sujetos con correa y bajo control en las vías y espacios ' +
-    'públicos, y a recoger de inmediato los excrementos que depositen. Prohíbe dejar al animal ' +
-    'suelto o desatendido de forma que pueda causar molestias o riesgo. Resumen orientativo; ' +
+    'El art. 12 obliga a que, en los espacios públicos o privados de uso común, los animales de ' +
+    'compañía circulen acompañados y conducidos mediante collar o arnés con cadena o cuerda ' +
+    'resistente que permita su control. Llevar el animal en la vía o espacios públicos sin ese ' +
+    'control es infracción LEVE (incumplir las condiciones de tenencia en vía pública); se agrava a ' +
+    'GRAVE si el animal se tiene suelto donde está expresamente prohibido y causa molestias a ' +
+    'personas u otros animales o daña el entorno. Resumen orientativo; consúltese el texto ' +
+    'consolidado en la sede electrónica del Ayuntamiento.',
+});
+
+const ART_ANIM_EXCREMENTOS = articuloSeed({
+  normaId: ID_OM_ANIM,
+  numero: '14',
+  titulo: 'Excrementos y orines en espacios públicos (art. 14)',
+  texto:
+    'El art. 14 obliga a recoger de inmediato los excrementos que los animales depositen en los ' +
+    'espacios públicos y privados de uso común. No recoger INMEDIATAMENTE los excrementos en esos ' +
+    'espacios está tipificado como infracción GRAVE; las demás faltas del art. 14 (no depositarlos ' +
+    'higiénicamente en contenedores, no limpiar lo afectado) son leves. Resumen orientativo; ' +
     'consúltese el texto consolidado en la sede electrónica del Ayuntamiento.',
 });
 
@@ -242,7 +264,8 @@ const ART_ANIM_CENSO = articuloSeed({
   titulo: 'Identificación y censo de los animales de compañía',
   texto:
     'Exige identificar a los animales de compañía mediante microchip y su inscripción en el censo ' +
-    'municipal. No tener al perro identificado o censado es una infracción de la ordenanza. ' +
+    'municipal. Incumplir la obligación de inscripción en el CENSO municipal, o la de identificación ' +
+    'por microchip/tatuaje/anillas a efectos municipales, es infracción LEVE de la ordenanza. ' +
     'Resumen orientativo; consúltese el texto consolidado en la sede electrónica del Ayuntamiento.',
 });
 
@@ -384,7 +407,8 @@ const ART_VENTA_AMBULANTE = articuloSeed({
 
 export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
-  ART_ANIM_VIA,
+  ART_ANIM_CORREA,
+  ART_ANIM_EXCREMENTOS,
   ART_ANIM_CENSO,
   ART_RUIDO_CONV,
   ART_TERRAZAS,
@@ -560,14 +584,18 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
   // inexistente. Se reincorporará cuando el Ayuntamiento apruebe y ponga en vigor su ordenanza.
   construirInfraccion({
     id: 'ord-sctf-perro-suelto',
-    articulo: ART_ANIM_VIA,
+    articulo: ART_ANIM_CORREA,
     tituloCorto: 'Perro suelto o sin correa en la vía pública',
     gravedad: 'leve',
-    importeEur: 90,
-    importeReducidoEur: 45,
+    importeEur: 750,
+    importeReducidoEur: null,
     textoBoletin:
-      'Llevar un perro suelto o sin correa por la vía o espacios públicos, sin el control exigido por ' +
-      'la ordenanza municipal de protección y tenencia de animales.',
+      'Llevar un perro suelto o sin correa por la vía o espacios públicos, sin el control exigido por el ' +
+      'art. 12 de la ordenanza de protección y tenencia de animales. Es infracción LEVE (hasta 750 €, ' +
+      'techo del tramo, graduable). SE AGRAVA a GRAVE (hasta 1.500 €) si el animal está suelto donde ' +
+      'esté expresamente prohibido Y causa molestias a personas u otros animales o daña el entorno. Si ' +
+      'el perro es potencialmente peligroso (PPP) aplica la Ley 50/1999 (ficha propia, sanciones mayores). ' +
+      'La valoración final corresponde al agente y al órgano municipal.',
     terminos: [
       'perro suelto',
       'perro sin correa',
@@ -577,21 +605,25 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'perro sin correa en la calle',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: llevar el perro suelto/sin correa en la vía pública es ' +
-      'infracción de la Ordenanza de protección y tenencia de animales (2017). El importe (90/45 €) es ' +
-      'ORIENTATIVO; confirmar el artículo, el tramo (leve/grave) y la cuantía con el texto consolidado ' +
-      'y el revisor jurídico. Ojo: si el perro es potencialmente peligroso (PPP) aplica la Ley 50/1999.',
+      'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF (arts. ' +
+      '12, 76 y clasificación de infracciones, leídos 2026-09-15): llevar el perro sin el control del art. ' +
+      '12 es LEVE; se agrava a GRAVE si está suelto donde esté prohibido y causa molestias/daños. Importe = ' +
+      'techo del tramo (art. 76 → art. 141 LRBRL: leve ≤750 €, grave ≤1.500 €), graduable, no cuantía fija. ' +
+      'Deslinde con la Ley 50/1999 (PPP). Pronto pago a confirmar en la ordenanza fiscal.',
   }),
   construirInfraccion({
     id: 'ord-sctf-excrementos',
-    articulo: ART_ANIM_VIA,
+    articulo: ART_ANIM_EXCREMENTOS,
     tituloCorto: 'No recoger los excrementos del perro',
-    gravedad: 'leve',
-    importeEur: 90,
-    importeReducidoEur: 45,
+    gravedad: 'grave',
+    importeEur: 1500,
+    importeReducidoEur: null,
     textoBoletin:
       'No recoger de forma inmediata los excrementos depositados por un animal de compañía en la vía o ' +
-      'espacios públicos, incumpliendo la ordenanza municipal.',
+      'espacios públicos y privados de uso común (art. 14). La ordenanza lo tipifica como infracción ' +
+      'GRAVE (hasta 1.500 €, techo del tramo, graduable). Las faltas menores del art. 14 (no depositar los ' +
+      'excrementos higiénicamente en los contenedores, no limpiar lo afectado) son LEVES (hasta 750 €). La ' +
+      'valoración final corresponde al agente y al órgano municipal.',
     terminos: [
       'excrementos',
       'caca de perro',
@@ -602,21 +634,24 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'heces perro',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: no recoger los excrementos es infracción de la Ordenanza de ' +
-      'protección y tenencia de animales (y de la de limpieza/residuos). El importe (90/45 €) es ' +
-      'ORIENTATIVO; confirmar artículo, tramo y cuantía con el texto consolidado y el revisor jurídico.',
+      'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF (arts. ' +
+      '14, 76 y lista de infracciones, leídos 2026-09-15): "No recoger inmediatamente los excrementos en ' +
+      'espacios públicos y privados de uso común" está tipificado como GRAVE (no leve). Importe = techo del ' +
+      'tramo grave (art. 76 → art. 141 LRBRL: ≤1.500 €), graduable. Las faltas menores del art. 14 son ' +
+      'leves (≤750 €). Pronto pago a confirmar en la ordenanza fiscal.',
   }),
   construirInfraccion({
     id: 'ord-sctf-perro-sin-censar',
     articulo: ART_ANIM_CENSO,
     tituloCorto: 'Perro sin inscribir en el censo municipal',
     gravedad: 'leve',
-    importeEur: 100,
-    importeReducidoEur: 50,
+    importeEur: 750,
+    importeReducidoEur: null,
     textoBoletin:
       'No inscribir al perro en el CENSO MUNICIPAL de animales, incumpliendo la ordenanza municipal de ' +
-      'protección y tenencia de animales (infracción leve). El deber de IDENTIFICACIÓN por microchip es ' +
-      'ESTATAL (Ley 7/2023, ficha propia, infracción grave): esta ficha es el censo local.',
+      'protección y tenencia de animales (infracción LEVE, hasta 750 €, techo del tramo, graduable). El ' +
+      'deber de IDENTIFICACIÓN por microchip es también ESTATAL (Ley 7/2023, ficha propia, infracción ' +
+      'grave): esta ficha es el censo/identificación local.',
     terminos: [
       'perro sin censar',
       'sin censo animal',
@@ -626,10 +661,12 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'dar de alta el perro en el ayuntamiento',
     ],
     notaRevision:
-      'A VERIFICAR importe y clasificación: no inscribir al animal en el CENSO municipal es infracción ' +
-      'de la Ordenanza. El importe (100/50 €) es ORIENTATIVO. DESLINDE (revisor de animales): la ' +
-      'identificación por MICROCHIP es deber ESTATAL de la Ley 7/2023 (ficha `animal-no-identificacion`, ' +
-      'grave); esta ficha se reserva al censo municipal para no confundir 100 € con 10.001 €.',
+      'COTEJADO contra el texto consolidado de la OM de protección y tenencia de animales de SCTF ' +
+      '(infracción leve 1.b "incumplir la inscripción en el censo municipal", art. 76, leídos 2026-09-15): ' +
+      'es infracción LEVE; importe = techo del tramo leve (art. 76 → art. 141 LRBRL: ≤750 €), graduable. ' +
+      'DESLINDE: la identificación por MICROCHIP es también deber ESTATAL de la Ley 7/2023 (ficha ' +
+      '`animal-no-identificacion`, grave, importes mucho mayores); esta ficha se reserva al censo municipal. ' +
+      'Pronto pago a confirmar en la ordenanza fiscal.',
   }),
   construirInfraccion({
     id: 'ord-sctf-ruido-convivencia',
