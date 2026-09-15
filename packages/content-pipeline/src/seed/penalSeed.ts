@@ -2802,7 +2802,8 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     tituloCorto: 'Agresión sexual a menor de 16 años',
     gravedadCp: 'grave',
     penaTexto:
-      'Prisión de 2 a 6 años (art. 181.1); con acceso carnal, de 8 a 12 años (181.4) o de 12 a 15 (181.2)',
+      'Prisión de 2 a 6 años (art. 181.1); con acceso carnal, de 8 a 12 años (181.4, sobre el apartado 1) ' +
+      'o de 12 a 15 (181.4, sobre el apartado 2)',
     textoBoletin:
       'Realizar actos de carácter sexual con un menor de dieciséis años (art. 181.1 CP): prisión de 2 a 6 ' +
       'años. Concurriendo alguna modalidad del art. 178.2 (violencia, intimidación, voluntad anulada, abuso de ' +
