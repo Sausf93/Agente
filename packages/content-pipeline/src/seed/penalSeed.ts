@@ -1085,12 +1085,19 @@ interface DelitoSeedInput {
  * = grave; hasta 5 años / multa >2 meses = menos grave; art. 13.4 para penas que solapan tramos) se han
  * confirmado directamente en el texto. Se marcan `verificado` (sin sello "Borrador beta").
  *
- * NO se incluyen: delitos con clasificación DUDOSA en el propio seed que hay que revisar antes (p. ej.
- * `del-hurto` marcado 'leve' cuando el 234.1 base >400 € es prisión 6-18 meses = menos grave; o
- * `del-usurpacion`, por el solape 245.1/245.2), los subtipos con agravantes que cambian la pena, y los
- * MUY sensibles (agresión sexual, menores) que se dejan al jurista. Para cobrar, visto bueno humano final.
+ * NO se incluyen: los subtipos con agravantes/remisión que cambian la pena (p. ej. del-atentado-agravado
+ * 551 "superior en grado", del-favorecimiento 318 bis, del-administracion-desleal/apropiacion 248/250),
+ * los bundles leve+menos grave en una ficha (calumnias/injurias, defraudación de fluido, amenazas leves)
+ * y los MUY sensibles (agresión sexual, menores) que se dejan al jurista. Para cobrar, visto bueno final.
+ *
+ * `del-hurto` y `del-usurpacion` SÍ se incluyen: modelan de forma EXPLÍCITA el subtipo LEVE (hurto ≤400 €
+ * del art. 234.2; ocupación pacífica del art. 245.2, que por el art. 13.4 CP es delito leve), con la
+ * frontera de escalada (>400 € / violencia) recogida en su nota. Su `gravedadCp: 'leve'` concuerda con
+ * el CP.
  */
 const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
+  'del-hurto', // 234.2: hurto ≤400 €, multa 1-3 meses → leve (frontera >400 € = menos grave en la nota)
+  'del-usurpacion', // 245.2: ocupación pacífica, multa 3-6 meses → leve (art. 13.4 CP)
   'del-robo-violencia', // 242: prisión 2-5 años → menos grave
   'del-lesiones', // 147.1: prisión 3m-3a o multa → menos grave
   'del-lesiones-agravadas', // 148: prisión 2-5 años → menos grave
