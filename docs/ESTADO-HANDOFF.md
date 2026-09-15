@@ -105,11 +105,14 @@ Pregunta del fundador: "¿mi compañero (GC) echará algo en falta?". Revisado e
   verificados: caza/pesca de especies protegidas 334, caza/pesca prohibida 335, veneno/artes no
   selectivas 336, incendio forestal 352, contaminación 325) con sub-tema propio "Medio ambiente, caza y
   montes (SEPRONA)".
-- **HUECO PENDIENTE: CONTRABANDO (GC fiscal/resguardo)** — LO 12/1995 (delito >15.000 € y la infracción
-  administrativa por debajo; tabaco sobre todo). NO está sembrado. Requiere una norma nueva (LO 12/1995)
-  + articulado + fichas; es una mini-área nueva, no solo verificación. SIGUIENTE candidato para GC.
-- **Menor prioridad GC**: caza/pesca ADMINISTRATIVA (leyes autonómicas, competencia CCAA), seguridad
-  privada (Ley 5/2014). Las ordenanzas municipales son de policía LOCAL, no de la GC.
+- **HUECO CUBIERTO 2026-09-15: CONTRABANDO (GC fiscal/resguardo)** — sembrada la norma LO 12/1995 (código
+  LOC) y el delito `del-contrabando`, verificado contra el BOE (delito ≥150.000 € o ≥15.000 € en tabaco;
+  por debajo, infracción administrativa). `construirDelito` admite ahora `fuenteNorma` para delitos de
+  normas distintas del CP.
+- **Menor prioridad GC (pendiente, opcional)**: caza/pesca ADMINISTRATIVA (leyes autonómicas, competencia
+  CCAA — el delito ya cubre los casos graves), seguridad privada (Ley 5/2014). Las ordenanzas municipales
+  son de policía LOCAL, no de la GC. Con esto, las dos áreas que un GC echaría en falta (SEPRONA y
+  contrabando) están CUBIERTAS y verificadas.
 
 
 ### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 173/307 ya verificadas (56 %)
