@@ -832,10 +832,17 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'sc-remocion-precinto-perimetro', // 37.15
   'sc-animales-sueltos-abandono', // 37.16
   'sc-consumo-alcohol-via-publica', // 37.17
-  // Armas: solo las 2 cuya CLASIFICACIÓN se cierra con la LO 4/2015 (el RD 137/1993 fija solo el
-  // detalle material, no la gravedad); el resto del régimen de armas sigue pendiente por el RD.
+  // Armas cuya CLASIFICACIÓN se cierra con la LO 4/2015 (el RD 137/1993 fija solo el detalle material,
+  // no la gravedad). El art. 36.12 abarca expresamente transporte, almacenamiento, adquisición y
+  // utilización de armas reglamentarias careciendo de documentación/autorización, y "la omisión de las
+  // medidas de seguridad obligatorias" (custodia). Quedan fuera las de frontera PENAL (tenencia sin
+  // licencia → 564 CP) y las de categoría dudosa (fogueo/aire/réplica), aún pendientes.
   'arma-portar-fuera-supuestos', // 36.10 (arma con licencia fuera de lugar habilitado) — grave
   'arma-documentacion-perdida', // 37.8 (documentación de armas: conservación/denuncia de pérdida) — leve
+  'arma-transporte-indebido', // 36.12 (transporte de armas reglamentarias sin documentación) — grave
+  'arma-custodia-deposito', // 36.12 (omisión de medidas de seguridad/custodia obligatorias) — grave
+  'arma-coleccionismo-sin-autorizacion', // 36.12 (adquisición/utilización sin autorización) — grave
+  'arma-licencia-guia-caducada', // 36.12 (carecer de documentación/autorización vigente) — grave
 ]);
 
 /**
