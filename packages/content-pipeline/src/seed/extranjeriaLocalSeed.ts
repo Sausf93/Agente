@@ -515,6 +515,7 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'ext-actividades-seguridad-nacional', // 54.1.a
   'ext-favorecer-inmigracion-clandestina', // 54.1.b
   'ext-matrimonio-conveniencia', // 54.1.f
+  'ext-quebrantar-prohibicion-entrada', // 58.3.a (devolución) — deslinde no_sancionador cotejado en el BOE
   // PPP — Ley 50/1999 art. 13 (muy graves 13.1 / graves 13.2 / leves residual 13.4; cuantías 13.5)
   'ppp-sin-licencia', // 13.1.b
   'ppp-abandono', // 13.1.a
@@ -890,10 +891,11 @@ export const INFRACCIONES_EXTRANJERIA_LOCAL_SEED: InfraccionSeed[] = [
       },
     ],
     notaRevision:
-      'CONFIRMADO por el revisor: el regreso tras expulsión contraviniendo la prohibición de entrada es el ' +
-      'art. 58.3.a (no el 58.3.b, que es la entrada ilegal del que pretende entrar); NO es delito autónomo ' +
-      '(no es 197 ni 197 bis CP). Es DEVOLUCIÓN administrativa con reactivación del plazo (art. 58.7). ' +
-      'Modelada como no_sancionador.',
+      'COTEJADO contra el BOE (LO 4/2000 art. 58, leído 2026-09-15): el regreso tras expulsión ' +
+      'contraviniendo la prohibición de entrada es el art. 58.3.a (devolución SIN nuevo expediente de ' +
+      'expulsión), distinto del 58.3.b (el que pretende entrar ilegalmente); la devolución del 58.3.a ' +
+      'reinicia el cómputo del plazo de prohibición de entrada quebrantada (art. 58.7). NO es delito ' +
+      'autónomo (no es 197 ni 197 bis CP). Modelada como no_sancionador (deslinde, sin cuantía).',
   }),
   construirInfraccion({
     id: 'ext-salida-puesto-no-habilitado',
