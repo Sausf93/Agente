@@ -705,6 +705,11 @@ function Tile({ t, tile, solo = false }: { t: Theme; tile: TileFicha; solo?: boo
       <Text style={{ color: t.color.textSecondary, ...t.typography.scale.caption }}>
         {tile.etiqueta}
       </Text>
+      {tile.nota ? (
+        <Text numberOfLines={1} style={{ color: t.color.textTertiary, ...t.typography.scale.caption }}>
+          {tile.nota}
+        </Text>
+      ) : null}
     </View>
   );
 }

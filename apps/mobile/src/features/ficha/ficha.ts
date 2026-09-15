@@ -51,6 +51,8 @@ export interface TileFicha {
   valor: string;
   /** El tile que "manda" (el importe): borde y fondo de acento sutiles. */
   enfasis?: boolean;
+  /** Subtexto pequeño bajo la etiqueta (p. ej. el plazo del pronto pago: "en 20 días"). */
+  nota?: string;
 }
 
 export interface FichaInfraccion {
@@ -236,7 +238,14 @@ export function tilesFicha(
     }
   }
   if (ficha.importeReducidoEur !== null) {
-    tiles.push({ etiqueta: 'Pronto pago', valor: formatEuros(ficha.importeReducidoEur) });
+    tiles.push({
+      etiqueta: 'Pronto pago',
+      valor: formatEuros(ficha.importeReducidoEur),
+      // El plazo del pronto pago (50 % si se paga en 20 días naturales) es el del régimen de TRÁFICO
+      // (LSV art. 94, cotejado en el BOE). En otros marcos (seguridad ciudadana, ordenanzas) el plazo
+      // puede variar, así que solo se afirma para tráfico.
+      ...(ficha.fichaKind === 'trafico' ? { nota: 'en 20 días' } : null),
+    });
   }
   if (esHorquilla) {
     const tramo = TRAMO_LABEL[ficha.gravedad];
