@@ -109,10 +109,18 @@ Pregunta del fundador: "¿mi compañero (GC) echará algo en falta?". Revisado e
   LOC) y el delito `del-contrabando`, verificado contra el BOE (delito ≥150.000 € o ≥15.000 € en tabaco;
   por debajo, infracción administrativa). `construirDelito` admite ahora `fuenteNorma` para delitos de
   normas distintas del CP.
-- **Menor prioridad GC (pendiente, opcional)**: caza/pesca ADMINISTRATIVA (leyes autonómicas, competencia
-  CCAA — el delito ya cubre los casos graves), seguridad privada (Ley 5/2014). Las ordenanzas municipales
-  son de policía LOCAL, no de la GC. Con esto, las dos áreas que un GC echaría en falta (SEPRONA y
-  contrabando) están CUBIERTAS y verificadas.
+- **Caza ADMINISTRATIVA autonómica (Canarias) — HECHA (2026-09-15)**: nueva norma CAN-CAZA (Ley 7/1998,
+  BOE-A-1998-18466) con 6 fichas (`caza-*`: sin licencia, sin seguro, no presentar licencia, licencia
+  retirada, espacio protegido, medios prohibidos), materia `animales` → subtema nuevo `anim-caza`.
+  Relevante para la GUARDIA CIVIL (cuerpos incluye guardia_civil). Clasificación cotejada contra el BOE
+  (arts. 47-51); importes = conversión de las pesetas del art. 51 → quedan `pendiente_revision` (posible
+  actualización autonómica). Comiso art. 52/53 como consecuencia; deslinde penal 334/335/336 + 330 CP.
+  Revisada por revisor-jurídico (APTO con corrección del 330, aplicada) y validador-calle. PENDIENTE
+  (backlog): veda / día no hábil / exceso de cupo / especie no autorizada — son catch-all del art. 48.6
+  (MENOS GRAVE, sin encaje en el enum admin) y dependen de la Orden anual de Vedas de Canarias.
+- **Menor prioridad GC (pendiente, opcional)**: seguridad privada (Ley 5/2014); caza/pesca ADMINISTRATIVA
+  de OTRAS CCAA (el piloto es Canarias). Las ordenanzas municipales son de policía LOCAL, no de la GC. Con
+  esto, las áreas que un GC echaría en falta (SEPRONA, contrabando y caza administrativa canaria) están cubiertas.
 
 
 ### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 173/307 ya verificadas (56 %)

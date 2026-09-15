@@ -80,11 +80,24 @@ const ID_ESP = 'BOE-A-2011-8022'; // Ley 7/2011, actividades clasificadas y espe
 const ID_ANIM = 'BOE-A-1991-16425'; // Ley 8/1991, protección de los animales (Canarias)
 const ID_CPL = 'BOE-A-1997-17140'; // Ley 6/1997, coordinación de policías locales de Canarias
 const ID_PCAN = 'BOE-A-2008-12494'; // Ley 2/2008, Cuerpo General de la Policía Canaria
+const ID_CAZA = 'BOE-A-1998-18466'; // Ley 7/1998, de 6 de julio, de Caza de Canarias
 
 const urlBoe = (id: string): string => `https://www.boe.es/buscar/act.php?id=${id}`;
 
+/**
+ * Cuerpos relevantes para la Ley de Caza de Canarias: además de la Policía Canaria y la Local, la
+ * GUARDIA CIVIL (SEPRONA / agentes de medio ambiente) es enforcer principal de la caza en el medio
+ * rural. Se marca su relevancia (no restringe acceso; solo prioriza la lista de Normas).
+ */
+const CUERPOS_CAZA: Cuerpo[] = ['guardia_civil', 'policia_autonomica', 'policia_local'];
+
 /** Construye una `Norma` autonómica canaria ligada al territorio de la CCAA. */
-function normaCanaria(input: { id: string; codigo: string; titulo: string }): Norma {
+function normaCanaria(input: {
+  id: string;
+  codigo: string;
+  titulo: string;
+  cuerpos?: Cuerpo[];
+}): Norma {
   return Norma.parse({
     id: input.id,
     codigo: input.codigo,
@@ -95,7 +108,7 @@ function normaCanaria(input: { id: string; codigo: string; titulo: string }): No
     origen: 'oficial',
     urlBoe: urlBoe(input.id),
     fechaConsolidacion: null,
-    cuerpos: CUERPOS_CANARIAS,
+    cuerpos: input.cuerpos ?? CUERPOS_CANARIAS,
   });
 }
 
@@ -120,6 +133,12 @@ export const NORMAS_CANARIAS_SEED: Norma[] = [
     id: ID_PCAN,
     codigo: 'CAN-PCAN',
     titulo: 'Ley del Cuerpo General de la Policía Canaria (Ley 2/2008, de 28 de mayo)',
+  }),
+  normaCanaria({
+    id: ID_CAZA,
+    codigo: 'CAN-CAZA',
+    titulo: 'Ley de Caza de Canarias (Ley 7/1998, de 6 de julio)',
+    cuerpos: CUERPOS_CAZA,
   }),
 ];
 
@@ -292,6 +311,55 @@ const ART_PCAN_FUNC = articuloSeed({
     'consolidado en el BOE.',
 });
 
+// Ley 7/1998 — Caza de Canarias (clasificación cotejada en BOE-A-1998-18466, arts. 47-51).
+const ART_CAZA_47 = articuloSeed({
+  normaId: ID_CAZA,
+  numero: '47',
+  titulo: 'Infracciones leves de caza',
+  texto:
+    'Enumera las infracciones LEVES: entre otras, cazar teniendo licencia válida pero no presentarla al ' +
+    'ser requerido por la guardería o los agentes; cazar con autorización sin llevarla consigo en terreno ' +
+    'de régimen cinegético especial; cazar el menor no emancipado con licencia sin ir acompañado de otro ' +
+    'cazador mayor de edad con licencia; o cazar con perros no identificados. Resumen orientativo; ' +
+    'consúltese el texto consolidado en el BOE.',
+});
+
+const ART_CAZA_49 = articuloSeed({
+  normaId: ID_CAZA,
+  numero: '49',
+  titulo: 'Infracciones graves de caza',
+  texto:
+    'Enumera las infracciones GRAVES: entre otras, cazar sin licencia (49.1); cazar con armas sin tener ' +
+    'contratado y vigente el seguro obligatorio (49.2); incumplir las condiciones del coto o falsear sus ' +
+    'límites; incumplir los planes técnicos de caza; o llevar armas o artes dispuestas para cazar en ' +
+    'terreno cinegético especial señalizado sin permiso. Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_CAZA_50 = articuloSeed({
+  normaId: ID_CAZA,
+  numero: '50',
+  titulo: 'Infracciones muy graves de caza',
+  texto:
+    'Enumera las infracciones MUY GRAVES: entre otras, cazar con la licencia retirada o estando privado de ' +
+    'obtenerla por sentencia o resolución firme (50.1); cazar en zonas de espacios naturales protegidos ' +
+    'donde esté expresamente prohibido o en refugios de caza sin permiso, aunque no se cobre pieza (50.2); ' +
+    'el uso con fines cinegéticos de cebos, gases o sustancias paralizantes/atrayentes o el fuego (50.3); y ' +
+    'cazar de noche auxiliándose de focos u otra luz artificial (50.4). Resumen orientativo; consúltese el BOE.',
+});
+
+const ART_CAZA_51 = articuloSeed({
+  normaId: ID_CAZA,
+  numero: '51',
+  titulo: 'Sanciones de caza (cuantías)',
+  texto:
+    'Fija las multas por tramos. El texto de 1998 las expresa en PESETAS: leves de 5.000 a 25.000; menos ' +
+    'graves de 25.001 a 100.000; graves de 100.001 a 500.000; muy graves de 500.001 a 1.500.000. En euros ' +
+    '(conversión): leves 30,05–150,25 €; menos graves 150,26–601,01 €; graves 601,02–3.005,06 €; muy graves ' +
+    '3.005,07–9.015,18 €. Además, en infracciones menos graves, graves y muy graves puede acordarse la ' +
+    'retirada de la licencia y la inhabilitación para obtenerla (hasta 1 año, de 1 a 5 años y de 3 a 8 años, ' +
+    'respectivamente). A VERIFICAR posible actualización autonómica de las cuantías. Resumen orientativo.',
+});
+
 export const ARTICULOS_CANARIAS_SEED: Articulo[] = [
   ART_ESP_48,
   ART_ESP_49,
@@ -304,6 +372,10 @@ export const ARTICULOS_CANARIAS_SEED: Articulo[] = [
   ART_ANIM_26,
   ART_CPL_COORD,
   ART_PCAN_FUNC,
+  ART_CAZA_47,
+  ART_CAZA_49,
+  ART_CAZA_50,
+  ART_CAZA_51,
 ];
 
 // --- Medida OPERATIVA del ocio: cese / desalojo / precinto (arts. 49 y 65.2 Ley 7/2011) ------
@@ -798,11 +870,286 @@ export const INFRACCIONES_CANARIAS_SEED: InfraccionSeed[] = [
   }),
 ];
 
+// --- CAZA de Canarias (Ley 7/1998) — hueco de la GUARDIA CIVIL rural en el territorio piloto ------
+/**
+ * Competencia de la caza autonómica: la denuncian la GUARDIA CIVIL (SEPRONA / agentes de medio
+ * ambiente), la Policía Canaria y las policías locales. Vía `ambas` (medio rural/natural).
+ */
+const COMPETENCIA_CAZA: CuerpoCompetente[] = ['guardia_civil', 'policia_autonomica', 'policia_local'];
+
+/**
+ * Coletilla de las fichas de caza: la CLASIFICACIÓN (arts. 47-50) se cotejó contra el texto
+ * consolidado del BOE, pero el art. 51 fija las multas en PESETAS; el importe que muestra la ficha es
+ * su conversión a euros (ORIENTATIVO) y queda a verificar una posible actualización autonómica.
+ */
+const CAVEAT_CAZA =
+  ' NOTA: clasificación (arts. 47-50) COTEJADA contra el BOE (Ley 7/1998 de Caza de Canarias, ' +
+  'BOE-A-1998-18466, leído por el agente principal en el navegador el 2026-09-15). El IMPORTE es la ' +
+  'CONVERSIÓN a euros de las pesetas del art. 51 (orientativo); A VERIFICAR por el revisor una posible ' +
+  'actualización autonómica de las cuantías y la graduación dentro del tramo.';
+
+interface CazaSeedInput {
+  id: string;
+  articulo: Articulo;
+  tituloCorto: string;
+  gravedad: Infraccion['gravedad'];
+  importeEur: number;
+  importeMaxEur: number;
+  textoBoletin: string;
+  terminos: string[];
+  notaRevision: string;
+}
+
+function construirInfraccionCaza(input: CazaSeedInput): InfraccionSeed {
+  const infraccion = Infraccion.parse({
+    id: input.id,
+    articuloId: input.articulo.id,
+    codigoDgt: null,
+    tituloCorto: input.tituloCorto,
+    gravedad: input.gravedad,
+    tipo: 'administrativa',
+    importeEur: input.importeEur,
+    importeReducidoEur: null,
+    importeMaxEur: input.importeMaxEur,
+    puntos: null,
+    textoBoletin: input.textoBoletin,
+    variantesBoletin: [],
+    competencia: { cuerpos: COMPETENCIA_CAZA, via: 'ambas' },
+    ambito: 'autonomico',
+    territorioId: TERRITORIO_CANARIAS,
+    desplazaId: null,
+    origen: 'oficial',
+    validFrom: VALID_FROM,
+    validTo: null,
+  });
+  const sinonimos: Sinonimo[] = input.terminos.map((termino, i) =>
+    Sinonimo.parse({
+      id: `${input.id}:sin-${i}`,
+      termino,
+      peso: 1,
+      infraccionId: input.id,
+      articuloId: null,
+    }),
+  );
+  // Consecuencia OPERATIVA (lo primero en el campo, por delante de la multa): el art. 52 impone el
+  // COMISO cautelar de las piezas y las artes/medios en TODA infracción de caza, y el art. 53 la
+  // retirada del arma cuando se usó para cometerla. Lenguaje orientativo.
+  const consecuencias: Consecuencia[] = [
+    Consecuencia.parse({
+      id: `${input.id}:cons-comiso`,
+      tipo: 'decomiso',
+      regla: {},
+      textoCorto:
+        'Procede el COMISO cautelar de las piezas de caza (vivas o muertas) y de las artes, medios o ' +
+        'cebos empleados (art. 52 Ley 7/1998), y la RETIRADA del arma cuando se haya usado para cometer ' +
+        'la infracción (art. 53), a disposición de la autoridad. La valoración final corresponde a la ' +
+        'autoridad competente.',
+      fuente: 'Ley 7/1998 arts. 52 (comiso) y 53 (retirada de armas)',
+      infraccionId: input.id,
+      articuloId: null,
+    }),
+  ];
+  return {
+    infraccion,
+    sinonimos,
+    consecuencias,
+    marcoImporte: 'autonomico' satisfies MarcoImporte,
+    // Se dejan `pendiente_revision`: la cuantía del art. 51 va en pesetas (conversión orientativa) y
+    // puede haber actualización autonómica; el cierre lo da el revisor jurídico (§8.3).
+    revision: 'pendiente_revision' satisfies EstadoRevision,
+    notaRevision: input.notaRevision + CAVEAT_CAZA,
+  };
+}
+
+export const INFRACCIONES_CAZA_SEED: InfraccionSeed[] = [
+  construirInfraccionCaza({
+    id: 'caza-sin-licencia',
+    articulo: ART_CAZA_49,
+    tituloCorto: 'Cazar sin licencia (Canarias)',
+    gravedad: 'grave',
+    importeEur: 601.02,
+    importeMaxEur: 3005.06,
+    textoBoletin:
+      'Cazar sin la licencia de caza exigida es infracción GRAVE del art. 49.1 de la Ley 7/1998 de Caza ' +
+      'de Canarias (multa de 601,02 a 3.005,06 €, conversión de las pesetas del art. 51). ¿DELITO O ' +
+      'ADMINISTRATIVO? ¿especie PROTEGIDA? → art. 334 CP. ¿especie cazable pero PROHIBIDA o en terreno ' +
+      'AJENO? → art. 335 CP. ¿VENENO o medios no selectivos? → art. 336 CP. Si nada de eso, es esta ' +
+      'infracción administrativa. (Fichas del delito: del-caza-pesca-*.) La valoración final corresponde a ' +
+      'la autoridad competente.',
+    terminos: [
+      'cazar sin licencia',
+      'caza sin licencia canarias',
+      'sin licencia de caza',
+      'cazar sin permiso',
+      'furtivo sin licencia',
+      'cazar sin papeles',
+      'furtivo',
+      'furtivismo',
+      'cazador furtivo',
+      'conejo sin licencia',
+      'perdiz sin licencia',
+      'cazar sin carnet',
+      'sin carnet de caza',
+    ],
+    notaRevision:
+      'Cazar sin licencia = GRAVE (Ley 7/1998 art. 49.1). Deslinde con el DELITO (CP 334/335/336, fichas ' +
+      'del-caza-pesca-especies-protegidas / del-caza-pesca-prohibida / del-veneno-caza-pesca): el revisor ' +
+      'confirma la frontera administrativa/penal.',
+  }),
+  construirInfraccionCaza({
+    id: 'caza-sin-seguro',
+    articulo: ART_CAZA_49,
+    tituloCorto: 'Cazar con armas sin el seguro obligatorio (Canarias)',
+    gravedad: 'grave',
+    importeEur: 601.02,
+    importeMaxEur: 3005.06,
+    textoBoletin:
+      'Cazar CON ARMAS sin tener contratado y vigente el seguro de responsabilidad civil del cazador que ' +
+      'exige el art. 33 es infracción GRAVE del art. 49.2 de la Ley 7/1998 (multa de 601,02 a 3.005,06 €). ' +
+      'Cazar SIN ARMAS sin el seguro es infracción menos grave (art. 48.2). La valoración final corresponde ' +
+      'a la autoridad competente.',
+    terminos: [
+      'cazar sin seguro',
+      'sin seguro de caza',
+      'seguro del cazador',
+      'caza sin responsabilidad civil',
+      'escopeta sin seguro de caza',
+      'cazador sin seguro',
+      'poliza de caza',
+      'recibo del seguro de caza',
+      'escopeta sin papeles del seguro',
+    ],
+    notaRevision:
+      'Cazar con armas sin seguro = GRAVE (art. 49.2); sin armas sin seguro = menos grave (art. 48.2). El ' +
+      'revisor confirma el deslinde con/sin armas.',
+  }),
+  construirInfraccionCaza({
+    id: 'caza-no-presentar-licencia',
+    articulo: ART_CAZA_47,
+    tituloCorto: 'No presentar la licencia de caza al ser requerido (Canarias)',
+    gravedad: 'leve',
+    importeEur: 30.05,
+    importeMaxEur: 150.25,
+    textoBoletin:
+      'Cazar siendo titular de una licencia válida pero NO presentarla cuando la requieran la guardería o ' +
+      'los agentes de la autoridad es infracción LEVE del art. 47.1 de la Ley 7/1998 (multa de 30,05 a ' +
+      '150,25 €). Distíntase de cazar SIN licencia (grave, art. 49.1). La valoración final corresponde a ' +
+      'la autoridad competente.',
+    terminos: [
+      'no presentar la licencia de caza',
+      'sin la licencia encima cazando',
+      'cazar sin llevar la licencia',
+      'no enseñar la licencia de caza',
+      'olvidar la licencia de caza',
+      'no lleva la licencia encima',
+      'licencia en casa',
+      'no me ensena el carnet de caza',
+      'sin documentacion de caza',
+    ],
+    notaRevision:
+      'No presentar la licencia (teniéndola) = LEVE (art. 47.1); cazar SIN tenerla = grave (art. 49.1). ' +
+      'Frontera confirmada por el revisor.',
+  }),
+  construirInfraccionCaza({
+    id: 'caza-licencia-retirada',
+    articulo: ART_CAZA_50,
+    tituloCorto: 'Cazar con la licencia retirada o estando privado de obtenerla (Canarias)',
+    gravedad: 'muy_grave',
+    importeEur: 3005.07,
+    importeMaxEur: 9015.18,
+    textoBoletin:
+      'Cazar teniendo RETIRADA la licencia de caza, o estando privado de obtenerla por sentencia judicial ' +
+      'o resolución administrativa firme, es infracción MUY GRAVE del art. 50.1 de la Ley 7/1998 (multa de ' +
+      '3.005,07 a 9.015,18 €), con posible inhabilitación de 3 a 8 años. La valoración final corresponde a ' +
+      'la autoridad competente.',
+    terminos: [
+      'cazar con licencia retirada',
+      'cazar inhabilitado',
+      'cazar privado de licencia',
+      'caza estando sancionado',
+      'cazar con la licencia suspendida',
+      'cazando sancionado',
+      'tiene la caza prohibida por sentencia',
+      'cazar inhabilitado por veneno',
+      'retirado el carnet y cazando',
+    ],
+    notaRevision:
+      'Cazar con licencia retirada o privado por resolución/sentencia firme = MUY GRAVE (art. 50.1). El ' +
+      'revisor confirma la concurrencia con un posible quebrantamiento (art. 468 CP) si la privación es judicial.',
+  }),
+  construirInfraccionCaza({
+    id: 'caza-espacio-protegido',
+    articulo: ART_CAZA_50,
+    tituloCorto: 'Cazar en espacio natural protegido o refugio de caza (Canarias)',
+    gravedad: 'muy_grave',
+    importeEur: 3005.07,
+    importeMaxEur: 9015.18,
+    textoBoletin:
+      'Cazar en zonas de los espacios naturales protegidos donde esté expresamente prohibido, o en los ' +
+      'refugios de caza sin el debido permiso —aunque no se cobre pieza—, es infracción MUY GRAVE del art. ' +
+      '50.2 de la Ley 7/1998 (multa de 3.005,07 a 9.015,18 €). DESLINDE PENAL: si afecta a especies ' +
+      'PROTEGIDAS es delito del art. 334 CP; si se dañan GRAVEMENTE elementos de un espacio natural ' +
+      'protegido, art. 330 CP; si es especie cazable en terreno vedado/ajeno, art. 335 CP (fichas ' +
+      'del-caza-pesca-*). La valoración final corresponde a la autoridad competente.',
+    terminos: [
+      'cazar en espacio protegido',
+      'cazar en parque natural',
+      'caza en zona protegida',
+      'cazar en refugio de caza',
+      'cazar en parque nacional',
+      'caza en reserva natural',
+      'cazar en el parque rural',
+      'cazar en zona zepa',
+      'cazar en red natura',
+      'cazar en el teide',
+      'cazar en garajonay',
+      'cazar en zona de seguridad',
+    ],
+    notaRevision:
+      'Cazar en espacio natural protegido/refugio sin permiso = MUY GRAVE (art. 50.2). Deslinde con el ' +
+      'DELITO ambiental (CP 334/335) que confirma el revisor.',
+  }),
+  construirInfraccionCaza({
+    id: 'caza-medios-prohibidos',
+    articulo: ART_CAZA_50,
+    tituloCorto: 'Cazar con cebos, fuego o de noche con foco (Canarias)',
+    gravedad: 'muy_grave',
+    importeEur: 3005.07,
+    importeMaxEur: 9015.18,
+    textoBoletin:
+      'Usar con fines de caza cebos, gases o sustancias paralizantes, tranquilizantes, atrayentes o ' +
+      'repelentes, o el FUEGO (art. 50.3), y cazar de NOCHE con armas auxiliándose de los focos de un ' +
+      'vehículo o de otra luz artificial (art. 50.4), son infracciones MUY GRAVES de la Ley 7/1998 (multa ' +
+      'de 3.005,07 a 9.015,18 €). DESLINDE PENAL: el empleo de VENENO, explosivos u otros medios no ' +
+      'selectivos para la caza es DELITO del art. 336 CP (ficha del-veneno-caza-pesca). La valoración final ' +
+      'corresponde a la autoridad competente.',
+    terminos: [
+      'caza con cebo',
+      'caza nocturna con foco',
+      'cazar de noche con luz',
+      'caza con fuego',
+      'medios prohibidos de caza',
+      'cazar con foco desde el coche',
+      'caza con reclamo prohibido',
+      'cazar de noche',
+      'lampara de caza',
+      'cazar con lazos',
+      'cepos',
+      'liga para pajaros',
+      'reclamo electronico',
+      'cazar desde el coche',
+    ],
+    notaRevision:
+      'Cebos/gases/fuego (50.3) y caza nocturna con foco (50.4) = MUY GRAVE. DESLINDE con el DELITO del ' +
+      'art. 336 CP (veneno/medios no selectivos, ficha del-veneno-caza-pesca): lo confirma el revisor.',
+  }),
+];
+
 /** Estructura completa del seed lista para combinar con el resto de contenido. */
 export const SEED_AUTONOMICO_CANARIAS: SeedContenido = {
   normas: NORMAS_CANARIAS_SEED,
   articulos: ARTICULOS_CANARIAS_SEED,
-  infracciones: INFRACCIONES_CANARIAS_SEED,
+  infracciones: [...INFRACCIONES_CANARIAS_SEED, ...INFRACCIONES_CAZA_SEED],
 };
 
 /** CCAA con contenido autonómico sembrado en el paquete (por su `territorioId`). Fuente única. */

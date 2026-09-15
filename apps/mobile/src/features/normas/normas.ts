@@ -317,10 +317,11 @@ const MATERIA_POR_CODIGO: Record<string, Materia> = {
  * Así, futuras CCAA/municipios heredan la clasificación sin tocar código (basta reutilizar el tema).
  */
 const MATERIA_POR_TEMA: Record<string, Materia> = {
-  // Temas autonómicos (Canarias): CAN-ESP, CAN-CPL, CAN-PCAN.
+  // Temas autonómicos (Canarias): CAN-ESP, CAN-CPL, CAN-PCAN, CAN-CAZA.
   ESP: 'ocio', // espectáculos públicos y actividades recreativas
   CPL: 'organizacion', // coordinación de policías locales
   PCAN: 'organizacion', // Cuerpo General de la Policía Canaria
+  CAZA: 'animales', // Ley de Caza de Canarias (fauna; enforcer principal la Guardia Civil/SEPRONA)
   // Temas de ordenanza municipal: OM-CIRC-*, OM-ZBE-*, OM-RUIDO-*, OM-TERRAZAS-*.
   CIRC: 'trafico', // circulación
   ZBE: 'trafico', // zona de bajas emisiones
@@ -662,6 +663,7 @@ export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
   // --- Animales (2026-09-14): separa el régimen de PPP del de bienestar animal (Ley 7/2023) ---
   'anim-ppp': { materia: 'animales', label: 'Perros y animales peligrosos (PPP)', icono: 'Dog', orden: 1 },
   'anim-bienestar': { materia: 'animales', label: 'Maltrato, abandono y protección', icono: 'PawPrint', orden: 2 },
+  'anim-caza': { materia: 'animales', label: 'Caza (Canarias)', icono: 'Trees', orden: 3 },
   'anim-otras': { materia: 'animales', label: 'Perro suelto, excrementos y censo', icono: 'BookOpen', orden: 99, esCajon: true },
 };
 
@@ -958,6 +960,13 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'ord-sctf-perro-sin-censar': 'anim-otras',
   'ord-sctf-perro-suelto': 'anim-otras',
   'ord-sctf-excrementos': 'anim-otras',
+  // Caza autonómica (Ley 7/1998 de Canarias): hueco de la Guardia Civil rural en el territorio piloto.
+  'caza-sin-licencia': 'anim-caza',
+  'caza-sin-seguro': 'anim-caza',
+  'caza-no-presentar-licencia': 'anim-caza',
+  'caza-licencia-retirada': 'anim-caza',
+  'caza-espacio-protegido': 'anim-caza',
+  'caza-medios-prohibidos': 'anim-caza',
 };
 
 /** Sub-tema de una infracción por su id (mapa interino); `null` si no está clasificada. */

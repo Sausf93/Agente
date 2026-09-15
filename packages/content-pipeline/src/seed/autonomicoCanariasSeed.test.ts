@@ -34,11 +34,17 @@ describe('SEED_AUTONOMICO_CANARIAS: enganche territorial (capa autonómica)', ()
     for (const n of SEED_AUTONOMICO_CANARIAS.normas) {
       expect(n.ambito, n.codigo).toBe('autonomico');
       expect(n.territorioId, n.codigo).toBe(TERRITORIO_CANARIAS);
-      // Relevancia: la lleva la Policía Canaria (autonómica) y la Local, no la GC/PN.
+      // Relevancia: la lleva la Policía Canaria (autonómica) y la Local.
       expect(n.cuerpos, n.codigo).toContain('policia_autonomica');
       expect(n.cuerpos, n.codigo).toContain('policia_local');
       expect(n.cuerpos, n.codigo).not.toContain('policia_nacional');
-      expect(n.cuerpos, n.codigo).not.toContain('guardia_civil');
+      // La CAZA (Ley 7/1998) SÍ es relevante para la Guardia Civil (SEPRONA/medio ambiente); el resto
+      // de leyes autonómicas (espectáculos, animales, organización) no se etiquetan a la GC.
+      if (n.codigo === 'CAN-CAZA') {
+        expect(n.cuerpos, n.codigo).toContain('guardia_civil');
+      } else {
+        expect(n.cuerpos, n.codigo).not.toContain('guardia_civil');
+      }
     }
   });
 
@@ -69,9 +75,11 @@ describe('SEED_AUTONOMICO_CANARIAS: calidad de contenido (§8.3)', () => {
     }
   });
 
-  it('las cuantías verificadas se toman del mínimo del tramo (Ley 7/2011 art. 66)', () => {
+  it('las cuantías de ESPECTÁCULOS se toman del mínimo del tramo (Ley 7/2011 art. 66)', () => {
     // Graves: 3.001–15.000 €; muy graves: 15.001–30.000 €. El seed fija el mínimo del tramo.
+    // (La caza usa su propio art. 51, con otras cuantías; se comprueba aparte.)
     for (const { infraccion } of SEED_AUTONOMICO_CANARIAS.infracciones) {
+      if (!infraccion.id.startsWith('can-esp-')) continue;
       if (infraccion.gravedad === 'grave') expect(infraccion.importeEur, infraccion.id).toBe(3001);
       if (infraccion.gravedad === 'muy_grave')
         expect(infraccion.importeEur, infraccion.id).toBe(15001);
@@ -104,6 +112,25 @@ describe('SEED_AUTONOMICO_CANARIAS: cobertura de lo más útil en Canarias', () 
     expect(codigos).toContain('CAN-ANIM'); // Ley 8/1991 animales
     expect(codigos).toContain('CAN-CPL'); // Ley 6/1997 coordinación policías locales
     expect(codigos).toContain('CAN-PCAN'); // Ley 2/2008 Cuerpo General de la Policía Canaria
+  });
+
+  it('siembra la CAZA de Canarias (Ley 7/1998) — hueco de la Guardia Civil rural', () => {
+    // La norma CAN-CAZA existe y es relevante para la GC.
+    const caza = SEED_AUTONOMICO_CANARIAS.normas.find((n) => n.codigo === 'CAN-CAZA');
+    expect(caza).toBeDefined();
+    expect(caza!.cuerpos).toContain('guardia_civil');
+    // Fichas de calle clave, con su gravedad y competencia GC.
+    for (const id of ['caza-sin-licencia', 'caza-licencia-retirada', 'caza-espacio-protegido']) {
+      const item = porId(id);
+      expect(item, id).toBeDefined();
+      expect(item!.infraccion.competencia.cuerpos, id).toContain('guardia_civil');
+      // Cuantía convertida de pesetas (art. 51): no coincide con los tramos de espectáculos.
+      expect(item!.infraccion.importeEur, id).not.toBe(3001);
+      expect(item!.infraccion.importeEur, id).not.toBe(15001);
+      // Quedan pendientes (peseta→euro + posible actualización autonómica), con cotejo de clasificación.
+      expect(item!.revision, id).toBe('pendiente_revision');
+      expect(item!.notaRevision.toLowerCase(), id).toContain('cotejada');
+    }
   });
 
   it('cubre horario de cierre / ocio nocturno y actividad sin licencia', () => {
@@ -158,8 +185,9 @@ describe('SEED_AUTONOMICO_CANARIAS: correcciones de la ronda de validación (rev
   // ingesta del BOE (BOE-A-2011-8022) pero NO se pudieron corroborar de forma independiente en la
   // última revisión, así que quedan PENDIENTES de corroboración (no se afirma "confirmado"). Cada nota
   // debe citar el art. 66 y dejar la graduación/corroboración "a verificar".
-  it('cada nota cita el art. 66 y deja la corroboración/graduación a verificar (no lo da por confirmado)', () => {
+  it('cada nota de ESPECTÁCULOS cita el art. 66 y deja la corroboración/graduación a verificar', () => {
     for (const item of SEED_AUTONOMICO_CANARIAS.infracciones) {
+      if (!item.infraccion.id.startsWith('can-esp-')) continue;
       const nota = item.notaRevision.toLowerCase();
       expect(nota, item.infraccion.id).toContain('art. 66');
       expect(nota, item.infraccion.id).toContain('verificar');
