@@ -1085,10 +1085,14 @@ interface DelitoSeedInput {
  * = grave; hasta 5 años / multa >2 meses = menos grave; art. 13.4 para penas que solapan tramos) se han
  * confirmado directamente en el texto. Se marcan `verificado` (sin sello "Borrador beta").
  *
- * NO se incluyen: los subtipos con agravantes/remisión que cambian la pena (p. ej. del-atentado-agravado
- * 551 "superior en grado", del-favorecimiento 318 bis, del-administracion-desleal/apropiacion 248/250),
+ * NO se incluyen: los de remisión de pena según cuantía (del-administracion-desleal/apropiacion 248/250),
  * los bundles leve+menos grave en una ficha (calumnias/injurias, defraudación de fluido, amenazas leves)
  * y los MUY sensibles (agresión sexual, menores) que se dejan al jurista. Para cobrar, visto bueno final.
+ *
+ * `del-atentado-agravado` (551, superior en grado sobre el agente 6m-3a ≈ 3-4,5 años → menos grave; la
+ * variante contra AUTORIDAD, grave, en la nota) y `del-favorecimiento-inmigracion-ilegal` (318 bis.1
+ * básico → menos grave; organización 318 bis.3, grave, en la nota) SÍ se incluyen: modelan de forma
+ * explícita su subtipo de calle y su gravedadCp concuerda con el CP.
  *
  * `del-hurto` y `del-usurpacion` SÍ se incluyen: modelan de forma EXPLÍCITA el subtipo LEVE (hurto ≤400 €
  * del art. 234.2; ocupación pacífica del art. 245.2, que por el art. 13.4 CP es delito leve), con la
@@ -1098,6 +1102,8 @@ interface DelitoSeedInput {
 const VERIFICADOS_BOE: ReadonlySet<string> = new Set<string>([
   'del-hurto', // 234.2: hurto ≤400 €, multa 1-3 meses → leve (frontera >400 € = menos grave en la nota)
   'del-usurpacion', // 245.2: ocupación pacífica, multa 3-6 meses → leve (art. 13.4 CP)
+  'del-atentado-agravado', // 551 sobre agente (6m-3a) superior en grado ≈ 3-4,5 años → menos grave
+  'del-favorecimiento-inmigracion-ilegal', // 318 bis.1 básico → menos grave (organización 318 bis.3 en la nota)
   'del-robo-violencia', // 242: prisión 2-5 años → menos grave
   'del-lesiones', // 147.1: prisión 3m-3a o multa → menos grave
   'del-lesiones-agravadas', // 148: prisión 2-5 años → menos grave
@@ -3006,9 +3012,13 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
     id: 'del-favorecimiento-inmigracion-ilegal',
     articulo: ART_CP_318_BIS,
     tituloCorto: 'Favorecimiento de la inmigración ilegal',
-    gravedadCp: 'grave',
+    // Caso modelado: el BÁSICO del art. 318 bis.1 (ayudar a entrar/transitar), prisión 3 meses-1 año o
+    // multa → MENOS GRAVE (art. 33 CP), que es el supuesto de calle más frecuente (passeur individual).
+    // La ORGANIZACIÓN del 318 bis.3 (prisión 4-8 años → GRAVE) se recoge como escalada en boletín y nota.
+    // Antes se modelaba como grave (organización), lo que SOBRE-orientaba la detención en el caso básico.
+    gravedadCp: 'menos_grave',
     penaTexto:
-      'Multa de 3 a 12 meses o prisión de 3 meses a 1 año, en su mitad superior con ánimo de lucro (art. ' +
+      'Prisión de 3 meses a 1 año o multa de 3 a 12 meses, en su mitad superior con ánimo de lucro (art. ' +
       '318 bis.1); prisión de 4 a 8 años si se comete en el seno de una ORGANIZACIÓN (318 bis.3)',
     textoBoletin:
       'Ayudar intencionadamente a una persona no comunitaria a entrar o transitar por España vulnerando la ' +
@@ -3029,11 +3039,11 @@ export const INFRACCIONES_PENAL_SEED: InfraccionSeed[] = [
       'traslado de sin papeles',
     ],
     notaRevision:
-      'A VERIFICAR penas y apartados del art. 318 bis: básico .1 (multa 3-12 meses o prisión 3 meses-1 año, ' +
-      'mitad superior con ánimo de lucro) = menos grave; .2 permanencia con lucro; ORGANIZACIÓN .3 = 4-8 ' +
-      'años = GRAVE (escenario modelado). PRESERVAR la cláusula humanitaria (318 bis.1, párrafo final) y el deslinde con la ' +
-      'infracción administrativa del art. 54.1.b LO 4/2000 ("cuando el hecho no sea delito"). NO confundir ' +
-      'con la trata (177 bis). Confirmar con el revisor contra el CP.',
+      'COTEJADO contra el BOE (CP art. 318 bis, leído 2026-09-15): escenario modelado el BÁSICO .1 (multa ' +
+      '3-12 meses o prisión 3 meses-1 año, mitad superior con ánimo de lucro) = MENOS GRAVE; .2 permanencia ' +
+      'con lucro; ORGANIZACIÓN .3 = 4-8 años = GRAVE (escalada en el boletín). PRESERVAR la cláusula ' +
+      'humanitaria (318 bis.1, párrafo final) y el deslinde con la infracción administrativa del art. 54.1.b ' +
+      'LO 4/2000 ("cuando el hecho no sea delito"). NO confundir con la trata (177 bis). Segundo revisor humano.',
   }),
   construirDelito({
     id: 'del-trata-seres-humanos',
