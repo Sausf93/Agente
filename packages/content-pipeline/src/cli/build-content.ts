@@ -24,6 +24,7 @@ import { SEED_SEGURIDAD_CIUDADANA } from '../seed/seguridadCiudadanaSeed.js';
 import { SEED_EXTRANJERIA_LOCAL } from '../seed/extranjeriaLocalSeed.js';
 import { SEED_ORDENANZAS } from '../seed/ordenanzasSeed.js';
 import { SEED_AUTONOMICO_CANARIAS } from '../seed/autonomicoCanariasSeed.js';
+import { SEED_SEGURIDAD_PRIVADA } from '../seed/seguridadPrivadaSeed.js';
 import { SUSTANCIAS_SEED } from '../seed/sustanciasSeed.js';
 import { combinarSeeds, enriquecerConNorma } from '../paquete/combinar.js';
 import { construirPaquete, type ContenidoParaEmpaquetar } from '../paquete/buildPackage.js';
@@ -71,6 +72,7 @@ async function componerContenido(offline: boolean): Promise<ContenidoParaEmpaque
     SEED_EXTRANJERIA_LOCAL,
     SEED_ORDENANZAS,
     SEED_AUTONOMICO_CANARIAS,
+    SEED_SEGURIDAD_PRIVADA,
     seedSustancias,
   );
 

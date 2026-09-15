@@ -139,6 +139,7 @@ export type MarcoImporte =
   | 'bienestar_animal'
   | 'municipal'
   | 'autonomico'
+  | 'seguridad_privada'
   | 'penal'
   | 'no_sancionador';
 
@@ -187,8 +188,11 @@ export function validarImporte(
     return []; // entrada consultable sin sanción (p. ej. requerimiento de identificación)
   }
 
-  // Sin rango legal único: solo coherencia (queda para revisión a dos ojos).
-  if (marco === 'municipal' || marco === 'autonomico') {
+  // Sin rango legal único: solo coherencia (queda para revisión a dos ojos). La seguridad privada
+  // (Ley 5/2014) tiene rangos distintos según el sujeto —empresa (art. 61) vs personal (art. 62)—,
+  // así que no hay una tabla única por gravedad: se valida solo la coherencia y el rango exacto se
+  // refleja en la propia ficha (importe base = mínimo, importe máximo = tope del tramo).
+  if (marco === 'municipal' || marco === 'autonomico' || marco === 'seguridad_privada') {
     return validarCoherenciaImporte(infraccion);
   }
 

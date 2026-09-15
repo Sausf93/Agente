@@ -298,6 +298,7 @@ const MATERIA_POR_CODIGO: Record<string, Materia> = {
   REPC: 'trafico', // Reglamento de escuelas particulares de conductores (RD 1295/2003)
   RSORC: 'trafico', // Reglamento del seguro obligatorio de RC (RD 1507/2008)
   LOSC: 'seguridad',
+  LSP: 'seguridad', // Ley 5/2014 de Seguridad Privada (control de vigilantes/empresas por GC y PN)
   CP: 'penal',
   LECrim: 'penal',
   LORPM: 'penal',
@@ -659,6 +660,7 @@ export const SUBTEMA_INFO: Record<SubTemaId, SubTemaInfo> = {
   'seg-orden-identidad': { materia: 'seguridad', label: 'Orden público e identificación', icono: 'IdCard', orden: 1 },
   'seg-drogas-armas': { materia: 'seguridad', label: 'Drogas, alcohol y armas', icono: 'Pill', orden: 2 },
   'seg-reuniones': { materia: 'seguridad', label: 'Reuniones, espectáculos y ocupación', icono: 'Megaphone', orden: 3 },
+  'seg-privada': { materia: 'seguridad', label: 'Seguridad privada (vigilantes)', icono: 'ShieldAlert', orden: 4 },
   'seg-otras': { materia: 'seguridad', label: 'Otras de seguridad ciudadana', icono: 'BookOpen', orden: 99, esCajon: true },
   // --- Animales (2026-09-14): separa el régimen de PPP del de bienestar animal (Ley 7/2023) ---
   'anim-ppp': { materia: 'animales', label: 'Perros y animales peligrosos (PPP)', icono: 'Dog', orden: 1 },
@@ -925,6 +927,14 @@ export const SUBTEMA_POR_INFRACCION: Record<string, SubTemaId> = {
   'sc-no-obtener-documentacion-personal': 'seg-orden-identidad',
   'sc-negligencia-custodia-documentacion': 'seg-orden-identidad',
   'sc-negativa-entregar-documentacion-retirada': 'seg-orden-identidad',
+  // Seguridad PRIVADA (Ley 5/2014): control de vigilantes/empresas por GC y PN.
+  'segpriv-sin-habilitacion': 'seg-privada',
+  'segpriv-empresa-sin-autorizacion': 'seg-privada',
+  'segpriv-negativa-auxilio-fcs': 'seg-privada',
+  'segpriv-negativa-identificarse': 'seg-privada',
+  'segpriv-exceso-funciones': 'seg-privada',
+  'segpriv-sin-uniforme-tip': 'seg-privada',
+  'segpriv-arma-fuera-servicio': 'seg-privada',
   // Animales (2026-09-14) — estatal: PPP (Ley 50/1999) y bienestar animal (Ley 7/2023).
   'ppp-sin-licencia': 'anim-ppp',
   'ppp-sin-bozal': 'anim-ppp',

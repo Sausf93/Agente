@@ -53,6 +53,14 @@ export {
   INFRACCIONES_SEGURIDAD_SEED,
 } from './seed/seguridadCiudadanaSeed.js';
 
+// Seed de seguridad PRIVADA (Ley 5/2014): control de vigilantes/empresas por GC y PN.
+export {
+  SEED_SEGURIDAD_PRIVADA,
+  NORMAS_SEGURIDAD_PRIVADA_SEED,
+  ARTICULOS_SEGURIDAD_PRIVADA_SEED,
+  INFRACCIONES_SEGURIDAD_PRIVADA_SEED,
+} from './seed/seguridadPrivadaSeed.js';
+
 // Seed de ORDENANZAS MUNICIPALES (piloto Santa Cruz de Tenerife, capa municipal).
 export {
   SEED_ORDENANZAS,
