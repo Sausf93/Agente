@@ -1202,6 +1202,12 @@ const VERIFICADAS_BOE: ReadonlySet<string> = new Set<string>([
   'inf-no-mantener-derecha', // 75.c
   'inf-sin-documentacion', // 75.c (no llevar la documentación encima)
   'inf-alumbrado-deficiente', // 75.c (deficiencia; circular SIN alumbrado sería 76.e grave)
+  // Aparcamiento desglosado, graves del art. 76.d (200 €; sin puntos). Vado y carga/descarga NO se
+  // incluyen: su importe depende de la ORDENANZA municipal.
+  'inf-doble-fila', // 76.d (obstaculiza gravemente)
+  'inf-estacionar-pmr-sin-tarjeta', // 76.d (plaza reservada a personas con discapacidad)
+  'inf-estacionar-carril-bus-bici', // 76.d (carril bus / vía ciclista)
+  'inf-estacionar-paso-peatones', // 76.d (lugar peligroso para peatones)
 ]);
 
 /** Competencia por defecto para tráfico: Guardia Civil (interurbano), Local (urbano) y Tráfico. */
