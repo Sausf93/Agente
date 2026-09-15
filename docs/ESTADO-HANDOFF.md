@@ -97,6 +97,21 @@ Cuenta Expo `sausf93` · projectId 92c01f68-bf32-494e-8a73-0b5489620845 · runti
 
 ## PENDIENTE INMEDIATO (empezar por aquí)
 
+### ANÁLISIS DE HUECOS para la GUARDIA CIVIL (2026-09-15)
+Pregunta del fundador: "¿mi compañero (GC) echará algo en falta?". Revisado el catálogo por áreas:
+- **Cubierto y verificado** (uso diario GC): tráfico completo, transporte (LOTT), seguridad ciudadana,
+  armas, penal (policía judicial), extranjería, VG, identificación, uso de la fuerza.
+- **HUECO CUBIERTO 2026-09-15: SEPRONA / medio ambiente** — se sembró la ola (5 delitos del CP,
+  verificados: caza/pesca de especies protegidas 334, caza/pesca prohibida 335, veneno/artes no
+  selectivas 336, incendio forestal 352, contaminación 325) con sub-tema propio "Medio ambiente, caza y
+  montes (SEPRONA)".
+- **HUECO PENDIENTE: CONTRABANDO (GC fiscal/resguardo)** — LO 12/1995 (delito >15.000 € y la infracción
+  administrativa por debajo; tabaco sobre todo). NO está sembrado. Requiere una norma nueva (LO 12/1995)
+  + articulado + fichas; es una mini-área nueva, no solo verificación. SIGUIENTE candidato para GC.
+- **Menor prioridad GC**: caza/pesca ADMINISTRATIVA (leyes autonómicas, competencia CCAA), seguridad
+  privada (Ley 5/2014). Las ordenanzas municipales son de policía LOCAL, no de la GC.
+
+
 ### CAMBIO DE MODELO (2026-09): `verificado` vs `pendiente_revision` — 173/307 ya verificadas (56 %)
 (Al día 2026-09-15, TODAS las áreas con fuente en el BOE cotejadas por el agente principal: penal, 
 seguridad ciudadana + armas [LO 4/2015 + lo cerrable del 36.12/37.8], tráfico + transporte [LSV + LOTT
