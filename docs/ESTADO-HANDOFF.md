@@ -204,8 +204,10 @@ push → CI verde vía API de GitHub). Paquete final: **3664 artículos, 313 inf
   - **Paisaje Urbano (BOP 145/2014)**: instalar terraza en dominio público sin licencia = GRAVE; escala
     art. 96 (leves 60-600 €, graves 750-1.500 €, muy graves 1.501-3.000 €). `ord-sctf-terrazas` pasa de
     consultable a verificada (grave, 1.500 € techo graduable). Es también la vía para `contenedor-obra` (pendiente).
-- **Total municipal verificado: 12 fichas** (limpieza 7 + animales 3 + ruido 1 + terrazas 1; ya no "Borrador beta").
-- **Fichas nuevas de calle**: `ord-sctf-vado` (grúa), `ord-sctf-carga-descarga`, `ord-sctf-gorrillas` (consultables).
+- **Total municipal verificado: 13 fichas** (limpieza 7 + animales 3 + ruido 1 + terrazas 1 + contenedor-obra 1;
+  ya no "Borrador beta").
+- **Fichas nuevas de calle**: `ord-sctf-vado` (grúa), `ord-sctf-carga-descarga`, `ord-sctf-gorrillas`
+  (consultables) y `ord-sctf-contenedor-obra` (verificada). Los 5 huecos del validador-calle CERRADOS.
 
 ### YA HECHO el 2026-09-14 (run autónomo, rondas encadenadas) — todo en `main`, CI verde, Expo publicado
 Rondas de mejora, cada una verificada con agentes + CI verde + publicada:
@@ -554,7 +556,8 @@ consolidado antes de `verificado`; el navegador bloquea la descarga → `python 
 - ~~`ord-sctf-gorrillas`~~ **HECHA** (cese; deslinde LO 4/2015/coacciones si amenaza).
 - ~~Ruido con VEHÍCULO~~ **HECHO** vía sinónimos: escape → ficha estatal `inf-escape-ruido` (verificada);
   música de coche → `ord-sctf-ruido-convivencia`.
-- **`ord-sctf-contenedor-obra`** (saco/contenedor de obra en vía sin autorización) PENDIENTE. Menos urgentes: mendicidad, publicidad/carteles.
+- ~~`ord-sctf-contenedor-obra`~~ **HECHA y VERIFICADA** (OMPUM art. 52: contenedor/saco de obra en vía sin
+  autorización = grave 750-1.500 €). Menos urgentes (pendientes): mendicidad, publicidad/carteles.
 - **Consecuencias operativas estructuradas** (pendiente, requiere confirmar base en cada ordenanza):
   venta-ambulante → `decomiso` de género (si la ordenanza lo prevé); abandono-enseres → retirada +
   aviso del servicio de voluminosos; alcohol/acampada → identificación + retirada de bebidas + cese /

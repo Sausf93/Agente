@@ -78,6 +78,7 @@ const VERIFICADAS_ORDENANZA: ReadonlySet<string> = new Set<string>([
   'ord-sctf-perro-sin-censar',
   'ord-sctf-ruido-convivencia',
   'ord-sctf-terrazas',
+  'ord-sctf-contenedor-obra',
 ]);
 
 /**
@@ -443,6 +444,19 @@ const ART_CIRC_CARGA = articuloSeed({
     'importes en pesetas). Resumen orientativo; consúltese el texto y la ordenanza fiscal.',
 });
 
+const ART_OMPUM_CONTENEDOR = articuloSeed({
+  normaId: ID_OM_TERRAZAS, // norma = Ordenanza de Paisaje Urbano (OMPUM)
+  numero: '52',
+  titulo: 'Colocación de contenedores/sacos de obra en la vía pública sin autorización (art. 52)',
+  texto:
+    'El art. 52 de la Ordenanza de Paisaje Urbano sujeta a AUTORIZACIÓN municipal la colocación de ' +
+    'contenedores (y sacos, silos, materiales de acopio) en la vía pública, salvo que queden incluidos en ' +
+    'la licencia de obra, y exige señalización y que no impidan el paso de peatones. Colocar un contenedor ' +
+    'o saco de obra en el dominio público SIN la autorización es realizar una instalación en dominio ' +
+    'público sin licencia → infracción GRAVE (escala art. 96: leves 60-600 €, graves 750-1.500 €, muy ' +
+    'graves 1.501-3.000 €). Resumen orientativo; consúltese el texto en la sede electrónica.',
+});
+
 const ART_POLICIA_GORRILLAS = articuloSeed({
   normaId: ID_OM_POLICIA,
   numero: 'actividad no autorizada',
@@ -458,6 +472,7 @@ export const ARTICULOS_ORDENANZAS_SEED: Articulo[] = [
   ART_CIRC_VMP,
   ART_CIRC_VADO,
   ART_CIRC_CARGA,
+  ART_OMPUM_CONTENEDOR,
   ART_POLICIA_GORRILLAS,
   ART_ANIM_CORREA,
   ART_ANIM_EXCREMENTOS,
@@ -1313,6 +1328,48 @@ export const INFRACCIONES_ORDENANZAS_SEED: InfraccionSeed[] = [
       'vigente). A VERIFICAR con el revisor si hay ordenanza/tasa específica. DESLINDE importante: con ' +
       'coacción/amenaza para cobrar, la vía es la LO 4/2015 (estatal) o el delito de coacciones (CP), no ' +
       'la mera ordenanza.',
+  }),
+  construirInfraccion({
+    id: 'ord-sctf-contenedor-obra',
+    articulo: ART_OMPUM_CONTENEDOR,
+    tituloCorto: 'Contenedor o saco de obra en la vía pública sin autorización',
+    gravedad: 'grave',
+    importeEur: 1500,
+    importeReducidoEur: null,
+    textoBoletin:
+      'Colocar un contenedor, saco (big-bag), silo o materiales de obra en la vía pública SIN la ' +
+      'autorización municipal exigida por el art. 52 de la Ordenanza de Paisaje Urbano (salvo que estén ' +
+      'incluidos en la licencia de obra). Es realizar una instalación en dominio público sin licencia → ' +
+      'infracción GRAVE (hasta 1.500 €, techo del tramo, graduable); el mero incumplimiento de condiciones ' +
+      '(señalización, no invadir el paso de peatones) puede ser LEVE (60-600 €). ORIENTACIÓN: procede ' +
+      'requerir la autorización y, en su defecto, la retirada. La valoración final corresponde al agente y ' +
+      'al órgano municipal.',
+    terminos: [
+      'contenedor de obra',
+      'contenedor en la calle',
+      'saco de obra',
+      'big bag',
+      'escombros en contenedor',
+      'contenedor sin permiso',
+      'silo de obra',
+      'materiales de obra en la acera',
+      'contenedor ocupa la calzada',
+    ],
+    consecuencias: [
+      {
+        tipo: 'cese_actividad',
+        textoCorto:
+          'Procede requerir la autorización municipal y, en su defecto, la retirada del contenedor/saco de ' +
+          'obra; la medida la concreta la ordenanza y el órgano municipal (art. 52 Ordenanza de Paisaje Urbano).',
+        fuente: 'Ordenanza de Paisaje Urbano de SCTF (art. 52)',
+      },
+    ],
+    notaRevision:
+      'COTEJADO contra la Ordenanza de Paisaje Urbano de SCTF (art. 52 y régimen sancionador, BOP nº 145 de ' +
+      '5-11-2014, leído 2026-09-15): la colocación de contenedores/sacos de obra en la vía pública está ' +
+      'sujeta a autorización municipal (art. 52); sin ella es instalación en dominio público sin licencia → ' +
+      'GRAVE (escala art. 96: leves 60-600 €, graves 750-1.500 €, muy graves 1.501-3.000 €). Importe = techo ' +
+      'del tramo grave (1.500 €), graduable. Pronto pago a confirmar en la ordenanza fiscal.',
   }),
 ];
 
